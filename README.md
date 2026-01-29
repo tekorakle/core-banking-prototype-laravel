@@ -105,7 +105,7 @@ php artisan serve
 php artisan queue:work --queue=events,ledger,transactions,transfers,webhooks
 ```
 
-**Requirements**: PHP 8.4+, MySQL 8.0+/PostgreSQL 13+, Redis 6.0+, Node.js 18+
+**Requirements**: PHP 8.4+, MySQL 8.0+ / MariaDB 10.3+ / PostgreSQL 13+, Redis 6.0+, Node.js 18+
 
 ### Modular Installation (v1.3.0+)
 
@@ -241,7 +241,7 @@ This project supports AI coding assistants. Look for `AGENTS.md` files for conte
 | **Event Sourcing** | Spatie Event Sourcing |
 | **Workflows** | Laravel Workflow (Waterline) |
 | **Multi-Tenancy** | stancl/tenancy v3.9 |
-| **Database** | MySQL 8.0+ / PostgreSQL 13+ |
+| **Database** | MySQL 8.0+ / MariaDB 10.3+ / PostgreSQL 13+ |
 | **Cache/Queue** | Redis, Laravel Horizon |
 | **Testing** | Pest PHP (parallel), PHPStan Level 8 |
 | **Admin** | Filament v3 |
@@ -259,7 +259,7 @@ This is a **demonstration platform** showcasing modern banking architecture. Use
 - Contributing to open-source fintech
 - Studying GCU as a basket currency reference
 
-**Not recommended** for production use without security audit and compliance review.
+**Production Readiness**: The codebase includes production-grade infrastructure (CQRS, event sourcing, multi-tenancy, 50%+ test coverage, PHPStan Level 8, 5,000+ tests). However, **a security audit and compliance review are required** before any production deployment. See [Security Policy](SECURITY.md) for vulnerability reporting.
 
 ---
 

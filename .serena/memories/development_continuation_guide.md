@@ -26,9 +26,13 @@ git branch --show-current
 | Current Branch | `main` |
 | Open PRs | None |
 | Open Issues | #339 (PHPUnit security vulnerability) |
-| Last Action | v2.0.0 fully released with GitHub releases |
-| Next Action | Begin v2.1.0 implementation (hardware wallets POC) |
+| Last Action | Comprehensive v2.0.0 review: fixed tests, docs, cleaned memories |
+| Next Action | Monitor CI pipeline, then begin v2.1.0 planning |
 | Session Date | January 29, 2026 |
+
+### Recent Commits This Session
+- `c0473eb1` - fix: Skip multi-tenancy tests on SQLite in-memory
+- `12834b0e` - docs: Add domain management guide and fix event sourcing tests
 
 ### v1.4.0 Progress
 | Task | Status |
