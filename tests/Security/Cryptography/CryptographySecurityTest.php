@@ -68,6 +68,7 @@ class CryptographySecurityTest extends TestCase
             ->where('tokenable_id', $this->user->id)
             ->first();
 
+        $this->assertNotNull($storedToken);
         $this->assertNotEquals($plainTextToken, $storedToken->token);
 
         // Should be SHA-256 hash (64 characters)

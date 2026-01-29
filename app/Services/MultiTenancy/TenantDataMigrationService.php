@@ -215,7 +215,7 @@ class TenantDataMigrationService
     /**
      * Insert a batch of records into the tenant database.
      *
-     * @param Collection<int, object> $records
+     * @param Collection<int, stdClass> $records
      */
     protected function insertBatch(Tenant $tenant, string $targetTable, string $keyColumn, Collection $records): void
     {
