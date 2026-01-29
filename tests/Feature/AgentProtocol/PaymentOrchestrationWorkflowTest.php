@@ -8,6 +8,7 @@ use App\Domain\AgentProtocol\Aggregates\AgentWalletAggregate;
 use App\Domain\AgentProtocol\DataObjects\AgentPaymentRequest;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Str;
+use PHPUnit\Framework\Attributes\Test;
 use Tests\TestCase;
 
 /**
@@ -41,7 +42,7 @@ class PaymentOrchestrationWorkflowTest extends TestCase
         $this->initializeWallet($this->receiverDid, 0.00);
     }
 
-    /** @test */
+    #[Test]
     public function it_can_process_a_simple_payment_successfully(): void
     {
         // Test wallet initialization and balance
@@ -75,7 +76,7 @@ class PaymentOrchestrationWorkflowTest extends TestCase
         $this->assertGreaterThanOrEqual(0.00, $receiverWallet->getBalance());
     }
 
-    /** @test */
+    #[Test]
     public function it_applies_fees_correctly_to_payments(): void
     {
         // Test fee calculation logic
@@ -94,7 +95,7 @@ class PaymentOrchestrationWorkflowTest extends TestCase
         $this->assertEquals(102.50, $totalAmount);
     }
 
-    /** @test */
+    #[Test]
     public function it_fails_payment_with_insufficient_balance(): void
     {
         // Test insufficient balance check
@@ -105,7 +106,7 @@ class PaymentOrchestrationWorkflowTest extends TestCase
         $this->assertFalse($senderWallet->hasSufficientBalance($requestedAmount));
     }
 
-    /** @test */
+    #[Test]
     public function it_can_process_split_payments(): void
     {
         // Test split payment configuration
@@ -146,7 +147,7 @@ class PaymentOrchestrationWorkflowTest extends TestCase
         $this->assertEquals('referral', $request->splits[1]['type']);
     }
 
-    /** @test */
+    #[Test]
     public function it_records_payment_in_history(): void
     {
         // Test payment request data integrity
@@ -167,7 +168,7 @@ class PaymentOrchestrationWorkflowTest extends TestCase
         $this->assertEquals('USD', $request->currency);
     }
 
-    /** @test */
+    #[Test]
     public function it_validates_minimum_payment_amount(): void
     {
         // Test micro-payment fee exemption
@@ -180,14 +181,14 @@ class PaymentOrchestrationWorkflowTest extends TestCase
         $this->assertEquals(0.0, $appliedFee);
     }
 
-    /** @test */
+    #[Test]
     public function it_handles_payment_retry_on_failure(): void
     {
         // Retry logic testing requires full workflow infrastructure
         $this->markTestSkipped('Retry logic testing requires workflow mocking capabilities');
     }
 
-    /** @test */
+    #[Test]
     public function it_compensates_failed_payments(): void
     {
         // Compensation testing requires advanced workflow control

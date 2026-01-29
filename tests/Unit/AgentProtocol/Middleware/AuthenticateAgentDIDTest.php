@@ -12,6 +12,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
 use Mockery;
 use Mockery\MockInterface;
+use PHPUnit\Framework\Attributes\Test;
 use Tests\TestCase;
 
 class AuthenticateAgentDIDTest extends TestCase
@@ -43,7 +44,7 @@ class AuthenticateAgentDIDTest extends TestCase
         parent::tearDown();
     }
 
-    /** @test */
+    #[Test]
     public function it_authenticates_with_valid_session_token()
     {
         // Arrange
@@ -70,7 +71,7 @@ class AuthenticateAgentDIDTest extends TestCase
         $this->assertEquals($agent, $request->attributes->get('agent'));
     }
 
-    /** @test */
+    #[Test]
     public function it_authenticates_with_valid_api_key()
     {
         // Arrange
@@ -101,7 +102,7 @@ class AuthenticateAgentDIDTest extends TestCase
         $this->assertEquals($agent, $request->attributes->get('agent'));
     }
 
-    /** @test */
+    #[Test]
     public function it_authenticates_with_did_signature()
     {
         // Arrange
@@ -135,7 +136,7 @@ class AuthenticateAgentDIDTest extends TestCase
         $this->assertEquals($agent, $request->attributes->get('agent'));
     }
 
-    /** @test */
+    #[Test]
     public function it_rejects_request_without_credentials()
     {
         // Arrange
@@ -156,7 +157,7 @@ class AuthenticateAgentDIDTest extends TestCase
         $this->assertStringContainsString('No authentication credentials', $data['message']);
     }
 
-    /** @test */
+    #[Test]
     public function it_rejects_invalid_session_token()
     {
         // Arrange
@@ -180,7 +181,7 @@ class AuthenticateAgentDIDTest extends TestCase
         $this->assertEquals(401, $response->getStatusCode());
     }
 
-    /** @test */
+    #[Test]
     public function it_rejects_invalid_api_key()
     {
         // Arrange
@@ -209,7 +210,7 @@ class AuthenticateAgentDIDTest extends TestCase
         $this->assertEquals('Invalid API key', $data['message']);
     }
 
-    /** @test */
+    #[Test]
     public function it_rejects_inactive_agent()
     {
         // Arrange
@@ -238,7 +239,7 @@ class AuthenticateAgentDIDTest extends TestCase
         $this->assertEquals('Agent is not active', $data['message']);
     }
 
-    /** @test */
+    #[Test]
     public function it_checks_required_scope()
     {
         // Arrange
@@ -269,7 +270,7 @@ class AuthenticateAgentDIDTest extends TestCase
         $this->assertStringContainsString('Missing required scope', $data['message']);
     }
 
-    /** @test */
+    #[Test]
     public function it_allows_request_with_wildcard_scope()
     {
         // Arrange
@@ -298,7 +299,7 @@ class AuthenticateAgentDIDTest extends TestCase
         $this->assertEquals(200, $response->getStatusCode());
     }
 
-    /** @test */
+    #[Test]
     public function it_sets_agent_attributes_on_request()
     {
         // Arrange

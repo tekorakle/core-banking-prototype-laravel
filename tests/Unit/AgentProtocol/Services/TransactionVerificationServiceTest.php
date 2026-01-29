@@ -13,6 +13,7 @@ use App\Domain\AgentProtocol\Services\SignatureService;
 use App\Domain\AgentProtocol\Services\TransactionVerificationService;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Cache;
+use PHPUnit\Framework\Attributes\Test;
 use Tests\TestCase;
 
 class TransactionVerificationServiceTest extends TestCase
@@ -48,7 +49,7 @@ class TransactionVerificationServiceTest extends TestCase
         Cache::flush();
     }
 
-    /** @test */
+    #[Test]
     public function it_verifies_valid_transaction_with_basic_level()
     {
         $agentId = 'agent_' . uniqid();
@@ -112,7 +113,7 @@ class TransactionVerificationServiceTest extends TestCase
         $this->assertEquals('low', $result['risk_level']);
     }
 
-    /** @test */
+    #[Test]
     public function it_rejects_transaction_with_invalid_signature()
     {
         $agentId = 'agent_' . uniqid();
@@ -149,7 +150,7 @@ class TransactionVerificationServiceTest extends TestCase
         $this->assertEquals('critical', $result['checks']['signature']['severity']);
     }
 
-    /** @test */
+    #[Test]
     public function it_detects_suspended_agent()
     {
         $agentId = 'agent_' . uniqid();
@@ -185,7 +186,7 @@ class TransactionVerificationServiceTest extends TestCase
         $this->assertEquals('Agent suspended', $result['checks']['agent']['reason']);
     }
 
-    /** @test */
+    #[Test]
     public function it_performs_velocity_checks()
     {
         $agentId = 'agent_' . uniqid();
@@ -218,7 +219,7 @@ class TransactionVerificationServiceTest extends TestCase
         $this->assertArrayHasKey('period', $result['violations'][0]);
     }
 
-    /** @test */
+    #[Test]
     public function it_verifies_transaction_integrity()
     {
         $transactionId = 'txn_' . uniqid();
@@ -260,7 +261,7 @@ class TransactionVerificationServiceTest extends TestCase
         $this->assertTrue($isValid);
     }
 
-    /** @test */
+    #[Test]
     public function it_detects_tampered_transaction_data()
     {
         $transactionId = 'txn_' . uniqid();
@@ -294,7 +295,7 @@ class TransactionVerificationServiceTest extends TestCase
         $this->assertFalse($isValid);
     }
 
-    /** @test */
+    #[Test]
     public function it_verifies_compliance_requirements()
     {
         $transactionId = 'txn_' . uniqid();
@@ -329,7 +330,7 @@ class TransactionVerificationServiceTest extends TestCase
         $this->assertTrue($result['checks']['reporting']['ctr_required']); // CTR required for >$10k
     }
 
-    /** @test */
+    #[Test]
     public function it_performs_multi_factor_verification()
     {
         $agentId = 'agent_' . uniqid();
@@ -352,7 +353,7 @@ class TransactionVerificationServiceTest extends TestCase
         $this->assertEquals(2, $result['required_count']);
     }
 
-    /** @test */
+    #[Test]
     public function it_calculates_risk_scores_accurately()
     {
         $agentId = 'agent_' . uniqid();
@@ -392,7 +393,7 @@ class TransactionVerificationServiceTest extends TestCase
         $this->assertContains($result['risk_level'], ['medium', 'high']);
     }
 
-    /** @test */
+    #[Test]
     public function it_handles_maximum_security_level_verification()
     {
         $agentId = 'agent_' . uniqid();

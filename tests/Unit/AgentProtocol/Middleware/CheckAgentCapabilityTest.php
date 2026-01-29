@@ -8,6 +8,7 @@ use App\Http\Middleware\CheckAgentCapability;
 use App\Models\Agent;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Http\Request;
+use PHPUnit\Framework\Attributes\Test;
 use Tests\TestCase;
 
 class CheckAgentCapabilityTest extends TestCase
@@ -22,7 +23,7 @@ class CheckAgentCapabilityTest extends TestCase
         $this->middleware = new CheckAgentCapability();
     }
 
-    /** @test */
+    #[Test]
     public function it_allows_agent_with_required_capability()
     {
         // Arrange
@@ -42,7 +43,7 @@ class CheckAgentCapabilityTest extends TestCase
         $this->assertEquals(200, $response->getStatusCode());
     }
 
-    /** @test */
+    #[Test]
     public function it_allows_agent_with_wildcard_capability()
     {
         // Arrange
@@ -62,7 +63,7 @@ class CheckAgentCapabilityTest extends TestCase
         $this->assertEquals(200, $response->getStatusCode());
     }
 
-    /** @test */
+    #[Test]
     public function it_allows_agent_with_hierarchical_wildcard()
     {
         // Arrange
@@ -82,7 +83,7 @@ class CheckAgentCapabilityTest extends TestCase
         $this->assertEquals(200, $response->getStatusCode());
     }
 
-    /** @test */
+    #[Test]
     public function it_rejects_agent_without_required_capability()
     {
         // Arrange
@@ -105,7 +106,7 @@ class CheckAgentCapabilityTest extends TestCase
         $this->assertStringContainsString('escrow', $data['message']);
     }
 
-    /** @test */
+    #[Test]
     public function it_rejects_request_without_authenticated_agent()
     {
         // Arrange
@@ -122,7 +123,7 @@ class CheckAgentCapabilityTest extends TestCase
         $this->assertEquals('Unauthorized', $data['error']);
     }
 
-    /** @test */
+    #[Test]
     public function it_checks_multiple_required_capabilities()
     {
         // Arrange
@@ -144,7 +145,7 @@ class CheckAgentCapabilityTest extends TestCase
         $this->assertStringContainsString('escrow', $data['message']);
     }
 
-    /** @test */
+    #[Test]
     public function it_allows_agent_with_all_required_capabilities()
     {
         // Arrange
@@ -164,7 +165,7 @@ class CheckAgentCapabilityTest extends TestCase
         $this->assertEquals(200, $response->getStatusCode());
     }
 
-    /** @test */
+    #[Test]
     public function it_handles_comma_separated_capabilities()
     {
         // Arrange
@@ -184,7 +185,7 @@ class CheckAgentCapabilityTest extends TestCase
         $this->assertEquals(200, $response->getStatusCode());
     }
 
-    /** @test */
+    #[Test]
     public function it_handles_empty_capabilities_array()
     {
         // Arrange
@@ -204,7 +205,7 @@ class CheckAgentCapabilityTest extends TestCase
         $this->assertEquals(403, $response->getStatusCode());
     }
 
-    /** @test */
+    #[Test]
     public function it_handles_null_capabilities()
     {
         // Arrange
