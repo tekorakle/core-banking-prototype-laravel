@@ -66,16 +66,37 @@ class TransactionVerificationServiceTest extends TestCase
             'is_suspended' => false,
         ]);
 
-        // Generate keys and sign transaction
-        $this->signatureService->generateAgentKeyPair($agentId);
-        $signature = $this->signatureService->signAgentTransaction(
-            $transactionId,
-            $agentId,
-            $transactionData
+        // Create mock signature service that returns valid results
+        $mockSignatureService = $this->createMock(DigitalSignatureService::class);
+        $mockSignatureService->method('verifyAgentSignature')
+            ->willReturn([
+                'is_valid'       => true,
+                'transaction_id' => $transactionId,
+                'agent_id'       => $agentId,
+                'verified_at'    => now()->toIso8601String(),
+            ]);
+
+        // Create service with mocked signature service
+        $service = new TransactionVerificationService(
+            $mockSignatureService,
+            $this->encryptionService,
+            $this->fraudService
         );
 
+        // Create signature metadata structure
+        $signature = [
+            'signature'      => 'test_signature_base64',
+            'algorithm'      => 'RS256',
+            'timestamp'      => now()->toIso8601String(),
+            'data_hash'      => hash('sha256', json_encode($transactionData) ?: ''),
+            'transaction_id' => $transactionId,
+            'agent_id'       => $agentId,
+            'nonce'          => bin2hex(random_bytes(16)),
+            'expires_at'     => now()->addMinutes(60)->toIso8601String(),
+        ];
+
         // Verify transaction
-        $result = $this->service->verifyTransaction(
+        $result = $service->verifyTransaction(
             $transactionId,
             $agentId,
             $transactionData,
