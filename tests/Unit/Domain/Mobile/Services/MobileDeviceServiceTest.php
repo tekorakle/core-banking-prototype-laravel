@@ -14,9 +14,9 @@ class MobileDeviceServiceTest extends TestCase
 {
     use RefreshDatabase;
 
-    private MobileDeviceService $service;
+    protected MobileDeviceService $service;
 
-    private User $user;
+    protected User $user;
 
     protected function setUp(): void
     {
@@ -183,7 +183,9 @@ class MobileDeviceServiceTest extends TestCase
         $activeDevices = $this->service->getActiveDevices($this->user);
 
         $this->assertCount(1, $activeDevices);
-        $this->assertEquals('active-device', $activeDevices->first()->device_id);
+        $firstActive = $activeDevices->first();
+        $this->assertNotNull($firstActive);
+        $this->assertEquals('active-device', $firstActive->device_id);
     }
 
     public function test_can_get_push_enabled_devices(): void
@@ -194,7 +196,9 @@ class MobileDeviceServiceTest extends TestCase
         $pushDevices = $this->service->getPushEnabledDevices($this->user);
 
         $this->assertCount(1, $pushDevices);
-        $this->assertEquals('with-token', $pushDevices->first()->device_id);
+        $firstPush = $pushDevices->first();
+        $this->assertNotNull($firstPush);
+        $this->assertEquals('with-token', $firstPush->device_id);
     }
 
     public function test_can_block_device(): void
@@ -297,7 +301,7 @@ class MobileDeviceServiceTest extends TestCase
         $this->service->registerDevice($this->user, 'android-1', 'android', '1.0.0', 'token');
         $this->service->registerDevice($this->user, 'ios-1', 'ios', '1.0.0');
 
-        $device = MobileDevice::where('device_id', 'android-1')->first();
+        $device = MobileDevice::where('device_id', 'android-1')->firstOrFail();
         $device->update(['biometric_enabled' => true, 'biometric_public_key' => 'key']);
 
         $stats = $this->service->getStatistics();

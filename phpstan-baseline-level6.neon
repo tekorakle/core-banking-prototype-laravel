@@ -24367,6 +24367,18 @@ parameters:
 			path: app/Domain/Mobile/Models/MobilePushNotification.php
 
 		-
+			message: '#^Method App\\Domain\\Mobile\\Services\\BiometricAuthenticationService\:\:resolveScopes\(\) has parameter \$requestedScopes with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Traits/HasApiScopes.php
+
+		-
+			message: '#^Method App\\Domain\\Mobile\\Services\\BiometricAuthenticationService\:\:createTokenWithScopes\(\) has parameter \$requestedScopes with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Traits/HasApiScopes.php
+
+		-
 			message: '#^Method App\\Domain\\Lending\\Aggregates\\Loan\:\:createFromApplication\(\) has parameter \$terms with no value type specified in iterable type array\.$#'
 			identifier: missingType.iterableValue
 			count: 1

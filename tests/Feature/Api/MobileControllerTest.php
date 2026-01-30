@@ -203,7 +203,9 @@ class MobileControllerTest extends TestCase
             'private_key_type' => OPENSSL_KEYTYPE_EC,
         ];
         $keyResource = openssl_pkey_new($keyConfig);
+        $this->assertNotFalse($keyResource, 'Failed to generate test key');
         $keyDetails = openssl_pkey_get_details($keyResource);
+        $this->assertIsArray($keyDetails, 'Failed to get key details');
         $publicKeyPem = $keyDetails['key'];
 
         $response = $this->withToken($this->token)->postJson('/api/mobile/auth/biometric/enable', [
