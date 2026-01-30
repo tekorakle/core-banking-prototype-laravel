@@ -194,4 +194,34 @@ return [
             'max_pending_requests'      => 5,
         ],
     ],
+
+    /*
+    |--------------------------------------------------------------------------
+    | Multi-Signature Wallet Configuration
+    |--------------------------------------------------------------------------
+    |
+    | Configuration for multi-signature wallet support.
+    | M-of-N signature schemes for secure transaction approval workflows.
+    |
+    */
+
+    'multi_sig' => [
+        'enabled' => env('MULTI_SIG_ENABLED', true),
+
+        // Maximum and minimum number of signers
+        'max_signers' => 10,
+        'min_signers' => 2,
+
+        // Approval request TTL (24 hours default)
+        'approval_ttl_seconds' => env('MULTI_SIG_APPROVAL_TTL', 86400),
+
+        // Supported signature schemes
+        'supported_schemes' => ['2-of-3', '3-of-5', '2-of-2', '3-of-4'],
+
+        // Maximum pending approval requests per wallet
+        'max_pending_requests_per_wallet' => 5,
+
+        // Auto-broadcast when quorum is reached
+        'auto_broadcast' => env('MULTI_SIG_AUTO_BROADCAST', false),
+    ],
 ];

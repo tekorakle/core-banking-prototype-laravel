@@ -722,6 +722,51 @@ Route::prefix('hardware-wallet')->name('api.hardware-wallet.')->group(function (
     });
 });
 
+// Multi-Signature Wallet endpoints (v2.1.0)
+Route::prefix('multi-sig')->name('api.multi-sig.')->group(function () {
+    // Public endpoint for supported configuration
+    Route::get('/supported', [App\Http\Controllers\Api\MultiSigWalletController::class, 'getSupported'])
+        ->name('supported');
+
+    // Authenticated endpoints
+    Route::middleware(['auth:sanctum', 'check.token.expiration', 'sub_product:blockchain'])->group(function () {
+        // Wallet management
+        Route::post('/wallets', [App\Http\Controllers\Api\MultiSigWalletController::class, 'createWallet'])
+            ->middleware('transaction.rate_limit:blockchain')
+            ->name('wallets.create');
+
+        Route::get('/wallets', [App\Http\Controllers\Api\MultiSigWalletController::class, 'listWallets'])
+            ->name('wallets.list');
+
+        Route::get('/wallets/{id}', [App\Http\Controllers\Api\MultiSigWalletController::class, 'getWallet'])
+            ->name('wallets.show');
+
+        Route::post('/wallets/{id}/signers', [App\Http\Controllers\Api\MultiSigWalletController::class, 'addSigner'])
+            ->middleware('transaction.rate_limit:blockchain')
+            ->name('wallets.signers.add');
+
+        // Approval requests
+        Route::post('/wallets/{id}/approval-requests', [App\Http\Controllers\Api\MultiSigWalletController::class, 'createApprovalRequest'])
+            ->middleware('transaction.rate_limit:blockchain')
+            ->name('wallets.approval-requests.create');
+
+        Route::post('/approval-requests/{id}/approve', [App\Http\Controllers\Api\MultiSigWalletController::class, 'submitApproval'])
+            ->middleware('transaction.rate_limit:blockchain')
+            ->name('approval-requests.approve');
+
+        Route::post('/approval-requests/{id}/reject', [App\Http\Controllers\Api\MultiSigWalletController::class, 'rejectApproval'])
+            ->name('approval-requests.reject');
+
+        Route::post('/approval-requests/{id}/broadcast', [App\Http\Controllers\Api\MultiSigWalletController::class, 'broadcastTransaction'])
+            ->middleware('transaction.rate_limit:blockchain')
+            ->name('approval-requests.broadcast');
+
+        // Pending approvals for current user
+        Route::get('/pending-approvals', [App\Http\Controllers\Api\MultiSigWalletController::class, 'getPendingApprovals'])
+            ->name('pending-approvals');
+    });
+});
+
 // P2P Lending endpoints
 Route::prefix('lending')->middleware(['auth:sanctum', 'check.token.expiration', 'sub_product:lending'])->group(function () {
     // Loan applications
