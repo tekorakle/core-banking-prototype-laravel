@@ -17,7 +17,9 @@ use App\Domain\Wallet\ValueObjects\MultiSigConfiguration;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Event;
+use InvalidArgumentException;
 use PHPUnit\Framework\Attributes\Test;
+use RuntimeException;
 use Tests\TestCase;
 
 class MultiSigApprovalServiceTest extends TestCase
@@ -80,7 +82,9 @@ class MultiSigApprovalServiceTest extends TestCase
 
         $request = $this->createApprovalRequest();
         $signer = $this->wallet->signers()->first();
+        $this->assertNotNull($signer);
         $user = $signer->user;
+        $this->assertNotNull($user);
 
         $approval = $this->approvalService->submitSignature(
             request: $request,
@@ -110,11 +114,21 @@ class MultiSigApprovalServiceTest extends TestCase
 
         $request = $this->createApprovalRequest();
         $signers = $this->wallet->signers()->get();
+        $this->assertCount(2, $signers);
+
+        $signer0 = $signers->get(0);
+        $signer1 = $signers->get(1);
+        $this->assertNotNull($signer0);
+        $this->assertNotNull($signer1);
+        $signer0User = $signer0->user;
+        $signer1User = $signer1->user;
+        $this->assertNotNull($signer0User);
+        $this->assertNotNull($signer1User);
 
         // Submit first signature
         $this->approvalService->submitSignature(
             request: $request,
-            user: $signers[0]->user,
+            user: $signer0User,
             signature: str_repeat('a', 128),
             publicKey: str_repeat('b', 64),
         );
@@ -126,7 +140,7 @@ class MultiSigApprovalServiceTest extends TestCase
         // Submit second signature (quorum reached for 2-of-2)
         $this->approvalService->submitSignature(
             request: $request,
-            user: $signers[1]->user,
+            user: $signer1User,
             signature: str_repeat('c', 128),
             publicKey: str_repeat('d', 64),
         );
@@ -141,22 +155,25 @@ class MultiSigApprovalServiceTest extends TestCase
     {
         $request = $this->createApprovalRequest();
         $signer = $this->wallet->signers()->first();
+        $this->assertNotNull($signer);
+        $signerUser = $signer->user;
+        $this->assertNotNull($signerUser);
 
         // First signature
         $this->approvalService->submitSignature(
             request: $request,
-            user: $signer->user,
+            user: $signerUser,
             signature: str_repeat('a', 128),
             publicKey: str_repeat('b', 64),
         );
 
         // Try to submit again
-        $this->expectException(\RuntimeException::class);
+        $this->expectException(RuntimeException::class);
         $this->expectExceptionMessage('User has already submitted their decision');
 
         $this->approvalService->submitSignature(
             request: $request,
-            user: $signer->user,
+            user: $signerUser,
             signature: str_repeat('c', 128),
             publicKey: str_repeat('d', 64),
         );
@@ -167,10 +184,13 @@ class MultiSigApprovalServiceTest extends TestCase
     {
         $request = $this->createApprovalRequest();
         $signer = $this->wallet->signers()->first();
+        $this->assertNotNull($signer);
+        $signerUser = $signer->user;
+        $this->assertNotNull($signerUser);
 
         $approval = $this->approvalService->rejectRequest(
             request: $request,
-            user: $signer->user,
+            user: $signerUser,
             reason: 'Amount too high',
         );
 
@@ -189,9 +209,11 @@ class MultiSigApprovalServiceTest extends TestCase
 
         // Collect all signatures
         foreach ($signers as $signer) {
+            $signerUser = $signer->user;
+            $this->assertNotNull($signerUser);
             $this->approvalService->submitSignature(
                 request: $request,
-                user: $signer->user,
+                user: $signerUser,
                 signature: str_repeat($signer->signer_order . 'a', 64),
                 publicKey: str_repeat($signer->signer_order . 'b', 32),
             );
@@ -219,7 +241,7 @@ class MultiSigApprovalServiceTest extends TestCase
     {
         $request = $this->createApprovalRequest();
 
-        $this->expectException(\RuntimeException::class);
+        $this->expectException(RuntimeException::class);
         $this->expectExceptionMessage('Cannot broadcast: quorum not reached');
 
         $this->approvalService->broadcastTransaction($request);
@@ -242,7 +264,7 @@ class MultiSigApprovalServiceTest extends TestCase
         $request = $this->createApprovalRequest();
         $randomUser = User::factory()->create();
 
-        $this->expectException(\InvalidArgumentException::class);
+        $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('Only the initiator or wallet owner can cancel the request');
 
         $this->approvalService->cancelRequest($request, $randomUser);
@@ -253,11 +275,14 @@ class MultiSigApprovalServiceTest extends TestCase
     {
         $request = $this->createApprovalRequest();
         $signer = $this->wallet->signers()->first();
+        $this->assertNotNull($signer);
+        $signerUser = $signer->user;
+        $this->assertNotNull($signerUser);
 
         // Submit one signature
         $this->approvalService->submitSignature(
             request: $request,
-            user: $signer->user,
+            user: $signerUser,
             signature: str_repeat('a', 128),
             publicKey: str_repeat('b', 64),
         );
@@ -280,21 +305,26 @@ class MultiSigApprovalServiceTest extends TestCase
     {
         $request = $this->createApprovalRequest();
         $signer = $this->wallet->signers()->first();
+        $this->assertNotNull($signer);
+        $signerUser = $signer->user;
+        $this->assertNotNull($signerUser);
 
-        $pendingRequests = $this->approvalService->getPendingRequestsForUser($signer->user);
+        $pendingRequests = $this->approvalService->getPendingRequestsForUser($signerUser);
 
         $this->assertCount(1, $pendingRequests);
-        $this->assertEquals($request->id, $pendingRequests->first()->id);
+        $firstPending = $pendingRequests->first();
+        $this->assertNotNull($firstPending);
+        $this->assertEquals($request->id, $firstPending->id);
 
         // After signing, should not appear in pending
         $this->approvalService->submitSignature(
             request: $request,
-            user: $signer->user,
+            user: $signerUser,
             signature: str_repeat('a', 128),
             publicKey: str_repeat('b', 64),
         );
 
-        $pendingRequests = $this->approvalService->getPendingRequestsForUser($signer->user);
+        $pendingRequests = $this->approvalService->getPendingRequestsForUser($signerUser);
         $this->assertCount(0, $pendingRequests);
     }
 

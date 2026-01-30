@@ -306,12 +306,14 @@ class MultiSigWalletService
             throw new RuntimeException('Wallet already has all signers');
         }
 
-        if (! in_array($signerType, [
+        if (
+            ! in_array($signerType, [
             MultiSigWalletSigner::TYPE_HARDWARE_LEDGER,
             MultiSigWalletSigner::TYPE_HARDWARE_TREZOR,
             MultiSigWalletSigner::TYPE_INTERNAL,
             MultiSigWalletSigner::TYPE_EXTERNAL,
-        ], true)) {
+            ], true)
+        ) {
             throw new InvalidArgumentException("Invalid signer type: {$signerType}");
         }
 

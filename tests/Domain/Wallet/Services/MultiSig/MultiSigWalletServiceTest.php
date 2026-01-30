@@ -13,15 +13,16 @@ use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Event;
 use PHPUnit\Framework\Attributes\Test;
+use RuntimeException;
 use Tests\TestCase;
 
 class MultiSigWalletServiceTest extends TestCase
 {
     use RefreshDatabase;
 
-    private MultiSigWalletService $service;
+    protected MultiSigWalletService $service;
 
-    private User $user;
+    protected User $user;
 
     protected function setUp(): void
     {
@@ -134,7 +135,7 @@ class MultiSigWalletServiceTest extends TestCase
         $wallet->refresh();
 
         // Try to add a third signer
-        $this->expectException(\RuntimeException::class);
+        $this->expectException(RuntimeException::class);
         $this->expectExceptionMessage('Wallet already has all signers');
 
         $user3 = User::factory()->create();
@@ -182,8 +183,12 @@ class MultiSigWalletServiceTest extends TestCase
 
         $this->assertCount(1, $ethereumWallets);
         $this->assertCount(1, $bitcoinWallets);
-        $this->assertEquals('ethereum', $ethereumWallets->first()->chain);
-        $this->assertEquals('bitcoin', $bitcoinWallets->first()->chain);
+        $firstEthereum = $ethereumWallets->first();
+        $firstBitcoin = $bitcoinWallets->first();
+        $this->assertNotNull($firstEthereum);
+        $this->assertNotNull($firstBitcoin);
+        $this->assertEquals('ethereum', $firstEthereum->chain);
+        $this->assertEquals('bitcoin', $firstBitcoin->chain);
     }
 
     #[Test]

@@ -173,10 +173,12 @@ class MultiSigApprovalService
             throw new RuntimeException('Cannot broadcast: quorum not reached');
         }
 
-        if (! in_array($request->status, [
+        if (
+            ! in_array($request->status, [
             MultiSigApprovalRequest::STATUS_PENDING,
             MultiSigApprovalRequest::STATUS_APPROVED,
-        ], true)) {
+            ], true)
+        ) {
             throw new RuntimeException("Cannot broadcast request with status: {$request->status}");
         }
 
