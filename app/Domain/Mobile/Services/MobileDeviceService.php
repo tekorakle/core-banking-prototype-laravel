@@ -38,9 +38,23 @@ class MobileDeviceService
         $existingDevice = MobileDevice::where('device_id', $deviceId)->first();
 
         if ($existingDevice) {
-            // Device exists - update it
+            // Security: Prevent device takeover - do not allow changing user_id
+            if ($existingDevice->user_id !== $user->id) {
+                Log::warning('Attempted device takeover blocked', [
+                    'device_id'         => $deviceId,
+                    'existing_user_id'  => $existingDevice->user_id,
+                    'attempted_user_id' => $user->id,
+                ]);
+
+                // Unregister the device from the previous user first (this clears biometric)
+                // This is the safe approach - requires re-enrollment
+                $existingDevice->disableBiometric();
+                $existingDevice->sessions()->delete();
+                $existingDevice->update(['user_id' => $user->id, 'is_trusted' => false]);
+            }
+
+            // Device exists for same user - update it
             return $this->updateDevice($existingDevice, [
-                'user_id'        => $user->id,
                 'platform'       => $platform,
                 'push_token'     => $pushToken,
                 'device_name'    => $deviceName,

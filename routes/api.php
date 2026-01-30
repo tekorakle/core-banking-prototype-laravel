@@ -990,10 +990,14 @@ Route::prefix('mobile')->name('api.mobile.')->group(function () {
     Route::get('/config', [MobileController::class, 'getConfig'])->name('config');
 
     // Biometric authentication (no auth required - this IS the auth)
-    Route::prefix('auth/biometric')->name('auth.biometric.')->group(function () {
-        Route::post('/challenge', [MobileController::class, 'getBiometricChallenge'])->name('challenge');
-        Route::post('/verify', [MobileController::class, 'verifyBiometric'])->name('verify');
-    });
+    // Rate limited to prevent brute force attacks (10 requests per minute)
+    Route::prefix('auth/biometric')
+        ->middleware('throttle:10,1')
+        ->name('auth.biometric.')
+        ->group(function () {
+            Route::post('/challenge', [MobileController::class, 'getBiometricChallenge'])->name('challenge');
+            Route::post('/verify', [MobileController::class, 'verifyBiometric'])->name('verify');
+        });
 
     // Protected endpoints (require authentication)
     Route::middleware(['auth:sanctum', 'check.token.expiration'])->group(function () {

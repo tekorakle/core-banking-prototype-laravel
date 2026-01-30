@@ -10,7 +10,10 @@ use App\Domain\Mobile\Models\MobileDeviceSession;
 use App\Models\User;
 use App\Traits\HasApiScopes;
 use Exception;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
+use RuntimeException;
+use Throwable;
 
 /**
  * Service for handling biometric (device-bound) authentication.
@@ -142,47 +145,58 @@ class BiometricAuthenticationService
             return null;
         }
 
-        // Mark challenge as verified
-        $biometricChallenge->markAsVerified();
+        // Wrap all database writes in a transaction for consistency
+        try {
+            return DB::transaction(function () use ($device, $biometricChallenge, $ipAddress) {
+                // Mark challenge as verified
+                $biometricChallenge->markAsVerified();
 
-        // Create session
-        $sessionDuration = $device->is_trusted
-            ? self::TRUSTED_SESSION_DURATION_MINUTES
-            : self::SESSION_DURATION_MINUTES;
+                // Create session
+                $sessionDuration = $device->is_trusted
+                    ? self::TRUSTED_SESSION_DURATION_MINUTES
+                    : self::SESSION_DURATION_MINUTES;
 
-        $session = MobileDeviceSession::create([
-            'mobile_device_id'     => $device->id,
-            'user_id'              => $device->user_id,
-            'session_token'        => MobileDeviceSession::generateToken(),
-            'ip_address'           => $ipAddress,
-            'last_activity_at'     => now(),
-            'expires_at'           => now()->addMinutes($sessionDuration),
-            'is_biometric_session' => true,
-        ]);
+                $session = MobileDeviceSession::create([
+                    'mobile_device_id'     => $device->id,
+                    'user_id'              => $device->user_id,
+                    'session_token'        => MobileDeviceSession::generateToken(),
+                    'ip_address'           => $ipAddress,
+                    'last_activity_at'     => now(),
+                    'expires_at'           => now()->addMinutes($sessionDuration),
+                    'is_biometric_session' => true,
+                ]);
 
-        // Create API token for the user
-        $user = $device->user;
-        if (! $user) {
-            Log::error('User not found for device', ['device_id' => $device->id]);
+                // Create API token for the user
+                $user = $device->user;
+                if (! $user) {
+                    Log::error('User not found for device', ['device_id' => $device->id]);
+                    throw new RuntimeException('User not found for device');
+                }
+                $plainToken = $this->createTokenWithScopes($user, 'mobile-biometric');
+
+                // Update device activity
+                $device->update(['last_active_at' => now()]);
+
+                Log::info('Biometric authentication successful', [
+                    'user_id'    => $device->user_id,
+                    'device_id'  => $device->device_id,
+                    'session_id' => $session->id,
+                ]);
+
+                return [
+                    'token'      => $plainToken,
+                    'expires_at' => $session->expires_at,
+                    'session_id' => $session->id,
+                ];
+            });
+        } catch (Throwable $e) {
+            Log::error('Biometric session creation failed', [
+                'device_id' => $device->id,
+                'error'     => $e->getMessage(),
+            ]);
 
             return null;
         }
-        $plainToken = $this->createTokenWithScopes($user, 'mobile-biometric');
-
-        // Update device activity
-        $device->update(['last_active_at' => now()]);
-
-        Log::info('Biometric authentication successful', [
-            'user_id'    => $device->user_id,
-            'device_id'  => $device->device_id,
-            'session_id' => $session->id,
-        ]);
-
-        return [
-            'token'      => $plainToken,
-            'expires_at' => $session->expires_at,
-            'session_id' => $session->id,
-        ];
     }
 
     /**
