@@ -972,3 +972,51 @@ Route::prefix('agent-protocol')->name('api.agent-protocol.')->group(function () 
             });
     });
 });
+
+/*
+|--------------------------------------------------------------------------
+| Mobile API Routes
+|--------------------------------------------------------------------------
+|
+| These routes handle mobile device registration, biometric authentication,
+| and push notification management for the FinAegis mobile app.
+|
+*/
+
+use App\Http\Controllers\Api\MobileController;
+
+Route::prefix('mobile')->name('api.mobile.')->group(function () {
+    // Public endpoints (no auth required)
+    Route::get('/config', [MobileController::class, 'getConfig'])->name('config');
+
+    // Biometric authentication (no auth required - this IS the auth)
+    Route::prefix('auth/biometric')->name('auth.biometric.')->group(function () {
+        Route::post('/challenge', [MobileController::class, 'getBiometricChallenge'])->name('challenge');
+        Route::post('/verify', [MobileController::class, 'verifyBiometric'])->name('verify');
+    });
+
+    // Protected endpoints (require authentication)
+    Route::middleware(['auth:sanctum', 'check.token.expiration'])->group(function () {
+        // Device management
+        Route::prefix('devices')->name('devices.')->group(function () {
+            Route::get('/', [MobileController::class, 'listDevices'])->name('index');
+            Route::post('/', [MobileController::class, 'registerDevice'])->name('register');
+            Route::get('/{id}', [MobileController::class, 'getDevice'])->name('show');
+            Route::delete('/{id}', [MobileController::class, 'unregisterDevice'])->name('destroy');
+            Route::patch('/{id}/token', [MobileController::class, 'updatePushToken'])->name('token');
+        });
+
+        // Biometric management (requires auth to enable/disable)
+        Route::prefix('auth/biometric')->name('auth.biometric.')->group(function () {
+            Route::post('/enable', [MobileController::class, 'enableBiometric'])->name('enable');
+            Route::delete('/disable', [MobileController::class, 'disableBiometric'])->name('disable');
+        });
+
+        // Push notifications
+        Route::prefix('notifications')->name('notifications.')->group(function () {
+            Route::get('/', [MobileController::class, 'getNotifications'])->name('index');
+            Route::post('/{id}/read', [MobileController::class, 'markNotificationRead'])->name('read');
+            Route::post('/read-all', [MobileController::class, 'markAllNotificationsRead'])->name('read-all');
+        });
+    });
+});
