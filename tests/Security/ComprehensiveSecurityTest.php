@@ -432,6 +432,35 @@ class ComprehensiveSecurityTest extends TestCase
     }
 
     /**
+     * Test sensitive data is not exposed in API responses.
+     */
+    #[Test]
+    public function test_sensitive_data_not_exposed(): void
+    {
+        $user = User::factory()->create([
+            'password' => Hash::make('password123'),
+        ]);
+
+        $token = $user->createToken('test-token')->plainTextToken;
+
+        $response = $this->withHeader('Authorization', 'Bearer ' . $token)
+            ->getJson('/api/auth/user');
+
+        $response->assertOk();
+
+        // The response structure is { "user": {...} }
+        $userData = $response->json('user');
+
+        // Password should never be in response
+        $this->assertArrayNotHasKey('password', $userData);
+        $this->assertArrayNotHasKey('remember_token', $userData);
+
+        // Two-factor secrets should also be hidden
+        $this->assertArrayNotHasKey('two_factor_secret', $userData);
+        $this->assertArrayNotHasKey('two_factor_recovery_codes', $userData);
+    }
+
+    /**
      * Helper method to time request execution.
      */
     private function timeRequest(callable $request): float
