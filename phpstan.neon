@@ -11,6 +11,7 @@ includes:
     - phpstan-baseline-keymanagement.neon
     - phpstan-baseline-privacy.neon
     - phpstan-baseline-commerce.neon
+    - phpstan-baseline-trustcert.neon
     - phpstan-baseline-compliance-projector.neon
     - phpstan-baseline-level6.neon
     - phpstan-baseline-level7.neon
