@@ -17,10 +17,10 @@ class DemoPaymasterService implements PaymasterInterface
      * Demo paymaster addresses per network.
      */
     private const PAYMASTER_ADDRESSES = [
-        'polygon' => '0x0000000000000000000000000000000000000001',
+        'polygon'  => '0x0000000000000000000000000000000000000001',
         'arbitrum' => '0x0000000000000000000000000000000000000002',
         'optimism' => '0x0000000000000000000000000000000000000003',
-        'base' => '0x0000000000000000000000000000000000000004',
+        'base'     => '0x0000000000000000000000000000000000000004',
         'ethereum' => '0x0000000000000000000000000000000000000005',
     ];
 
@@ -45,7 +45,7 @@ class DemoPaymasterService implements PaymasterInterface
         SupportedNetwork $network
     ): array {
         // Demo: estimate based on calldata size and network
-        $callDataSize = strlen($callData) / 2; // hex bytes
+        $callDataSize = (int) (strlen($callData) / 2); // hex bytes
         $baseGas = 21000; // Base transaction gas
         $callDataGas = $callDataSize * 16; // 16 gas per byte
         $totalGas = $baseGas + $callDataGas + 50000; // Add buffer
@@ -55,8 +55,8 @@ class DemoPaymasterService implements PaymasterInterface
 
         return [
             'gas_estimate' => $totalGas,
-            'fee_usdc' => round($fee, 6),
-            'fee_usdt' => round($fee, 6),
+            'fee_usdc'     => round($fee, 6),
+            'fee_usdt'     => round($fee, 6),
         ];
     }
 

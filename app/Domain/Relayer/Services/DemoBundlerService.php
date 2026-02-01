@@ -28,11 +28,11 @@ class DemoBundlerService implements BundlerInterface
 
         // Store for later status lookup
         Cache::put("user_op:{$userOpHash}", [
-            'status' => 'submitted',
-            'network' => $network->value,
-            'sender' => $userOp->sender,
+            'status'       => 'submitted',
+            'network'      => $network->value,
+            'sender'       => $userOp->sender,
             'submitted_at' => now()->toIso8601String(),
-            'tx_hash' => null,
+            'tx_hash'      => null,
         ], now()->addHours(24));
 
         // Simulate confirmation after a short delay
@@ -47,7 +47,7 @@ class DemoBundlerService implements BundlerInterface
 
         if ($data === null) {
             return [
-                'status' => 'not_found',
+                'status'  => 'not_found',
                 'tx_hash' => null,
                 'receipt' => null,
             ];
@@ -56,18 +56,18 @@ class DemoBundlerService implements BundlerInterface
         // Check if confirmed
         if (Cache::has("user_op:{$userOpHash}:confirmed")) {
             return [
-                'status' => 'confirmed',
+                'status'  => 'confirmed',
                 'tx_hash' => '0x' . hash('sha256', $userOpHash . 'tx'),
                 'receipt' => [
-                    'success' => true,
-                    'gasUsed' => 150000,
+                    'success'     => true,
+                    'gasUsed'     => 150000,
                     'blockNumber' => random_int(10000000, 99999999),
                 ],
             ];
         }
 
         return [
-            'status' => $data['status'],
+            'status'  => $data['status'],
             'tx_hash' => $data['tx_hash'],
             'receipt' => null,
         ];
@@ -78,12 +78,12 @@ class DemoBundlerService implements BundlerInterface
         SupportedNetwork $network
     ): array {
         // Demo: return reasonable gas estimates
-        $callDataSize = strlen($userOp->callData) / 2;
+        $callDataSize = (int) (strlen($userOp->callData) / 2);
 
         return [
-            'preVerificationGas' => 50000,
+            'preVerificationGas'   => 50000,
             'verificationGasLimit' => 100000,
-            'callGasLimit' => 21000 + ($callDataSize * 16) + 50000,
+            'callGasLimit'         => 21000 + ($callDataSize * 16) + 50000,
         ];
     }
 

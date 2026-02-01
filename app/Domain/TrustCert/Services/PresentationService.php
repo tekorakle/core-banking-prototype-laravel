@@ -25,9 +25,10 @@ class PresentationService
      */
     private const DEFAULT_VALIDITY_MINUTES = 15;
 
-    public function __construct(
-        private readonly VerifiableCredentialService $credentialService,
-    ) {}
+    // TODO: Inject VerifiableCredentialService when full W3C VC integration is needed
+    public function __construct()
+    {
+    }
 
     /**
      * Generate a verifiable presentation for a certificate.
@@ -53,7 +54,7 @@ class PresentationService
         $validityMinutes ??= self::DEFAULT_VALIDITY_MINUTES;
 
         Log::info('Generating verifiable presentation', [
-            'certificate_id' => $certificateId,
+            'certificate_id'   => $certificateId,
             'requested_claims' => $requestedClaims,
             'validity_minutes' => $validityMinutes,
         ]);
@@ -64,7 +65,7 @@ class PresentationService
             throw new RuntimeException('Certificate not found');
         }
 
-        if (!$certificate->isValid()) {
+        if (! $certificate->isValid()) {
             throw new RuntimeException('Certificate is not valid: ' . $certificate->status->value);
         }
 
@@ -81,24 +82,24 @@ class PresentationService
                 'https://www.w3.org/2018/credentials/v1',
                 'https://finaegis.org/contexts/trustcert/v1',
             ],
-            'type' => ['VerifiablePresentation', 'TrustCertPresentation'],
+            'type'                 => ['VerifiablePresentation', 'TrustCertPresentation'],
             'verifiableCredential' => [
                 $this->createCredentialProof($certificate, $claims),
             ],
             'proof' => [
-                'type' => 'Ed25519Signature2020',
-                'created' => (new DateTimeImmutable())->format('c'),
+                'type'         => 'Ed25519Signature2020',
+                'created'      => (new DateTimeImmutable())->format('c'),
                 'proofPurpose' => 'authentication',
-                'challenge' => $presentationToken,
+                'challenge'    => $presentationToken,
             ],
         ];
 
         // 5. Store presentation for verification
         $this->storePresentation($presentationToken, [
             'certificate_id' => $certificateId,
-            'claims' => $claims,
-            'presentation' => $presentation,
-            'expires_at' => $expiresAt->format('c'),
+            'claims'         => $claims,
+            'presentation'   => $presentation,
+            'expires_at'     => $expiresAt->format('c'),
         ]);
 
         // 6. Build response URLs
@@ -106,24 +107,24 @@ class PresentationService
         $verificationUrl = "{$baseUrl}/api/v1/trustcert/verify/{$presentationToken}";
         $deepLink = "finaegis://trustcert/verify/{$presentationToken}";
         $qrCodeData = (string) json_encode([
-            'type' => 'trustcert_presentation',
+            'type'  => 'trustcert_presentation',
             'token' => $presentationToken,
-            'url' => $verificationUrl,
+            'url'   => $verificationUrl,
         ], JSON_THROW_ON_ERROR);
 
         Log::info('Verifiable presentation generated', [
-            'certificate_id' => $certificateId,
+            'certificate_id'     => $certificateId,
             'presentation_token' => $presentationToken,
-            'expires_at' => $expiresAt->format('c'),
+            'expires_at'         => $expiresAt->format('c'),
         ]);
 
         return [
             'presentation_token' => $presentationToken,
-            'qr_code_data' => $qrCodeData,
-            'deep_link' => $deepLink,
-            'verification_url' => $verificationUrl,
-            'expires_at' => $expiresAt->format('c'),
-            'claims' => $claims,
+            'qr_code_data'       => $qrCodeData,
+            'deep_link'          => $deepLink,
+            'verification_url'   => $verificationUrl,
+            'expires_at'         => $expiresAt->format('c'),
+            'claims'             => $claims,
         ];
     }
 
@@ -154,6 +155,7 @@ class PresentationService
         $expiresAt = new DateTimeImmutable($stored['expires_at']);
         if ($expiresAt < new DateTimeImmutable()) {
             $this->deletePresentation($presentationToken);
+
             return $this->invalidResponse('Presentation has expired');
         }
 
@@ -168,7 +170,7 @@ class PresentationService
         }
 
         Log::info('Presentation verified successfully', [
-            'token' => $presentationToken,
+            'token'          => $presentationToken,
             'certificate_id' => $stored['certificate_id'],
         ]);
 
@@ -176,13 +178,13 @@ class PresentationService
         $trustLevel = $certificate->extensions['trust_level'] ?? 'unknown';
 
         return [
-            'valid' => true,
+            'valid'            => true,
             'certificate_type' => (string) $certificateType,
-            'trust_level' => (string) $trustLevel,
-            'claims' => $stored['claims'],
-            'issuer' => 'did:web:finaegis.org',
-            'expires_at' => $certificate->validUntil->format('c'),
-            'error' => null,
+            'trust_level'      => (string) $trustLevel,
+            'claims'           => $stored['claims'],
+            'issuer'           => 'did:web:finaegis.org',
+            'expires_at'       => $certificate->validUntil->format('c'),
+            'error'            => null,
         ];
     }
 
@@ -197,17 +199,17 @@ class PresentationService
         $certificateType = $certificate->extensions['type'] ?? 'TRUST_CERT';
 
         $availableClaims = [
-            'certificate_id' => $certificate->certificateId,
+            'certificate_id'   => $certificate->certificateId,
             'certificate_type' => $certificateType,
-            'subject_id' => $certificate->subjectId,
-            'valid_from' => $certificate->validFrom->format('Y-m-d'),
-            'valid_until' => $certificate->validUntil->format('Y-m-d'),
-            'status' => $certificate->status->value,
-            'is_root' => $certificate->isRootCertificate(),
+            'subject_id'       => $certificate->subjectId,
+            'valid_from'       => $certificate->validFrom->format('Y-m-d'),
+            'valid_until'      => $certificate->validUntil->format('Y-m-d'),
+            'status'           => $certificate->status->value,
+            'is_root'          => $certificate->isRootCertificate(),
         ];
 
         // If specific claims requested, filter
-        if (!empty($requestedClaims)) {
+        if (! empty($requestedClaims)) {
             return array_intersect_key($availableClaims, array_flip($requestedClaims));
         }
 
@@ -225,17 +227,17 @@ class PresentationService
         $claimsJson = json_encode($claims, JSON_THROW_ON_ERROR);
 
         return [
-            '@context' => 'https://www.w3.org/2018/credentials/v1',
-            'type' => ['VerifiableCredential', 'TrustCertCredential'],
-            'issuer' => 'did:web:finaegis.org',
-            'issuanceDate' => $certificate->validFrom->format('c'),
-            'expirationDate' => $certificate->validUntil->format('c'),
+            '@context'          => 'https://www.w3.org/2018/credentials/v1',
+            'type'              => ['VerifiableCredential', 'TrustCertCredential'],
+            'issuer'            => 'did:web:finaegis.org',
+            'issuanceDate'      => $certificate->validFrom->format('c'),
+            'expirationDate'    => $certificate->validUntil->format('c'),
             'credentialSubject' => $claims,
-            'proof' => [
-                'type' => 'Ed25519Signature2020',
-                'created' => (new DateTimeImmutable())->format('c'),
+            'proof'             => [
+                'type'               => 'Ed25519Signature2020',
+                'created'            => (new DateTimeImmutable())->format('c'),
                 'verificationMethod' => 'did:web:finaegis.org#key-1',
-                'proofValue' => base64_encode(hash('sha256', $claimsJson, true)),
+                'proofValue'         => base64_encode(hash('sha256', $claimsJson, true)),
             ],
         ];
     }
@@ -284,6 +286,8 @@ class PresentationService
     /**
      * Get a certificate by ID.
      * Demo implementation - returns mock certificate.
+     *
+     * @phpstan-ignore-next-line return.unusedType
      */
     private function getCertificate(string $certificateId): ?Certificate
     {
@@ -303,7 +307,7 @@ class PresentationService
             status: CertificateStatus::ACTIVE,
             parentCertificateId: null,
             extensions: [
-                'type' => 'BUSINESS_TRUST',
+                'type'        => 'BUSINESS_TRUST',
                 'trust_level' => 'verified',
             ],
         );
@@ -325,13 +329,13 @@ class PresentationService
     private function invalidResponse(string $error): array
     {
         return [
-            'valid' => false,
+            'valid'            => false,
             'certificate_type' => null,
-            'trust_level' => null,
-            'claims' => [],
-            'issuer' => null,
-            'expires_at' => null,
-            'error' => $error,
+            'trust_level'      => null,
+            'claims'           => [],
+            'issuer'           => null,
+            'expires_at'       => null,
+            'error'            => $error,
         ];
     }
 }

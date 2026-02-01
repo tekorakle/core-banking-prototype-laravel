@@ -1102,3 +1102,84 @@ Route::prefix('mobile')->name('api.mobile.')->group(function () {
         });
     });
 });
+
+/*
+|--------------------------------------------------------------------------
+| Card Issuance API Routes (v2.5.0)
+|--------------------------------------------------------------------------
+|
+| Virtual card provisioning for Apple Pay / Google Pay and JIT funding
+| webhooks for real-time card authorization.
+|
+*/
+
+use App\Http\Controllers\Api\CardIssuance\CardController;
+use App\Http\Controllers\Api\CardIssuance\JitFundingWebhookController;
+
+Route::prefix('v1/cards')->name('api.cards.')->group(function () {
+    // Authenticated endpoints
+    Route::middleware(['auth:sanctum', 'check.token.expiration'])->group(function () {
+        Route::get('/', [CardController::class, 'index'])->name('index');
+        Route::post('/provision', [CardController::class, 'provision'])
+            ->middleware('transaction.rate_limit:card_provision')
+            ->name('provision');
+        Route::post('/{cardId}/freeze', [CardController::class, 'freeze'])->name('freeze');
+        Route::delete('/{cardId}/freeze', [CardController::class, 'unfreeze'])->name('unfreeze');
+        Route::delete('/{cardId}', [CardController::class, 'cancel'])->name('cancel');
+    });
+});
+
+// Card issuer webhook endpoints (CRITICAL: <2000ms latency budget)
+Route::prefix('webhooks/card-issuer')->name('api.webhooks.card.')
+    ->middleware(['api.rate_limit:webhook'])
+    ->group(function () {
+        Route::post('/authorization', [JitFundingWebhookController::class, 'handleAuthorization'])->name('authorization');
+        Route::post('/settlement', [JitFundingWebhookController::class, 'settlement'])->name('settlement');
+    });
+
+/*
+|--------------------------------------------------------------------------
+| Gas Relayer API Routes (v2.5.0)
+|--------------------------------------------------------------------------
+|
+| Meta-transaction relayer for gasless stablecoin transfers using
+| ERC-4337 Account Abstraction (Paymaster + Bundler).
+|
+*/
+
+use App\Http\Controllers\Api\Relayer\RelayerController;
+
+Route::prefix('v1/relayer')->name('api.relayer.')->group(function () {
+    // Public endpoint for supported networks
+    Route::get('/networks', [RelayerController::class, 'networks'])->name('networks');
+
+    // Authenticated endpoints
+    Route::middleware(['auth:sanctum', 'check.token.expiration'])->group(function () {
+        Route::post('/sponsor', [RelayerController::class, 'sponsor'])
+            ->middleware('transaction.rate_limit:relayer')
+            ->name('sponsor');
+        Route::post('/estimate', [RelayerController::class, 'estimate'])->name('estimate');
+    });
+});
+
+/*
+|--------------------------------------------------------------------------
+| TrustCert Presentation API Routes (v2.5.0)
+|--------------------------------------------------------------------------
+|
+| Generate and verify TrustCert credential presentations via QR codes
+| and deep links for privacy-preserving certificate verification.
+|
+*/
+
+use App\Http\Controllers\Api\TrustCert\PresentationController;
+
+Route::prefix('v1/trustcert')->name('api.trustcert.')->group(function () {
+    // Public verification endpoint (no auth - anyone can verify a presentation)
+    Route::get('/verify/{token}', [PresentationController::class, 'verify'])->name('verify');
+
+    // Authenticated endpoints
+    Route::middleware(['auth:sanctum', 'check.token.expiration'])->group(function () {
+        Route::post('/{certificateId}/present', [PresentationController::class, 'present'])->name('present');
+    });
+});

@@ -1,8 +1,8 @@
 # FinAegis Mobile Wallet - Technical Specification
 
-**Version**: 1.2
+**Version**: 1.3
 **Date**: February 1, 2026
-**Status**: Ready for Development (Architecture Review Complete)
+**Status**: Backend Complete - Ready for Mobile Development
 **Target Release**: v2.5.0 (Mobile App Launch)
 
 ---
@@ -1342,11 +1342,13 @@ Response:
 POST /api/v1/relayer/sponsor
 Request:
   userAddress: string
-  targetContract: string
-  callData: string
-  signature: string
+  callData: string              # Encoded transaction calldata (0x...)
+  signature: string             # User's signature (0x...)
+  network: 'polygon' | 'arbitrum' | 'optimism' | 'base' | 'ethereum'
+  feeToken: 'USDC' | 'USDT'
 Response:
   txHash: string
+  userOpHash: string
   gasUsed: number
   feeCharged: string            # Fee in USDC/USDT
   feeCurrency: string
@@ -1354,21 +1356,71 @@ Response:
 # Estimate Gas Fee
 POST /api/v1/relayer/estimate
 Request:
-  targetContract: string
   callData: string
+  network: string
 Response:
   estimatedGas: number
-  feeInUsdc: string
-  feeInUsdt: string
+  feeUsdc: string
+  feeUsdt: string
+  network: string
 
 # Get Supported Networks
 GET /api/v1/relayer/networks
 Response:
   networks:
-    - chainId: number
-      name: string
-      feeToken: string
-      averageFee: string
+    - chainId: number           # e.g., 137 for Polygon
+      name: string              # e.g., "polygon"
+      feeToken: string          # e.g., "USDC"
+      averageFee: string        # e.g., "0.0200"
+```
+
+#### 5.1.0c TrustCert Presentation APIs (NEW - v2.5.0)
+
+```yaml
+# Generate Verifiable Presentation (QR Code / Deep Link)
+POST /api/v1/trustcert/{certificateId}/present
+Request:
+  requestedClaims: string[]     # Optional: ['certificate_type', 'valid_until']
+  validityMinutes: number       # Optional: 1-60, default 15
+Response:
+  presentationToken: string     # 64-char secure token
+  qrCodeData: string            # JSON for QR code generation
+  deepLink: string              # finaegis://trustcert/verify/{token}
+  verificationUrl: string       # HTTPS URL for web verification
+  expiresAt: datetime
+  claims: object                # Selected claims included
+
+# Verify Presentation Token (PUBLIC - No Auth Required)
+GET /api/v1/trustcert/verify/{token}
+Response:
+  valid: boolean
+  certificateType: string       # e.g., "BUSINESS_TRUST"
+  trustLevel: string            # e.g., "verified"
+  claims: object                # Disclosed claims
+  issuer: string                # e.g., "did:web:finaegis.org"
+  expiresAt: datetime
+  error: string                 # Only if valid=false
+```
+
+**Mobile Usage Example:**
+
+```typescript
+// Generate QR code for in-person verification
+async function shareCredential(certificateId: string) {
+  const response = await api.post(`/api/v1/trustcert/${certificateId}/present`, {
+    requestedClaims: ['certificate_type', 'valid_until'],
+    validityMinutes: 15,
+  });
+
+  // Show QR code to verifier
+  return generateQRCode(response.qrCodeData);
+}
+
+// Verifier scans QR code and calls public endpoint
+async function verifyCredential(token: string) {
+  const result = await api.get(`/api/v1/trustcert/verify/${token}`);
+  return result.valid;
+}
 ```
 
 #### 5.1.1 Stablecoin Commerce APIs
@@ -1650,35 +1702,49 @@ app/Domain/
 │   │   └── MobileSessionService.php
 │   └── Events/                 # DeviceRegistered, BiometricVerified
 │
-├── CardIssuance/               # 🚧 PLANNED (v2.5.0)
+├── CardIssuance/               # ✅ IMPLEMENTED (v2.5.0)
+│   ├── Enums/
+│   │   ├── CardStatus.php                  # pending, active, frozen, cancelled, expired
+│   │   ├── WalletType.php                  # apple_pay, google_pay
+│   │   └── AuthorizationDecision.php       # JIT funding decisions
+│   ├── ValueObjects/
+│   │   ├── VirtualCard.php
+│   │   ├── ProvisioningData.php
+│   │   └── AuthorizationRequest.php
 │   ├── Services/
-│   │   ├── CardProvisioningService.php     # Apple/Google Pay provisioning
-│   │   ├── CardLifecycleService.php        # Freeze, cancel, replace
-│   │   └── JitFundingService.php           # Just-in-time authorization
+│   │   ├── CardProvisioningService.php     # Apple/Google Pay push provisioning
+│   │   └── JitFundingService.php           # Real-time JIT authorization (<2s)
 │   ├── Adapters/
-│   │   ├── MarqetaAdapter.php              # Marqeta card issuer
-│   │   ├── LithicAdapter.php               # Lithic card issuer
-│   │   └── StripeIssuingAdapter.php        # Stripe Issuing
+│   │   └── DemoCardIssuerAdapter.php       # Demo implementation
 │   ├── Contracts/
-│   │   └── CardIssuerInterface.php
-│   ├── Webhooks/
-│   │   ├── AuthorizationWebhook.php        # Real-time decisioning
-│   │   └── SettlementWebhook.php           # Post-settlement
-│   └── Events/                             # CardProvisioned, AuthorizationApproved
+│   │   └── CardIssuerInterface.php         # Marqeta/Lithic/Stripe adapter
+│   ├── Events/
+│   │   ├── CardProvisioned.php
+│   │   ├── AuthorizationApproved.php
+│   │   └── AuthorizationDeclined.php
+│   └── config/cardissuance.php             # Configuration
 │
-├── Relayer/                    # 🚧 PLANNED (v2.5.0)
+├── Relayer/                    # ✅ IMPLEMENTED (v2.5.0)
+│   ├── Enums/
+│   │   └── SupportedNetwork.php            # polygon, arbitrum, optimism, base, ethereum
+│   ├── ValueObjects/
+│   │   └── UserOperation.php               # ERC-4337 UserOperation
 │   ├── Services/
-│   │   ├── GasStationService.php           # Meta-transaction relayer
-│   │   ├── PaymasterService.php            # ERC-4337 paymaster
-│   │   └── BundlerService.php              # UserOperation bundling
+│   │   ├── GasStationService.php           # Main meta-transaction service
+│   │   ├── DemoPaymasterService.php        # Demo paymaster
+│   │   └── DemoBundlerService.php          # Demo bundler
 │   ├── Contracts/
-│   │   ├── PaymasterInterface.php
-│   │   └── BundlerInterface.php
-│   └── Events/                             # TransactionSponsored, GasRefunded
+│   │   ├── PaymasterInterface.php          # ERC-4337 paymaster interface
+│   │   └── BundlerInterface.php            # UserOperation bundling interface
+│   ├── Events/
+│   │   └── TransactionSponsored.php
+│   └── config/relayer.php                  # Network configs, bundler settings
 │
-└── TrustCert/                  # 🚧 ENHANCEMENT (v2.5.0)
+└── TrustCert/                  # ✅ ENHANCED (v2.5.0)
+    ├── Services/
+    │   └── PresentationService.php         # QR/Deep Link presentation generation
     └── Http/Controllers/Api/
-        └── PresentationController.php      # QR/Deep Link verification
+        └── PresentationController.php      # Presentation & verification endpoints
 ```
 
 ### 6.2 Configuration Files
@@ -1690,6 +1756,8 @@ app/Domain/
 | `config/commerce.php` | SBT, merchant tiers, attestation | ✅ |
 | `config/trustcert.php` | CA, credentials, revocation, trust framework | ✅ |
 | `config/mobile.php` | Device limits, biometrics, push providers | ✅ |
+| `config/cardissuance.php` | Card issuer adapters, JIT funding, limits | ✅ |
+| `config/relayer.php` | Network configs, bundler, paymaster settings | ✅ |
 
 ### 6.3 Database Migrations (Mobile App Specific)
 
@@ -2126,6 +2194,7 @@ Link: <https://docs.finaegis.com/migration/v1-to-v2>; rel="deprecation"
 
 ---
 
-*Document Version: 1.1*
+*Document Version: 1.3*
 *Last Updated: February 1, 2026*
 *Author: FinAegis Architecture Team*
+*Backend Status: v2.5.0 APIs Complete (Card Issuance, Gas Relayer, TrustCert Presentation)*
