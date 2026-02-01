@@ -20,7 +20,8 @@ git status && git branch --show-current
 ### Version Status
 | Version | Status | Key Changes |
 |---------|--------|-------------|
-| v2.5.0 | 🚧 Planned | AI Query Endpoints, RegTech Adapters, SDK Generation, BaaS Implementation |
+| v2.5.0 | 🚧 In Progress | Mobile App Launch (Expo/React Native, separate repo) |
+| v2.6.0 | 📋 Planned | AI Query Endpoints, RegTech Adapters, SDK Generation, BaaS Implementation |
 | v2.4.0 | ✅ Released | Privacy & Identity: Key Management, Privacy Layer, Commerce, TrustCert |
 | v2.3.0 | ✅ Released | AI Framework, RegTech Foundation, BaaS Configuration |
 | v2.2.0 | ✅ Released | Mobile backend: device mgmt, biometrics, push notifications |

@@ -1098,7 +1098,8 @@ main ─────────●─────────●─────
 | **v2.2.0** | Mobile Backend | Device Mgmt, Biometrics, Push Notifications, WebSocket | ✅ Released 2026-01-31 |
 | **v2.3.0** | Industry Leadership | AI Framework, RegTech Foundation, BaaS Config | ✅ Released 2026-02-01 |
 | **v2.4.0** | Privacy & Identity | Key Management, Privacy, Commerce, TrustCert | ✅ Released 2026-02-01 |
-| **v2.5.0** | Platform Completion | AI Queries, RegTech Adapters, SDK Generation | 🚧 Planned |
+| **v2.5.0** | Mobile App Launch | Mobile Frontend (Expo/React Native), App Store Release | 🚧 In Progress |
+| **v2.6.0** | Platform Completion | AI Queries, RegTech Adapters, SDK Generation | 📋 Planned |
 
 ---
 
@@ -1193,63 +1194,93 @@ main ─────────●─────────●─────
 
 ---
 
-## Version 2.5.0 - Platform Completion (PLANNED)
+## Version 2.5.0 - Mobile App Launch (IN PROGRESS)
 
 **Target**: Q1 2026
-**Theme**: Complete v2.3.0 Deferred Features + Production Readiness
+**Theme**: Consumer-Ready Mobile Experience
+**Repository**: `finaegis-mobile` (Expo/React Native)
+
+### Backend Ready ✅
+
+The following backend features are complete and ready for mobile integration:
+
+| Domain | Features | Status |
+|--------|----------|--------|
+| **Mobile** (v2.2.0) | Device registration, Biometric auth, Push notifications, Sessions | ✅ |
+| **KeyManagement** (v2.4.0) | Shamir sharding, Key reconstruction | ✅ |
+| **Privacy** (v2.4.0) | ZK-KYC, Selective disclosure, Proof of Innocence | ✅ |
+| **Commerce** (v2.4.0) | Soulbound tokens, Merchant onboarding, Attestations | ✅ |
+| **TrustCert** (v2.4.0) | Verifiable credentials, Certificate authority | ✅ |
+
+### Mobile App Development (Separate Repository)
+
+| Phase | Description | Status |
+|-------|-------------|--------|
+| **Foundation** | Expo project, navigation, auth flow | 🚧 |
+| **Wallet** | Balance display, send/receive, QR codes | 🚧 |
+| **Commerce** | Payment scanner, merchant payments | 🚧 |
+| **Privacy** | Shield/unshield flows, privacy settings | 🚧 |
+| **TrustCert** | Certificate application, verification | 🚧 |
+| **Launch** | TestFlight, Play Console, App Store release | 🚧 |
+
+### Documentation
+- [Mobile App Specification](MOBILE_APP_SPECIFICATION.md) - Complete technical spec
+- [Backend Upgrade Plan](BACKEND_UPGRADE_PLAN_v2.4.md) - API integration guide
+
+---
+
+## Version 2.6.0 - Platform Completion (PLANNED)
+
+**Target**: Q2 2026
+**Theme**: Complete v2.3.0 Deferred Features + Production Hardening
 
 ### Phase 1: AI Query Endpoints
 
 | Component | Description | Status |
 |-----------|-------------|--------|
-| `TransactionQueryTool` | Natural language transaction queries | 🚧 |
-| API Endpoints | `/api/ai/query/transactions`, `/api/ai/query/balances` | 🚧 |
-| Query Explanation | Explain AI interpretation of queries | 🚧 |
+| `TransactionQueryTool` | Natural language transaction queries | 📋 |
+| API Endpoints | `/api/ai/query/transactions`, `/api/ai/query/balances` | 📋 |
+| Query Explanation | Explain AI interpretation of queries | 📋 |
 
 ### Phase 2: ML Anomaly Detection
 
 | Component | Description | Status |
 |-----------|-------------|--------|
-| `StatisticalAnomalyActivity` | Z-score, IQR-based detection | 🚧 |
-| `BehavioralProfileActivity` | User baseline comparison | 🚧 |
-| `VelocityAnomalyActivity` | Transaction frequency analysis | 🚧 |
-| `GeolocationAnomalyActivity` | Location-based anomalies | 🚧 |
-| Database | `user_behavioral_profiles`, `anomaly_detections` | 🚧 |
+| `StatisticalAnomalyActivity` | Z-score, IQR-based detection | 📋 |
+| `BehavioralProfileActivity` | User baseline comparison | 📋 |
+| `VelocityAnomalyActivity` | Transaction frequency analysis | 📋 |
+| `GeolocationAnomalyActivity` | Location-based anomalies | 📋 |
+| Database | `user_behavioral_profiles`, `anomaly_detections` | 📋 |
 
 ### Phase 3: RegTech Adapters
 
 | Component | Description | Status |
 |-----------|-------------|--------|
-| `FinCENAdapter` | BSA E-Filing integration | 🚧 |
-| `ESMAAdapter` | FIRDS, MiFID reporting | 🚧 |
-| `FCAAdapter` | Gabriel system integration | 🚧 |
-| `MASAdapter` | MAS Gateway integration | 🚧 |
-| MiFID II Services | Transaction reporting (Article 26) | 🚧 |
-| MiCA Services | CASP authorization, Travel Rule | 🚧 |
+| `FinCENAdapter` | BSA E-Filing integration | 📋 |
+| `ESMAAdapter` | FIRDS, MiFID reporting | 📋 |
+| `FCAAdapter` | Gabriel system integration | 📋 |
+| `MASAdapter` | MAS Gateway integration | 📋 |
+| MiFID II Services | Transaction reporting (Article 26) | 📋 |
+| MiCA Services | CASP authorization, Travel Rule | 📋 |
 
 ### Phase 4: BaaS Implementation
 
 | Component | Description | Status |
 |-----------|-------------|--------|
-| `SDKGeneratorService` | Auto-generate TypeScript, Python, Java, Go SDKs | 🚧 |
-| Embeddable Widgets | Payment, Checkout, Balance, Transfer widgets | 🚧 |
-| `PartnerUsageMeteringService` | API usage tracking | 🚧 |
-| `PartnerBillingService` | Invoice generation | 🚧 |
-| Partner Marketplace | Integration connectors | 🚧 |
+| `SDKGeneratorService` | Auto-generate TypeScript, Python, Java, Go SDKs | 📋 |
+| Embeddable Widgets | Payment, Checkout, Balance, Transfer widgets | 📋 |
+| `PartnerUsageMeteringService` | API usage tracking | 📋 |
+| `PartnerBillingService` | Invoice generation | 📋 |
+| Partner Marketplace | Integration connectors | 📋 |
 
----
+### Phase 5: Production Hardening
 
-## Version 2.6.0 - Mobile App Launch (FUTURE)
-
-**Target**: Q2 2026
-**Theme**: Consumer-Ready Mobile Experience
-
-### Planned Features
-- Mobile App Frontend (Expo/React Native)
-- Smart Contract Deployment (TrustCert SBT on Polygon)
-- Production ZK Circuit Integration
-- Real HSM Integration
-- App Store Launch (iOS/Android)
+| Component | Description | Status |
+|-----------|-------------|--------|
+| Smart Contracts | Deploy TrustCert SBT on Polygon | 📋 |
+| ZK Circuits | Production snarkjs integration | 📋 |
+| HSM Integration | Real HSM provider (AWS CloudHSM/Azure) | 📋 |
+| Security Audit | Third-party audit (Trail of Bits) | 📋 |
 
 ---
 
