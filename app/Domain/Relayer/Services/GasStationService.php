@@ -25,7 +25,8 @@ class GasStationService
     public function __construct(
         private readonly PaymasterInterface $paymaster,
         private readonly BundlerInterface $bundler,
-    ) {}
+    ) {
+    }
 
     /**
      * Sponsor a transaction by paying gas on behalf of the user.

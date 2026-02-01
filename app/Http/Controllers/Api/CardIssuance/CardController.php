@@ -22,7 +22,8 @@ class CardController extends Controller
 {
     public function __construct(
         private readonly CardProvisioningService $provisioningService,
-    ) {}
+    ) {
+    }
 
     /**
      * Provision a new virtual card for Apple Pay / Google Pay.

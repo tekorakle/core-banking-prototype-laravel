@@ -24,5 +24,6 @@ final class TransactionSponsored
         public readonly SupportedNetwork $network,
         public readonly float $feeAmount,
         public readonly string $feeToken,
-    ) {}
+    ) {
+    }
 }

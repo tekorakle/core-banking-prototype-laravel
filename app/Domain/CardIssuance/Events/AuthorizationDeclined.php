@@ -25,5 +25,6 @@ final class AuthorizationDeclined
         public readonly string $currency,
         public readonly AuthorizationDecision $reason,
         public readonly string $merchantName,
-    ) {}
+    ) {
+    }
 }

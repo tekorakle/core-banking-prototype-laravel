@@ -1,11 +1,12 @@
 # FinAegis Core Banking Platform
 
 [![CI Pipeline](https://github.com/finaegis/core-banking-prototype-laravel/actions/workflows/ci-pipeline.yml/badge.svg)](https://github.com/finaegis/core-banking-prototype-laravel/actions/workflows/ci-pipeline.yml)
-[![Version](https://img.shields.io/badge/version-2.2.0-blue.svg)](CHANGELOG.md)
+[![Version](https://img.shields.io/badge/version-2.5.0-blue.svg)](CHANGELOG.md)
 [![License: Apache-2.0](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
 [![PHP Version](https://img.shields.io/badge/php-%3E%3D8.3-8892BF.svg)](https://php.net/)
 [![Laravel Version](https://img.shields.io/badge/Laravel-12.x-FF2D20.svg)](https://laravel.com/)
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](CONTRIBUTING.md)
+[![Mobile Ready](https://img.shields.io/badge/mobile-ready-green.svg)](docs/MOBILE_APP_SPECIFICATION.md)
 
 **An open-source core banking platform built with event sourcing, domain-driven design, and modern financial patterns.**
 
@@ -19,7 +20,7 @@ FinAegis provides the foundation for building digital banking applications. The 
 
 | Challenge | FinAegis Solution |
 |-----------|-------------------|
-| Building financial systems from scratch | 29 production-ready domain modules |
+| Building financial systems from scratch | 31 production-ready domain modules |
 | Audit trail requirements | Event sourcing captures every state change |
 | Complex multi-step transactions | Saga pattern with automatic compensation |
 | Regulatory compliance | Built-in KYC/AML workflows |
@@ -28,6 +29,8 @@ FinAegis provides the foundation for building digital banking applications. The 
 | Real-time data streaming | WebSocket broadcasting for trading (v2.1.0) |
 | Cloud-native deployment | Kubernetes Helm charts, HPA, Istio (v2.1.0) |
 | Mobile wallet backend | Biometric auth, push notifications, device mgmt (v2.2.0) |
+| Privacy-preserving transactions | Shamir key sharding, ZK-KYC, Proof of Innocence (v2.4.0) |
+| Tap-to-pay with stablecoins | Virtual cards (Apple/Google Pay), Gas abstraction (v2.5.0) |
 | Learning modern architecture | Complete DDD + CQRS + Event Sourcing example |
 
 ---
@@ -171,6 +174,17 @@ See [Domain Management Guide](docs/06-DEVELOPMENT/DOMAIN_MANAGEMENT.md) for deta
 | **Agent Protocol** | A2A messaging, escrow, reputation system |
 | **Multi-Tenancy** | Team-based isolation, tenant-aware event sourcing |
 
+### Mobile Backend (v2.4.0+)
+
+| Domain | Capabilities |
+|--------|-------------|
+| **Key Management** | Shamir's Secret Sharing (2-of-3), HSM integration |
+| **Privacy** | ZK-KYC verification, Proof of Innocence, selective disclosure |
+| **Card Issuance** | Virtual cards for Apple Pay/Google Pay, JIT funding |
+| **Gas Relayer** | ERC-4337 meta-transactions, pay fees in USDC |
+| **TrustCert** | W3C Verifiable Credentials, QR/deep link verification |
+| **Mobile** | Biometric auth, push notifications, device management |
+
 ---
 
 ## Architecture
@@ -200,7 +214,7 @@ See [Domain Management Guide](docs/06-DEVELOPMENT/DOMAIN_MANAGEMENT.md) for deta
 - **Event Sourcing** - Complete audit trail, temporal queries, replay capability
 - **CQRS** - Separated read/write models for optimal performance
 - **Saga Pattern** - Distributed transactions with automatic rollback
-- **DDD** - 29 bounded contexts with clear boundaries
+- **DDD** - 31 bounded contexts with clear boundaries
 - **Multi-Tenancy** - Team-based data isolation with stancl/tenancy v3.9
 
 See [Architecture Decision Records](docs/ADR/) for detailed design rationale.
@@ -214,6 +228,7 @@ See [Architecture Decision Records](docs/ADR/) for detailed design rationale.
 | **Getting Started** | [Quick Start](#quick-start) · [User Guides](docs/05-USER-GUIDES/) |
 | **Architecture** | [Overview](docs/02-ARCHITECTURE/) · [ADRs](docs/ADR/) · [Roadmap](docs/ARCHITECTURAL_ROADMAP.md) |
 | **API** | [REST Reference](docs/04-API/REST_API_REFERENCE.md) · [OpenAPI](/api/documentation) |
+| **Mobile** | [Mobile App Specification](docs/MOBILE_APP_SPECIFICATION.md) · [Version Roadmap](docs/VERSION_ROADMAP.md) |
 | **Development** | [Contributing](CONTRIBUTING.md) · [Dev Guides](docs/06-DEVELOPMENT/) |
 | **Reference** | [GCU Design](docs/ADR/ADR-004-gcu-basket-design.md) · [Event Sourcing](docs/ADR/ADR-001-event-sourcing.md) |
 
@@ -275,14 +290,14 @@ See [Kubernetes Deployment Guide](docs/06-DEVELOPMENT/KUBERNETES.md) for details
 
 | Layer | Technology |
 |-------|------------|
-| **Backend** | Laravel 12, PHP 8.3+ |
+| **Backend** | Laravel 12, PHP 8.3+ (8.4 supported) |
 | **Event Sourcing** | Spatie Event Sourcing |
 | **Workflows** | Laravel Workflow (Waterline) |
 | **Multi-Tenancy** | stancl/tenancy v3.9 |
 | **Database** | MySQL 8.0+ / MariaDB 10.3+ / PostgreSQL 13+ |
 | **Cache/Queue** | Redis, Laravel Horizon |
 | **Real-time** | Soketi (Pusher-compatible), Laravel Echo |
-| **Testing** | Pest PHP (parallel), PHPStan Level 8 |
+| **Testing** | Pest PHP (parallel, 5,700+ tests), PHPStan Level 5 |
 | **Admin** | Filament v3 |
 | **Frontend** | Livewire, Tailwind CSS |
 | **Deployment** | Docker, Kubernetes (Helm), Istio |

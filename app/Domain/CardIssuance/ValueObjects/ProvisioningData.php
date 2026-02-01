@@ -19,7 +19,8 @@ final readonly class ProvisioningData
         public string $activationData,
         public string $ephemeralPublicKey,
         public array $certificateChain = [],
-    ) {}
+    ) {
+    }
 
     /**
      * Convert to array for API response.

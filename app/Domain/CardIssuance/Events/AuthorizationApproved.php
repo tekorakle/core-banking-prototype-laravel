@@ -24,5 +24,6 @@ final class AuthorizationApproved
         public readonly string $currency,
         public readonly string $holdId,
         public readonly string $merchantName,
-    ) {}
+    ) {
+    }
 }

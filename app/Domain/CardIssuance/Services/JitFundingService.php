@@ -29,7 +29,8 @@ class JitFundingService
 
     public function __construct(
         private readonly CardIssuerInterface $cardIssuer,
-    ) {}
+    ) {
+    }
 
     /**
      * Process an authorization request.

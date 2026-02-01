@@ -22,7 +22,8 @@ final readonly class AuthorizationRequest
         public ?string $merchantCity = null,
         public ?string $merchantCountry = null,
         public ?DateTimeImmutable $timestamp = null,
-    ) {}
+    ) {
+    }
 
     public function getAmountDecimal(): string
     {

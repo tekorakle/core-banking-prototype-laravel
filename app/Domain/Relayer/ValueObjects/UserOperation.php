@@ -24,7 +24,8 @@ final readonly class UserOperation
         public int $maxPriorityFeePerGas,
         public string $paymasterAndData,
         public string $signature,
-    ) {}
+    ) {
+    }
 
     /**
      * Create an unsigned UserOperation (for estimation).

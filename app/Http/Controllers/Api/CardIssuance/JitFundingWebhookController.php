@@ -28,7 +28,8 @@ class JitFundingWebhookController extends Controller
 {
     public function __construct(
         private readonly JitFundingService $jitFundingService,
-    ) {}
+    ) {
+    }
 
     /**
      * Handle card authorization webhook from issuer.

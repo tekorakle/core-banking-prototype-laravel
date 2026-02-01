@@ -20,7 +20,8 @@ class CardProvisioningService
 {
     public function __construct(
         private readonly CardIssuerInterface $cardIssuer,
-    ) {}
+    ) {
+    }
 
     /**
      * Create a new virtual card for a user.

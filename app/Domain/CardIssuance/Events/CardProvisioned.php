@@ -23,5 +23,6 @@ final class CardProvisioned
         public readonly string $cardToken,
         public readonly WalletType $walletType,
         public readonly string $deviceId,
-    ) {}
+    ) {
+    }
 }

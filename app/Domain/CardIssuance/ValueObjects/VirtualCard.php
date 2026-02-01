@@ -23,7 +23,8 @@ final readonly class VirtualCard
         public ?string $pan = null,          // Only available in secure contexts
         public ?string $cvv = null,          // Only available in secure contexts
         public array $metadata = [],
-    ) {}
+    ) {
+    }
 
     public function isUsable(): bool
     {

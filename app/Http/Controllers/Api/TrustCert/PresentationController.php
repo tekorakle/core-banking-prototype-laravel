@@ -21,7 +21,8 @@ class PresentationController extends Controller
 {
     public function __construct(
         private readonly PresentationService $presentationService,
-    ) {}
+    ) {
+    }
 
     /**
      * Generate a verifiable presentation for a certificate.

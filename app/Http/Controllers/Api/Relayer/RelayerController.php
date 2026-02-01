@@ -22,7 +22,8 @@ class RelayerController extends Controller
 {
     public function __construct(
         private readonly GasStationService $gasStationService,
-    ) {}
+    ) {
+    }
 
     /**
      * Sponsor a transaction (meta-transaction).
