@@ -144,4 +144,34 @@ return [
         // Risk score threshold for automatic approval (0-1)
         'auto_approval_threshold' => 0.3,
     ],
+
+    /*
+    |--------------------------------------------------------------------------
+    | Merkle Tree Settings (v2.6.0)
+    |--------------------------------------------------------------------------
+    |
+    | Configuration for privacy pool Merkle tree synchronization.
+    |
+    */
+
+    'merkle' => [
+        // Default provider for Merkle tree operations
+        'provider' => env('MERKLE_PROVIDER', 'demo'),
+
+        // Sync interval in seconds
+        'sync_interval_seconds' => (int) env('MERKLE_SYNC_INTERVAL', 30),
+
+        // Maximum tree depth (32 = ~4 billion leaves)
+        'max_tree_depth' => (int) env('MERKLE_TREE_DEPTH', 32),
+
+        // Supported networks for privacy pools
+        'networks' => ['polygon', 'base', 'arbitrum'],
+
+        // Contract addresses per network
+        'pool_addresses' => [
+            'polygon'  => env('MERKLE_POOL_POLYGON'),
+            'base'     => env('MERKLE_POOL_BASE'),
+            'arbitrum' => env('MERKLE_POOL_ARBITRUM'),
+        ],
+    ],
 ];

@@ -1183,3 +1183,29 @@ Route::prefix('v1/trustcert')->name('api.trustcert.')->group(function () {
         Route::post('/{certificateId}/present', [PresentationController::class, 'present'])->name('present');
     });
 });
+
+/*
+|--------------------------------------------------------------------------
+| Privacy API Routes (v2.6.0)
+|--------------------------------------------------------------------------
+|
+| Merkle tree synchronization and proof endpoints for mobile privacy features.
+|
+*/
+
+use App\Http\Controllers\Api\Privacy\PrivacyController;
+
+Route::prefix('v1/privacy')->name('api.privacy.')->group(function () {
+    // Public endpoint for supported networks
+    Route::get('/networks', [PrivacyController::class, 'getNetworks'])->name('networks');
+
+    // Authenticated endpoints
+    Route::middleware(['auth:sanctum', 'check.token.expiration'])->group(function () {
+        Route::get('/merkle-root', [PrivacyController::class, 'getMerkleRoot'])->name('merkle-root');
+        Route::post('/merkle-path', [PrivacyController::class, 'getMerklePath'])->name('merkle-path');
+        Route::post('/verify-commitment', [PrivacyController::class, 'verifyCommitment'])->name('verify-commitment');
+        Route::post('/sync', [PrivacyController::class, 'syncTree'])
+            ->middleware('transaction.rate_limit:privacy_sync')
+            ->name('sync');
+    });
+});
