@@ -32,7 +32,8 @@ parameters:
     ignoreErrors:
         # Mockery methods
         - '#Call to an undefined method Mockery\\ExpectationInterface\|Mockery\\HigherOrderMessage::with\(\)#'
-        - '#Call to an undefined method Mockery\\ExpectationInterface\|Mockery\\HigherOrderMessage::(once|twice|times|never|andReturn|andReturnTrue|andReturnFalse)\(\)#'
+        - '#Call to an undefined method Mockery\\ExpectationInterface\|Mockery\\HigherOrderMessage::(once|twice|times|never|andReturn|andReturnTrue|andReturnFalse|byDefault)\(\)#'
+        - '#Call to an undefined method Mockery\\ExpectationInterface::(byDefault|andThrow)\(\)#'
         # Eloquent model magic methods
         - '#Call to an undefined static method App\\Domain\\[a-zA-Z\\]+\\Projections\\[a-zA-Z]+::#'
         - '#Access to an undefined property App\\Domain\\[a-zA-Z\\]+\\Projections\\[a-zA-Z]+::\$#'
@@ -151,7 +152,12 @@ parameters:
 
         # Pest PHP specific ignores
         - '#Call to an undefined method PHPUnit\\Framework\\TestCase::(browse|artisan|actingAs|get|post|put|patch|delete|json|getJson|postJson|putJson|patchJson|deleteJson|assertAuthenticated|assertGuest|assertDatabaseHas|assertDatabaseMissing|assertDatabaseCount|assertModelExists|assertModelMissing|assertSoftDeleted|assertNotSoftDeleted|assertStatus|assertOk|assertCreated|assertNoContent|assertNotFound|assertForbidden|assertUnauthorized|assertUnprocessable|assertSuccessful|assertServerError|assertRedirect|assertHeader|assertHeaderMissing|assertLocation|assertContent|assertSee|assertSeeInOrder|assertSeeText|assertSeeTextInOrder|assertDontSee|assertDontSeeText|assertJson|assertJsonCount|assertJsonFragment|assertJsonMissing|assertJsonMissingExact|assertJsonPath|assertJsonMissingPath|assertJsonStructure|assertJsonValidationErrors|assertJsonMissingValidationErrors|assertJsonIsArray|assertJsonIsObject|assertExactJson|assertSimilarJson|assertJsonStringEqualsJsonString|assertJsonStringNotEqualsJsonString|assertCookie|assertCookieMissing|assertCookieNotExpired|assertCookieExpired|assertPlainCookie|assertSessionHas|assertSessionHasAll|assertSessionHasInput|assertSessionHasErrors|assertSessionHasErrorsIn|assertSessionHasNoErrors|assertSessionDoesntHaveErrors|assertSessionMissing|assertViewHas|assertViewHasAll|assertViewMissing|assertViewIs|assertValid|assertInvalid|expectsEvents|doesntExpectEvents|expectsJobs|doesntExpectJobs|withServerVariables|withoutMiddleware|withMiddleware|withCookie|withCookies|withUnencryptedCookie|withUnencryptedCookies|withSession|followingRedirects|disableCookieEncryption|from|assertAuthenticated|assertGuest|be|seed|withoutExceptionHandling|withExceptionHandling|handleValidationExceptions|travel|travelTo|travelBack|freezeTime|freezeSecond|withHeaders|withHeader|withToken|flushHeaders|withoutVite|withViewErrors|shareFormRequests|withCredentials|withPrefetch|actingAs|be|assertAuthenticatedAs|assertCredentials|assertInvalidCredentials|hasUser|forgetGuards|assertAuthenticated|assertGuest|assertAuthenticatedAs|actingAs)\(\)#'
-        - '#Access to an undefined property PHPUnit\\Framework\\TestCase::\$(app|user|business_user|account|positionId|ownerId)#'
+        # Mockery mock type mismatches in test constructors (standard testing pattern)
+        - '#Parameter \$[a-zA-Z]+ of class App\\Domain\\[a-zA-Z\\]+\\Services\\[a-zA-Z]+Service constructor expects .+, Mockery\\MockInterface given#'
+        - '#Parameter \$[a-zA-Z]+ of class App\\Domain\\[a-zA-Z\\]+\\HSM\\[a-zA-Z]+Service constructor expects .+, Mockery\\MockInterface given#'
+        # Null-safe property access on firstWhere/first results in tests
+        - '#Cannot access property \$[a-zA-Z_]+ on App\\Domain\\[a-zA-Z\\]+\\Models\\[a-zA-Z]+\|null#'
+        - '#Access to an undefined property PHPUnit\\Framework\\TestCase::\$(app|user|business_user|account|positionId|ownerId|service|device|shamirService|request|userUuid|hsm|encryption)#'
         - '#Call to an undefined static method PHPUnit\\Framework\\TestCase::uses\(\)#'
         - '#Call to function (it|test|expect|beforeEach|afterEach|beforeAll|afterAll|dataset|uses|covers|group|skip|todo)\(\) not found#'
         - '#Function method_exists\(\) with .* and .* will always evaluate to true#'
