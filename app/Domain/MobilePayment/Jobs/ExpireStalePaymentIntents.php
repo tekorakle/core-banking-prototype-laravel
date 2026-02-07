@@ -12,6 +12,7 @@ use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Facades\Log;
+use Throwable;
 
 /**
  * Expire stale payment intents that haven't been submitted.
@@ -27,13 +28,22 @@ class ExpireStalePaymentIntents implements ShouldQueue
 
     public function handle(): void
     {
-        $expired = PaymentIntent::expirable()->get();
-
         $count = 0;
-        foreach ($expired as $intent) {
-            $intent->transitionTo(PaymentIntentStatus::EXPIRED);
-            $count++;
-        }
+
+        PaymentIntent::expirable()->chunkById(200, function ($intents) use (&$count): void {
+            foreach ($intents as $intent) {
+                try {
+                    $intent->transitionTo(PaymentIntentStatus::EXPIRED);
+                    $count++;
+                } catch (Throwable $e) {
+                    Log::warning('Failed to expire payment intent', [
+                        'intent_id' => $intent->id,
+                        'status'    => $intent->status->value,
+                        'error'     => $e->getMessage(),
+                    ]);
+                }
+            }
+        });
 
         if ($count > 0) {
             Log::info("Expired {$count} stale payment intents.");

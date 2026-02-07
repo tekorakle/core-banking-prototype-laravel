@@ -62,9 +62,9 @@ class TransactionDetailService
             }
         }
 
-        if ($item->protected) {
-            $response['privacyNote'] = 'Privacy-preserving by default. Additional disclosure available when legally required.';
-        }
+        $response['privacyNote'] = $item->protected
+            ? 'Privacy-preserving by default. Additional disclosure available when legally required.'
+            : null;
 
         return $response;
     }

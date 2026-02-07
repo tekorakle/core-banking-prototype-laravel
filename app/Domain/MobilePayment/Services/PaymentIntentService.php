@@ -84,7 +84,7 @@ class PaymentIntentService implements PaymentIntentServiceInterface
             'asset'                  => $asset,
             'network'                => $network,
             'amount'                 => $amount,
-            'status'                 => PaymentIntentStatus::AWAITING_AUTH,
+            'status'                 => PaymentIntentStatus::CREATED,
             'shield_enabled'         => $shield,
             'fees_estimate'          => $fees->toArray(),
             'required_confirmations' => $networkEnum->requiredConfirmations(),
@@ -93,6 +93,9 @@ class PaymentIntentService implements PaymentIntentServiceInterface
         ]);
 
         $intent->setRelation('merchant', $merchant);
+
+        // Transition through the state machine to AWAITING_AUTH
+        $intent->transitionTo(PaymentIntentStatus::AWAITING_AUTH);
 
         return $intent;
     }
