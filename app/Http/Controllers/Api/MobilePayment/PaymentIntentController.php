@@ -29,8 +29,11 @@ class PaymentIntentController extends Controller
     public function create(CreatePaymentIntentRequest $request): JsonResponse
     {
         try {
+            /** @var \App\Models\User $user */
+            $user = $request->user();
+
             $intent = $this->paymentIntentService->create(
-                $request->user()->id,
+                $user->id,
                 $request->validated(),
             );
 
@@ -59,9 +62,12 @@ class PaymentIntentController extends Controller
     public function show(string $intentId): JsonResponse
     {
         try {
+            /** @var \App\Models\User $user */
+            $user = request()->user();
+
             $intent = $this->paymentIntentService->get(
                 $intentId,
-                (int) request()->user()->id,
+                (int) $user->id,
             );
 
             return response()->json([
@@ -89,9 +95,12 @@ class PaymentIntentController extends Controller
         try {
             $authType = $request->input('auth', 'biometric');
 
+            /** @var \App\Models\User $user */
+            $user = $request->user();
+
             $intent = $this->paymentIntentService->submit(
                 $intentId,
-                $request->user()->id,
+                $user->id,
                 $authType,
             );
 
@@ -122,9 +131,12 @@ class PaymentIntentController extends Controller
         try {
             $reason = $request->input('reason');
 
+            /** @var \App\Models\User $user */
+            $user = $request->user();
+
             $intent = $this->paymentIntentService->cancel(
                 $intentId,
-                $request->user()->id,
+                $user->id,
                 $reason,
             );
 

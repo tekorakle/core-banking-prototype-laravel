@@ -26,7 +26,9 @@ use App\Http\Controllers\Api\ExchangeRateController;
 use App\Http\Controllers\Api\GdprController;
 use App\Http\Controllers\Api\KycController;
 use App\Http\Controllers\Api\MCPToolsController;
+use App\Http\Controllers\Api\MobilePayment\ActivityController;
 use App\Http\Controllers\Api\MobilePayment\PaymentIntentController;
+use App\Http\Controllers\Api\MobilePayment\TransactionController as MobileTransactionController;
 use App\Http\Controllers\Api\PollController;
 use App\Http\Controllers\Api\RegulatoryReportingController;
 use App\Http\Controllers\Api\RiskAnalysisController;
@@ -1270,4 +1272,14 @@ Route::prefix('v1')->middleware(['auth:sanctum', 'check.token.expiration'])->gro
         ->name('mobile.payments.intents.submit');
     Route::post('/payments/intents/{intentId}/cancel', [PaymentIntentController::class, 'cancel'])
         ->name('mobile.payments.intents.cancel');
+
+    // Activity Feed
+    Route::get('/activity', [ActivityController::class, 'index'])
+        ->middleware('api.rate_limit:query')
+        ->name('mobile.activity.index');
+
+    // Transaction Details
+    Route::get('/transactions/{txId}', [MobileTransactionController::class, 'show'])
+        ->middleware('api.rate_limit:query')
+        ->name('mobile.transactions.show');
 });

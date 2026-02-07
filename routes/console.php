@@ -188,6 +188,12 @@ Schedule::job(new App\Domain\Mobile\Jobs\CleanupStaleDevices())
     ->appendOutputTo(storage_path('logs/mobile-cleanup.log'))
     ->withoutOverlapping();
 
+// Mobile Payment - Expire stale payment intents every minute
+Schedule::job(new App\Domain\MobilePayment\Jobs\ExpireStalePaymentIntents())
+    ->everyMinute()
+    ->description('Expire stale payment intents past their TTL')
+    ->withoutOverlapping();
+
 // TrustCert Certificate Management
 // Check for expired certificates and send renewal reminders daily at 6 AM
 Schedule::command('trustcert:check-expired')
