@@ -1307,3 +1307,20 @@ Route::prefix('v1')->middleware(['auth:sanctum', 'check.token.expiration'])->gro
         ->middleware('api.rate_limit:query')
         ->name('mobile.networks.status');
 });
+
+/*
+|--------------------------------------------------------------------------
+| Passkey/WebAuthn Authentication (v2.7.0)
+|--------------------------------------------------------------------------
+|
+| Public endpoints for passkey-based authentication.
+| No auth required - this IS the authentication mechanism.
+|
+*/
+Route::prefix('v1/auth/passkey')
+    ->middleware('throttle:10,1')
+    ->name('mobile.auth.passkey.')
+    ->group(function () {
+        Route::post('/challenge', [Auth\PasskeyController::class, 'challenge'])->name('challenge');
+        Route::post('/authenticate', [Auth\PasskeyController::class, 'authenticate'])->name('authenticate');
+    });
