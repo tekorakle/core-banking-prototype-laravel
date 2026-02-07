@@ -26,6 +26,7 @@ use App\Http\Controllers\Api\ExchangeRateController;
 use App\Http\Controllers\Api\GdprController;
 use App\Http\Controllers\Api\KycController;
 use App\Http\Controllers\Api\MCPToolsController;
+use App\Http\Controllers\Api\MobilePayment\PaymentIntentController;
 use App\Http\Controllers\Api\PollController;
 use App\Http\Controllers\Api\RegulatoryReportingController;
 use App\Http\Controllers\Api\RiskAnalysisController;
@@ -1245,4 +1246,28 @@ Route::prefix('v1/privacy')->name('api.privacy.')->group(function () {
         // SRS download tracking for analytics
         Route::post('/srs-downloaded', [PrivacyController::class, 'trackSrsDownload'])->name('srs-downloaded');
     });
+});
+
+/*
+|--------------------------------------------------------------------------
+| Mobile Payment API (v2.7.0)
+|--------------------------------------------------------------------------
+|
+| Payment Intent lifecycle for the mobile wallet app.
+| Supports USDC payments on Solana + Tron networks.
+|
+*/
+Route::prefix('v1')->middleware(['auth:sanctum', 'check.token.expiration'])->group(function () {
+    // Payment Intents
+    Route::post('/payments/intents', [PaymentIntentController::class, 'create'])
+        ->middleware('transaction.rate_limit:payment_intent')
+        ->name('mobile.payments.intents.create');
+    Route::get('/payments/intents/{intentId}', [PaymentIntentController::class, 'show'])
+        ->middleware('api.rate_limit:query')
+        ->name('mobile.payments.intents.show');
+    Route::post('/payments/intents/{intentId}/submit', [PaymentIntentController::class, 'submit'])
+        ->middleware('transaction.rate_limit:payment_submit')
+        ->name('mobile.payments.intents.submit');
+    Route::post('/payments/intents/{intentId}/cancel', [PaymentIntentController::class, 'cancel'])
+        ->name('mobile.payments.intents.cancel');
 });
