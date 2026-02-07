@@ -32,7 +32,7 @@ describe('CertificateExportService', function (): void {
         expect($details)->toBeNull();
     });
 
-    it('returns formatted certificate details', function (): void {
+    it('returns formatted certificate details matching mobile spec', function (): void {
         $certificate = Certificate::fromArray([
             'certificate_id'        => 'cert_test123',
             'subject_id'            => 'user_456',
@@ -57,15 +57,14 @@ describe('CertificateExportService', function (): void {
         $details = $service->getCertificateDetails('cert_test123');
 
         expect($details)->not->toBeNull();
-        expect($details['certificateId'])->toBe('cert_test123');
-        expect($details['subjectId'])->toBe('user_456');
-        expect($details['status'])->toBe('active');
-        expect($details['isRoot'])->toBeTrue();
+        expect($details['certId'])->toBe('cert_test123');
+        expect($details['status'])->toBe('verified');
+        expect($details['verificationStatus'])->toBe('Fully Verified');
+        expect($details['scope'])->toBe('Individual Global Account');
         expect($details['disclaimer'])->toContain('FinAegis');
         expect($details)->toHaveKeys([
-            'certificateId', 'subjectId', 'subject', 'status',
-            'validFrom', 'validUntil', 'isValid', 'isExpired',
-            'isRevoked', 'isRoot', 'fingerprint', 'extensions', 'disclaimer',
+            'certId', 'status', 'verificationStatus', 'identityId',
+            'scope', 'validUntil', 'issuedAt', 'disclaimer', 'qrPayload',
         ]);
     });
 
@@ -109,5 +108,6 @@ describe('CertificateExportService', function (): void {
 
         expect($details['disclaimer'])->toContain('FinAegis ecosystem');
         expect($details['disclaimer'])->not->toContain('ShieldPay');
+        expect($details['qrPayload'])->toContain('cert_brand');
     });
 });

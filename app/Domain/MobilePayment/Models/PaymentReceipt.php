@@ -80,7 +80,7 @@ class PaymentReceipt extends Model
 
     public function getShareUrl(): string
     {
-        return config('app.url') . '/receipt/' . $this->share_token;
+        return config('app.url') . '/receipt/' . $this->public_id;
     }
 
     /**

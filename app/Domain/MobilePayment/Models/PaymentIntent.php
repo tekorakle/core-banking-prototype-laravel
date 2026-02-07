@@ -236,21 +236,19 @@ class PaymentIntent extends Model
             'expiresAt'     => $this->expires_at->toIso8601String(),
         ];
 
-        if ($this->tx_hash) {
-            $response['tx'] = [
-                'hash'        => $this->tx_hash,
-                'explorerUrl' => $this->tx_explorer_url,
-            ];
-            $response['confirmations'] = $this->confirmations;
-            $response['requiredConfirmations'] = $this->required_confirmations;
-        }
+        // Always include tx, confirmations, and error per spec (even when null/zero)
+        $response['tx'] = $this->tx_hash ? [
+            'hash'        => $this->tx_hash,
+            'explorerUrl' => $this->tx_explorer_url,
+        ] : null;
 
-        if ($this->error_code) {
-            $response['error'] = [
-                'code'    => $this->error_code,
-                'message' => $this->error_message,
-            ];
-        }
+        $response['confirmations'] = $this->confirmations ?? 0;
+        $response['requiredConfirmations'] = $this->required_confirmations;
+
+        $response['error'] = $this->error_code ? [
+            'code'    => $this->error_code,
+            'message' => $this->error_message,
+        ] : null;
 
         return $response;
     }

@@ -6,6 +6,8 @@ namespace App\Domain\TrustCert\Services;
 
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
 use Throwable;
 
 /**
@@ -35,29 +37,30 @@ class CertificateExportService
             return null;
         }
 
+        $subjectName = $certificate->subject['name'] ?? 'Unknown';
+        $subjectType = $certificate->subject['type'] ?? 'individual';
+
         return [
-            'certificateId' => $certificate->certificateId,
-            'subjectId'     => $certificate->subjectId,
-            'subject'       => $certificate->subject,
-            'status'        => $certificate->status->value,
-            'validFrom'     => $certificate->validFrom->format('c'),
-            'validUntil'    => $certificate->validUntil->format('c'),
-            'isValid'       => $certificate->isValid(),
-            'isExpired'     => $certificate->isExpired(),
-            'isRevoked'     => $certificate->isRevoked(),
-            'isRoot'        => $certificate->isRootCertificate(),
-            'fingerprint'   => $certificate->getFingerprint(),
-            'extensions'    => $certificate->extensions,
-            'disclaimer'    => 'This certificate is issued within the FinAegis ecosystem and is valid for identity verification purposes within this ecosystem only.',
+            'certId'             => $certificate->certificateId,
+            'status'             => $certificate->isValid() ? 'verified' : $certificate->status->value,
+            'verificationStatus' => $certificate->isValid() ? 'Fully Verified' : ucfirst($certificate->status->value),
+            'identityId'         => strtoupper(substr(hash('sha256', $certificate->subjectId), 0, 4)) . '-'
+                                  . strtoupper(substr(hash('sha256', $certificate->certificateId), 0, 4)) . '-'
+                                  . strtoupper(substr($certificate->subjectId, -1)),
+            'scope'      => $subjectType === 'individual' ? 'Individual Global Account' : 'Organization Account',
+            'validUntil' => $certificate->validUntil->format('Y-m-d'),
+            'issuedAt'   => $certificate->validFrom->format('Y-m-d'),
+            'disclaimer' => 'This certificate confirms identity trust within the FinAegis ecosystem. Authenticity is cryptographically signed and can be verified via the official verification portal.',
+            'qrPayload'  => 'https://trust.finaegis.com/verify/' . $certificate->certificateId,
         ];
     }
 
     /**
-     * Export a certificate to PDF.
+     * Export a certificate to PDF. Stores the file and returns metadata.
      *
-     * @return string|null PDF content as string, or null if certificate not found
+     * @return array{pdfUrl: string, expiresAt: string}|null
      */
-    public function exportToPdf(string $certificateId): ?string
+    public function exportToPdf(string $certificateId): ?array
     {
         $certificate = $this->caService->getCertificate($certificateId);
 
@@ -90,7 +93,18 @@ class CertificateExportService
             $pdf = Pdf::loadView('trustcert.certificate-pdf', $data);
             $pdf->setPaper('a4', 'portrait');
 
-            return $pdf->output();
+            $pdfContent = $pdf->output();
+
+            // Store PDF and return URL
+            $filename = 'certs/' . Str::random(32) . '.pdf';
+            Storage::disk('public')->put($filename, $pdfContent);
+
+            $expiresAt = now()->addHour();
+
+            return [
+                'pdfUrl'    => Storage::disk('public')->url($filename),
+                'expiresAt' => $expiresAt->toIso8601String(),
+            ];
         } catch (Throwable $e) {
             Log::error('Certificate PDF export failed', [
                 'certificate_id' => $certificateId,

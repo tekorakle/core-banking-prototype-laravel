@@ -32,9 +32,16 @@ class PaymentIntentController extends Controller
             /** @var \App\Models\User $user */
             $user = $request->user();
 
+            $data = $request->validated();
+
+            // Accept idempotency key from header (preferred) or body
+            if (! isset($data['idempotencyKey']) && $request->hasHeader('X-Idempotency-Key')) {
+                $data['idempotencyKey'] = $request->header('X-Idempotency-Key');
+            }
+
             $intent = $this->paymentIntentService->create(
                 $user->id,
-                $request->validated(),
+                $data,
             );
 
             return response()->json([
@@ -59,11 +66,11 @@ class PaymentIntentController extends Controller
      *
      * GET /v1/payments/intents/{intentId}
      */
-    public function show(string $intentId): JsonResponse
+    public function show(Request $request, string $intentId): JsonResponse
     {
         try {
             /** @var \App\Models\User $user */
-            $user = request()->user();
+            $user = $request->user();
 
             $intent = $this->paymentIntentService->get(
                 $intentId,
@@ -104,9 +111,13 @@ class PaymentIntentController extends Controller
                 $authType,
             );
 
+            // Spec requires minimal response: only intentId + status
             return response()->json([
                 'success' => true,
-                'data'    => $intent->toApiResponse(),
+                'data'    => [
+                    'intentId' => $intent->public_id,
+                    'status'   => strtoupper($intent->status->value),
+                ],
             ]);
         } catch (ModelNotFoundException) {
             return response()->json([
@@ -143,9 +154,17 @@ class PaymentIntentController extends Controller
                 $reason,
             );
 
+            // Spec requires minimal response: intentId, status, merchant.displayName, amount
             return response()->json([
                 'success' => true,
-                'data'    => $intent->toApiResponse(),
+                'data'    => [
+                    'intentId' => $intent->public_id,
+                    'status'   => strtoupper($intent->status->value),
+                    'merchant' => [
+                        'displayName' => $intent->merchant?->display_name,
+                    ],
+                    'amount' => $intent->amount,
+                ],
             ]);
         } catch (ModelNotFoundException) {
             return response()->json([

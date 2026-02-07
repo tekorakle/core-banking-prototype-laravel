@@ -45,6 +45,17 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | Idempotency Queue Window
+    |--------------------------------------------------------------------------
+    |
+    | Maximum age (in minutes) for accepting queued/retried submissions
+    | from mobile clients that were offline. Aligns with offline queue TTL.
+    |
+    */
+    'idempotency_queue_window_minutes' => (int) env('MOBILE_PAYMENT_IDEMPOTENCY_QUEUE_MINUTES', 30),
+
+    /*
+    |--------------------------------------------------------------------------
     | Demo Mode
     |--------------------------------------------------------------------------
     |

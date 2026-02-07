@@ -7,7 +7,6 @@ namespace App\Http\Controllers\Api\TrustCert;
 use App\Domain\TrustCert\Services\CertificateExportService;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Http\Response;
 
 class CertificateController extends Controller
 {
@@ -46,11 +45,11 @@ class CertificateController extends Controller
      *
      * POST /v1/trustcert/{certId}/export-pdf
      */
-    public function exportPdf(string $certId): Response|JsonResponse
+    public function exportPdf(string $certId): JsonResponse
     {
-        $pdfContent = $this->exportService->exportToPdf($certId);
+        $result = $this->exportService->exportToPdf($certId);
 
-        if (! $pdfContent) {
+        if (! $result) {
             return response()->json([
                 'success' => false,
                 'error'   => [
@@ -60,11 +59,9 @@ class CertificateController extends Controller
             ], 404);
         }
 
-        $safeCertId = preg_replace('/[^a-zA-Z0-9_\-]/', '', $certId);
-
-        return response($pdfContent, 200, [
-            'Content-Type'        => 'application/pdf',
-            'Content-Disposition' => "attachment; filename=\"certificate-{$safeCertId}.pdf\"",
+        return response()->json([
+            'success' => true,
+            'data'    => $result,
         ]);
     }
 }
