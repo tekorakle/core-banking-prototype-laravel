@@ -1193,6 +1193,7 @@ Route::prefix('v1/relayer')->name('api.relayer.')->group(function () {
 |
 */
 
+use App\Http\Controllers\Api\TrustCert\CertificateController;
 use App\Http\Controllers\Api\TrustCert\PresentationController;
 
 Route::prefix('v1/trustcert')->name('api.trustcert.')->group(function () {
@@ -1202,6 +1203,10 @@ Route::prefix('v1/trustcert')->name('api.trustcert.')->group(function () {
     // Authenticated endpoints
     Route::middleware(['auth:sanctum', 'check.token.expiration'])->group(function () {
         Route::post('/{certificateId}/present', [PresentationController::class, 'present'])->name('present');
+
+        // Certificate details and PDF export
+        Route::get('/{certId}/certificate', [CertificateController::class, 'show'])->name('certificate.show');
+        Route::post('/{certId}/export-pdf', [CertificateController::class, 'exportPdf'])->name('certificate.export');
     });
 });
 
