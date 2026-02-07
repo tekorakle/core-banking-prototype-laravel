@@ -27,8 +27,10 @@ use App\Http\Controllers\Api\GdprController;
 use App\Http\Controllers\Api\KycController;
 use App\Http\Controllers\Api\MCPToolsController;
 use App\Http\Controllers\Api\MobilePayment\ActivityController;
+use App\Http\Controllers\Api\MobilePayment\NetworkStatusController;
 use App\Http\Controllers\Api\MobilePayment\PaymentIntentController;
 use App\Http\Controllers\Api\MobilePayment\TransactionController as MobileTransactionController;
+use App\Http\Controllers\Api\MobilePayment\WalletReceiveController;
 use App\Http\Controllers\Api\PollController;
 use App\Http\Controllers\Api\RegulatoryReportingController;
 use App\Http\Controllers\Api\RiskAnalysisController;
@@ -1282,4 +1284,14 @@ Route::prefix('v1')->middleware(['auth:sanctum', 'check.token.expiration'])->gro
     Route::get('/transactions/{txId}', [MobileTransactionController::class, 'show'])
         ->middleware('api.rate_limit:query')
         ->name('mobile.transactions.show');
+
+    // Wallet Receive Address
+    Route::get('/wallet/receive', WalletReceiveController::class)
+        ->middleware('api.rate_limit:query')
+        ->name('mobile.wallet.receive');
+
+    // Network Status
+    Route::get('/networks/status', NetworkStatusController::class)
+        ->middleware('api.rate_limit:query')
+        ->name('mobile.networks.status');
 });
