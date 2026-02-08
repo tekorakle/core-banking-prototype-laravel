@@ -46,6 +46,7 @@ use App\Http\Controllers\Api\TransferController;
 use App\Http\Controllers\Api\Treasury\PortfolioController;
 use App\Http\Controllers\Api\UserVotingController;
 use App\Http\Controllers\Api\VoteController;
+use App\Http\Controllers\Api\Wallet\WalletTransferController;
 use App\Http\Controllers\Api\WorkflowMonitoringController;
 use App\Http\Controllers\StatusController;
 use Illuminate\Http\Request;
@@ -1306,6 +1307,17 @@ Route::prefix('v1')->middleware(['auth:sanctum', 'check.token.expiration'])->gro
     Route::get('/networks/status', NetworkStatusController::class)
         ->middleware('api.rate_limit:query')
         ->name('mobile.networks.status');
+
+    // Wallet Transfer Helpers (P2P send flow)
+    Route::get('/wallet/validate-address', [WalletTransferController::class, 'validateAddress'])
+        ->middleware('api.rate_limit:query')
+        ->name('mobile.wallet.validate-address');
+    Route::post('/wallet/resolve-name', [WalletTransferController::class, 'resolveName'])
+        ->middleware('api.rate_limit:query')
+        ->name('mobile.wallet.resolve-name');
+    Route::post('/wallet/quote', [WalletTransferController::class, 'quote'])
+        ->middleware('api.rate_limit:query')
+        ->name('mobile.wallet.quote');
 });
 
 /*
