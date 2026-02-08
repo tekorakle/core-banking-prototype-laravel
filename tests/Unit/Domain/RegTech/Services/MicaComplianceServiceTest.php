@@ -211,5 +211,34 @@ describe('MicaComplianceService', function (): void {
             expect($result['required'])->toBeTrue()
                 ->and($result['missing_fields'])->toBeEmpty();
         });
+
+        it('requires travel rule at exactly the threshold', function (): void {
+            $result = $this->service->checkTravelRuleRequirement([
+                'amount'   => 1000,
+                'currency' => 'EUR',
+            ]);
+
+            expect($result['required'])->toBeTrue()
+                ->and($result['threshold'])->toBe(1000.0);
+        });
+
+        it('does not require travel rule just below threshold', function (): void {
+            $result = $this->service->checkTravelRuleRequirement([
+                'amount'   => 999.99,
+                'currency' => 'EUR',
+            ]);
+
+            expect($result['required'])->toBeFalse();
+        });
+
+        it('handles missing originator key gracefully', function (): void {
+            $result = $this->service->checkTravelRuleRequirement([
+                'amount'   => 2000,
+                'currency' => 'EUR',
+            ]);
+
+            expect($result['required'])->toBeTrue()
+                ->and($result['missing_fields'])->not->toBeEmpty();
+        });
     });
 });

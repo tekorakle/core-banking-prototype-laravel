@@ -34,11 +34,11 @@ class TravelRuleService
 
         if (! $jurisdiction) {
             return [
-                'compliant'     => true,
+                'compliant'     => false,
                 'jurisdiction'  => 'unknown',
                 'threshold'     => 0,
                 'amount'        => $amount,
-                'errors'        => [],
+                'errors'        => ['Unable to determine jurisdiction for currency: ' . $currency],
                 'required_data' => [],
             ];
         }
@@ -59,17 +59,19 @@ class TravelRuleService
 
         $errors = [];
         $requiredData = $this->getRequiredData($jurisdiction);
+        $originator = $transfer['originator'] ?? [];
+        $beneficiary = $transfer['beneficiary'] ?? [];
 
         // Validate originator data
         foreach ($requiredData['originator'] as $field) {
-            if (empty($transfer['originator'][$field])) {
+            if (empty($originator[$field])) {
                 $errors[] = "Missing originator field: {$field}";
             }
         }
 
         // Validate beneficiary data
         foreach ($requiredData['beneficiary'] as $field) {
-            if (empty($transfer['beneficiary'][$field])) {
+            if (empty($beneficiary[$field])) {
                 $errors[] = "Missing beneficiary field: {$field}";
             }
         }

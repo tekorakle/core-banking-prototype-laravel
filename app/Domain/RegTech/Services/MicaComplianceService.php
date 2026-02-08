@@ -175,15 +175,17 @@ class MicaComplianceService
         if ($required) {
             $requiredOriginator = $travelRule['required_originator_info'] ?? [];
             $requiredBeneficiary = $travelRule['required_beneficiary_info'] ?? [];
+            $originator = $transaction['originator'] ?? [];
+            $beneficiary = $transaction['beneficiary'] ?? [];
 
             foreach ($requiredOriginator as $field) {
-                if (empty($transaction['originator'][$field])) {
+                if (empty($originator[$field])) {
                     $missingFields[] = "originator.{$field}";
                 }
             }
 
             foreach ($requiredBeneficiary as $field) {
-                if (empty($transaction['beneficiary'][$field])) {
+                if (empty($beneficiary[$field])) {
                     $missingFields[] = "beneficiary.{$field}";
                 }
             }

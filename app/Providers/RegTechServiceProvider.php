@@ -16,6 +16,18 @@ use Illuminate\Support\ServiceProvider;
  */
 class RegTechServiceProvider extends ServiceProvider
 {
+    /**
+     * Adapter class map keyed by jurisdiction.
+     *
+     * @var array<string, class-string>
+     */
+    private const ADAPTER_MAP = [
+        'us' => FinCENAdapter::class,
+        'eu' => ESMAAdapter::class,
+        'uk' => FCAAdapter::class,
+        'sg' => MASAdapter::class,
+    ];
+
     public function register(): void
     {
         //
@@ -34,9 +46,8 @@ class RegTechServiceProvider extends ServiceProvider
     {
         $orchestration = $this->app->make(RegTechOrchestrationService::class);
 
-        $orchestration->registerAdapter('us', new FinCENAdapter());
-        $orchestration->registerAdapter('eu', new ESMAAdapter());
-        $orchestration->registerAdapter('uk', new FCAAdapter());
-        $orchestration->registerAdapter('sg', new MASAdapter());
+        foreach (self::ADAPTER_MAP as $key => $adapterClass) {
+            $orchestration->registerAdapter($key, new $adapterClass());
+        }
     }
 }

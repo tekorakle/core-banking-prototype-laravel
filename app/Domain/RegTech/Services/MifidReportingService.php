@@ -86,7 +86,7 @@ class MifidReportingService
             'buyer_decision_maker'   => $transaction['buyer_decision_maker'] ?? null,
             'seller_decision_maker'  => $transaction['seller_decision_maker'] ?? null,
             'transmission_indicator' => $transaction['transmission_indicator'] ?? false,
-            'jurisdiction'           => $jurisdiction->value ?? 'EU',
+            'jurisdiction'           => $jurisdiction !== null ? $jurisdiction->value : 'EU',
             'reporting_deadline'     => $this->calculateReportingDeadline($transaction),
             'generated_at'           => now()->toIso8601String(),
         ];
@@ -205,11 +205,11 @@ class MifidReportingService
             $errors[] = 'executing_entity_id (LEI) is required.';
         }
 
-        if (empty($transaction['quantity']) || (float) $transaction['quantity'] <= 0) {
+        if (! isset($transaction['quantity']) || (float) $transaction['quantity'] <= 0) {
             $errors[] = 'quantity must be a positive number.';
         }
 
-        if (empty($transaction['price']) || (float) $transaction['price'] <= 0) {
+        if (! isset($transaction['price']) || (float) $transaction['price'] <= 0) {
             $errors[] = 'price must be a positive number.';
         }
 

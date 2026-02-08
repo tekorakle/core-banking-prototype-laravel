@@ -196,4 +196,55 @@ describe('MifidReportingService', function (): void {
                 ->and($result['status'])->toBe('healthy');
         });
     });
+
+    describe('generateTransactionReport - null jurisdiction handling', function (): void {
+        it('defaults jurisdiction to EU when unresolvable', function (): void {
+            $this->jurisdictionService->shouldReceive('getJurisdictionByCurrency')
+                ->with('XXX')->andReturn(null);
+
+            $result = $this->service->generateTransactionReport([
+                'instrument_id'       => 'US0378331005',
+                'executing_entity_id' => '529900T8BM49AURSDO55',
+                'quantity'            => 100,
+                'price'               => 150.50,
+                'currency'            => 'XXX',
+            ]);
+
+            expect($result['success'])->toBeTrue()
+                ->and($result['report']['jurisdiction'])->toBe('EU');
+        });
+    });
+
+    describe('validateTransactionData - edge cases', function (): void {
+        it('rejects negative quantity', function (): void {
+            $result = $this->service->generateTransactionReport([
+                'instrument_id'       => 'US0378331005',
+                'executing_entity_id' => '529900T8BM49AURSDO55',
+                'quantity'            => -10,
+                'price'               => 150.50,
+            ]);
+
+            expect($result['success'])->toBeFalse()
+                ->and($result['errors'])->toContain('quantity must be a positive number.');
+        });
+
+        it('rejects negative price', function (): void {
+            $result = $this->service->generateTransactionReport([
+                'instrument_id'       => 'US0378331005',
+                'executing_entity_id' => '529900T8BM49AURSDO55',
+                'quantity'            => 100,
+                'price'               => -50.0,
+            ]);
+
+            expect($result['success'])->toBeFalse()
+                ->and($result['errors'])->toContain('price must be a positive number.');
+        });
+
+        it('reports all missing fields at once', function (): void {
+            $result = $this->service->generateTransactionReport([]);
+
+            expect($result['success'])->toBeFalse()
+                ->and(count($result['errors']))->toBeGreaterThanOrEqual(4);
+        });
+    });
 });

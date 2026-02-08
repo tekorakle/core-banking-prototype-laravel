@@ -10,6 +10,7 @@ use App\Domain\RegTech\Services\MifidReportingService;
 use App\Domain\RegTech\Services\RegTechOrchestrationService;
 use App\Domain\RegTech\Services\TravelRuleService;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\RegTech\ApplicableRegulationsRequest;
 use App\Http\Requests\RegTech\SubmitReportRequest;
 use App\Http\Requests\RegTech\TravelRuleCheckRequest;
 use App\Http\Requests\RegTech\WhitepaperValidationRequest;
@@ -55,11 +56,24 @@ class RegTechController extends Controller
         $validated = $request->validated();
 
         Log::info('RegTech: Report submission requested', [
+            'user_id'      => $request->user()?->id,
+            'ip_address'   => $request->ip(),
             'report_type'  => $validated['report_type'],
             'jurisdiction' => $validated['jurisdiction'],
         ]);
 
-        $jurisdiction = Jurisdiction::from($validated['jurisdiction']);
+        $jurisdiction = Jurisdiction::tryFrom($validated['jurisdiction']);
+
+        if (! $jurisdiction) {
+            return response()->json([
+                'success' => false,
+                'data'    => null,
+                'error'   => [
+                    'code'    => 'INVALID_JURISDICTION',
+                    'message' => 'The provided jurisdiction is not supported.',
+                ],
+            ], 422);
+        }
 
         $result = $this->orchestrationService->submitReport(
             $validated['report_type'],
@@ -91,6 +105,16 @@ class RegTechController extends Controller
      */
     public function reportStatus(string $reference, Request $request): JsonResponse
     {
+        if (! preg_match('/^[A-Za-z0-9\-_]{1,100}$/', $reference)) {
+            return response()->json([
+                'success' => false,
+                'error'   => [
+                    'code'    => 'INVALID_REFERENCE',
+                    'message' => 'Invalid report reference format.',
+                ],
+            ], 422);
+        }
+
         $jurisdiction = $request->query('jurisdiction', 'US');
         $jurisdictionEnum = Jurisdiction::tryFrom((string) $jurisdiction) ?? Jurisdiction::US;
 
@@ -120,7 +144,6 @@ class RegTechController extends Controller
                 'report_types' => $adapter->getSupportedReportTypes(),
                 'available'    => $adapter->isAvailable(),
                 'sandbox'      => $adapter->isSandboxMode(),
-                'api_endpoint' => $adapter->getApiEndpoint(),
             ];
         }
 
@@ -139,12 +162,14 @@ class RegTechController extends Controller
      *
      * GET /api/regtech/regulations/applicable
      */
-    public function applicableRegulations(Request $request): JsonResponse
+    public function applicableRegulations(ApplicableRegulationsRequest $request): JsonResponse
     {
-        $amount = (float) $request->query('amount', '0');
-        $currency = (string) $request->query('currency', 'USD');
-        $transactionType = (string) $request->query('transaction_type', 'transfer');
-        $isCrypto = filter_var($request->query('is_crypto', 'false'), FILTER_VALIDATE_BOOLEAN);
+        $validated = $request->validated();
+
+        $amount = (float) $validated['amount'];
+        $currency = $validated['currency'];
+        $transactionType = $validated['transaction_type'];
+        $isCrypto = (bool) ($validated['is_crypto'] ?? false);
 
         $regulations = $this->orchestrationService->getApplicableRegulations(
             $amount,

@@ -103,14 +103,15 @@ describe('TravelRuleService', function (): void {
                 ->and($result['errors'])->toBeEmpty();
         });
 
-        it('marks compliant for unknown currency', function (): void {
+        it('marks non-compliant for unknown currency', function (): void {
             $result = $this->service->evaluate([
                 'amount'   => 50000,
                 'currency' => 'XYZ',
             ]);
 
-            expect($result['compliant'])->toBeTrue()
-                ->and($result['jurisdiction'])->toBe('unknown');
+            expect($result['compliant'])->toBeFalse()
+                ->and($result['jurisdiction'])->toBe('unknown')
+                ->and($result['errors'])->not->toBeEmpty();
         });
 
         it('detects missing originator data for above-threshold USD', function (): void {
@@ -168,6 +169,58 @@ describe('TravelRuleService', function (): void {
 
             expect($result['required_data'])->toHaveKey('originator')
                 ->and($result['required_data'])->toHaveKey('beneficiary');
+        });
+
+        it('requires compliance at exactly the US threshold', function (): void {
+            $result = $this->service->evaluate([
+                'amount'   => 3000,
+                'currency' => 'USD',
+            ]);
+
+            expect($result['compliant'])->toBeFalse()
+                ->and($result['threshold'])->toBe(3000.0)
+                ->and($result['errors'])->not->toBeEmpty();
+        });
+
+        it('marks compliant just below US threshold', function (): void {
+            $result = $this->service->evaluate([
+                'amount'   => 2999.99,
+                'currency' => 'USD',
+            ]);
+
+            expect($result['compliant'])->toBeTrue()
+                ->and($result['errors'])->toBeEmpty();
+        });
+
+        it('requires compliance at exactly the EU threshold', function (): void {
+            $result = $this->service->evaluate([
+                'amount'   => 1000,
+                'currency' => 'EUR',
+            ]);
+
+            expect($result['compliant'])->toBeFalse()
+                ->and($result['threshold'])->toBe(1000.0);
+        });
+
+        it('handles transfer with null originator gracefully', function (): void {
+            $result = $this->service->evaluate([
+                'amount'   => 5000,
+                'currency' => 'USD',
+            ]);
+
+            expect($result['compliant'])->toBeFalse()
+                ->and($result['errors'])->toContain('Missing originator field: name')
+                ->and($result['errors'])->toContain('Missing originator field: account_number');
+        });
+
+        it('handles transfer with zero amount', function (): void {
+            $result = $this->service->evaluate([
+                'amount'   => 0,
+                'currency' => 'USD',
+            ]);
+
+            expect($result['compliant'])->toBeTrue()
+                ->and($result['errors'])->toBeEmpty();
         });
     });
 

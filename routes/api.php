@@ -613,13 +613,13 @@ Route::middleware('auth:sanctum', 'check.token.expiration')->prefix('compliance'
 });
 
 // RegTech endpoints (regulatory compliance, MiFID II, MiCA, Travel Rule)
-Route::middleware('auth:sanctum', 'check.token.expiration')->prefix('regtech')->name('api.regtech.')->group(function () {
+Route::middleware('auth:sanctum', 'check.token.expiration', 'throttle:60,1')->prefix('regtech')->name('api.regtech.')->group(function () {
     Route::get('/compliance/summary', [RegTechController::class, 'complianceSummary'])->name('compliance.summary');
     Route::get('/adapters', [RegTechController::class, 'adapters'])->name('adapters');
     Route::get('/regulations/applicable', [RegTechController::class, 'applicableRegulations'])->name('regulations.applicable');
 
-    // Report submission & status
-    Route::post('/reports', [RegTechController::class, 'submitReport'])->name('reports.submit');
+    // Report submission & status (stricter rate limit on write operations)
+    Route::post('/reports', [RegTechController::class, 'submitReport'])->middleware('throttle:10,1')->name('reports.submit');
     Route::get('/reports/{reference}/status', [RegTechController::class, 'reportStatus'])->name('reports.status');
 
     // MiFID II
@@ -627,7 +627,7 @@ Route::middleware('auth:sanctum', 'check.token.expiration')->prefix('regtech')->
 
     // MiCA
     Route::get('/mica/status', [RegTechController::class, 'micaStatus'])->name('mica.status');
-    Route::post('/mica/whitepaper/validate', [RegTechController::class, 'validateWhitepaper'])->name('mica.whitepaper.validate');
+    Route::post('/mica/whitepaper/validate', [RegTechController::class, 'validateWhitepaper'])->middleware('throttle:10,1')->name('mica.whitepaper.validate');
     Route::get('/mica/reserves', [RegTechController::class, 'micaReserves'])->name('mica.reserves');
 
     // Travel Rule
