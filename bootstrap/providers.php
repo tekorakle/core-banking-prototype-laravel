@@ -26,6 +26,7 @@ return [
     App\Providers\LendingServiceProvider::class,
     App\Providers\MobilePaymentServiceProvider::class,
     App\Providers\PrivacyServiceProvider::class,
+    App\Providers\RegTechServiceProvider::class,
     App\Providers\RelayerServiceProvider::class,
     App\Providers\StablecoinServiceProvider::class,
     App\Providers\TelescopeServiceProvider::class,
