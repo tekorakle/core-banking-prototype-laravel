@@ -1378,20 +1378,59 @@ GET    /api/v1/trustcert/verify/{token} # Verify presentation
 
 ---
 
-## Version 2.8.0 - Platform Completion (PLANNED)
+## Version 2.8.0 - AI Query & Regulatory Technology ✅ COMPLETED
 
-**Target**: Q2 2026
-**Theme**: Complete v2.3.0 Deferred Features + Production Hardening
+**Release Date**: February 8, 2026
+**Theme**: AI-Powered Queries + Multi-Jurisdiction RegTech
 
-### Phase 1: AI Query Endpoints
+### Delivered Features
+
+| Feature | Status | PRs |
+|---------|--------|-----|
+| AI Transaction Query Tools | ✅ Complete | #397 |
+| AI Query API Endpoints | ✅ Complete | #398 |
+| RegTech Jurisdiction Adapters (FinCEN, ESMA, FCA, MAS) | ✅ Complete | #399 |
+| MiFID II, MiCA, Travel Rule Services + API | ✅ Complete | #400 |
+
+### AI Query Endpoints
 
 | Component | Description | Status |
 |-----------|-------------|--------|
-| `TransactionQueryTool` | Natural language transaction queries | 📋 |
-| API Endpoints | `/api/ai/query/transactions`, `/api/ai/query/balances` | 📋 |
-| Query Explanation | Explain AI interpretation of queries | 📋 |
+| `TransactionQueryTool` | Natural language transaction queries | ✅ |
+| `BalanceQueryTool` | Multi-currency balance aggregation | ✅ |
+| `PatternAnalysisTool` | Spending pattern detection | ✅ |
+| API Endpoints | `/api/ai/query/transactions`, `/balances`, `/patterns` | ✅ |
+| MCP Tools | Model Context Protocol integration | ✅ |
 
-### Phase 2: ML Anomaly Detection
+### RegTech Adapters & Services
+
+| Component | Description | Status |
+|-----------|-------------|--------|
+| `FinCENAdapter` | US BSA E-Filing (CTR, SAR, CMIR, FBAR) | ✅ |
+| `ESMAAdapter` | EU FIRDS/TREM (MiFID, EMIR, SFTR) | ✅ |
+| `FCAAdapter` | UK Gabriel (MiFID, REP-CRIM, SUP16) | ✅ |
+| `MASAdapter` | SG eServices Gateway (MAS Returns, STR) | ✅ |
+| `MifidReportingService` | Transaction reporting (RTS 25), best execution (RTS 27/28) | ✅ |
+| `MicaComplianceService` | CASP authorization, whitepaper validation, reserves | ✅ |
+| `TravelRuleService` | FATF Rec 16, jurisdiction thresholds | ✅ |
+| RegTech API | 11 endpoints under `/api/regtech` | ✅ |
+
+### Scope Decisions
+
+| Item | Decision |
+|------|----------|
+| ML Anomaly Detection | Deferred to v2.9.0 (requires behavioral profiling DB schema) |
+| BaaS Implementation | Deferred to v2.9.0 (SDK generation + partner metering) |
+| Production Hardening | Deferred to v2.9.0 (smart contracts, ZK circuits, HSM) |
+
+---
+
+## Version 2.9.0 - BaaS & Production Hardening (PLANNED)
+
+**Target**: Q2 2026
+**Theme**: Banking-as-a-Service + Production Readiness
+
+### Phase 1: ML Anomaly Detection
 
 | Component | Description | Status |
 |-----------|-------------|--------|
@@ -1401,18 +1440,7 @@ GET    /api/v1/trustcert/verify/{token} # Verify presentation
 | `GeolocationAnomalyActivity` | Location-based anomalies | 📋 |
 | Database | `user_behavioral_profiles`, `anomaly_detections` | 📋 |
 
-### Phase 3: RegTech Adapters
-
-| Component | Description | Status |
-|-----------|-------------|--------|
-| `FinCENAdapter` | BSA E-Filing integration | 📋 |
-| `ESMAAdapter` | FIRDS, MiFID reporting | 📋 |
-| `FCAAdapter` | Gabriel system integration | 📋 |
-| `MASAdapter` | MAS Gateway integration | 📋 |
-| MiFID II Services | Transaction reporting (Article 26) | 📋 |
-| MiCA Services | CASP authorization, Travel Rule | 📋 |
-
-### Phase 4: BaaS Implementation
+### Phase 2: BaaS Implementation
 
 | Component | Description | Status |
 |-----------|-------------|--------|
@@ -1422,7 +1450,7 @@ GET    /api/v1/trustcert/verify/{token} # Verify presentation
 | `PartnerBillingService` | Invoice generation | 📋 |
 | Partner Marketplace | Integration connectors | 📋 |
 
-### Phase 5: Production Hardening
+### Phase 3: Production Hardening
 
 | Component | Description | Status |
 |-----------|-------------|--------|
@@ -1433,7 +1461,7 @@ GET    /api/v1/trustcert/verify/{token} # Verify presentation
 
 ---
 
-*Document Version: 2.7*
+*Document Version: 2.8*
 *Created: January 11, 2026*
-*Updated: February 8, 2026 (v2.7.0 Released)*
-*Next Review: v2.8.0 Implementation*
+*Updated: February 8, 2026 (v2.8.0 Released)*
+*Next Review: v2.9.0 Implementation*

@@ -5,6 +5,60 @@ All notable changes to the FinAegis Core Banking Platform will be documented in 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.8.0] - 2026-02-08
+
+### 🤖 AI Query & Regulatory Technology
+
+AI-powered natural language transaction queries and comprehensive multi-jurisdiction regulatory technology infrastructure. This release completes the AI Framework query layer and delivers RegTech adapters for FinCEN, ESMA, FCA, and MAS with MiFID II, MiCA, and Travel Rule compliance services.
+
+### Highlights
+
+| Feature | Description | PRs |
+|---------|-------------|-----|
+| AI Transaction Query Tools | Natural language transaction search, balance queries, pattern analysis | #397 |
+| AI Query API Endpoints | REST API + MCP tools for AI-powered queries | #398 |
+| RegTech Jurisdiction Adapters | FinCEN, ESMA, FCA, MAS regulatory filing adapters | #399 |
+| MiFID/MiCA/Travel Rule Services | Full regulatory compliance services with 11 API endpoints | #400 |
+
+### Added
+
+#### AI Framework Enhancements
+- **TransactionQueryTool** - Natural language transaction queries with date/amount/type filters
+- **BalanceQueryTool** - Multi-currency balance aggregation and reporting
+- **PatternAnalysisTool** - Spending pattern detection and anomaly flagging
+- **QueryExplanationService** - Transparent AI query interpretation
+- **AIQueryController** - REST endpoints for transaction queries, balance queries, and pattern analysis
+- **MCP Tool Registration** - AI tools available via Model Context Protocol
+
+#### RegTech Domain (NEW Services)
+- **FinCENAdapter** - US BSA E-Filing (CTR, SAR, CMIR, FBAR) with threshold validation
+- **ESMAAdapter** - EU FIRDS/TREM (MiFID Transaction, EMIR, SFTR) with ISIN/LEI/MIC validation
+- **FCAAdapter** - UK Gabriel (MiFID Transaction, REP-CRIM, SUP16) with FCA FRN requirement
+- **MASAdapter** - SG eServices Gateway (MAS Returns, STR) with grounds-for-suspicion validation
+- **AbstractRegulatoryAdapter** - Shared demo/sandbox behavior for all adapters
+- **MifidReportingService** - MiFID II transaction reporting (RTS 25), best execution analysis (RTS 27/28), instrument reference data (FIRDS/ANNA DSB)
+- **MicaComplianceService** - CASP authorization, crypto-asset whitepaper validation, reserve management, travel rule checking
+- **TravelRuleService** - FATF Recommendation 16 compliance with jurisdiction-specific thresholds (US $3,000 / EU EUR 1,000 / UK GBP 1,000 / SG SGD 1,500)
+- **RegTechServiceProvider** - Auto-registers all 4 jurisdiction adapters with orchestration service
+
+### API Endpoints
+
+| Category | Endpoints |
+|----------|-----------|
+| AI Queries | `POST /api/ai/query/transactions`, `POST /api/ai/query/balances`, `POST /api/ai/query/patterns` |
+| Compliance | `GET /api/regtech/compliance/summary`, `GET /api/regtech/adapters` |
+| Regulations | `GET /api/regtech/regulations/applicable` |
+| Reports | `POST /api/regtech/reports`, `GET /api/regtech/reports/{ref}/status` |
+| MiFID II | `GET /api/regtech/mifid/status` |
+| MiCA | `GET /api/regtech/mica/status`, `POST /api/regtech/mica/whitepaper/validate`, `GET /api/regtech/mica/reserves` |
+| Travel Rule | `POST /api/regtech/travel-rule/check`, `GET /api/regtech/travel-rule/thresholds` |
+
+### Testing
+- 84 new unit tests (47 adapter tests + 37 service tests)
+- All tests pass with Mockery isolation (no Redis/database dependency)
+
+---
+
 ## [2.7.0] - 2026-02-08
 
 ### 📱 Mobile Payment API & Enhanced Authentication

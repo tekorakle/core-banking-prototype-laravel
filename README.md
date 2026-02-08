@@ -1,7 +1,7 @@
 # FinAegis Core Banking Platform
 
 [![CI Pipeline](https://github.com/finaegis/core-banking-prototype-laravel/actions/workflows/ci-pipeline.yml/badge.svg)](https://github.com/finaegis/core-banking-prototype-laravel/actions/workflows/ci-pipeline.yml)
-[![Version](https://img.shields.io/badge/version-2.7.0-blue.svg)](CHANGELOG.md)
+[![Version](https://img.shields.io/badge/version-2.8.0-blue.svg)](CHANGELOG.md)
 [![License: Apache-2.0](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
 [![PHP Version](https://img.shields.io/badge/php-%3E%3D8.3-8892BF.svg)](https://php.net/)
 [![Laravel Version](https://img.shields.io/badge/Laravel-12.x-FF2D20.svg)](https://laravel.com/)
@@ -32,6 +32,8 @@ FinAegis provides the foundation for building digital banking applications. The 
 | Privacy-preserving transactions | Shamir key sharding, ZK-KYC, Proof of Innocence (v2.4.0) |
 | Tap-to-pay with stablecoins | Virtual cards (Apple/Google Pay), Gas abstraction (v2.5.0) |
 | Mobile stablecoin payments | Payment intents, Passkey auth, P2P transfers (v2.7.0) |
+| AI-powered queries | Natural language transaction queries, pattern analysis (v2.8.0) |
+| Multi-jurisdiction RegTech | MiFID II, MiCA, FATF Travel Rule, FinCEN/ESMA/FCA/MAS (v2.8.0) |
 | Learning modern architecture | Complete DDD + CQRS + Event Sourcing example |
 
 ---
@@ -171,8 +173,9 @@ See [Domain Management Guide](docs/06-DEVELOPMENT/DOMAIN_MANAGEMENT.md) for deta
 |--------|-------------|
 | **Governance** | Democratic voting, proposals, asset-weighted strategies |
 | **Lending** | P2P loans, credit scoring, risk assessment |
-| **AI Framework** | MCP server, 20+ banking tools, event-sourced interactions |
+| **AI Framework** | MCP server, 20+ banking tools, natural language queries, pattern analysis (v2.8.0) |
 | **Agent Protocol** | A2A messaging, escrow, reputation system |
+| **RegTech** | MiFID II reporting, MiCA compliance, FATF Travel Rule, 4-jurisdiction adapters (v2.8.0) |
 | **Multi-Tenancy** | Team-based isolation, tenant-aware event sourcing |
 
 ### Mobile Backend (v2.4.0+)
