@@ -1194,7 +1194,7 @@ main ─────────●─────────●─────
 
 ---
 
-## Version 2.5.0 - Mobile App Launch (IN PROGRESS)
+## Version 2.5.0 - Mobile App Launch ✅ COMPLETED
 
 **Target**: Q1 2026
 **Theme**: Consumer-Ready Mobile Experience
@@ -1303,7 +1303,82 @@ GET    /api/v1/trustcert/verify/{token} # Verify presentation
 
 ---
 
-## Version 2.6.0 - Platform Completion (PLANNED)
+## Version 2.6.0 - Privacy Layer & ERC-4337 Relayer ✅ COMPLETED
+
+**Release Date**: February 2, 2026
+**Theme**: Mobile Backend Privacy & Account Abstraction
+
+### Achievements
+
+| Category | Deliverables |
+|----------|--------------|
+| Privacy Domain | Merkle Trees, Delegated Proofs, SRS Manifest |
+| Relayer Domain | Smart Accounts, Gas Station, UserOp Signing |
+| Security | Biometric JWT, HSM ECDSA, Balance Checking |
+| Quality | Security audit hardening, comprehensive tests |
+
+### Delivered Features
+- **MerkleTreeService** - Real-time privacy pool state synchronization
+- **DelegatedProofService** - Server-side ZK proof generation for mobile
+- **SrsManifestService** - ZK circuit SRS file management
+- **SmartAccountService** - ERC-4337 smart account deployment
+- **GasStationService** - Enhanced with initCode support
+- **UserOperationSigningService** - Auth shard signing with biometric verification
+- **BiometricJWTService** - JWT token verification for UserOp signing
+- **WalletBalanceService** - Production-ready balance checking
+
+---
+
+## Version 2.7.0 - Mobile Payment API & Enhanced Authentication ✅ COMPLETED
+
+**Release Date**: February 8, 2026
+**Theme**: Complete Mobile Payment Infrastructure
+
+### Achievements
+
+| Category | Deliverables |
+|----------|--------------|
+| MobilePayment Domain | Payment Intents, Receipts, Activity Feed, Network Status |
+| Authentication | WebAuthn/Passkey challenge-response endpoints |
+| Wallet | P2P transfer helpers (address validation, name resolution, fee quotes) |
+| TrustCert | Certificate details and PDF export for mobile |
+| Security | Response shape alignment, race condition fixes, idempotency |
+| Tests | 17 WalletTransfer + 10 Passkey + 78 MobilePayment tests |
+
+### Delivered Features
+
+#### MobilePayment Domain (NEW - 10 PRs)
+- **PaymentIntentService** - Full payment lifecycle with state machine
+- **ReceiptService** - Shareable receipts with Redis caching and share URLs
+- **ActivityFeedService** - Cursor-paginated feed with type filters
+- **ReceiveAddressService** - Deposit address generation per network/asset
+- **NetworkAvailabilityService** - Real-time network status
+- **FeeEstimationService** - Gas cost estimation with shield surcharges
+- **CertificateExportService** - Mobile-spec certificate details and PDF export
+
+#### Authentication
+- **PasskeyAuthenticationService** - WebAuthn/FIDO2 with ECDSA P-256 verification
+- Passkey registration and credential management on MobileDevice model
+
+#### Wallet P2P Transfer
+- **WalletTransferService** - Address validation, ENS/SNS resolution, fee quoting
+- Base58 address validation for Solana and Tron networks
+
+### API Endpoints (v2.7.0)
+
+| Category | Endpoints |
+|----------|-----------|
+| Payment Intents | `POST /v1/payments/intents`, `GET /{id}`, `POST /{id}/submit`, `POST /{id}/cancel` |
+| Activity Feed | `GET /v1/activity` |
+| Transactions | `GET /v1/transactions/{txId}`, `POST /{txId}/receipt` |
+| Wallet | `GET /v1/wallet/receive`, `GET /v1/wallet/validate-address`, `POST /v1/wallet/resolve-name`, `POST /v1/wallet/quote` |
+| Network | `GET /v1/networks/status` |
+| Passkey | `POST /v1/auth/passkey/challenge`, `POST /v1/auth/passkey/authenticate` |
+| TrustCert | `GET /v1/trustcert/{certId}/certificate`, `POST /{certId}/export-pdf` |
+
+---
+
+## Version 2.8.0 - Platform Completion (PLANNED)
 
 **Target**: Q2 2026
 **Theme**: Complete v2.3.0 Deferred Features + Production Hardening
@@ -1358,7 +1433,7 @@ GET    /api/v1/trustcert/verify/{token} # Verify presentation
 
 ---
 
-*Document Version: 2.5*
+*Document Version: 2.7*
 *Created: January 11, 2026*
-*Updated: February 1, 2026 (v2.4.0 Released)*
-*Next Review: v2.5.0 Implementation*
+*Updated: February 8, 2026 (v2.7.0 Released)*
+*Next Review: v2.8.0 Implementation*

@@ -1,7 +1,7 @@
 # FinAegis Development Continuation Guide
 
 > **Purpose**: Master handoff document for session continuity. **READ THIS FIRST** when resuming development.
-> **Last Updated**: February 6, 2026 (v2.6.0 Released with security hardening; v2.7.0 planning next)
+> **Last Updated**: February 8, 2026 (v2.7.0 Released; v2.8.0 planning next)
 
 ---
 
@@ -26,9 +26,9 @@ git branch --show-current
 | Current Branch | `main` |
 | Open PRs | None |
 | Open Issues | None |
-| Last Action | v2.6.0 security hardening merged (PR #382), Serena memory optimization |
-| Next Action | Plan and implement v2.7.0 (AI Query Endpoints, RegTech Adapters, SDK Generation, BaaS) |
-| Session Date | February 6, 2026 |
+| Last Action | v2.7.0 released (Mobile Payment API, Passkey Auth, P2P Transfer, PRs #387-#396) |
+| Next Action | Plan and implement v2.8.0 (AI Query Endpoints, RegTech Adapters, SDK Generation, BaaS) |
+| Session Date | February 8, 2026 |
 
 ### Recent Commits (as of Feb 6, 2026)
 - `f41f6946` feat(relayer): Add production-ready balance checking for gas station (#381)
@@ -75,7 +75,8 @@ git branch --show-current
 | **v2.4.0** | ✅ RELEASED | Privacy & Identity | Key Management, Shamir's Secret Sharing, ZK-KYC, Commerce, TrustCert |
 | **v2.5.0** | ✅ RELEASED | Mobile App Launch | Expo/React Native mobile app (separate repo) |
 | **v2.6.0** | ✅ RELEASED | Privacy Layer & Relayer | Merkle Trees, Smart Accounts, Delegated Proofs, UserOp Signing, Security Hardening (PR #382) |
-| **v2.7.0** | 📋 PLANNED | AI Query & BaaS | AI Query Endpoints, RegTech Adapters, SDK Generation, BaaS Implementation |
+| **v2.7.0** | ✅ RELEASED | Mobile Payment API | Payment Intents, Passkey Auth, P2P Transfer, TrustCert Export, Security Hardening (PRs #387-#396) |
+| **v2.8.0** | 📋 PLANNED | AI Query & BaaS | AI Query Endpoints, RegTech Adapters, SDK Generation, BaaS Implementation |
 
 ### v2.2.0 Completed PRs (All Merged)
 - #347: Mobile Backend Core (Device, Biometric, Push)
@@ -157,6 +158,14 @@ git branch --show-current
 | Verifiable Credentials | `VerifiableCredentialService` | `app/Domain/TrustCert/Services/` |
 | Certificate Authority | `CertificateAuthorityService` | `app/Domain/TrustCert/Services/` |
 | Soulbound Tokens | `SoulboundTokenService` | `app/Domain/Commerce/Services/` |
+| Payment Intents | `PaymentIntentService` | `app/Domain/MobilePayment/Services/` |
+| Receipts | `ReceiptService` | `app/Domain/MobilePayment/Services/` |
+| Activity Feed | `ActivityFeedService` | `app/Domain/MobilePayment/Services/` |
+| Receive Address | `ReceiveAddressService` | `app/Domain/MobilePayment/Services/` |
+| Network Status | `NetworkAvailabilityService` | `app/Domain/MobilePayment/Services/` |
+| Passkey Auth | `PasskeyAuthenticationService` | `app/Domain/Mobile/Services/` |
+| Wallet Transfer | `WalletTransferService` | `app/Domain/Wallet/Services/` |
+| Certificate Export | `CertificateExportService` | `app/Domain/TrustCert/Services/` |
 
 ### MCP Tools (Already Exist)
 - `AgentPaymentTool` - Payment operations
@@ -274,6 +283,7 @@ app/Domain/
 ├── Mobile/         # Mobile wallet backend (v2.2.0)
 ├── Monitoring/     # Distributed tracing, metrics
 ├── Privacy/        # ZK-KYC, Merkle Trees, Delegated Proofs (v2.4.0+v2.6.0)
+├── MobilePayment/  # Payment Intents, Receipts, Activity Feed (v2.7.0)
 ├── Relayer/        # ERC-4337 Gas Abstraction, Smart Accounts (v2.6.0)
 ├── Stablecoin/     # Token lifecycle
 ├── Treasury/       # Portfolio, yield optimization

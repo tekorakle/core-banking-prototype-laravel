@@ -94,17 +94,19 @@ Welcome to the FinAegis documentation. This guide will help you understand, use,
 
 ## Platform Status
 
-- **Version**: 2.6.0 (Privacy Layer & ERC-4337 Relayer with Security Enhancements)
+- **Version**: 2.7.0 (Mobile Payment API & Enhanced Authentication)
 - **Status**: Demonstration Prototype
-- **Last Updated**: February 5, 2026
+- **Last Updated**: February 8, 2026
 
-### Current Release Features (v2.6.0)
-- **Privacy Pool**: Merkle Tree infrastructure with domain separation, Delegated proof generation
-- **Relayer**: ERC-4337 Smart Accounts, Gas abstraction, UserOp signing with Biometric JWT verification, Production-ready balance checking
-- **Mobile Support**: SRS manifest for ZK circuits, WebSocket Merkle updates, Biometric authentication for UserOp signing
-- **Security**: Comprehensive audit hardening, encrypted private inputs, HMAC-verified SBTs
+### Current Release Features (v2.7.0)
+- **MobilePayment Domain**: Payment Intent lifecycle, receipt generation, activity feed, network status
+- **Authentication**: WebAuthn/Passkey challenge-response with ECDSA P-256 verification
+- **P2P Transfers**: Address validation (Solana/Tron), ENS/SNS name resolution, fee quotes
+- **TrustCert**: Certificate details and PDF export for mobile consumption
+- **Security**: Response shape alignment, race condition fixes, idempotency support
 
 ### Previous Releases
+- v2.6.0: Privacy Layer & ERC-4337 (Merkle Trees, Smart Accounts, Gas Station, UserOp Signing)
 - v2.5.0: Mobile App Launch (Expo/React Native, separate repository)
 - v2.4.0: Privacy & Identity (Key Management, ZK-KYC, Commerce, TrustCert)
 - v2.3.0: AI-Powered Banking, RegTech Automation, Embedded Finance (BaaS)

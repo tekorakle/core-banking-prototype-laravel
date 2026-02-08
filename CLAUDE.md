@@ -20,7 +20,8 @@ git status && git branch --show-current
 ### Version Status
 | Version | Status | Key Changes |
 |---------|--------|-------------|
-| v2.7.0 | 📋 Planned | AI Query Endpoints, RegTech Adapters, SDK Generation, BaaS Implementation |
+| v2.8.0 | 📋 Planned | AI Query Endpoints, RegTech Adapters, SDK Generation, BaaS Implementation |
+| v2.7.0 | ✅ Released | Mobile Payment API, Passkey Auth, P2P Transfer Helpers, TrustCert Export, Security Hardening |
 | v2.6.0 | ✅ Released | Privacy Layer & ERC-4337: Merkle Trees, Smart Accounts, Delegated Proofs, UserOp Signing with Biometric JWT, Production-Ready Gas Station |
 | v2.5.0 | ✅ Released | Mobile App Launch (Expo/React Native, separate repo) |
 | v2.4.0 | ✅ Released | Privacy & Identity: Key Management, Privacy Layer, Commerce, TrustCert |
@@ -96,6 +97,7 @@ app/
 │   ├── Commerce/     # SBT, Merchants, Attestations (v2.4.0)
 │   ├── TrustCert/    # W3C VCs, Certificate Authority (v2.4.0)
 │   ├── Relayer/      # ERC-4337 Gas Abstraction, Smart Accounts (v2.6.0)
+│   ├── MobilePayment/# Payment Intents, Receipts, Activity Feed (v2.7.0)
 │   └── Shared/       # CQRS interfaces, events
 ├── Infrastructure/   # CQRS bus implementations
 ├── Http/Controllers/ # REST API
@@ -138,6 +140,14 @@ app/
 | Merkle Trees | `MerkleTreeService` (Privacy) |
 | Delegated Proofs | `DelegatedProofService` (Privacy) |
 | SRS Manifest | `SrsManifestService` (Privacy) |
+| Payment Intents | `PaymentIntentService` (MobilePayment) |
+| Receipts | `ReceiptService` (MobilePayment) |
+| Activity Feed | `ActivityFeedService` (MobilePayment) |
+| Receive Address | `ReceiveAddressService` (MobilePayment) |
+| Network Status | `NetworkAvailabilityService` (MobilePayment) |
+| Passkey Auth | `PasskeyAuthenticationService` (Mobile) |
+| Wallet Transfer | `WalletTransferService` (Wallet) |
+| Certificate Export | `CertificateExportService` (TrustCert) |
 
 ---
 

@@ -121,7 +121,7 @@ describe('PasskeyAuthenticationService', function (): void {
 
             expect($result)->not->toBeNull();
             expect($result['token'])->toBeString()->not->toBeEmpty();
-            expect($result['expires_at'])->toBeInstanceOf(\Carbon\Carbon::class);
+            expect($result['expires_at'])->toBeInstanceOf(Carbon\Carbon::class);
             expect($result['session_id'])->not->toBeEmpty();
         });
 
@@ -225,7 +225,7 @@ describe('PasskeyAuthenticationService', function (): void {
             config(['mobile.security.max_biometric_failures' => 1]);
 
             // Create a failure record to trigger blocking
-            \App\Domain\Mobile\Models\BiometricFailure::create([
+            App\Domain\Mobile\Models\BiometricFailure::create([
                 'mobile_device_id' => $this->device->id,
                 'failure_reason'   => 'passkey_test_failure',
                 'ip_address'       => '127.0.0.1',

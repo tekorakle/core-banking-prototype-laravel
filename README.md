@@ -1,7 +1,7 @@
 # FinAegis Core Banking Platform
 
 [![CI Pipeline](https://github.com/finaegis/core-banking-prototype-laravel/actions/workflows/ci-pipeline.yml/badge.svg)](https://github.com/finaegis/core-banking-prototype-laravel/actions/workflows/ci-pipeline.yml)
-[![Version](https://img.shields.io/badge/version-2.6.0-blue.svg)](CHANGELOG.md)
+[![Version](https://img.shields.io/badge/version-2.7.0-blue.svg)](CHANGELOG.md)
 [![License: Apache-2.0](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
 [![PHP Version](https://img.shields.io/badge/php-%3E%3D8.3-8892BF.svg)](https://php.net/)
 [![Laravel Version](https://img.shields.io/badge/Laravel-12.x-FF2D20.svg)](https://laravel.com/)
@@ -31,6 +31,7 @@ FinAegis provides the foundation for building digital banking applications. The 
 | Mobile wallet backend | Biometric auth, push notifications, device mgmt (v2.2.0) |
 | Privacy-preserving transactions | Shamir key sharding, ZK-KYC, Proof of Innocence (v2.4.0) |
 | Tap-to-pay with stablecoins | Virtual cards (Apple/Google Pay), Gas abstraction (v2.5.0) |
+| Mobile stablecoin payments | Payment intents, Passkey auth, P2P transfers (v2.7.0) |
 | Learning modern architecture | Complete DDD + CQRS + Event Sourcing example |
 
 ---
@@ -184,6 +185,9 @@ See [Domain Management Guide](docs/06-DEVELOPMENT/DOMAIN_MANAGEMENT.md) for deta
 | **Gas Relayer** | ERC-4337 meta-transactions, pay fees in USDC |
 | **TrustCert** | W3C Verifiable Credentials, QR/deep link verification |
 | **Mobile** | Biometric auth, push notifications, device management |
+| **Mobile Payments** | Payment intents, activity feed, receipts, USDC on Solana/Tron (v2.7.0) |
+| **Passkey Auth** | WebAuthn/FIDO2 challenge-response authentication (v2.7.0) |
+| **P2P Transfers** | Address validation, name resolution, fee quotes (v2.7.0) |
 
 ---
 

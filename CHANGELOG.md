@@ -5,6 +5,95 @@ All notable changes to the FinAegis Core Banking Platform will be documented in 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.7.0] - 2026-02-08
+
+### 📱 Mobile Payment API & Enhanced Authentication
+
+Complete mobile payment infrastructure with stablecoin payments, real-time activity feeds, WebAuthn/Passkey authentication, and P2P transfer helpers. This release provides all backend APIs required for the mobile wallet app's payment and send flows.
+
+### Highlights
+
+| Feature | Description | PRs |
+|---------|-------------|-----|
+| Mobile Payment Domain | Full domain with models, enums, migrations, state machine | #387 |
+| Payment Intent API | Create, submit, cancel, poll payment lifecycle | #388 |
+| Real-time Activity | WebSocket events, cursor-paginated activity feed | #389 |
+| Wallet Receive | Deposit address generation for Solana/Tron | #390 |
+| Receipt Generation | Shareable receipts with PDF export support | #391 |
+| TrustCert Export | Certificate details and PDF export for mobile | #392 |
+| Security Hardening | Race condition fixes, API spec compliance | #393 |
+| Response Alignment | Mobile-spec response shapes, idempotency support | #394 |
+| Passkey Authentication | WebAuthn/FIDO2 challenge-response auth | #395 |
+| P2P Transfer Helpers | Address validation, name resolution, fee quotes | #396 |
+
+### Added
+
+#### MobilePayment Domain (NEW)
+- **PaymentIntent** model - Full payment lifecycle with state machine (CREATED → AWAITING_AUTH → SUBMITTING → PENDING → CONFIRMED/FAILED/CANCELLED/EXPIRED)
+- **PaymentReceipt** model - Shareable receipts with public IDs and share tokens
+- **ActivityFeedItem** model - Unified activity feed with cursor-based pagination
+- **PaymentIntentService** - Merchant validation, fee estimation, state transitions
+- **ReceiptService** - Receipt generation with Redis caching and share URLs
+- **ActivityFeedService** - Cursor-paginated feed with type filters (All/Income/Expenses)
+- **ReceiveAddressService** - Deposit address generation per network/asset
+- **NetworkAvailabilityService** - Real-time network status for Solana and Tron
+- **FeeEstimationService** - Gas cost estimation with shield-enabled surcharges
+- **ExpireStalePaymentIntents** job - Background expiration with chunk processing
+- **PaymentStatusChanged** broadcast event - WebSocket real-time updates
+- **PaymentNetwork** enum - Solana + Tron with address patterns, explorer URLs
+- **PaymentAsset** enum - USDC with decimals configuration
+- **PaymentIntentStatus** enum - Full state machine with transition validation
+
+#### Authentication
+- **PasskeyAuthenticationService** - WebAuthn/FIDO2 authentication with ECDSA P-256 signature verification
+- **PasskeyController** - Challenge generation and assertion verification endpoints
+- Passkey registration and credential management on MobileDevice model
+- Rate limiting and device blocking for failed passkey attempts
+
+#### Wallet Transfer (P2P Send Flow)
+- **WalletTransferService** - Address validation, ENS/SNS name resolution, fee quoting
+- **WalletTransferController** - Three endpoints for mobile send flow
+- Base58 address validation for Solana (32-44 chars) and Tron (T-prefixed, 34 chars)
+
+#### TrustCert Enhancements
+- **CertificateExportService** - Mobile-spec certificate details and PDF export
+- Certificate details endpoint with verification status, scope, QR payload
+
+#### Security & Quality
+- HSM ECDSA signing support for hardware security modules
+- Biometric JWT verification for UserOperation signing
+- Production-ready balance checking for gas station
+- Comprehensive security audit hardening (5 findings resolved)
+- 319+ new domain unit tests (KeyManagement, Privacy, AI, Batch, Wallet)
+
+### API Endpoints
+
+| Category | Endpoints |
+|----------|-----------|
+| Payment Intents | `POST /v1/payments/intents`, `GET /{intentId}`, `POST /{intentId}/submit`, `POST /{intentId}/cancel` |
+| Activity Feed | `GET /v1/activity?cursor=...&type=all` |
+| Transactions | `GET /v1/transactions/{txId}`, `POST /{txId}/receipt` |
+| Wallet Receive | `GET /v1/wallet/receive?asset=USDC&network=SOLANA` |
+| Network Status | `GET /v1/networks/status` |
+| Passkey Auth | `POST /v1/auth/passkey/challenge`, `POST /v1/auth/passkey/authenticate` |
+| P2P Helpers | `GET /v1/wallet/validate-address`, `POST /v1/wallet/resolve-name`, `POST /v1/wallet/quote` |
+| TrustCert | `GET /v1/trustcert/{certId}/certificate`, `POST /{certId}/export-pdf` |
+
+### Security
+- WebAuthn signature verification with OpenSSL ECDSA P-256
+- Idempotency key support (`X-Idempotency-Key` header) for offline queue resilience
+- Route-level rate limiting (throttle:10,1) on authentication endpoints
+- Device blocking after repeated failed passkey attempts
+- Race condition fixes in payment intent state transitions
+- Input validation bounds checking on all new endpoints
+
+### Fixed
+- Payment intent response shapes aligned with mobile specification
+- Certificate export response aligned with mobile-spec fields
+- Stale payment intent expiration with per-intent error isolation
+
+---
+
 ## [2.6.0] - 2026-02-02
 
 ### 🔐 Privacy Layer & Enhanced ERC-4337 Relayer for Mobile
