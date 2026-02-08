@@ -34,7 +34,7 @@ trait HasApiScopes
     /**
      * Get scopes from request or use defaults.
      *
-     * @param  array|null  $requestedScopes
+     * @param  array<string>|null  $requestedScopes
      * @param  User  $user
      * @return array<string>
      */
@@ -55,7 +55,7 @@ trait HasApiScopes
      *
      * @param  User  $user
      * @param  string  $tokenName
-     * @param  array|null  $requestedScopes
+     * @param  array<string>|null  $requestedScopes
      * @return string
      */
     protected function createTokenWithScopes(User $user, string $tokenName, ?array $requestedScopes = null): string

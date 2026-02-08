@@ -8,6 +8,10 @@ use App\Domain\MobilePayment\Enums\PaymentNetwork;
 
 final readonly class FeeEstimate
 {
+    /**
+     * @param  numeric-string  $amount
+     * @param  numeric-string  $usdApprox
+     */
     public function __construct(
         public string $nativeAsset,
         public string $amount,
