@@ -40,8 +40,9 @@ class CacheServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        // Set default cache store to Redis if available
-        if (config('database.redis.default')) {
+        // Only override to Redis if CACHE_STORE env is not explicitly set
+        // and Redis connection is configured
+        if (env('CACHE_STORE') === null && config('database.redis.default')) {
             config(['cache.default' => 'redis']);
         }
     }
