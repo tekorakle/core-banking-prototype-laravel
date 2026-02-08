@@ -3,6 +3,7 @@
 use App\Http\Controllers\Api\AccountBalanceController;
 use App\Http\Controllers\Api\AccountController;
 use App\Http\Controllers\Api\AgentsDiscoveryController;
+use App\Http\Controllers\Api\AI\AIQueryController;
 use App\Http\Controllers\Api\AIAgentController;
 use App\Http\Controllers\Api\AssetController;
 use App\Http\Controllers\Api\Auth\EmailVerificationController;
@@ -163,6 +164,12 @@ Route::prefix('ai')->middleware(['auth:sanctum', 'check.token.expiration', 'api.
         Route::get('/tools/{tool}', [MCPToolsController::class, 'getToolDetails'])->name('api.ai.mcp.tool.details');
         Route::post('/tools/{tool}/execute', [MCPToolsController::class, 'executeTool'])->name('api.ai.mcp.tool.execute');
         Route::post('/register', [MCPToolsController::class, 'registerTool'])->name('api.ai.mcp.register');
+    });
+
+    // AI Query endpoints (natural language transaction queries)
+    Route::prefix('query')->group(function () {
+        Route::post('/transactions', [AIQueryController::class, 'transactions'])->name('api.ai.query.transactions');
+        Route::post('/spending-analysis', [AIQueryController::class, 'spendingAnalysis'])->name('api.ai.query.spending-analysis');
     });
 });
 
