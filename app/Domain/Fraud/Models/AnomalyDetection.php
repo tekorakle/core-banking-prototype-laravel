@@ -46,6 +46,9 @@ class AnomalyDetection extends Model
         'fraud_case_id',
         'feedback_outcome',
         'feedback_notes',
+        'reviewed_by',
+        'reviewed_at',
+        'previous_status',
     ];
 
     protected $casts = [
@@ -61,6 +64,7 @@ class AnomalyDetection extends Model
         'context_snapshot'  => 'array',
         'baseline_snapshot' => 'array',
         'is_real_time'      => 'boolean',
+        'reviewed_at'       => 'datetime',
     ];
 
     // Relationships
@@ -83,6 +87,11 @@ class AnomalyDetection extends Model
     public function fraudCase(): BelongsTo
     {
         return $this->belongsTo(FraudCase::class, 'fraud_case_id');
+    }
+
+    public function reviewer(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'reviewed_by');
     }
 
     protected static function newFactory(): \Database\Factories\AnomalyDetectionFactory
@@ -120,11 +129,14 @@ class AnomalyDetection extends Model
     /**
      * Record analyst feedback on this anomaly detection.
      */
-    public function recordFeedback(string $outcome, ?string $notes = null): void
+    public function recordFeedback(string $outcome, ?string $notes = null, ?int $reviewerId = null): void
     {
         $this->update([
+            'previous_status'  => $this->status?->value,
             'feedback_outcome' => $outcome,
             'feedback_notes'   => $notes,
+            'reviewed_by'      => $reviewerId,
+            'reviewed_at'      => now(),
             'status'           => $outcome === 'false_positive'
                 ? AnomalyStatus::FalsePositive
                 : AnomalyStatus::Resolved,
