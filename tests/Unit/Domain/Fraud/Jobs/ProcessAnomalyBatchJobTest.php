@@ -54,11 +54,11 @@ class ProcessAnomalyBatchJobTest extends TestCase
                 'persisted'     => 0,
             ]);
 
-        $job = new ProcessAnomalyBatchJob([$transaction->id], 'test-pipeline-123');
+        $job = new ProcessAnomalyBatchJob([$transaction->id], 'test-pipeline');
         $job->handle($orchestrator);
 
-        // No assertion needed beyond the mock expectation
-        $this->assertTrue(true);
+        // Mockery verifies the expectation was met in tearDown
+        $this->addToAssertionCount(1);
     }
 
     #[Test]
@@ -71,7 +71,8 @@ class ProcessAnomalyBatchJobTest extends TestCase
         $job = new ProcessAnomalyBatchJob([999999], 'test-pipeline-missing');
         $job->handle($orchestrator);
 
-        $this->assertTrue(true);
+        // Mockery verifies shouldNotReceive in tearDown
+        $this->addToAssertionCount(1);
     }
 
     #[Test]
@@ -82,11 +83,13 @@ class ProcessAnomalyBatchJobTest extends TestCase
         $tx1 = Transaction::factory()->create(['account_id' => $account->id, 'amount' => 100]);
         $tx2 = Transaction::factory()->create(['account_id' => $account->id, 'amount' => 200]);
 
+        $callCount = 0;
         $orchestrator = Mockery::mock(AnomalyDetectionOrchestrator::class);
         $orchestrator->shouldReceive('detectAnomalies')
             ->twice()
-            ->andReturnUsing(function ($context) {
-                if (($context['amount'] ?? 0) === 100.0) {
+            ->andReturnUsing(function ($context) use (&$callCount) {
+                $callCount++;
+                if ($callCount === 1) {
                     throw new RuntimeException('Test failure');
                 }
 
@@ -101,8 +104,8 @@ class ProcessAnomalyBatchJobTest extends TestCase
         $job = new ProcessAnomalyBatchJob([$tx1->id, $tx2->id], 'test-pipeline-fail');
         $job->handle($orchestrator);
 
-        // Should not throw - graceful handling of individual failures
-        $this->assertTrue(true);
+        // Both transactions were attempted despite the first one failing
+        $this->assertEquals(2, $callCount);
     }
 
     #[Test]

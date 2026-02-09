@@ -9,6 +9,7 @@ use App\Domain\Fraud\Enums\AnomalyType;
 use App\Domain\Fraud\Enums\DetectionMethod;
 use App\Domain\Fraud\Events\AnomalyDetected;
 use App\Domain\Fraud\Models\AnomalyDetection;
+use App\Domain\Fraud\Models\BehavioralProfile;
 use Exception;
 use Illuminate\Support\Facades\Log;
 
@@ -40,19 +41,22 @@ class AnomalyDetectionOrchestrator
             ];
         }
 
+        // Look up behavioral profile for the user
+        $profile = $userId ? BehavioralProfile::where('user_id', $userId)->first() : null;
+
         $results = [];
         $highestScore = 0.0;
         $hasCritical = false;
 
         // 1. Statistical anomaly detection
-        $statistical = $this->runStatisticalDetection($context);
+        $statistical = $this->runStatisticalDetection($context, $profile);
         if ($statistical) {
             $results[] = $statistical;
             $highestScore = max($highestScore, $statistical['score']);
         }
 
         // 2. Behavioral anomaly detection
-        $behavioral = $this->runBehavioralDetection($context);
+        $behavioral = $this->runBehavioralDetection($context, $profile);
         if ($behavioral) {
             $results[] = $behavioral;
             $highestScore = max($highestScore, $behavioral['score']);
@@ -108,10 +112,10 @@ class AnomalyDetectionOrchestrator
     /**
      * Run statistical anomaly detection.
      */
-    protected function runStatisticalDetection(array $context): ?array
+    protected function runStatisticalDetection(array $context, ?BehavioralProfile $profile): ?array
     {
         try {
-            $result = $this->statisticalService->analyze($context);
+            $result = $this->statisticalService->analyze($context, $profile);
             $highestScore = 0.0;
             $highestMethod = null;
 
@@ -144,21 +148,24 @@ class AnomalyDetectionOrchestrator
     /**
      * Run behavioral anomaly detection.
      */
-    protected function runBehavioralDetection(array $context): ?array
+    protected function runBehavioralDetection(array $context, ?BehavioralProfile $profile): ?array
     {
         try {
-            $profile = $context['behavioral_profile'] ?? null;
-            if (! $profile) {
+            if (! $profile || ! $profile->is_established) {
                 return null;
             }
 
-            $adaptiveResult = $this->behavioralService->computeAdaptiveThresholds($profile, $context);
-            $driftResult = $this->behavioralService->detectDrift($profile, $context);
+            // Compute adaptive thresholds and check for breaches
+            $thresholds = $this->behavioralService->computeAdaptiveThresholds($profile);
+            $breaches = $this->detectThresholdBreaches($context, $thresholds);
 
-            $adaptiveScore = 0.0;
-            if (! empty($adaptiveResult['breaches'])) {
-                $adaptiveScore = min(count($adaptiveResult['breaches']) * 25.0, 80.0);
-            }
+            $adaptiveScore = min(count($breaches) * 25.0, 80.0);
+
+            // Drift detection using recent transaction history
+            $recentTransactions = $context['transaction_history'] ?? [];
+            $driftResult = ! empty($recentTransactions)
+                ? $this->behavioralService->detectDrift($profile, $recentTransactions)
+                : ['drifted' => false, 'drift_score' => 0.0, 'details' => []];
 
             $driftScore = ($driftResult['drift_score'] ?? 0) * 100;
             $highestScore = max($adaptiveScore, $driftScore);
@@ -175,9 +182,10 @@ class AnomalyDetectionOrchestrator
                 'anomaly_type'     => AnomalyType::Behavioral,
                 'detection_method' => $method,
                 'score'            => round($highestScore, 2),
-                'confidence'       => $this->calculateConfidence($highestScore, ['adaptive' => $adaptiveResult, 'drift' => $driftResult]),
+                'confidence'       => $this->calculateConfidence($highestScore, ['adaptive' => $thresholds, 'drift' => $driftResult]),
                 'details'          => [
-                    'adaptive_thresholds' => $adaptiveResult,
+                    'adaptive_thresholds' => $thresholds,
+                    'breaches'            => $breaches,
                     'drift_detection'     => $driftResult,
                 ],
             ];
@@ -309,6 +317,37 @@ class AnomalyDetectionOrchestrator
 
             return null;
         }
+    }
+
+    /**
+     * Detect which adaptive thresholds are breached by the current context.
+     *
+     * @return array<int, array{metric: string, value: float, threshold: float}>
+     */
+    protected function detectThresholdBreaches(array $context, array $thresholds): array
+    {
+        $breaches = [];
+        $amount = (float) ($context['amount'] ?? 0);
+
+        if ($amount > ($thresholds['amount_upper'] ?? PHP_FLOAT_MAX)) {
+            $breaches[] = ['metric' => 'amount_high', 'value' => $amount, 'threshold' => $thresholds['amount_upper']];
+        }
+
+        if ($amount > 0 && $amount < ($thresholds['amount_lower'] ?? 0)) {
+            $breaches[] = ['metric' => 'amount_low', 'value' => $amount, 'threshold' => $thresholds['amount_lower']];
+        }
+
+        $dailyCount = (int) ($context['daily_transaction_count'] ?? 0);
+        if ($dailyCount > ($thresholds['daily_count_max'] ?? PHP_INT_MAX)) {
+            $breaches[] = ['metric' => 'daily_count', 'value' => (float) $dailyCount, 'threshold' => (float) $thresholds['daily_count_max']];
+        }
+
+        $dailyVolume = (float) ($context['daily_transaction_volume'] ?? 0);
+        if ($dailyVolume > ($thresholds['daily_volume_max'] ?? PHP_FLOAT_MAX)) {
+            $breaches[] = ['metric' => 'daily_volume', 'value' => $dailyVolume, 'threshold' => $thresholds['daily_volume_max']];
+        }
+
+        return $breaches;
     }
 
     /**

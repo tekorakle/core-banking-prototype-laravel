@@ -6,6 +6,7 @@ namespace App\Domain\Fraud\Jobs;
 
 use App\Domain\Account\Models\Transaction;
 use App\Domain\Fraud\Services\AnomalyDetectionOrchestrator;
+use DateTimeInterface;
 use Exception;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -50,17 +51,22 @@ class ProcessAnomalyBatchJob implements ShouldQueue
                 $account = $transaction->account;
                 $user = $account?->user;
 
+                $eventProps = is_array($transaction->event_properties) ? $transaction->event_properties : [];
+                $metaData = is_array($transaction->meta_data) ? $transaction->meta_data : [];
+
                 $context = [
-                    'amount' => (float) $transaction->amount,
-                    'type'   => $transaction->type ?? 'unknown',
-                    'user'   => $user ? [
-                        'id'      => $user->id,
-                        'country' => $user->country ?? null,
-                    ] : [],
-                    'daily_transaction_count'  => 0,
-                    'daily_transaction_volume' => 0,
-                    'pipeline_run_id'          => $this->pipelineRunId,
+                    'amount'          => (float) ($eventProps['amount'] ?? 0),
+                    'type'            => $metaData['type'] ?? 'unknown',
+                    'pipeline_run_id' => $this->pipelineRunId,
                 ];
+
+                if ($transaction->created_at) {
+                    $createdAt = $transaction->created_at instanceof DateTimeInterface
+                        ? $transaction->created_at
+                        : \Carbon\Carbon::parse($transaction->created_at);
+                    $context['hour_of_day'] = $createdAt->hour;
+                    $context['day_of_week'] = $createdAt->dayOfWeek;
+                }
 
                 $result = $orchestrator->detectAnomalies(
                     $context,
