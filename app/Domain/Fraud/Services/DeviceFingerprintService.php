@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Domain\Fraud\Services;
 
 use App\Domain\Fraud\Models\DeviceFingerprint;
@@ -411,18 +413,6 @@ class DeviceFingerprintService
             }
         }
 
-        // Analyze mouse patterns
-        if (isset($newBiometrics['mouse_patterns'])) {
-            $mouseAnomaly = $this->analyzeMousePattern(
-                $device->mouse_patterns ?? [],
-                $newBiometrics['mouse_patterns']
-            );
-
-            if ($mouseAnomaly) {
-                $anomalies[] = 'mouse_pattern_anomaly';
-            }
-        }
-
         return $anomalies;
     }
 
@@ -443,21 +433,6 @@ class DeviceFingerprintService
         $deviation = abs($historicalAvg - $currentAvg) / $historicalAvg;
 
         return $deviation > 0.5; // 50% deviation threshold
-    }
-
-    /**
-     * Analyze mouse pattern for anomalies.
-     */
-    protected function analyzeMousePattern(array $historical, array $current): bool
-    {
-        if (empty($historical) || empty($current)) {
-            return false;
-        }
-
-        // Analyze movement speed and acceleration patterns
-        // In production, use more sophisticated analysis
-
-        return false;
     }
 
     /**

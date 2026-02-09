@@ -116,4 +116,18 @@ class AnomalyDetection extends Model
             default      => 'low',
         };
     }
+
+    /**
+     * Record analyst feedback on this anomaly detection.
+     */
+    public function recordFeedback(string $outcome, ?string $notes = null): void
+    {
+        $this->update([
+            'feedback_outcome' => $outcome,
+            'feedback_notes'   => $notes,
+            'status'           => $outcome === 'false_positive'
+                ? AnomalyStatus::FalsePositive
+                : AnomalyStatus::Resolved,
+        ]);
+    }
 }

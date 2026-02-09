@@ -170,7 +170,7 @@ class AnomalyDetectionOrchestrator
                 ? $this->behavioralService->detectDrift($profile, $recentTransactions)
                 : ['drifted' => false, 'drift_score' => 0.0, 'details' => []];
 
-            $driftScore = ($driftResult['drift_score'] ?? 0) * 100;
+            $driftScore = (float) ($driftResult['drift_score'] ?? 0) * 100;
             $highestScore = max($adaptiveScore, $driftScore);
 
             if ($highestScore <= 0) {
@@ -210,10 +210,10 @@ class AnomalyDetectionOrchestrator
 
             $windowScore = 0.0;
             foreach ($slidingWindows['breaches'] ?? [] as $breach) {
-                $windowScore = max($windowScore, ($breach['ratio'] ?? 1.0) * 40);
+                $windowScore = max($windowScore, (float) ($breach['ratio'] ?? 1.0) * 40);
             }
 
-            $burstScore = ($burstResult['is_burst'] ?? false) ? min(($burstResult['burst_ratio'] ?? 1.0) * 30, 80.0) : 0.0;
+            $burstScore = ($burstResult['is_burst'] ?? false) ? min((float) ($burstResult['burst_ratio'] ?? 1.0) * 30, 80.0) : 0.0;
             $highestScore = max($windowScore, $burstScore);
 
             if ($highestScore <= 0) {
@@ -275,8 +275,8 @@ class AnomalyDetectionOrchestrator
                 $ipResult = $this->deviceService->assessIpReputation($context['ip']);
                 $details['ip_reputation'] = $ipResult;
 
-                if ($ipResult['risk_score'] > $highestScore) {
-                    $highestScore = $ipResult['risk_score'];
+                if ((float) $ipResult['risk_score'] > $highestScore) {
+                    $highestScore = (float) $ipResult['risk_score'];
                     $highestMethod = DetectionMethod::IpReputation;
                 }
             }
