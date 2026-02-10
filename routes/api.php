@@ -48,6 +48,8 @@ use App\Http\Controllers\Api\TransactionMonitoringController;
 use App\Http\Controllers\Api\TransactionReversalController;
 use App\Http\Controllers\Api\TransferController;
 use App\Http\Controllers\Api\Treasury\PortfolioController;
+use App\Http\Controllers\Api\TrustCert\CertificateApplicationController;
+use App\Http\Controllers\Api\TrustCert\MobileTrustCertController;
 use App\Http\Controllers\Api\UserVotingController;
 use App\Http\Controllers\Api\VoteController;
 use App\Http\Controllers\Api\Wallet\MobileWalletController;
@@ -1408,6 +1410,55 @@ Route::prefix('v1/wallet')->name('mobile.wallet.')
         Route::post('/transactions/send', [MobileWalletController::class, 'send'])
             ->middleware('transaction.rate_limit:payment_intent')
             ->name('transactions.send');
+    });
+
+/*
+|--------------------------------------------------------------------------
+| Mobile TrustCert API (v2.10.0)
+|--------------------------------------------------------------------------
+|
+| Trust certificate endpoints for mobile: current trust level, requirements,
+| transaction limits, and certificate application CRUD.
+|
+*/
+Route::prefix('v1/trustcert')->name('mobile.trustcert.')
+    ->middleware(['auth:sanctum', 'check.token.expiration'])
+    ->group(function () {
+        Route::get('/current', [MobileTrustCertController::class, 'current'])
+            ->middleware('api.rate_limit:query')
+            ->name('current');
+        Route::get('/requirements', [MobileTrustCertController::class, 'requirements'])
+            ->middleware('api.rate_limit:query')
+            ->name('requirements');
+        Route::get('/requirements/{level}', [MobileTrustCertController::class, 'requirementsByLevel'])
+            ->middleware('api.rate_limit:query')
+            ->name('requirements.level');
+        Route::get('/limits', [MobileTrustCertController::class, 'limits'])
+            ->middleware('api.rate_limit:query')
+            ->name('limits');
+        Route::post('/check-limit', [MobileTrustCertController::class, 'checkLimit'])
+            ->middleware('api.rate_limit:query')
+            ->name('check-limit');
+
+        // Certificate applications
+        Route::post('/applications', [CertificateApplicationController::class, 'create'])
+            ->middleware('api.rate_limit:mutation')
+            ->name('applications.create');
+        Route::get('/applications/current', [CertificateApplicationController::class, 'currentApplication'])
+            ->middleware('api.rate_limit:query')
+            ->name('applications.current');
+        Route::get('/applications/{id}', [CertificateApplicationController::class, 'show'])
+            ->middleware('api.rate_limit:query')
+            ->name('applications.show');
+        Route::post('/applications/{id}/documents', [CertificateApplicationController::class, 'uploadDocuments'])
+            ->middleware('api.rate_limit:mutation')
+            ->name('applications.documents');
+        Route::post('/applications/{id}/submit', [CertificateApplicationController::class, 'submit'])
+            ->middleware('api.rate_limit:mutation')
+            ->name('applications.submit');
+        Route::post('/applications/{id}/cancel', [CertificateApplicationController::class, 'cancel'])
+            ->middleware('api.rate_limit:mutation')
+            ->name('applications.cancel');
     });
 
 /*
