@@ -14,6 +14,7 @@ return [
     App\Providers\ConsoleServiceProvider::class,
     App\Providers\CrossChainServiceProvider::class,
     App\Providers\CustodianServiceProvider::class,
+    App\Providers\DeFiServiceProvider::class,
     App\Providers\DemoServiceProvider::class,
     App\Providers\EventServiceProvider::class,
     App\Providers\ExchangeRateProviderServiceProvider::class,
