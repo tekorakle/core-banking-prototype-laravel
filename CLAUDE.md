@@ -20,6 +20,7 @@ git status && git branch --show-current
 ### Version Status
 | Version | Status | Key Changes |
 |---------|--------|-------------|
+| v3.0.0 | ✅ Released | Cross-Chain & DeFi: Bridge protocols (Wormhole/LayerZero/Axelar), DeFi connectors (Uniswap/Aave/Curve/Lido), cross-chain swaps, multi-chain portfolio |
 | v2.10.0 | ✅ Released | Mobile API Compatibility: Wallet, TrustCert, Commerce, Relayer mobile endpoints |
 | v2.9.0 | ✅ Released | BaaS Implementation, SDK Generation, Production Hardening |
 | v2.8.0 | ✅ Released | AI Query Endpoints, RegTech Adapters, MiFID II/MiCA/Travel Rule Services |
@@ -101,6 +102,8 @@ app/
 │   ├── Relayer/      # ERC-4337 Gas Abstraction, Smart Accounts (v2.6.0)
 │   ├── MobilePayment/# Payment Intents, Receipts, Activity Feed (v2.7.0)
 │   ├── RegTech/      # MiFID II, MiCA, Travel Rule, Jurisdiction Adapters (v2.8.0)
+│   ├── CrossChain/   # Bridge protocols, cross-chain swaps, multi-chain portfolio (v3.0.0)
+│   ├── DeFi/         # DEX aggregation, lending, staking, yield optimization (v3.0.0)
 │   └── Shared/       # CQRS interfaces, events
 ├── Infrastructure/   # CQRS bus implementations
 ├── Http/Controllers/ # REST API
@@ -156,6 +159,16 @@ app/
 | Travel Rule | `TravelRuleService` (RegTech) |
 | RegTech Orchestration | `RegTechOrchestrationService` (RegTech) |
 | AI Transaction Query | `TransactionQueryTool` (AI) |
+| Bridge Orchestration | `BridgeOrchestratorService` (CrossChain) |
+| Bridge Fee Comparison | `BridgeFeeComparisonService` (CrossChain) |
+| Cross-Chain Swap | `CrossChainSwapService` (CrossChain) |
+| Multi-Chain Portfolio | `MultiChainPortfolioService` (CrossChain) |
+| Cross-Chain Yield | `CrossChainYieldService` (CrossChain) |
+| Swap Aggregation | `SwapAggregatorService` (DeFi) |
+| Swap Routing | `SwapRouterService` (DeFi) |
+| DeFi Portfolio | `DeFiPortfolioService` (DeFi) |
+| DeFi Positions | `DeFiPositionTrackerService` (DeFi) |
+| Flash Loans | `FlashLoanService` (DeFi) |
 
 ---
 
