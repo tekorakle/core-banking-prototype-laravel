@@ -13,7 +13,15 @@ use App\Domain\CrossChain\Services\BridgeFeeComparisonService;
 use App\Domain\CrossChain\Services\BridgeOrchestratorService;
 use App\Domain\CrossChain\Services\BridgeTransactionTracker;
 use App\Domain\CrossChain\Services\CrossChainAssetRegistryService;
+use App\Domain\CrossChain\Services\CrossChainSwapSaga;
+use App\Domain\CrossChain\Services\CrossChainSwapService;
 use App\Domain\CrossChain\Services\CrossChainTokenMapService;
+use App\Domain\CrossChain\Services\CrossChainYieldService;
+use App\Domain\CrossChain\Services\MultiChainPortfolioService;
+use App\Domain\DeFi\Contracts\LendingProtocolInterface;
+use App\Domain\DeFi\Contracts\LiquidStakingInterface;
+use App\Domain\DeFi\Services\DeFiPortfolioService;
+use App\Domain\DeFi\Services\SwapRouterService;
 use Illuminate\Support\ServiceProvider;
 
 /**
@@ -64,6 +72,40 @@ class CrossChainServiceProvider extends ServiceProvider
 
         $this->app->singleton(CrossChainTokenMapService::class, function ($app) {
             return new CrossChainTokenMapService(
+                $app->make(CrossChainAssetRegistryService::class),
+            );
+        });
+
+        // Cross-chain + DeFi integration services
+        $this->app->singleton(CrossChainSwapSaga::class, function ($app) {
+            return new CrossChainSwapSaga(
+                $app->make(BridgeOrchestratorService::class),
+                $app->make(SwapRouterService::class),
+                $app->make(BridgeTransactionTracker::class),
+            );
+        });
+
+        $this->app->singleton(CrossChainSwapService::class, function ($app) {
+            return new CrossChainSwapService(
+                $app->make(BridgeOrchestratorService::class),
+                $app->make(SwapRouterService::class),
+                $app->make(CrossChainSwapSaga::class),
+            );
+        });
+
+        $this->app->singleton(CrossChainYieldService::class, function ($app) {
+            return new CrossChainYieldService(
+                $app->make(DeFiPortfolioService::class),
+                $app->make(BridgeOrchestratorService::class),
+                $app->make(LendingProtocolInterface::class),
+                $app->make(LiquidStakingInterface::class),
+            );
+        });
+
+        $this->app->singleton(MultiChainPortfolioService::class, function ($app) {
+            return new MultiChainPortfolioService(
+                $app->make(DeFiPortfolioService::class),
+                $app->make(BridgeTransactionTracker::class),
                 $app->make(CrossChainAssetRegistryService::class),
             );
         });
