@@ -50,6 +50,7 @@ use App\Http\Controllers\Api\TransferController;
 use App\Http\Controllers\Api\Treasury\PortfolioController;
 use App\Http\Controllers\Api\UserVotingController;
 use App\Http\Controllers\Api\VoteController;
+use App\Http\Controllers\Api\Wallet\MobileWalletController;
 use App\Http\Controllers\Api\Wallet\WalletTransferController;
 use App\Http\Controllers\Api\WorkflowMonitoringController;
 use App\Http\Controllers\StatusController;
@@ -1373,6 +1374,41 @@ Route::prefix('v1')->middleware(['auth:sanctum', 'check.token.expiration'])->gro
         ->middleware('api.rate_limit:query')
         ->name('mobile.wallet.quote');
 });
+
+/*
+|--------------------------------------------------------------------------
+| Mobile Wallet API (v2.10.0)
+|--------------------------------------------------------------------------
+|
+| Wallet endpoints for mobile home screen: tokens, balances, addresses,
+| transaction history, and send flow.
+|
+*/
+Route::prefix('v1/wallet')->name('mobile.wallet.')
+    ->middleware(['auth:sanctum', 'check.token.expiration'])
+    ->group(function () {
+        Route::get('/tokens', [MobileWalletController::class, 'tokens'])
+            ->middleware('api.rate_limit:query')
+            ->name('tokens');
+        Route::get('/balances', [MobileWalletController::class, 'balances'])
+            ->middleware('api.rate_limit:query')
+            ->name('balances');
+        Route::get('/state', [MobileWalletController::class, 'state'])
+            ->middleware('api.rate_limit:query')
+            ->name('state');
+        Route::get('/addresses', [MobileWalletController::class, 'addresses'])
+            ->middleware('api.rate_limit:query')
+            ->name('addresses');
+        Route::get('/transactions', [MobileWalletController::class, 'transactions'])
+            ->middleware('api.rate_limit:query')
+            ->name('transactions');
+        Route::get('/transactions/{id}', [MobileWalletController::class, 'transactionDetail'])
+            ->middleware('api.rate_limit:query')
+            ->name('transactions.detail');
+        Route::post('/transactions/send', [MobileWalletController::class, 'send'])
+            ->middleware('transaction.rate_limit:payment_intent')
+            ->name('transactions.send');
+    });
 
 /*
 |--------------------------------------------------------------------------
