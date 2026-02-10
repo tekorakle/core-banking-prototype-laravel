@@ -268,7 +268,7 @@ class FraudDetectionService
                 'hourly_transaction_count' => $this->getHourlyTransactionCount($user),
 
                 // Historical data
-                'user_transaction_count' => $user->transactions()->count(),
+                'user_transaction_count' => (int) $user->transactions()->count(),
                 'account_balance'        => $transaction->account->getBalance(
                     $transaction->event_properties['assetCode'] ?? 'USD'
                 ),
@@ -467,7 +467,7 @@ class FraudDetectionService
      */
     protected function getDailyTransactionVolume(User $user): float
     {
-        return Cache::remember(
+        return (float) Cache::remember(
             "user_daily_txn_volume_{$user->id}",
             60, // 1 minute cache
             function () use ($user) {
@@ -488,7 +488,7 @@ class FraudDetectionService
      */
     protected function getHourlyTransactionCount(User $user): int
     {
-        return Transaction::whereHas(
+        return (int) Transaction::whereHas(
             'account',
             function ($query) use ($user) {
                 $query->where('user_id', $user->id);
