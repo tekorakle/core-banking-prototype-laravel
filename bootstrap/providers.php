@@ -12,6 +12,7 @@ return [
     App\Providers\CacheServiceProvider::class,
     App\Providers\CardIssuanceServiceProvider::class,
     App\Providers\ConsoleServiceProvider::class,
+    App\Providers\CrossChainServiceProvider::class,
     App\Providers\CustodianServiceProvider::class,
     App\Providers\DemoServiceProvider::class,
     App\Providers\EventServiceProvider::class,
