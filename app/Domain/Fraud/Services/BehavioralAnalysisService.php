@@ -787,21 +787,17 @@ class BehavioralAnalysisService
         // Dormant reactivated: was established but no recent activity
         if ($profile->is_established && $daysSinceFirst > 90 && $avgMonthly < 1) {
             $segment = 'dormant_reactivated';
-        }
-        // New account: less than 30 days
-        elseif ($daysSinceFirst < 30) {
+        } elseif ($daysSinceFirst < 30) {
+            // New account: less than 30 days
             $segment = 'new_account';
-        }
-        // High value trader: high volume, frequent transactions
-        elseif ($avgAmount > 10000 && $avgMonthly > 20) {
+        } elseif ($avgAmount > 10000 && $avgMonthly > 20) {
+            // High value trader: high volume, frequent transactions
             $segment = 'high_value_trader';
-        }
-        // Occasional user: infrequent
-        elseif ($avgMonthly < 5) {
+        } elseif ($avgMonthly < 5) {
+            // Occasional user: infrequent
             $segment = 'occasional_user';
-        }
-        // Default: retail consumer
-        else {
+        } else {
+            // Default: retail consumer
             $segment = 'retail_consumer';
         }
 

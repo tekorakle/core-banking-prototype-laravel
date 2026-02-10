@@ -12,7 +12,7 @@ return new class () extends Migration {
         Schema::create('partner_integrations', function (Blueprint $table) {
             $table->id();
             $table->uuid('uuid')->unique();
-            $table->foreignId('partner_id')->constrained('financial_institution_partners')->cascadeOnDelete();
+            $table->foreignUuid('partner_id')->constrained('financial_institution_partners')->cascadeOnDelete();
             $table->string('category');
             $table->string('provider');
             $table->string('status')->default('pending'); // pending, active, disabled
