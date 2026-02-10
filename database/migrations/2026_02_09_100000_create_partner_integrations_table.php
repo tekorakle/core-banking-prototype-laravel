@@ -16,7 +16,7 @@ return new class () extends Migration {
             $table->string('category');
             $table->string('provider');
             $table->string('status')->default('pending'); // pending, active, disabled
-            $table->json('config')->nullable(); // encrypted at application level
+            $table->text('config')->nullable(); // encrypted at application level (text for encrypted:array cast)
             $table->string('webhook_url')->nullable();
             $table->timestamp('last_synced_at')->nullable();
             $table->unsignedInteger('error_count')->default(0);
