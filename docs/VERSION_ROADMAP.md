@@ -1105,6 +1105,7 @@ main ─────────●─────────●─────
 | **v2.9.0** | BaaS & Production Hardening | ML Anomaly Detection, BaaS Implementation, SDK Generation | ✅ Released 2026-02-10 |
 | **v2.9.1** | Production Hardening | On-Chain SBT, snarkjs, AWS KMS, Azure Key Vault, Security Audit | ✅ Released 2026-02-10 |
 | **v2.10.0** | Mobile API Compatibility | ~30 mobile-facing API endpoints, response envelope consistency, wallet/TrustCert/commerce/relayer mobile APIs | ✅ Released 2026-02-10 |
+| **v3.0.0** | Cross-Chain & DeFi | CrossChain bridges (Wormhole/LayerZero/Axelar), DeFi protocols (Uniswap/Aave/Curve/Lido), cross-chain swaps, multi-chain portfolio | ✅ Released 2026-02-10 |
 
 ---
 
@@ -1509,5 +1510,5 @@ Adds approximately 30 new mobile-facing API endpoints across wallet, TrustCert, 
 
 *Document Version: 2.10.0*
 *Created: January 11, 2026*
-*Updated: February 10, 2026 (v2.10.0 Released — Mobile API Compatibility)*
+*Updated: February 10, 2026 (v3.0.0 Released — Cross-Chain & DeFi)*
 *Next Review: v3.0.0 Planning*

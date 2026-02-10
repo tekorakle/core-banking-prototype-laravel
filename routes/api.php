@@ -1591,6 +1591,60 @@ Route::prefix('partner/v1')->name('api.partner.')->middleware('partner.auth')->g
     Route::get('/marketplace/health', [App\Http\Controllers\Api\Partner\PartnerMarketplaceController::class, 'health'])->name('marketplace.health');
 });
 
+/*
+|--------------------------------------------------------------------------
+| CrossChain Bridge & Swap API Routes (v3.0.0)
+|--------------------------------------------------------------------------
+|
+| Cross-chain bridge transfers, multi-provider quotes, and cross-chain swaps.
+|
+*/
+
+use App\Http\Controllers\Api\CrossChain\CrossChainController;
+
+Route::prefix('v1/crosschain')->name('api.crosschain.')->group(function () {
+    Route::get('/chains', [CrossChainController::class, 'chains'])->name('chains');
+
+    Route::middleware(['auth:sanctum', 'check.token.expiration'])->group(function () {
+        Route::post('/bridge/quote', [CrossChainController::class, 'bridgeQuote'])->name('bridge.quote');
+        Route::post('/bridge/initiate', [CrossChainController::class, 'bridgeInitiate'])
+            ->middleware('transaction.rate_limit:crosschain')
+            ->name('bridge.initiate');
+        Route::get('/bridge/{id}/status', [CrossChainController::class, 'bridgeStatus'])->name('bridge.status');
+        Route::post('/swap/quote', [CrossChainController::class, 'swapQuote'])->name('swap.quote');
+        Route::post('/swap/execute', [CrossChainController::class, 'swapExecute'])
+            ->middleware('transaction.rate_limit:crosschain')
+            ->name('swap.execute');
+    });
+});
+
+/*
+|--------------------------------------------------------------------------
+| DeFi Protocol API Routes (v3.0.0)
+|--------------------------------------------------------------------------
+|
+| Multi-DEX swap aggregation, lending markets, staking, yield, and portfolio.
+|
+*/
+
+use App\Http\Controllers\Api\DeFi\DeFiController;
+
+Route::prefix('v1/defi')->name('api.defi.')->group(function () {
+    Route::get('/protocols', [DeFiController::class, 'protocols'])->name('protocols');
+
+    Route::middleware(['auth:sanctum', 'check.token.expiration'])->group(function () {
+        Route::post('/swap/quote', [DeFiController::class, 'swapQuote'])->name('swap.quote');
+        Route::post('/swap/execute', [DeFiController::class, 'swapExecute'])
+            ->middleware('transaction.rate_limit:defi')
+            ->name('swap.execute');
+        Route::get('/lending/markets', [DeFiController::class, 'lendingMarkets'])->name('lending.markets');
+        Route::get('/portfolio', [DeFiController::class, 'portfolio'])->name('portfolio');
+        Route::get('/positions', [DeFiController::class, 'positions'])->name('positions');
+        Route::get('/staking', [DeFiController::class, 'staking'])->name('staking');
+        Route::get('/yield', [DeFiController::class, 'yield'])->name('yield');
+    });
+});
+
 // TEMPORARY DEBUG ROUTE - remove after testing
 Route::post('/debug-json', function (Request $request) {
     return response()->json([

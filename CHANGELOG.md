@@ -5,6 +5,40 @@ All notable changes to the FinAegis Core Banking Platform will be documented in 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [v3.0.0] - 2026-02-10
+
+### Added
+
+#### CrossChain Domain
+- **CrossChain bounded context** with bridge protocol abstractions and chain registry
+- **BridgeOrchestratorService** - Multi-provider bridge orchestration (quote aggregation, route optimization)
+- **Wormhole, LayerZero, Axelar bridge adapters** - Protocol-specific implementations with demo mode
+- **BridgeFeeComparisonService** - Cross-provider fee/time comparison with weighted ranking
+- **CrossChainAssetRegistryService** - Token address mapping across 9 chains
+- **BridgeTransactionTracker** - Cache-based bridge transaction lifecycle tracking
+- **CrossChainSwapService** - Atomic cross-chain swaps (bridge + swap in optimal order)
+- **CrossChainSwapSaga** - Compensation-based saga for bridge+swap failure recovery
+- **CrossChainYieldService** - Best yield discovery across chains with bridge cost analysis
+- **MultiChainPortfolioService** - Aggregated portfolio across all chains with DeFi positions
+
+#### DeFi Domain
+- **DeFi bounded context** with protocol adapter interfaces and position tracking
+- **UniswapV3Connector** - Multi-fee-tier swaps, L2 gas optimization, price impact estimation
+- **AaveV3Connector** - Supply/borrow/repay/withdraw with market data and health factor
+- **CurveConnector** - Stablecoin-optimized swaps with lower fees (0.04%)
+- **LidoConnector** - ETH staking with stETH derivatives and withdrawal queue
+- **SwapAggregatorService** - Multi-DEX quote aggregation with best-price routing
+- **SwapRouterService** - Optimal route selection across DEXs with price impact validation
+- **FlashLoanService** - Aave V3 flash loan orchestration with 0.05% fee
+- **DeFiPortfolioService** - Aggregated portfolio with protocol/chain/type breakdowns
+- **DeFiPositionTrackerService** - DeFi position tracking with health factor monitoring
+
+#### API Endpoints
+- 6 CrossChain API endpoints (`/api/v1/crosschain/`) - chains, bridge quotes, bridge initiate, bridge status, cross-chain swap quote/execute
+- 8 DeFi API endpoints (`/api/v1/defi/`) - protocols, swap quote/execute, lending markets, portfolio, positions, staking, yield
+
+---
+
 ## [v2.10.0] - 2026-02-10
 
 ### Added
