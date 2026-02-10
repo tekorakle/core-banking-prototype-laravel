@@ -1098,8 +1098,11 @@ main ─────────●─────────●─────
 | **v2.2.0** | Mobile Backend | Device Mgmt, Biometrics, Push Notifications, WebSocket | ✅ Released 2026-01-31 |
 | **v2.3.0** | Industry Leadership | AI Framework, RegTech Foundation, BaaS Config | ✅ Released 2026-02-01 |
 | **v2.4.0** | Privacy & Identity | Key Management, Privacy, Commerce, TrustCert | ✅ Released 2026-02-01 |
-| **v2.5.0** | Mobile App Launch | Mobile Frontend (Expo/React Native), App Store Release | 🚧 In Progress |
-| **v2.6.0** | Platform Completion | AI Queries, RegTech Adapters, SDK Generation | 📋 Planned |
+| **v2.5.0** | Mobile App Launch | Mobile Frontend (Expo/React Native), App Store Release | ✅ Released |
+| **v2.6.0** | Privacy Layer & ERC-4337 | Merkle Trees, Smart Accounts, Delegated Proofs, Gas Station | ✅ Released 2026-02-02 |
+| **v2.7.0** | Mobile Payment API | Payment Intents, Receipts, Passkey Auth, P2P Transfers | ✅ Released 2026-02-08 |
+| **v2.8.0** | AI Query & RegTech | AI Transaction Queries, MiFID II, MiCA, Travel Rule | ✅ Released 2026-02-08 |
+| **v2.9.0** | BaaS & Production Hardening | ML Anomaly Detection, BaaS Implementation, SDK Generation | ✅ Released 2026-02-10 |
 
 ---
 
@@ -1425,9 +1428,9 @@ GET    /api/v1/trustcert/verify/{token} # Verify presentation
 
 ---
 
-## Version 2.9.0 - BaaS & Production Hardening (PLANNED)
+## Version 2.9.0 - BaaS & Production Hardening ✅ RELEASED
 
-**Target**: Q2 2026
+**Release Date**: February 10, 2026
 **Theme**: Banking-as-a-Service + Production Readiness
 
 ### Phase 1: ML Anomaly Detection ✅ COMPLETE
@@ -1452,18 +1455,18 @@ GET    /api/v1/trustcert/verify/{token} # Verify presentation
 | Partner API Controllers | 5 controllers, 26 endpoints under `/api/partner/v1` | ✅ | #434 |
 | Integration Tests | End-to-end BaaS workflow tests | ✅ | #435 |
 
-### Phase 3: Production Hardening
+### Phase 3: Production Hardening (Deferred to v3.0.0)
 
 | Component | Description | Status |
 |-----------|-------------|--------|
-| Smart Contracts | Deploy TrustCert SBT on Polygon | 📋 |
-| ZK Circuits | Production snarkjs integration | 📋 |
-| HSM Integration | Real HSM provider (AWS CloudHSM/Azure) | 📋 |
-| Security Audit | Third-party audit (Trail of Bits) | 📋 |
+| Smart Contracts | Deploy TrustCert SBT on Polygon | Deferred to v3.0.0 |
+| ZK Circuits | Production snarkjs integration | Deferred to v3.0.0 |
+| HSM Integration | Real HSM provider (AWS CloudHSM/Azure) | Deferred to v3.0.0 |
+| Security Audit | Third-party audit (Trail of Bits) | Deferred to v3.0.0 |
 
 ---
 
-*Document Version: 2.9*
+*Document Version: 2.9.0*
 *Created: January 11, 2026*
-*Updated: February 9, 2026 (v2.9.0 Phase 2 Completed)*
-*Next Review: v2.9.0 Phase 3 Implementation*
+*Updated: February 10, 2026 (v2.9.0 Released, Phase 3 Deferred to v3.0.0)*
+*Next Review: v3.0.0 Planning*

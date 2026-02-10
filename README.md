@@ -1,7 +1,7 @@
 # FinAegis Core Banking Platform
 
 [![CI Pipeline](https://github.com/finaegis/core-banking-prototype-laravel/actions/workflows/ci-pipeline.yml/badge.svg)](https://github.com/finaegis/core-banking-prototype-laravel/actions/workflows/ci-pipeline.yml)
-[![Version](https://img.shields.io/badge/version-2.8.0-blue.svg)](CHANGELOG.md)
+[![Version](https://img.shields.io/badge/version-2.9.0-blue.svg)](CHANGELOG.md)
 [![License: Apache-2.0](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
 [![PHP Version](https://img.shields.io/badge/php-%3E%3D8.3-8892BF.svg)](https://php.net/)
 [![Laravel Version](https://img.shields.io/badge/Laravel-12.x-FF2D20.svg)](https://laravel.com/)
@@ -34,6 +34,8 @@ FinAegis provides the foundation for building digital banking applications. The 
 | Mobile stablecoin payments | Payment intents, Passkey auth, P2P transfers (v2.7.0) |
 | AI-powered queries | Natural language transaction queries, pattern analysis (v2.8.0) |
 | Multi-jurisdiction RegTech | MiFID II, MiCA, FATF Travel Rule, FinCEN/ESMA/FCA/MAS (v2.8.0) |
+| ML fraud detection | Statistical, behavioral, velocity, geolocation anomaly detection (v2.9.0) |
+| Banking-as-a-Service | Partner SDKs, embeddable widgets, billing, marketplace (v2.9.0) |
 | Learning modern architecture | Complete DDD + CQRS + Event Sourcing example |
 
 ---

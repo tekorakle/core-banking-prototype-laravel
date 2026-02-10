@@ -5,6 +5,85 @@ All notable changes to the FinAegis Core Banking Platform will be documented in 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.9.0] - 2026-02-10
+
+### 🧠 ML Anomaly Detection & Banking-as-a-Service
+
+Machine learning-powered anomaly detection for fraud prevention, plus a complete Banking-as-a-Service (BaaS) platform enabling partner institutions to integrate FinAegis capabilities via APIs, SDKs, and embeddable widgets.
+
+### Highlights
+
+| Feature | Description | PRs |
+|---------|-------------|-----|
+| ML Anomaly Detection | Statistical, behavioral, velocity, and geolocation anomaly detection | #416-#428 |
+| BaaS Metering & Auth | Partner authentication middleware, API usage tracking | #429 |
+| Partner Billing | Invoice generation with tiered pricing, overage, discounts | #430 |
+| SDK Generation | Auto-generate TypeScript, Python, Java, Go, PHP client SDKs | #431 |
+| Embeddable Widgets | Payment, Checkout, Balance, Transfer, Account widgets with branding | #432 |
+| Integration Marketplace | Third-party integration connectors with health monitoring | #433 |
+| Partner API | 26 REST endpoints for partner self-service under `/api/partner/v1` | #434 |
+| BaaS Integration Tests | End-to-end workflow testing | #435 |
+| Test Suite Cleanup | Fixed 85+ failing tests, flaky test stabilization | #436-#439 |
+
+### Added
+
+#### ML Anomaly Detection (Phase 1)
+- **StatisticalAnomalyActivity** - Z-score and IQR-based anomaly detection with configurable thresholds
+- **BehavioralProfileActivity** - User behavioral baseline comparison with adaptive profiles
+- **VelocityAnomalyActivity** - Transaction frequency and volume spike detection
+- **GeolocationAnomalyActivity** - Location-based anomaly detection with IP reputation and DBSCAN clustering
+- **AnomalyDetectionOrchestrator** - Coordinates all detection methods with weighted scoring
+- **ProcessAnomalyBatchJob** - Scheduled batch scanning of historical transactions
+- **GeoMathService** - Haversine distance and DBSCAN clustering for geospatial analysis
+- Database tables: `user_behavioral_profiles`, `anomaly_detections` with proper indexes
+
+#### Banking-as-a-Service (Phase 2)
+- **PartnerUsageMeteringService** - Daily API call tracking, widget load metering, SDK download tracking
+- **PartnerAuthMiddleware** - Client ID/Secret authentication with IP allowlist and rate limiting
+- **PartnerBillingService** - Automated invoice generation with base fees, overage calculation, billing cycle discounts (quarterly 5%, annual 15%)
+- **SdkGeneratorService** - Template-based SDK generation for 5 languages with OpenAPI spec support
+- **EmbeddableWidgetService** - HTML/JS embed code generation with partner branding (CSS variables, widget config)
+- **PartnerMarketplaceService** - Integration connector management with health monitoring
+- **PartnerIntegration** model - Tracks partner third-party integrations with encrypted config
+- **5 Partner Controllers** - Dashboard, SDK, Widget, Billing, Marketplace
+- **PartnerTier** enum - Business logic for Starter, Growth, Enterprise tiers
+
+### API Endpoints
+
+| Category | Endpoints |
+|----------|-----------|
+| Partner Profile | `GET /api/partner/v1/profile`, `GET /api/partner/v1/usage`, `GET /api/partner/v1/tier` |
+| Branding | `GET /api/partner/v1/branding`, `PUT /api/partner/v1/branding` |
+| SDK | `GET /api/partner/v1/sdk/languages`, `POST /api/partner/v1/sdk/generate`, `GET /api/partner/v1/sdk/{language}` |
+| Widgets | `GET /api/partner/v1/widgets`, `POST /api/partner/v1/widgets/{type}/embed`, `GET /api/partner/v1/widgets/{type}/preview` |
+| Billing | `GET /api/partner/v1/billing/invoices`, `GET /api/partner/v1/billing/outstanding`, `GET /api/partner/v1/billing/breakdown` |
+| Marketplace | `GET /api/partner/v1/marketplace`, `POST /api/partner/v1/marketplace/integrations`, `DELETE /api/partner/v1/marketplace/integrations/{id}` |
+
+### Security
+- DBSCAN DoS prevention with configurable limits
+- PII protection via IP address hashing in anomaly records
+- Input sanitization for all anomaly detection parameters
+- Partner auth with encrypted client secrets and webhook secrets
+- IP allowlist enforcement in partner middleware
+
+### Fixed
+- Fixed 85+ failing tests across the entire test suite (#436-#439)
+- Fixed AssetAllocation VO serialization in Event Sourcing (json_encode on private properties)
+- Fixed RebalancingService priority threshold off-by-one error
+- Fixed MySQL count()/sum() string return type casting in FraudDetectionService
+- Fixed flaky BasketValueCalculationServiceTest with time freezing
+- Fixed PartnerIntegration migration (UUID FK type, encrypted column type)
+- Fixed rate limiting test failures (#437)
+- Fixed stale test assertions in 6 test files (#438)
+- Added infrastructure-dependent test skip logic (#436)
+
+### Testing
+- 136+ new tests (115 fraud/anomaly + 21 edge cases + BaaS unit/feature/integration)
+- PHPStan Level 8 clean (baselines for Fraud and BaaS domains)
+- All CI checks green: Unit, Feature, Integration, Behat, Security, Performance
+
+---
+
 ## [2.8.0] - 2026-02-08
 
 ### 🤖 AI Query & Regulatory Technology
