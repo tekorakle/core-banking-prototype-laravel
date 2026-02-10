@@ -6,6 +6,7 @@ use App\Http\Controllers\Api\AgentsDiscoveryController;
 use App\Http\Controllers\Api\AI\AIQueryController;
 use App\Http\Controllers\Api\AIAgentController;
 use App\Http\Controllers\Api\AssetController;
+use App\Http\Controllers\Api\Auth\AccountDeletionController;
 use App\Http\Controllers\Api\Auth\EmailVerificationController;
 use App\Http\Controllers\Api\Auth\LoginController;
 use App\Http\Controllers\Api\Auth\PasskeyController;
@@ -126,6 +127,8 @@ Route::prefix('auth')->middleware('api.rate_limit:auth')->group(function () {
         Route::post('/logout-all', [LoginController::class, 'logoutAll']);
         Route::post('/refresh', [LoginController::class, 'refresh']);
         Route::get('/user', [LoginController::class, 'user']);
+        Route::get('/me', [LoginController::class, 'user'])->name('api.auth.me');
+        Route::post('/delete-account', AccountDeletionController::class)->name('api.auth.delete-account');
 
         // Email verification resend
         Route::post('/resend-verification', [EmailVerificationController::class, 'resend'])
@@ -145,6 +148,19 @@ Route::prefix('auth')->middleware('api.rate_limit:auth')->group(function () {
         Route::post('/sign-userop', [App\Http\Controllers\Api\Auth\UserOpSigningController::class, 'sign'])
             ->middleware('throttle:10,1')
             ->name('api.auth.sign-userop');
+
+        // Passkey registration (requires auth — user must be logged in to register a passkey)
+        Route::post('/passkey/register', [PasskeyController::class, 'register'])
+            ->middleware('throttle:5,1')
+            ->name('api.auth.passkey.register');
+    });
+
+    // Passkey aliases (public — these are authentication endpoints, no auth required)
+    Route::prefix('passkey')->middleware('throttle:5,1')->group(function () {
+        Route::get('/challenge', [PasskeyController::class, 'challenge'])->name('api.auth.passkey.challenge.get');
+        Route::post('/challenge', [PasskeyController::class, 'challenge']);
+        Route::post('/verify', [PasskeyController::class, 'authenticate'])->name('api.auth.passkey.verify');
+        Route::post('/authenticate', [PasskeyController::class, 'authenticate']);
     });
 });
 
@@ -1329,6 +1345,9 @@ Route::prefix('v1')->middleware(['auth:sanctum', 'check.token.expiration'])->gro
     Route::post('/transactions/{txId}/receipt', [ReceiptController::class, 'store'])
         ->middleware('api.rate_limit:mutation')
         ->name('mobile.transactions.receipt');
+    Route::get('/transactions/{txId}/receipt', [ReceiptController::class, 'store'])
+        ->middleware('api.rate_limit:query')
+        ->name('mobile.transactions.receipt.get');
 
     // Wallet Receive Address
     Route::get('/wallet/receive', WalletReceiveController::class)
@@ -1339,6 +1358,9 @@ Route::prefix('v1')->middleware(['auth:sanctum', 'check.token.expiration'])->gro
     Route::get('/networks/status', NetworkStatusController::class)
         ->middleware('api.rate_limit:query')
         ->name('mobile.networks.status');
+    Route::get('/networks/{network}/status', NetworkStatusController::class)
+        ->middleware('api.rate_limit:query')
+        ->name('mobile.networks.status.parameterized');
 
     // Wallet Transfer Helpers (P2P send flow)
     Route::get('/wallet/validate-address', [WalletTransferController::class, 'validateAddress'])
@@ -1412,4 +1434,18 @@ Route::prefix('partner/v1')->name('api.partner.')->middleware('partner.auth')->g
     Route::delete('/marketplace/integrations/{id}', [App\Http\Controllers\Api\Partner\PartnerMarketplaceController::class, 'disable'])->name('marketplace.integrations.disable');
     Route::post('/marketplace/integrations/{id}/test', [App\Http\Controllers\Api\Partner\PartnerMarketplaceController::class, 'test'])->name('marketplace.integrations.test');
     Route::get('/marketplace/health', [App\Http\Controllers\Api\Partner\PartnerMarketplaceController::class, 'health'])->name('marketplace.health');
+});
+
+// TEMPORARY DEBUG ROUTE - remove after testing
+Route::post('/debug-json', function (Request $request) {
+    return response()->json([
+        'content_type' => $request->header('Content-Type'),
+        'is_json'      => $request->isJson(),
+        'all'          => $request->all(),
+        'json_all'     => $request->json()->all(),
+        'raw_content'  => $request->getContent(),
+        'raw_length'   => strlen($request->getContent()),
+        'method'       => $request->method(),
+        'input_email'  => $request->input('email'),
+    ]);
 });

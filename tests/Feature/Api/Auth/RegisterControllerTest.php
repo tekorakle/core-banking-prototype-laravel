@@ -106,6 +106,6 @@ class RegisterControllerTest extends ControllerTestCase
         // Test that the token works
         $authResponse = $this->withToken($token)->getJson('/api/auth/user');
         $authResponse->assertOk()
-            ->assertJsonPath('user.email', 'john@example.com');
+            ->assertJsonPath('data.email', 'john@example.com');
     }
 }

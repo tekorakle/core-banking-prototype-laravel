@@ -103,15 +103,15 @@ describe('SecurityAuditService', function (): void {
 
 describe('SecurityAuditReport', function (): void {
     it('calculates grade from score', function (): void {
-        expect(\App\Domain\Security\ValueObjects\SecurityAuditReport::gradeFromScore(95))->toBe('A');
-        expect(\App\Domain\Security\ValueObjects\SecurityAuditReport::gradeFromScore(85))->toBe('B');
-        expect(\App\Domain\Security\ValueObjects\SecurityAuditReport::gradeFromScore(75))->toBe('C');
-        expect(\App\Domain\Security\ValueObjects\SecurityAuditReport::gradeFromScore(65))->toBe('D');
-        expect(\App\Domain\Security\ValueObjects\SecurityAuditReport::gradeFromScore(50))->toBe('F');
+        expect(App\Domain\Security\ValueObjects\SecurityAuditReport::gradeFromScore(95))->toBe('A');
+        expect(App\Domain\Security\ValueObjects\SecurityAuditReport::gradeFromScore(85))->toBe('B');
+        expect(App\Domain\Security\ValueObjects\SecurityAuditReport::gradeFromScore(75))->toBe('C');
+        expect(App\Domain\Security\ValueObjects\SecurityAuditReport::gradeFromScore(65))->toBe('D');
+        expect(App\Domain\Security\ValueObjects\SecurityAuditReport::gradeFromScore(50))->toBe('F');
     });
 
     it('reports isPassing correctly', function (): void {
-        $report = new \App\Domain\Security\ValueObjects\SecurityAuditReport(
+        $report = new App\Domain\Security\ValueObjects\SecurityAuditReport(
             checks: [],
             overallScore: 80,
             grade: 'B',
@@ -123,7 +123,7 @@ describe('SecurityAuditReport', function (): void {
     });
 
     it('serializes to array', function (): void {
-        $report = new \App\Domain\Security\ValueObjects\SecurityAuditReport(
+        $report = new App\Domain\Security\ValueObjects\SecurityAuditReport(
             checks: [
                 new SecurityCheckResult(
                     name: 'test',

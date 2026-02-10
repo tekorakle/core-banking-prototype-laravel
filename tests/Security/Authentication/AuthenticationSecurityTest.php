@@ -162,7 +162,7 @@ class AuthenticationSecurityTest extends TestCase
             'email'    => $user->email,
             'password' => 'password',
         ]);
-        $token1 = $response1->json('access_token');
+        $token1 = $response1->json('data.access_token');
 
         // Create second session
         $response2 = $this->postJson('/api/auth/login', [
@@ -170,7 +170,7 @@ class AuthenticationSecurityTest extends TestCase
             'password'    => 'password',
             'device_name' => 'second-device',
         ]);
-        $token2 = $response2->json('access_token');
+        $token2 = $response2->json('data.access_token');
 
         // Create third session
         $response3 = $this->postJson('/api/auth/login', [
@@ -178,7 +178,7 @@ class AuthenticationSecurityTest extends TestCase
             'password'    => 'password',
             'device_name' => 'third-device',
         ]);
-        $token3 = $response3->json('access_token');
+        $token3 = $response3->json('data.access_token');
 
         // Create fourth session
         $response4 = $this->postJson('/api/auth/login', [
@@ -186,7 +186,7 @@ class AuthenticationSecurityTest extends TestCase
             'password'    => 'password',
             'device_name' => 'fourth-device',
         ]);
-        $token4 = $response4->json('access_token');
+        $token4 = $response4->json('data.access_token');
 
         // Check that we have tokens
         $this->assertNotNull($token4);
@@ -209,7 +209,7 @@ class AuthenticationSecurityTest extends TestCase
             'password' => 'password',
         ]);
 
-        $token = $response->json('access_token');
+        $token = $response->json('data.access_token');
 
         // Check the token works
         $this->withHeader('Authorization', 'Bearer ' . $token)
@@ -353,7 +353,7 @@ class AuthenticationSecurityTest extends TestCase
             'password' => 'password',
         ]);
 
-        $token = $response->json('access_token');
+        $token = $response->json('data.access_token');
 
         // Verify token works
         $this->withHeader('Authorization', 'Bearer ' . $token)

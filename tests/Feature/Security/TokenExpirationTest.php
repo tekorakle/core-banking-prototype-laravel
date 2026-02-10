@@ -31,12 +31,15 @@ class TokenExpirationTest extends TestCase
 
         $response->assertOk();
         $response->assertJsonStructure([
-            'access_token',
-            'expires_in',
+            'success',
+            'data' => [
+                'access_token',
+                'expires_in',
+            ],
         ]);
 
         // Check that expires_in is set correctly (60 minutes = 3600 seconds)
-        $this->assertEquals(3600, $response->json('expires_in'));
+        $this->assertEquals(3600, $response->json('data.expires_in'));
 
         // Check database for token expiration
         $token = $this->user->tokens()->first();
@@ -156,7 +159,7 @@ class TokenExpirationTest extends TestCase
         ]);
 
         $response->assertOk();
-        $this->assertNull($response->json('expires_in'));
+        $this->assertNull($response->json('data.expires_in'));
 
         // Token should not have expires_at set
         $token = $this->user->tokens()->first();
@@ -174,7 +177,7 @@ class TokenExpirationTest extends TestCase
         ]);
 
         $response->assertOk();
-        $this->assertEquals(7200, $response->json('expires_in')); // 120 minutes = 7200 seconds
+        $this->assertEquals(7200, $response->json('data.expires_in')); // 120 minutes = 7200 seconds
 
         // Check database
         $token = $this->user->tokens()->first();

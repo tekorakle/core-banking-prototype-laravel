@@ -2,9 +2,6 @@
 
 declare(strict_types=1);
 
-use App\Domain\KeyManagement\HSM\AwsKmsHsmProvider;
-use App\Domain\KeyManagement\HSM\AzureKeyVaultHsmProvider;
-use App\Domain\KeyManagement\HSM\DemoHsmProvider;
 use App\Domain\KeyManagement\HSM\HsmIntegrationService;
 use Illuminate\Support\Facades\Cache;
 
@@ -24,7 +21,7 @@ describe('HSM Provider Switching', function (): void {
     });
 
     it('supports injecting a custom provider', function (): void {
-        $mockProvider = Mockery::mock(\App\Domain\KeyManagement\Contracts\HsmProviderInterface::class);
+        $mockProvider = Mockery::mock(App\Domain\KeyManagement\Contracts\HsmProviderInterface::class);
         $mockProvider->shouldReceive('isAvailable')->andReturn(true);
         $mockProvider->shouldReceive('getProviderName')->andReturn('custom');
 

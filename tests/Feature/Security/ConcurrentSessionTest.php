@@ -36,7 +36,7 @@ class ConcurrentSessionTest extends TestCase
             ]);
 
             $response->assertOk();
-            $tokens[] = $response->json('access_token');
+            $tokens[] = $response->json('data.access_token');
         }
 
         // Verify 5 tokens exist
@@ -50,7 +50,7 @@ class ConcurrentSessionTest extends TestCase
         ]);
 
         $response->assertOk();
-        $tokens[] = $response->json('access_token');
+        $tokens[] = $response->json('data.access_token');
 
         // Still only 5 tokens
         $this->assertEquals(5, $this->user->tokens()->count());

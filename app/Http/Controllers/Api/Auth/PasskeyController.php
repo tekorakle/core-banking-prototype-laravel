@@ -11,6 +11,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Mobile\DeviceIdRequest;
 use App\Http\Requests\Mobile\PasskeyAuthenticateRequest;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
 
 class PasskeyController extends Controller
 {
@@ -121,5 +122,54 @@ class PasskeyController extends Controller
                 'expires_at'   => $result['expires_at']->toIso8601String(),
             ],
         ]);
+    }
+
+    /**
+     * Register a new passkey credential for the authenticated user's device.
+     *
+     * POST /auth/passkey/register
+     */
+    public function register(Request $request): JsonResponse
+    {
+        $request->validate([
+            'device_id'     => ['required', 'string'],
+            'credential_id' => ['required', 'string'],
+            'public_key'    => ['required', 'string'],
+        ]);
+
+        $device = $this->deviceService->findByDeviceId($request->device_id);
+
+        if (! $device) {
+            return response()->json([
+                'success' => false,
+                'error'   => [
+                    'code'    => 'DEVICE_NOT_FOUND',
+                    'message' => 'Device not found. Register the device first.',
+                ],
+            ], 404);
+        }
+
+        // Ensure the device belongs to the authenticated user
+        $user = $request->user();
+        if (! $user || $device->user_id !== $user->id) {
+            return response()->json([
+                'success' => false,
+                'error'   => [
+                    'code'    => 'UNAUTHORIZED',
+                    'message' => 'Device does not belong to the authenticated user.',
+                ],
+            ], 403);
+        }
+
+        $result = $this->passkeyService->registerPasskey(
+            $device,
+            $request->credential_id,
+            $request->public_key,
+        );
+
+        return response()->json([
+            'success' => true,
+            'data'    => $result,
+        ], 201);
     }
 }

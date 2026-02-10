@@ -48,17 +48,22 @@ class LoginController extends Controller
      *
      * @OA\JsonContent(
      *
+     * @OA\Property(property="success",           type="boolean", example=true),
      * @OA\Property(
-     *                 property="user",
+     *                 property="data",
      *                 type="object",
+     * @OA\Property(
+     *                     property="user",
+     *                     type="object",
      * @OA\Property(property="id",                type="integer", example=1),
      * @OA\Property(property="name",              type="string", example="John Doe"),
      * @OA\Property(property="email",             type="string", example="john@example.com"),
      * @OA\Property(property="email_verified_at", type="string", nullable=true)
-     *             ),
+     *                 ),
      * @OA\Property(property="access_token",      type="string", example="2|VVGVrIVokPBXkWLOi2yK13eHlQwQtQQONX5GCngZ..."),
      * @OA\Property(property="token_type",        type="string", example="Bearer"),
      * @OA\Property(property="expires_in",        type="integer", nullable=true, example=null, description="Token expiration time in seconds")
+     *             )
      *         )
      *     ),
      *
@@ -124,10 +129,13 @@ class LoginController extends Controller
 
         return response()->json(
             [
-                'user'         => $user,
-                'access_token' => $plainToken,
-                'token_type'   => 'Bearer',
-                'expires_in'   => config('sanctum.expiration') ? config('sanctum.expiration') * 60 : null,
+                'success' => true,
+                'data'    => [
+                    'user'         => $user,
+                    'access_token' => $plainToken,
+                    'token_type'   => 'Bearer',
+                    'expires_in'   => config('sanctum.expiration') ? config('sanctum.expiration') * 60 : null,
+                ],
             ]
         );
     }
@@ -193,8 +201,9 @@ class LoginController extends Controller
      *
      * @OA\JsonContent(
      *
+     * @OA\Property(property="success",           type="boolean", example=true),
      * @OA\Property(
-     *                 property="user",
+     *                 property="data",
      *                 type="object",
      * @OA\Property(property="id",                type="integer", example=1),
      * @OA\Property(property="name",              type="string", example="John Doe"),
@@ -220,7 +229,8 @@ class LoginController extends Controller
     {
         return response()->json(
             [
-                'user' => $request->user(),
+                'success' => true,
+                'data'    => $request->user(),
             ]
         );
     }
