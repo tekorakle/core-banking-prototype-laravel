@@ -5,6 +5,22 @@ All notable changes to the FinAegis Core Banking Platform will be documented in 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [v2.10.0] - 2026-02-10
+
+### Added
+- Mobile Commerce API: merchant listings, QR code parsing/generation, payment requests, payment processing
+- Mobile Relayer API: relayer status, gas estimation, UserOp building/submission/tracking, paymaster data
+- Mobile Wallet API: token list, balances, addresses, wallet state, transaction history, send flow
+- Mobile TrustCert API: trust level status, requirements, limits, certificate application CRUD
+- Auth compatibility: response envelope wrapping, /auth/me alias, account deletion, passkey registration
+- CORS: X-Client-Platform and X-Client-Version headers allowed
+- Mobile API compatibility handover document (docs/MOBILE_API_COMPATIBILITY.md)
+
+### Changed
+- Auth login/user responses now wrapped in `{ success, data }` envelope for mobile consistency
+
+---
+
 ## [2.9.1] - 2026-02-10
 
 ### Production Hardening (Phase 3)
