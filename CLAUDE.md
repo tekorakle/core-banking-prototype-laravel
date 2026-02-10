@@ -20,7 +20,8 @@ git status && git branch --show-current
 ### Version Status
 | Version | Status | Key Changes |
 |---------|--------|-------------|
-| v2.9.0 | 📋 Planned | BaaS Implementation, SDK Generation, Production Hardening |
+| v2.10.0 | ✅ Released | Mobile API Compatibility: Wallet, TrustCert, Commerce, Relayer mobile endpoints |
+| v2.9.0 | ✅ Released | BaaS Implementation, SDK Generation, Production Hardening |
 | v2.8.0 | ✅ Released | AI Query Endpoints, RegTech Adapters, MiFID II/MiCA/Travel Rule Services |
 | v2.7.0 | ✅ Released | Mobile Payment API, Passkey Auth, P2P Transfer Helpers, TrustCert Export, Security Hardening |
 | v2.6.0 | ✅ Released | Privacy Layer & ERC-4337: Merkle Trees, Smart Accounts, Delegated Proofs, UserOp Signing with Biometric JWT, Production-Ready Gas Station |

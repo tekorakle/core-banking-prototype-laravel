@@ -1104,6 +1104,7 @@ main ─────────●─────────●─────
 | **v2.8.0** | AI Query & RegTech | AI Transaction Queries, MiFID II, MiCA, Travel Rule | ✅ Released 2026-02-08 |
 | **v2.9.0** | BaaS & Production Hardening | ML Anomaly Detection, BaaS Implementation, SDK Generation | ✅ Released 2026-02-10 |
 | **v2.9.1** | Production Hardening | On-Chain SBT, snarkjs, AWS KMS, Azure Key Vault, Security Audit | ✅ Released 2026-02-10 |
+| **v2.10.0** | Mobile API Compatibility | ~30 mobile-facing API endpoints, response envelope consistency, wallet/TrustCert/commerce/relayer mobile APIs | ✅ Released 2026-02-10 |
 
 ---
 
@@ -1483,7 +1484,30 @@ GET    /api/v1/trustcert/verify/{token} # Verify presentation
 
 ---
 
-*Document Version: 2.9.1*
+## Version 2.10.0 - Mobile API Compatibility ✅ RELEASED
+
+**Release Date**: February 10, 2026
+**Theme**: Mobile-Facing API Endpoints & Response Consistency
+
+### Delivered Features
+
+| Feature | Description | Status |
+|---------|-------------|--------|
+| Mobile Commerce API | Merchant listings, QR code parsing/generation, payment requests, payment processing | ✅ |
+| Mobile Relayer API | Relayer status, gas estimation, UserOp building/submission/tracking, paymaster data | ✅ |
+| Mobile Wallet API | Token list, balances, addresses, wallet state, transaction history, send flow | ✅ |
+| Mobile TrustCert API | Trust level status, requirements, limits, certificate application CRUD | ✅ |
+| Auth Compatibility | Response envelope wrapping, /auth/me alias, account deletion, passkey registration | ✅ |
+| CORS Headers | X-Client-Platform and X-Client-Version headers allowed | ✅ |
+| Handover Documentation | Mobile API compatibility handover document (docs/MOBILE_API_COMPATIBILITY.md) | ✅ |
+
+### Summary
+
+Adds approximately 30 new mobile-facing API endpoints across wallet, TrustCert, commerce, and relayer domains. Ensures response envelope consistency (`{ success, data }`) for mobile client consumption. Includes comprehensive handover documentation for frontend integration.
+
+---
+
+*Document Version: 2.10.0*
 *Created: January 11, 2026*
-*Updated: February 10, 2026 (v2.9.1 Released — Phase 3 Production Hardening complete)*
+*Updated: February 10, 2026 (v2.10.0 Released — Mobile API Compatibility)*
 *Next Review: v3.0.0 Planning*

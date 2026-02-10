@@ -1463,6 +1463,74 @@ Route::prefix('v1/trustcert')->name('mobile.trustcert.')
 
 /*
 |--------------------------------------------------------------------------
+| Mobile Commerce API (v2.10.0)
+|--------------------------------------------------------------------------
+|
+| Commerce endpoints for mobile: merchant listings, QR code parsing,
+| payment requests, and payment processing.
+|
+*/
+use App\Http\Controllers\Api\Commerce\MobileCommerceController;
+
+Route::prefix('v1/commerce')->name('mobile.commerce.')
+    ->middleware(['auth:sanctum', 'check.token.expiration'])
+    ->group(function () {
+        Route::get('/merchants', [MobileCommerceController::class, 'merchants'])
+            ->middleware('api.rate_limit:query')
+            ->name('merchants');
+        Route::post('/parse-qr', [MobileCommerceController::class, 'parseQr'])
+            ->middleware('api.rate_limit:query')
+            ->name('parse-qr');
+        Route::post('/payment-requests', [MobileCommerceController::class, 'createPaymentRequest'])
+            ->middleware('transaction.rate_limit:payment_intent')
+            ->name('payment-requests');
+        Route::post('/payments', [MobileCommerceController::class, 'processPayment'])
+            ->middleware('transaction.rate_limit:payment_intent')
+            ->name('payments');
+        Route::post('/generate-qr', [MobileCommerceController::class, 'generateQr'])
+            ->middleware('api.rate_limit:query')
+            ->name('generate-qr');
+    });
+
+/*
+|--------------------------------------------------------------------------
+| Mobile Relayer API (v2.10.0)
+|--------------------------------------------------------------------------
+|
+| Relayer endpoints for mobile: status, gas estimation, UserOp building,
+| submission, tracking, and paymaster configuration.
+|
+*/
+use App\Http\Controllers\Api\Relayer\MobileRelayerController;
+
+Route::prefix('v1/relayer')->name('mobile.relayer.')
+    ->middleware(['auth:sanctum', 'check.token.expiration'])
+    ->group(function () {
+        Route::get('/status', [MobileRelayerController::class, 'status'])
+            ->middleware('api.rate_limit:query')
+            ->name('status');
+        Route::post('/estimate-gas', [MobileRelayerController::class, 'estimateGas'])
+            ->middleware('api.rate_limit:query')
+            ->name('estimate-gas');
+        Route::post('/build-userop', [MobileRelayerController::class, 'buildUserOp'])
+            ->middleware('api.rate_limit:query')
+            ->name('build-userop');
+        Route::post('/submit', [MobileRelayerController::class, 'submitUserOp'])
+            ->middleware('transaction.rate_limit:relayer')
+            ->name('submit');
+        Route::get('/userop/{hash}', [MobileRelayerController::class, 'getUserOp'])
+            ->middleware('api.rate_limit:query')
+            ->name('userop');
+        Route::get('/supported-tokens', [MobileRelayerController::class, 'supportedTokens'])
+            ->middleware('api.rate_limit:query')
+            ->name('supported-tokens');
+        Route::get('/paymaster-data', [MobileRelayerController::class, 'paymasterData'])
+            ->middleware('api.rate_limit:query')
+            ->name('paymaster-data');
+    });
+
+/*
+|--------------------------------------------------------------------------
 | Passkey/WebAuthn Authentication (v2.7.0)
 |--------------------------------------------------------------------------
 |
