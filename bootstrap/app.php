@@ -71,6 +71,8 @@ return Application::configure(basePath: dirname(__DIR__))
             'partner.auth' => App\Http\Middleware\PartnerAuthMiddleware::class,
             // Multi-tenancy middleware
             'tenant' => App\Http\Middleware\InitializeTenancyByTeam::class,
+            // Performance monitoring middleware
+            'query.performance' => App\Http\Middleware\QueryPerformanceMiddleware::class,
         ]);
 
         // Prepend CORS middleware to handle it before other middleware
