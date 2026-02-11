@@ -1,5 +1,8 @@
 <?php
 
+// SPDX-License-Identifier: Apache-2.0
+// Copyright (c) 2024-2026 FinAegis Contributors
+
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;

@@ -1,7 +1,7 @@
 # FinAegis Core Banking Platform
 
 [![CI Pipeline](https://github.com/finaegis/core-banking-prototype-laravel/actions/workflows/ci-pipeline.yml/badge.svg)](https://github.com/finaegis/core-banking-prototype-laravel/actions/workflows/ci-pipeline.yml)
-[![Version](https://img.shields.io/badge/version-3.0.0-blue.svg)](CHANGELOG.md)
+[![Version](https://img.shields.io/badge/version-3.2.0-blue.svg)](CHANGELOG.md)
 [![License: Apache-2.0](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
 [![PHP Version](https://img.shields.io/badge/php-%3E%3D8.3-8892BF.svg)](https://php.net/)
 [![Laravel Version](https://img.shields.io/badge/Laravel-12.x-FF2D20.svg)](https://laravel.com/)
@@ -20,7 +20,7 @@ FinAegis provides the foundation for building digital banking applications. The 
 
 | Challenge | FinAegis Solution |
 |-----------|-------------------|
-| Building financial systems from scratch | 37 production-ready domain modules |
+| Building financial systems from scratch | 41 production-ready domain modules |
 | Audit trail requirements | Event sourcing captures every state change |
 | Complex multi-step transactions | Saga pattern with automatic compensation |
 | Regulatory compliance | Built-in KYC/AML workflows |
@@ -36,7 +36,28 @@ FinAegis provides the foundation for building digital banking applications. The 
 | Multi-jurisdiction RegTech | MiFID II, MiCA, FATF Travel Rule, FinCEN/ESMA/FCA/MAS (v2.8.0) |
 | ML fraud detection | Statistical, behavioral, velocity, geolocation anomaly detection (v2.9.0) |
 | Banking-as-a-Service | Partner SDKs, embeddable widgets, billing, marketplace (v2.9.0) |
+| Modular plugin architecture | 41 domains with manifests, enable/disable, dependency resolution (v3.2.0) |
+| Performance benchmarking | k6 load tests, query monitoring middleware, baseline reports (v3.2.0) |
 | Learning modern architecture | Complete DDD + CQRS + Event Sourcing example |
+
+---
+
+## Plugin Architecture (v3.2.0)
+
+FinAegis uses a modular plugin system where each domain is a self-contained module:
+
+```bash
+php artisan domain:list              # List all 41 domain modules with status
+php artisan module:enable exchange   # Enable a module
+php artisan module:disable exchange  # Disable a module (preserves data)
+php artisan domain:verify exchange   # Verify module health
+php artisan performance:report       # Generate performance baseline
+```
+
+- **Module manifests** (`module.json`) define dependencies, interfaces, events, and commands
+- **Route isolation** — each domain loads its own `Routes/api.php` via `ModuleRouteLoader`
+- **Admin UI** — Filament page at `/admin/modules` with search, filters, enable/disable actions
+- **REST API** — `GET /api/v2/modules` for programmatic module management
 
 ---
 

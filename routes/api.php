@@ -1,5 +1,8 @@
 <?php
 
+// SPDX-License-Identifier: Apache-2.0
+// Copyright (c) 2024-2026 FinAegis Contributors
+
 use App\Http\Controllers\Api\Auth\AccountDeletionController;
 use App\Http\Controllers\Api\Auth\EmailVerificationController;
 use App\Http\Controllers\Api\Auth\LoginController;
