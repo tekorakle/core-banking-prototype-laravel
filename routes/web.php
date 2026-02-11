@@ -321,6 +321,26 @@ Route::middleware([
         return view('dashboard');
     })->name('dashboard');
 
+    // Cross-Chain Portfolio
+    Route::get('/crosschain', function () {
+        return view('crosschain.index');
+    })->name('crosschain.index');
+
+    // DeFi Portfolio
+    Route::get('/defi', function () {
+        return view('defi.index');
+    })->name('defi.index');
+
+    // Privacy & Identity
+    Route::get('/privacy', function () {
+        return view('privacy.index');
+    })->name('privacy.index');
+
+    // Trust Certificates
+    Route::get('/trustcert', function () {
+        return view('trustcert.index');
+    })->name('trustcert.index');
+
     // Team Member Management (for business organizations)
     Route::prefix('teams/{team}')->name('teams.')->group(function () {
         Route::get('/members', [App\Http\Controllers\TeamMemberController::class, 'index'])->name('members.index');
