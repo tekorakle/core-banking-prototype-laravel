@@ -5,6 +5,54 @@ All notable changes to the FinAegis Core Banking Platform will be documented in 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [v3.1.0] - 2026-02-11
+
+### Theme: Consolidation, Documentation & UI Completeness
+
+After 18 releases of feature development (v1.1.0 → v3.0.0), v3.1.0 closes the documentation and UI gaps to match the platform's 41 domains, 266+ services, and 1,150+ routes.
+
+### Added
+
+#### Swagger/OpenAPI Documentation (Phase 2)
+- Added @OA annotations to **CrossChainController** (7 routes), **DeFiController** (8 routes), **RegTechController** (12 routes)
+- Added @OA annotations to **MobilePayment** controllers (6 files, ~25 routes), **Partner** controllers (5 files, 24 routes), **AiQueryController** (2 routes)
+- Fixed L5-Swagger config to scan all v2.0+ controller subdirectories
+
+#### Website Feature Pages (Phase 3)
+- 7 new feature pages: `crosschain-defi`, `privacy-identity`, `mobile-payments`, `regtech-compliance`, `baas-platform`, `ai-framework`, `multi-tenancy`
+- Updated landing page with v2.0+ feature sections and platform statistics
+- Updated feature index with cards for all new feature areas
+
+#### Developer Portal (Phase 4)
+- Updated all 6 developer portal pages (index, api-docs, examples, sdks, webhooks, postman) with v2.0+ API documentation
+- Added code examples for cross-chain bridge, DeFi swap, RegTech compliance, BaaS partner onboarding, AI queries
+- Added BaaS SDK generation documentation (TypeScript, Python, Java, Go, PHP)
+
+#### Admin UI — Filament Resources (Phases 5 & 6)
+- **Phase 5 (7 high-priority resources)**: BridgeTransactionResource, DeFiPositionResource, AnomalyDetectionResource, FilingScheduleResource, MultiSigWalletResource, LoanResource, PortfolioSnapshotResource
+- **Phase 6 (8 secondary resources)**: DelegatedProofJobResource, MerchantResource, CertificateResource, KeyShardRecordResource, SmartAccountResource, PaymentIntentResource, MobileDeviceResource, PartnerResource
+- Admin UI coverage: **26 of 41 domains** (up from 11 pre-v3.1.0)
+
+#### New Eloquent Models & Migrations
+- `BridgeTransaction` model + migration (CrossChain domain)
+- `DeFiPosition` model + migration (DeFi domain)
+- `Certificate` model + migration (TrustCert domain)
+
+#### User-Facing Views (Phase 7)
+- **Cross-Chain Portfolio** (`/crosschain`) — bridge transactions, multi-chain portfolio, supported networks & providers
+- **DeFi Portfolio** (`/defi`) — positions, protocol overview, yield tracking
+- **Privacy & Identity** (`/privacy`) — ZK proof history, verification status, privacy features
+- **Trust Certificates** (`/trustcert`) — certificate management, W3C Verifiable Credentials
+- Dashboard "Web3 & Advanced Features" quick-action cards
+- Navigation menu "Web3" dropdown (desktop + responsive mobile)
+
+### Changed
+- Updated `docs/VERSION_ROADMAP.md` with v3.1.0 completion status and v3.2.0 planning
+- Updated `docs/ARCHITECTURAL_ROADMAP.md` with current metrics and domain inventory
+- Updated Serena development memories with v3.1.0 state
+
+---
+
 ## [v3.0.0] - 2026-02-10
 
 ### Added

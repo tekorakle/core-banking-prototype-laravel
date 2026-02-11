@@ -83,7 +83,8 @@
 - **v3.0.0** (Feb 10, 2026): Cross-Chain & DeFi (Bridge protocols: Wormhole/LayerZero/Axelar, DeFi: Uniswap/Aave/Curve/Lido, cross-chain swaps, multi-chain portfolio)
 
 ### Next Planned
-- **v3.1.0** (In Progress): Consolidation, Documentation & UI Completeness (8 phases)\n\n---\n\n## Deferred Items (with reasoning)
+- **v3.1.0** (Feb 11, 2026): Consolidation, Documentation & UI Completeness — Swagger annotations, 7 feature pages, 15 Filament admin resources, 4 user-facing views, developer portal update (8 phases, PRs #456-#465)
+- **v3.2.0** (Target Q2 2026): Production Readiness & Plugin Architecture — Plugin system, performance benchmarks, open-source prep\n\n---\n\n## Deferred Items (with reasoning)
 
 ### Deferred to v1.2.0+
 - Multi-agent coordination service (complex, needs bridges first)
