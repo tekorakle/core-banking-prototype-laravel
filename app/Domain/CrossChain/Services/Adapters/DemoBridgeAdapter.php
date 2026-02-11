@@ -89,7 +89,7 @@ class DemoBridgeAdapter implements BridgeAdapterInterface
 
     public function getBridgeStatus(string $transactionId): array
     {
-        $status = $this->transactionStatuses[$transactionId] ?? BridgeStatus::COMPLETED;
+        $status = $this->transactionStatuses[$transactionId] ?? BridgeStatus::FAILED;
 
         return [
             'status'         => $status,

@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Domain\CrossChain\Exceptions;
 
 use Exception;
+use Throwable;
 
 class BridgeTransactionFailedException extends Exception
 {
@@ -15,17 +16,19 @@ class BridgeTransactionFailedException extends Exception
         public readonly string $errorCode = self::CODE,
         public readonly int $httpStatusCode = 500,
         public readonly ?string $transactionId = null,
+        ?Throwable $previous = null,
     ) {
-        parent::__construct($message);
+        parent::__construct($message, 0, $previous);
     }
 
-    public static function executionFailed(string $transactionId, string $reason): self
+    public static function executionFailed(string $transactionId, string $reason, ?Throwable $previous = null): self
     {
         return new self(
             "Bridge transaction {$transactionId} failed: {$reason}",
             self::CODE,
             500,
             $transactionId,
+            $previous,
         );
     }
 

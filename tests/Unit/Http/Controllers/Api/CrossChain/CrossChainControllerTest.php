@@ -155,7 +155,7 @@ describe('CrossChainController', function () {
         expect($data['data']['status'])->toBe('completed');
     });
 
-    it('handles errors for invalid chain in bridge quote', function () {
+    it('validates chain enum for invalid chain in bridge quote', function () {
         $request = makePostRequest('/api/v1/crosschain/bridge/quote', [
             'from_chain' => 'invalid_chain',
             'to_chain'   => 'polygon',
@@ -163,12 +163,21 @@ describe('CrossChainController', function () {
             'amount'     => '1000.00',
         ]);
 
-        $response = $this->controller->bridgeQuote($request);
-        $data = $response->getData(true);
+        $this->controller->bridgeQuote($request);
+    })->throws(Illuminate\Validation\ValidationException::class);
 
-        expect($data['success'])->toBeFalse();
-        expect($response->getStatusCode())->toBe(400);
-    });
+    it('validates chain enum for invalid to_chain in swap execute', function () {
+        $request = makePostRequest('/api/v1/crosschain/swap/execute', [
+            'from_chain'     => 'ethereum',
+            'to_chain'       => 'nonexistent',
+            'from_token'     => 'USDC',
+            'to_token'       => 'WETH',
+            'amount'         => '1000.00',
+            'wallet_address' => '0xTest',
+        ]);
+
+        $this->controller->swapExecute($request);
+    })->throws(Illuminate\Validation\ValidationException::class);
 
     it('returns bridge-only swap when tokens match', function () {
         $request = makePostRequest('/api/v1/crosschain/swap/quote', [

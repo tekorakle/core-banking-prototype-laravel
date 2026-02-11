@@ -200,6 +200,41 @@ describe('DeFiController', function () {
         expect($data['data'])->toBeArray();
     });
 
+    it('rejects portfolio request without wallet_address', function () {
+        $request = Request::create('/api/v1/defi/portfolio');
+
+        $this->controller->portfolio($request);
+    })->throws(Illuminate\Validation\ValidationException::class);
+
+    it('rejects yield request without wallet_address', function () {
+        $request = Request::create('/api/v1/defi/yield');
+
+        $this->controller->yield($request);
+    })->throws(Illuminate\Validation\ValidationException::class);
+
+    it('rejects slippage above 5 percent', function () {
+        $request = makeDefiPostRequest('/api/v1/defi/swap/quote', [
+            'chain'      => 'ethereum',
+            'from_token' => 'USDC',
+            'to_token'   => 'WETH',
+            'amount'     => '1000.00',
+            'slippage'   => 10.0,
+        ]);
+
+        $this->controller->swapQuote($request);
+    })->throws(Illuminate\Validation\ValidationException::class);
+
+    it('rejects invalid chain enum in swap quote', function () {
+        $request = makeDefiPostRequest('/api/v1/defi/swap/quote', [
+            'chain'      => 'invalid_chain',
+            'from_token' => 'USDC',
+            'to_token'   => 'WETH',
+            'amount'     => '1000.00',
+        ]);
+
+        $this->controller->swapQuote($request);
+    })->throws(Illuminate\Validation\ValidationException::class);
+
     it('handles swap with custom slippage', function () {
         $request = makeDefiPostRequest('/api/v1/defi/swap/quote', [
             'chain'      => 'polygon',
@@ -215,7 +250,7 @@ describe('DeFiController', function () {
         expect($data['success'])->toBeTrue();
     });
 
-    it('handles error for invalid chain in swap quote', function () {
+    it('validates chain enum for invalid chain in swap quote', function () {
         $request = makeDefiPostRequest('/api/v1/defi/swap/quote', [
             'chain'      => 'invalid_chain',
             'from_token' => 'USDC',
@@ -223,12 +258,8 @@ describe('DeFiController', function () {
             'amount'     => '1000.00',
         ]);
 
-        $response = $this->controller->swapQuote($request);
-        $data = $response->getData(true);
-
-        expect($data['success'])->toBeFalse();
-        expect($response->getStatusCode())->toBe(400);
-    });
+        $this->controller->swapQuote($request);
+    })->throws(Illuminate\Validation\ValidationException::class);
 
     it('returns lending markets for polygon', function () {
         $request = Request::create('/api/v1/defi/lending/markets?chain=polygon');

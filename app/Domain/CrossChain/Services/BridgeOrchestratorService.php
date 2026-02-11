@@ -166,6 +166,7 @@ class BridgeOrchestratorService
             throw BridgeTransactionFailedException::executionFailed(
                 'unknown',
                 $e->getMessage(),
+                $e,
             );
         }
     }
@@ -175,18 +176,24 @@ class BridgeOrchestratorService
      *
      * @return array{status: BridgeStatus, source_tx_hash: ?string, dest_tx_hash: ?string, confirmations: int}
      */
-    public function checkStatus(string $transactionId, BridgeProvider $provider): array
-    {
+    public function checkStatus(
+        string $transactionId,
+        BridgeProvider $provider,
+        CrossChainNetwork $sourceChain,
+        CrossChainNetwork $destChain,
+        string $token,
+        string $amount,
+    ): array {
         $adapter = $this->getAdapterForProvider($provider);
         $result = $adapter->getBridgeStatus($transactionId);
 
         if ($result['status'] === BridgeStatus::COMPLETED) {
             BridgeTransactionCompleted::dispatch(
                 $transactionId,
-                CrossChainNetwork::ETHEREUM,
-                CrossChainNetwork::POLYGON,
-                'USDC',
-                '0',
+                $sourceChain,
+                $destChain,
+                $token,
+                $amount,
                 $provider,
                 $result['source_tx_hash'],
                 $result['dest_tx_hash'],
@@ -196,10 +203,10 @@ class BridgeOrchestratorService
         if ($result['status'] === BridgeStatus::FAILED) {
             BridgeTransactionFailed::dispatch(
                 $transactionId,
-                CrossChainNetwork::ETHEREUM,
-                CrossChainNetwork::POLYGON,
-                'USDC',
-                '0',
+                $sourceChain,
+                $destChain,
+                $token,
+                $amount,
                 $provider,
                 'Bridge transaction failed',
             );
