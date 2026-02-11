@@ -187,7 +187,14 @@ describe('BridgeOrchestratorService', function () {
 
         $this->service->registerAdapter($adapter);
 
-        $result = $this->service->checkStatus('tx-123', BridgeProvider::DEMO);
+        $result = $this->service->checkStatus(
+            'tx-123',
+            BridgeProvider::DEMO,
+            CrossChainNetwork::ETHEREUM,
+            CrossChainNetwork::POLYGON,
+            'USDC',
+            '1000.00',
+        );
 
         expect($result['status'])->toBe(BridgeStatus::BRIDGING);
         expect($result['confirmations'])->toBe(5);

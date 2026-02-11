@@ -10,7 +10,9 @@ use App\Domain\DeFi\Enums\DeFiPositionType;
 use App\Domain\DeFi\Enums\DeFiProtocol;
 use App\Domain\DeFi\ValueObjects\DeFiPosition;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
+use InvalidArgumentException;
 
 /**
  * Tracks user DeFi positions across protocols.
@@ -57,16 +59,24 @@ class DeFiPositionTrackerService
 
     /**
      * Close a position.
+     *
+     * @throws InvalidArgumentException if position not found
      */
     public function closePosition(string $walletAddress, string $positionId): void
     {
         $positions = $this->getPositionsFromCache($walletAddress);
+        $found = false;
 
         foreach ($positions as $i => $data) {
             if ($data['position_id'] === $positionId) {
                 $positions[$i]['status'] = DeFiPositionStatus::CLOSED->value;
+                $found = true;
                 break;
             }
+        }
+
+        if (! $found) {
+            throw new InvalidArgumentException("Position {$positionId} not found for wallet {$walletAddress}.");
         }
 
         Cache::put(self::CACHE_PREFIX . $walletAddress, $positions, self::CACHE_TTL);
@@ -86,7 +96,9 @@ class DeFiPositionTrackerService
         $positions = $this->getPositionsFromCache($walletAddress);
 
         return array_values(array_filter(
-            array_map(fn (array $data) => $this->hydratePosition($data), $positions),
+            array_filter(
+                array_map(fn (array $data) => $this->hydratePosition($data), $positions),
+            ),
             function (DeFiPosition $pos) use ($chain, $protocol, $type) {
                 if ($pos->status !== DeFiPositionStatus::ACTIVE) {
                     return false;
@@ -149,8 +161,18 @@ class DeFiPositionTrackerService
         return Cache::get(self::CACHE_PREFIX . $walletAddress, []);
     }
 
-    private function hydratePosition(array $data): DeFiPosition
+    private function hydratePosition(array $data): ?DeFiPosition
     {
+        $requiredKeys = ['position_id', 'protocol', 'type', 'status', 'chain', 'asset', 'amount', 'value_usd', 'apy'];
+
+        foreach ($requiredKeys as $key) {
+            if (! array_key_exists($key, $data)) {
+                Log::warning('DeFi position cache entry missing required key', ['missing_key' => $key, 'data' => $data]);
+
+                return null;
+            }
+        }
+
         return new DeFiPosition(
             positionId: $data['position_id'],
             protocol: DeFiProtocol::from($data['protocol']),

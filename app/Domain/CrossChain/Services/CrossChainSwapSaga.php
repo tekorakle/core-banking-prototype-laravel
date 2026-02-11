@@ -71,7 +71,7 @@ class CrossChainSwapSaga
      *
      * On failure, logs the compensation needed (tokens remain on dest chain).
      *
-     * @return array{tx_hash: string, output_amount: string}
+     * @return array{tx_hash: string, output_amount: string, swap_failed?: bool}
      */
     public function executeSwapAfterBridge(
         CrossChainSwapQuote $quote,
@@ -100,6 +100,7 @@ class CrossChainSwapSaga
             return [
                 'tx_hash'       => 'failed_swap_' . $bridgeResult['transaction_id'],
                 'output_amount' => $quote->bridgeQuote->outputAmount,
+                'swap_failed'   => true,
             ];
         }
     }

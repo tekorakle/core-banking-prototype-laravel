@@ -12,6 +12,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Validation\Rule;
 use Throwable;
 
 class CrossChainController extends Controller
@@ -42,8 +43,8 @@ class CrossChainController extends Controller
     public function bridgeQuote(Request $request): JsonResponse
     {
         $validated = $request->validate([
-            'from_chain' => 'required|string',
-            'to_chain'   => 'required|string',
+            'from_chain' => ['required', 'string', Rule::in(array_column(CrossChainNetwork::cases(), 'value'))],
+            'to_chain'   => ['required', 'string', Rule::in(array_column(CrossChainNetwork::cases(), 'value'))],
             'token'      => 'required|string|max:20',
             'amount'     => 'required|string|regex:/^\d+(\.\d+)?$/',
         ]);
@@ -82,8 +83,8 @@ class CrossChainController extends Controller
     public function bridgeInitiate(Request $request): JsonResponse
     {
         $validated = $request->validate([
-            'from_chain'        => 'required|string',
-            'to_chain'          => 'required|string',
+            'from_chain'        => ['required', 'string', Rule::in(array_column(CrossChainNetwork::cases(), 'value'))],
+            'to_chain'          => ['required', 'string', Rule::in(array_column(CrossChainNetwork::cases(), 'value'))],
             'token'             => 'required|string|max:20',
             'amount'            => 'required|string|regex:/^\d+(\.\d+)?$/',
             'sender_address'    => 'required|string|max:100',
@@ -157,8 +158,8 @@ class CrossChainController extends Controller
     public function swapQuote(Request $request): JsonResponse
     {
         $validated = $request->validate([
-            'from_chain' => 'required|string',
-            'to_chain'   => 'required|string',
+            'from_chain' => ['required', 'string', Rule::in(array_column(CrossChainNetwork::cases(), 'value'))],
+            'to_chain'   => ['required', 'string', Rule::in(array_column(CrossChainNetwork::cases(), 'value'))],
             'from_token' => 'required|string|max:20',
             'to_token'   => 'required|string|max:20',
             'amount'     => 'required|string|regex:/^\d+(\.\d+)?$/',
@@ -199,8 +200,8 @@ class CrossChainController extends Controller
     public function swapExecute(Request $request): JsonResponse
     {
         $validated = $request->validate([
-            'from_chain'     => 'required|string',
-            'to_chain'       => 'required|string',
+            'from_chain'     => ['required', 'string', Rule::in(array_column(CrossChainNetwork::cases(), 'value'))],
+            'to_chain'       => ['required', 'string', Rule::in(array_column(CrossChainNetwork::cases(), 'value'))],
             'from_token'     => 'required|string|max:20',
             'to_token'       => 'required|string|max:20',
             'amount'         => 'required|string|regex:/^\d+(\.\d+)?$/',

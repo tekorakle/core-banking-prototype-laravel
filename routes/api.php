@@ -1644,17 +1644,3 @@ Route::prefix('v1/defi')->name('api.defi.')->group(function () {
         Route::get('/yield', [DeFiController::class, 'yield'])->name('yield');
     });
 });
-
-// TEMPORARY DEBUG ROUTE - remove after testing
-Route::post('/debug-json', function (Request $request) {
-    return response()->json([
-        'content_type' => $request->header('Content-Type'),
-        'is_json'      => $request->isJson(),
-        'all'          => $request->all(),
-        'json_all'     => $request->json()->all(),
-        'raw_content'  => $request->getContent(),
-        'raw_length'   => strlen($request->getContent()),
-        'method'       => $request->method(),
-        'input_email'  => $request->input('email'),
-    ]);
-});

@@ -32,7 +32,7 @@ final readonly class SwapQuote
 
     public function getEffectiveRate(): string
     {
-        if ($this->inputAmount === '0') {
+        if (empty($this->inputAmount) || bccomp($this->inputAmount, '0', 18) === 0) {
             return '0';
         }
 

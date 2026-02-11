@@ -76,6 +76,10 @@ describe('DeFiPositionTrackerService', function () {
         expect($atRisk)->toHaveCount(1);
     });
 
+    it('throws exception when closing non-existent position', function () {
+        $this->tracker->closePosition('0xWalletMissing', 'pos-nonexistent');
+    })->throws(InvalidArgumentException::class, 'Position pos-nonexistent not found');
+
     it('calculates total portfolio value', function () {
         $this->tracker->openPosition(DeFiProtocol::AAVE_V3, DeFiPositionType::SUPPLY, CrossChainNetwork::ETHEREUM, 'USDC', '1000.00', '1000.00', '3.50', '0xWallet6');
         $this->tracker->openPosition(DeFiProtocol::LIDO, DeFiPositionType::STAKE, CrossChainNetwork::ETHEREUM, 'ETH', '2.00', '5000.00', '3.80', '0xWallet6');

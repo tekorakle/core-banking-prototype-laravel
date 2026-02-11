@@ -89,6 +89,7 @@ describe('CrossChainSwapSaga', function () {
         // Should return bridged amount as output (compensation)
         expect($result['tx_hash'])->toStartWith('failed_swap_');
         expect($result['output_amount'])->toBe($quote->bridgeQuote->outputAmount);
+        expect($result['swap_failed'])->toBeTrue();
     });
 
     it('checks swap status for tracked transactions', function () {

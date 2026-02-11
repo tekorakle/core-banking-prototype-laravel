@@ -15,6 +15,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Validation\Rule;
 use Throwable;
 
 class DeFiController extends Controller
@@ -51,11 +52,11 @@ class DeFiController extends Controller
     public function swapQuote(Request $request): JsonResponse
     {
         $validated = $request->validate([
-            'chain'      => 'required|string',
+            'chain'      => ['required', 'string', Rule::in(array_column(CrossChainNetwork::cases(), 'value'))],
             'from_token' => 'required|string|max:20',
             'to_token'   => 'required|string|max:20',
             'amount'     => 'required|string|regex:/^\d+(\.\d+)?$/',
-            'slippage'   => 'nullable|numeric|min:0.01|max:50',
+            'slippage'   => 'nullable|numeric|min:0.01|max:5',
         ]);
 
         try {
@@ -93,12 +94,12 @@ class DeFiController extends Controller
     public function swapExecute(Request $request): JsonResponse
     {
         $validated = $request->validate([
-            'chain'          => 'required|string',
+            'chain'          => ['required', 'string', Rule::in(array_column(CrossChainNetwork::cases(), 'value'))],
             'from_token'     => 'required|string|max:20',
             'to_token'       => 'required|string|max:20',
             'amount'         => 'required|string|regex:/^\d+(\.\d+)?$/',
             'wallet_address' => 'required|string|max:100',
-            'slippage'       => 'nullable|numeric|min:0.01|max:50',
+            'slippage'       => 'nullable|numeric|min:0.01|max:5',
         ]);
 
         try {
@@ -140,7 +141,17 @@ class DeFiController extends Controller
         $chain = $request->query('chain', 'ethereum');
 
         try {
-            $network = CrossChainNetwork::from((string) $chain);
+            $network = CrossChainNetwork::tryFrom((string) $chain);
+            if ($network === null) {
+                return response()->json([
+                    'success' => false,
+                    'error'   => [
+                        'code'    => 'ERR_DEFI_003',
+                        'message' => 'Invalid chain value.',
+                    ],
+                ], 422);
+            }
+
             $markets = $this->lendingProtocol->getMarkets($network);
 
             return response()->json([
@@ -163,9 +174,11 @@ class DeFiController extends Controller
      */
     public function portfolio(Request $request): JsonResponse
     {
-        $walletAddress = $request->query('wallet_address', '0xDefault');
+        $validated = $request->validate([
+            'wallet_address' => 'required|string|max:100',
+        ]);
 
-        $summary = $this->portfolioService->getPortfolioSummary((string) $walletAddress);
+        $summary = $this->portfolioService->getPortfolioSummary($validated['wallet_address']);
 
         return response()->json([
             'success' => true,
@@ -178,15 +191,17 @@ class DeFiController extends Controller
      */
     public function positions(Request $request): JsonResponse
     {
-        $walletAddress = $request->query('wallet_address', '0xDefault');
-        $chain = $request->query('chain');
-        $protocol = $request->query('protocol');
+        $validated = $request->validate([
+            'wallet_address' => 'required|string|max:100',
+            'chain'          => ['nullable', 'string', Rule::in(array_column(CrossChainNetwork::cases(), 'value'))],
+            'protocol'       => ['nullable', 'string', Rule::in(array_column(DeFiProtocol::cases(), 'value'))],
+        ]);
 
-        $chainFilter = $chain ? CrossChainNetwork::tryFrom((string) $chain) : null;
-        $protocolFilter = $protocol ? DeFiProtocol::tryFrom((string) $protocol) : null;
+        $chainFilter = isset($validated['chain']) ? CrossChainNetwork::from($validated['chain']) : null;
+        $protocolFilter = isset($validated['protocol']) ? DeFiProtocol::from($validated['protocol']) : null;
 
         $positions = $this->positionTracker->getActivePositions(
-            (string) $walletAddress,
+            $validated['wallet_address'],
             $chainFilter,
             $protocolFilter,
         );
@@ -202,16 +217,18 @@ class DeFiController extends Controller
      */
     public function staking(Request $request): JsonResponse
     {
-        $chain = $request->query('chain', 'ethereum');
-        $walletAddress = $request->query('wallet_address', '0xDefault');
+        $validated = $request->validate([
+            'chain'          => ['required', 'string', Rule::in(array_column(CrossChainNetwork::cases(), 'value'))],
+            'wallet_address' => 'required|string|max:100',
+        ]);
 
         try {
-            $network = CrossChainNetwork::from((string) $chain);
+            $network = CrossChainNetwork::from($validated['chain']);
 
             $data = [
                 'protocol'       => 'lido',
                 'staking_apy'    => $this->stakingProtocol->getStakingAPY($network),
-                'staked_balance' => $this->stakingProtocol->getStakedBalance($network, (string) $walletAddress),
+                'staked_balance' => $this->stakingProtocol->getStakedBalance($network, $validated['wallet_address']),
             ];
 
             return response()->json([
@@ -234,9 +251,11 @@ class DeFiController extends Controller
      */
     public function yield(Request $request): JsonResponse
     {
-        $walletAddress = $request->query('wallet_address', '0xDefault');
+        $validated = $request->validate([
+            'wallet_address' => 'required|string|max:100',
+        ]);
 
-        $opportunities = $this->portfolioService->getYieldOpportunities((string) $walletAddress);
+        $opportunities = $this->portfolioService->getYieldOpportunities($validated['wallet_address']);
 
         return response()->json([
             'success' => true,

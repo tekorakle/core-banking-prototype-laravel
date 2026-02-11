@@ -97,17 +97,7 @@ class DeFiPortfolioService
      */
     private function getProtocolBreakdown(array $positions): array
     {
-        $breakdown = [];
-        foreach ($positions as $pos) {
-            $key = $pos->protocol->value;
-            if (! isset($breakdown[$key])) {
-                $breakdown[$key] = ['value_usd' => '0', 'positions' => 0];
-            }
-            $breakdown[$key]['value_usd'] = bcadd($breakdown[$key]['value_usd'], $pos->valueUsd, 2);
-            $breakdown[$key]['positions']++;
-        }
-
-        return $breakdown;
+        return $this->buildBreakdown($positions, fn (DeFiPosition $pos) => $pos->protocol->value);
     }
 
     /**
@@ -116,17 +106,7 @@ class DeFiPortfolioService
      */
     private function getChainBreakdown(array $positions): array
     {
-        $breakdown = [];
-        foreach ($positions as $pos) {
-            $key = $pos->chain->value;
-            if (! isset($breakdown[$key])) {
-                $breakdown[$key] = ['value_usd' => '0', 'positions' => 0];
-            }
-            $breakdown[$key]['value_usd'] = bcadd($breakdown[$key]['value_usd'], $pos->valueUsd, 2);
-            $breakdown[$key]['positions']++;
-        }
-
-        return $breakdown;
+        return $this->buildBreakdown($positions, fn (DeFiPosition $pos) => $pos->chain->value);
     }
 
     /**
@@ -135,9 +115,18 @@ class DeFiPortfolioService
      */
     private function getTypeBreakdown(array $positions): array
     {
+        return $this->buildBreakdown($positions, fn (DeFiPosition $pos) => $pos->type->value);
+    }
+
+    /**
+     * @param array<DeFiPosition> $positions
+     * @return array<string, array{value_usd: string, positions: int}>
+     */
+    private function buildBreakdown(array $positions, callable $keyExtractor): array
+    {
         $breakdown = [];
         foreach ($positions as $pos) {
-            $key = $pos->type->value;
+            $key = $keyExtractor($pos);
             if (! isset($breakdown[$key])) {
                 $breakdown[$key] = ['value_usd' => '0', 'positions' => 0];
             }
