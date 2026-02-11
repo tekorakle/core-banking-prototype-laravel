@@ -6,6 +6,8 @@ namespace App\Infrastructure\Domain;
 
 use App\Infrastructure\Domain\Commands\DomainCreateCommand;
 use App\Infrastructure\Domain\Commands\DomainDependenciesCommand;
+use App\Infrastructure\Domain\Commands\DomainDisableCommand;
+use App\Infrastructure\Domain\Commands\DomainEnableCommand;
 use App\Infrastructure\Domain\Commands\DomainInstallCommand;
 use App\Infrastructure\Domain\Commands\DomainListCommand;
 use App\Infrastructure\Domain\Commands\DomainRemoveCommand;
@@ -32,6 +34,8 @@ class DomainServiceProvider extends ServiceProvider
         DomainRemoveCommand::class,
         DomainVerifyCommand::class,
         DomainDependenciesCommand::class,
+        DomainEnableCommand::class,
+        DomainDisableCommand::class,
     ];
 
     /**
