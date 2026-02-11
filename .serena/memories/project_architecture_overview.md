@@ -38,10 +38,13 @@ app/Domain/
 ├── Commerce/           # SBT, Merchants, Attestations (v2.4.0)
 ├── TrustCert/          # W3C VCs, Certificate Authority (v2.4.0)
 ├── Relayer/            # ERC-4337 Gas Abstraction, Smart Accounts (v2.6.0)
+├── CrossChain/         # Bridge protocols (Wormhole/LayerZero/Axelar), cross-chain swaps (v3.0.0)
+├── DeFi/               # DEX aggregation (Uniswap/Aave/Curve/Lido), flash loans (v3.0.0)
+├── FinancialInstitution/ # BaaS: Partner APIs, SDKs, Widgets, Billing, Marketplace (v2.9.0)
 ├── AgentProtocol/      # AI agent commerce (AP2 & A2A)
-├── AI/                 # AI Framework, MCP tools
+├── AI/                 # AI Framework, MCP tools, ML Anomaly Detection
 ├── Monitoring/         # Distributed tracing, metrics
-└── ... (37+ domains total)
+└── ... (41 domains total)
 ```
 
 ## Key Architectural Patterns
@@ -120,21 +123,24 @@ app/Domain/
 - Queue-based processing for heavy operations
 - Horizontal scaling support
 
-## Current Development Focus (v2.7.0)
-- **Agent Protocol Integration**: Payment, Compliance, and MCP bridges
-- **Treasury Yield Optimization**: Complete the portfolio optimization system
-- **Production Observability**: Grafana dashboards, alerting rules
-- **Enhanced Due Diligence**: Advanced compliance workflows
+## Current Development Focus (v3.1.0)
+- **Documentation & UI Consolidation**: Swagger coverage, website features, developer portal
+- **Admin UI**: Filament resources for 15 new domains (CrossChain, DeFi, RegTech, Fraud, etc.)
+- **User-Facing UI**: Blade views for cross-chain, DeFi, privacy, trust certificates
 
-### Recently Completed (v2.6.0)
-- Privacy Layer: Merkle Trees, Delegated Proofs, SRS Manifest
-- ERC-4337 Relayer: Smart Accounts, Gas Station, UserOp Signing with Biometric JWT
-- Security hardening for v2.6.0 audit findings
-- Production-ready balance checking for gas station
-- HSM ECDSA signing support
+### Recently Completed (v3.0.0)
+- CrossChain Domain: Bridge protocols (Wormhole, LayerZero, Axelar), cross-chain swaps, multi-chain portfolio
+- DeFi Domain: DEX aggregation (Uniswap, Aave, Curve, Lido), flash loans, position tracking
+- v2.10.0: Mobile API Compatibility (~30 endpoints)
+- v2.9.1: Production Hardening (On-Chain SBT, snarkjs, AWS KMS, Azure Key Vault)
+- v2.9.0: ML Anomaly Detection & BaaS Implementation
 
 ### Historical Milestones
 - v1.1.0: PHPStan Level 8 compliance, 22 Behat E2E features
 - v2.0.0: Multi-tenancy with stancl/tenancy (9 phases)
 - v2.2.0: Mobile backend (device mgmt, biometrics, push)
 - v2.4.0: Privacy & Identity (Shamir's Secret Sharing, ZK-KYC, Commerce, TrustCert)
+- v2.6.0: Privacy Layer & ERC-4337 (Merkle Trees, Smart Accounts, Gas Station)
+- v2.7.0: Mobile Payment API (Payment Intents, Passkeys, P2P Transfers)
+- v2.8.0: AI Query & RegTech (MiFID II, MiCA, Travel Rule)
+- v3.0.0: Cross-Chain & DeFi (Wormhole, LayerZero, Axelar, Uniswap, Aave, Curve, Lido)

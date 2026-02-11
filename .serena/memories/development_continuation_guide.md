@@ -23,12 +23,12 @@ git branch --show-current
 ### Current Session State (Update After Each Session)
 | Item | Status |
 |------|--------|
-| Current Branch | `release/v2.8.0` |
-| Open PRs | None |
+| Current Branch | `chore/v3.1.0-docs-refresh` |
+| Open PRs | v3.1.0 Phase 1 in progress |
 | Open Issues | None |
-| Last Action | v2.8.0 released (AI Query Endpoints, RegTech Adapters, MiFID/MiCA/Travel Rule, PRs #397-#400) |
-| Next Action | Plan and implement v2.9.0 (BaaS Implementation, SDK Generation, Production Hardening) |
-| Session Date | February 8, 2026 |
+| Last Action | v3.0.0 Released (Cross-Chain & DeFi) |
+| Next Action | v3.1.0 Phase 1 — Internal Docs & Housekeeping |
+| Session Date | February 11, 2026 |
 
 ### Recent Commits (as of Feb 6, 2026)
 - `f41f6946` feat(relayer): Add production-ready balance checking for gas station (#381)
@@ -77,7 +77,21 @@ git branch --show-current
 | **v2.6.0** | ✅ RELEASED | Privacy Layer & Relayer | Merkle Trees, Smart Accounts, Delegated Proofs, UserOp Signing, Security Hardening (PR #382) |
 | **v2.7.0** | ✅ RELEASED | Mobile Payment API | Payment Intents, Passkey Auth, P2P Transfer, TrustCert Export, Security Hardening (PRs #387-#396) |
 | **v2.8.0** | ✅ RELEASED | AI Query & RegTech | AI Query Endpoints, RegTech Adapters, MiFID/MiCA/Travel Rule (PRs #397-#400) |
-| **v2.9.0** | 📋 PLANNED | BaaS & Hardening | ML Anomaly Detection, SDK Generation, BaaS, Production Hardening |
+| **v2.9.0-p1** | ✅ RELEASED | ML Anomaly Detection | Statistical/Behavioral/Velocity/Geolocation anomaly detection, security hardening, 115 fraud tests (PRs #415-#428) |
+| **v2.9.0** | ✅ RELEASED | ML Anomaly Detection & BaaS | Statistical/Behavioral/Velocity/Geo anomaly detection, Partner SDKs, Widgets, Billing, Marketplace (PRs #415-#439) |
+| **v2.9.1** | ✅ RELEASED | Production Hardening | On-Chain SBT, snarkjs, AWS KMS, Azure Key Vault, Security Audit (PRs #441-#444) |
+| **v2.10.0** | ✅ RELEASED | Mobile API Compatibility | ~30 mobile-facing API endpoints, wallet/TrustCert/commerce/relayer mobile APIs (PRs #445-#453) |
+| **v3.0.0** | ✅ RELEASED | Cross-Chain & DeFi | Bridge protocols (Wormhole/LayerZero/Axelar), DeFi connectors (Uniswap/Aave/Curve/Lido), cross-chain swaps, multi-chain portfolio (PRs #454-#455) |
+| **v3.1.0** | 🚧 IN PROGRESS | Consolidation & UI | Documentation, Swagger, website features, admin UI (15 domains), user UI, developer portal |
+
+### v2.9.0 Phase 1 Completed PRs (All Merged)
+- #415-#422: ML Anomaly Detection foundation (Enums, Config, Migrations, Models, Services, Orchestrator, Batch Job, Tests)
+- #423: Refactor/fix review findings (method signatures, dead code, batch job fixes)
+- #424: Merge feature branch to main
+- #425: Security hardening (DBSCAN DoS limits, PII protection via IP hashing, input sanitization, config-driven defaults)
+- #426: Code quality (strict_types on 4 services, remove dead analyzeMousePattern, type safety, recordFeedback method)
+- #427: Database improvements (missing indexes on FK columns, audit trail: reviewed_by, reviewed_at, previous_status)
+- #428: Test hardening (21 edge-case tests: division by zero, severity boundaries, geospatial extremes, null handling)
 
 ### v2.2.0 Completed PRs (All Merged)
 - #347: Mobile Backend Core (Device, Biometric, Push)
@@ -172,6 +186,15 @@ git branch --show-current
 | Travel Rule | `TravelRuleService` | `app/Domain/RegTech/Services/` |
 | RegTech Orchestration | `RegTechOrchestrationService` | `app/Domain/RegTech/Services/` |
 | AI Transaction Query | `TransactionQueryTool` | `app/Domain/AI/Tools/` |
+| Partner Metering | `PartnerUsageMeteringService` | `app/Domain/FinancialInstitution/Services/` |
+| Partner Billing | `PartnerBillingService` | `app/Domain/FinancialInstitution/Services/` |
+| SDK Generation | `SdkGeneratorService` | `app/Domain/FinancialInstitution/Services/` |
+| Embeddable Widgets | `EmbeddableWidgetService` | `app/Domain/FinancialInstitution/Services/` |
+| Partner Marketplace | `PartnerMarketplaceService` | `app/Domain/FinancialInstitution/Services/` |
+| Anomaly Orchestrator | `AnomalyDetectionOrchestrator` | `app/Domain/Fraud/Services/` |
+| Statistical Analysis | `StatisticalAnalysisService` | `app/Domain/Fraud/Services/` |
+| GeoMath (Haversine/DBSCAN) | `GeoMathService` | `app/Domain/Fraud/Services/` |
+| Anomaly Batch Processing | `ProcessAnomalyBatchJob` | `app/Domain/Fraud/Jobs/` |
 
 ### MCP Tools (Already Exist)
 - `AgentPaymentTool` - Payment operations
@@ -273,7 +296,7 @@ gh pr checks [number]
 
 ## Architecture Quick Reference
 
-### Domain Structure (37+ domains)
+### Domain Structure (41 domains)
 ```
 app/Domain/
 ├── Account/        # Core accounts
@@ -292,11 +315,13 @@ app/Domain/
 ├── MobilePayment/  # Payment Intents, Receipts, Activity Feed (v2.7.0)
 ├── RegTech/        # MiFID II, MiCA, Travel Rule, Jurisdiction Adapters (v2.8.0)
 ├── Relayer/        # ERC-4337 Gas Abstraction, Smart Accounts (v2.6.0)
+├── CrossChain/     # Bridge protocols (Wormhole/LayerZero/Axelar), cross-chain swaps (v3.0.0)
+├── DeFi/           # DEX aggregation (Uniswap/Aave/Curve/Lido), flash loans (v3.0.0)
 ├── Stablecoin/     # Token lifecycle
 ├── Treasury/       # Portfolio, yield optimization
 ├── TrustCert/      # W3C VCs, Certificate Authority (v2.4.0)
 ├── Wallet/         # Blockchain wallets, HW wallets (v2.1.0)
-└── ... (+ Batch, CGO, Fraud, Governance, etc.)
+└── ... (+ Batch, CGO, Fraud, Governance, FinancialInstitution/BaaS, etc.)
 ```
 
 ### Patterns
