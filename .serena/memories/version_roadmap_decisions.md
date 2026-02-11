@@ -78,7 +78,12 @@
 
 ---
 
-## Completed Versions (Summary)\n\n- **v2.7.0** (Feb 8, 2026): Mobile Payment API & Enhanced Authentication (Payment Intents, Passkey Auth, P2P Transfer Helpers, TrustCert Export, Security Hardening)\n- **v2.6.0** (Feb 2, 2026): Privacy Layer & ERC-4337 (Merkle Trees, Smart Accounts, Delegated Proofs, UserOp Signing with Biometric JWT, Production-Ready Gas Station)\n- **v2.5.0**: Mobile App Launch (Expo/React Native)\n- **v2.4.0**: Privacy & Identity (Key Management, ZK-KYC, Commerce, TrustCert)\n- **v2.3.0**: AI Framework, RegTech Foundation, BaaS Configuration\n- **v2.2.0**: Mobile Backend (Device Management, Biometrics, Push Notifications)\n- **v2.1.0**: Security Hardening, Hardware Wallets, WebSocket, Kubernetes\n- **v2.0.0**: Multi-Tenancy with Team-Based Isolation\n\n### Next Planned\n- **v2.8.0** (Planned): AI Query Endpoints, RegTech Adapters, SDK Generation, BaaS Implementation\n\n---\n\n## Deferred Items (with reasoning)
+## Completed Versions (Summary)\n\n- **v2.9.0** (Feb 10, 2026): ML Anomaly Detection & BaaS (Statistical/Behavioral/Velocity/Geo anomaly detection, Partner SDKs, Billing, Widgets, Marketplace, 26 Partner API endpoints)\n- **v2.7.0** (Feb 8, 2026): Mobile Payment API & Enhanced Authentication (Payment Intents, Passkey Auth, P2P Transfer Helpers, TrustCert Export, Security Hardening)\n- **v2.6.0** (Feb 2, 2026): Privacy Layer & ERC-4337 (Merkle Trees, Smart Accounts, Delegated Proofs, UserOp Signing with Biometric JWT, Production-Ready Gas Station)\n- **v2.5.0**: Mobile App Launch (Expo/React Native)\n- **v2.4.0**: Privacy & Identity (Key Management, ZK-KYC, Commerce, TrustCert)\n- **v2.3.0**: AI Framework, RegTech Foundation, BaaS Configuration\n- **v2.2.0**: Mobile Backend (Device Management, Biometrics, Push Notifications)\n- **v2.1.0**: Security Hardening, Hardware Wallets, WebSocket, Kubernetes\n- **v2.0.0**: Multi-Tenancy with Team-Based Isolation\n\n### Next Planned\n- **v2.9.1** (Feb 10, 2026): Production Hardening (On-Chain SBT, snarkjs, AWS KMS, Azure Key Vault, Security Audit)
+- **v2.10.0** (Feb 10, 2026): Mobile API Compatibility (~30 mobile-facing API endpoints)
+- **v3.0.0** (Feb 10, 2026): Cross-Chain & DeFi (Bridge protocols: Wormhole/LayerZero/Axelar, DeFi: Uniswap/Aave/Curve/Lido, cross-chain swaps, multi-chain portfolio)
+
+### Next Planned
+- **v3.1.0** (In Progress): Consolidation, Documentation & UI Completeness (8 phases)\n\n---\n\n## Deferred Items (with reasoning)
 
 ### Deferred to v1.2.0+
 - Multi-agent coordination service (complex, needs bridges first)
