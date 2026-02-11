@@ -71,7 +71,7 @@ Route::get('/features', function () {
 
 Route::get('/features/{feature}', function ($feature) {
     // List of valid feature pages
-    $validFeatures = ['gcu', 'multi-asset', 'settlements', 'governance', 'bank-integration', 'api'];
+    $validFeatures = ['gcu', 'multi-asset', 'settlements', 'governance', 'bank-integration', 'api', 'crosschain-defi', 'privacy-identity', 'mobile-payments', 'regtech-compliance', 'baas-platform', 'ai-framework', 'multi-tenancy'];
 
     if (! in_array($feature, $validFeatures)) {
         abort(404);
