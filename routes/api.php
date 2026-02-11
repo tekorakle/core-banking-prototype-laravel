@@ -225,6 +225,9 @@ require __DIR__ . '/api/fraud.php';
 // Include enhanced regulatory routes
 require __DIR__ . '/api/regulatory.php';
 
+// Include module management API routes
+require __DIR__ . '/api-modules.php';
+
 /*
 |--------------------------------------------------------------------------
 | Domain Module Routes (v3.2.0)
