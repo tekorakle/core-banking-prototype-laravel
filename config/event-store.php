@@ -90,4 +90,19 @@ return [
         'growth_rate_threshold' => (int) env('EVENT_STORE_GROWTH_RATE_THRESHOLD', 10000),
     ],
 
+    /*
+    |--------------------------------------------------------------------------
+    | Event Versioning Configuration
+    |--------------------------------------------------------------------------
+    |
+    | Controls event schema versioning and upcasting behavior.
+    | When enabled, events are automatically upcasted during replay.
+    |
+    */
+    'versioning' => [
+        'enabled'           => env('EVENT_STORE_VERSIONING_ENABLED', true),
+        'upcast_on_replay'  => env('EVENT_STORE_UPCAST_ON_REPLAY', true),
+        'default_version'   => 1,
+    ],
+
 ];
