@@ -2,6 +2,7 @@
 
 declare(strict_types=1);
 
+use App\Http\Controllers\Api\Mobile\UserPreferencesController;
 use App\Http\Controllers\Api\MobileController;
 use Illuminate\Support\Facades\Route;
 
@@ -63,3 +64,11 @@ Route::prefix('mobile')->name('api.mobile.')->group(function () {
         });
     });
 });
+
+// User preferences (v3.3.4)
+Route::prefix('v1/user')->name('api.user.')
+    ->middleware(['auth:sanctum', 'check.token.expiration'])
+    ->group(function () {
+        Route::get('/preferences', [UserPreferencesController::class, 'show'])->name('preferences.show');
+        Route::patch('/preferences', [UserPreferencesController::class, 'update'])->name('preferences.update');
+    });

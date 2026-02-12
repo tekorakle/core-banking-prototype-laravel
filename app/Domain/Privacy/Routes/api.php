@@ -17,6 +17,9 @@ Route::prefix('v1/privacy')->name('api.privacy.')->group(function () {
     // Public endpoint for SRS manifest (mobile needs this before auth)
     Route::get('/srs-manifest', [PrivacyController::class, 'getSrsManifest'])->name('srs-manifest');
 
+    // Public endpoint for privacy pool statistics (v3.3.4)
+    Route::get('/pool-stats', [PrivacyController::class, 'getPoolStats'])->name('pool-stats');
+
     // Authenticated endpoints
     Route::middleware(['auth:sanctum', 'check.token.expiration', 'throttle:60,1'])->group(function () {
         Route::get('/merkle-root', [PrivacyController::class, 'getMerkleRoot'])->name('merkle-root');

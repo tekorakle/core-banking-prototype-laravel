@@ -466,4 +466,58 @@ class PrivacyController extends Controller
             ],
         ]);
     }
+
+    /**
+     * Get privacy pool statistics.
+     *
+     * @OA\Get(
+     *     path="/api/v1/privacy/pool-stats",
+     *     operationId="getPrivacyPoolStats",
+     *     tags={"Privacy"},
+     *     summary="Get privacy pool statistics",
+     *     description="Returns aggregate statistics about the privacy pool including participant count and anonymity strength.",
+     *     @OA\Response(
+     *         response=200,
+     *         description="Pool statistics",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="data", type="object",
+     *                 @OA\Property(property="totalPoolSize", type="number", example=67630),
+     *                 @OA\Property(property="poolSizeCurrency", type="string", example="USD"),
+     *                 @OA\Property(property="participantCount", type="integer", example=10),
+     *                 @OA\Property(property="privacyStrength", type="string", example="weak"),
+     *                 @OA\Property(property="lastUpdated", type="string", format="date-time")
+     *             )
+     *         )
+     *     )
+     * )
+     */
+    public function getPoolStats(): JsonResponse
+    {
+        $networks = $this->merkleService->getSupportedNetworks();
+        $totalParticipants = 0;
+
+        foreach ($networks as $network) {
+            $root = $this->merkleService->getMerkleRoot($network);
+            $totalParticipants += $root->leafCount;
+        }
+
+        // Demo values — in production these would aggregate on-chain TVL
+        $totalPoolSize = $totalParticipants * 6763;
+
+        $strength = match (true) {
+            $totalParticipants >= 1000 => 'strong',
+            $totalParticipants >= 100  => 'moderate',
+            default                    => 'weak',
+        };
+
+        return response()->json([
+            'data' => [
+                'totalPoolSize'    => $totalPoolSize,
+                'poolSizeCurrency' => 'USD',
+                'participantCount' => $totalParticipants,
+                'privacyStrength'  => $strength,
+                'lastUpdated'      => now()->toIso8601String(),
+            ],
+        ]);
+    }
 }

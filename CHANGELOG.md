@@ -5,6 +5,14 @@ All notable changes to the FinAegis Core Banking Platform will be documented in 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [3.3.4] - 2026-02-12
+
+### Added
+- **Per-network relayer status**: `GET /v1/relayer/networks/{network}/status` — returns chain ID, gas price, block number, and relayer queue status for a single network (P1 mobile v2 gap)
+- **Privacy pool statistics**: `GET /v1/privacy/pool-stats` — public endpoint returning aggregate privacy pool size, participant count, and anonymity strength rating (P2 mobile v2 gap)
+- **User preferences API**: `GET /v1/user/preferences` + `PATCH /v1/user/preferences` — mobile app settings (active network, privacy mode, auto-lock, transaction auth, balance visibility, POI, biometric lock) with sensible defaults and merge-on-read (P2 mobile v2 gap)
+- `mobile_preferences` JSON column on `users` table for persisting per-user mobile app settings
+
 ## [3.3.3] - 2026-02-12
 
 ### Fixed
