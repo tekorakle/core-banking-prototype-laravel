@@ -94,7 +94,13 @@ Key deliverables:
 - k6 load test suite (smoke/load/stress), QueryPerformanceMiddleware, performance:report command
 - GitHub community files (Dependabot, issue templates, PR template)
 - SPDX license headers, 24 integration tests covering plugin system
-Next planned: v3.3.0 — Event Store Optimization & Advanced Monitoring
+Next planned: v3.3.0 — Event Store Optimization & Observability (6 phases)
+Key deliverables: Event replay/rebuild/snapshot commands, real-time WebSocket dashboards, structured logging, deep health checks, event store partitioning
+
+Future roadmap:
+- v3.4.0 — API Maturity & DX (API versioning, rate limiting per tier, SDK auto-gen, OpenAPI 100%)
+- v3.5.0 — Compliance Certification (SOC 2, PCI DSS, multi-region, GDPR tooling)
+- v4.0.0 — Architecture Evolution (Laravel 13, Event Store v2, GraphQL, Plugin Marketplace)
 ## Architecture Principles (for decision-making)
 
 1. **Interface First**: Extract contracts before implementations
