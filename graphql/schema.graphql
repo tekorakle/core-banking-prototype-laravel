@@ -6,3 +6,8 @@ scalar DateTime @scalar(class: "Nuwave\\Lighthouse\\Schema\\Types\\Scalars\\Date
 
 #import directives.graphql
 #import account.graphql
+#import wallet.graphql
+#import exchange.graphql
+#import compliance.graphql
+# Subscriptions require SubscriptionServiceProvider registration and a broadcast driver.
+# Uncomment after configuring: #import subscriptions.graphql

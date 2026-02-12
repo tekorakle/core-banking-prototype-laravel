@@ -1,0 +1,45 @@
+extend type Subscription {
+    orderBookUpdated(pair: String!): OrderBookUpdate
+        @subscription(class: "App\\GraphQL\\Subscriptions\\OrderBookUpdatedSubscription")
+        @guard(with: ["sanctum"])
+
+    tradeExecuted(pair: String!): TradeUpdate
+        @subscription(class: "App\\GraphQL\\Subscriptions\\TradeExecutedSubscription")
+        @guard(with: ["sanctum"])
+
+    walletBalanceUpdated(wallet_id: ID!): WalletBalanceUpdate
+        @subscription(class: "App\\GraphQL\\Subscriptions\\WalletBalanceUpdatedSubscription")
+        @guard(with: ["sanctum"])
+}
+
+type OrderBookUpdate {
+    pair: String!
+    best_bid: Float
+    best_ask: Float
+    spread: Float
+    spread_percentage: Float
+    bid_count: Int!
+    ask_count: Int!
+    timestamp: String!
+    sequence: Int!
+}
+
+type TradeUpdate {
+    trade_id: String!
+    pair: String!
+    side: String!
+    price: Float!
+    quantity: Float!
+    total: Float!
+    maker_fee: Float
+    taker_fee: Float
+    timestamp: String!
+}
+
+type WalletBalanceUpdate {
+    wallet_id: ID!
+    chain: String!
+    balance: Float!
+    currency: String!
+    updated_at: DateTime!
+}
