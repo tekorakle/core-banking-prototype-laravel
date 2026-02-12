@@ -6,7 +6,6 @@ namespace App\Console\Commands;
 
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\DB;
-use ReflectionClass;
 use Spatie\EventSourcing\AggregateRoots\AggregateRoot;
 
 class EventRebuildCommand extends Command
@@ -138,10 +137,6 @@ class EventRebuildCommand extends Command
     {
         // Find all UUIDs for this aggregate type
         $eventTable = 'stored_events';
-
-        // Get the short class name for filtering
-        $reflection = new ReflectionClass($aggregateClass);
-        $shortName = $reflection->getShortName();
 
         $uuids = DB::table($eventTable)
             ->whereNotNull('aggregate_uuid')

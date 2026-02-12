@@ -58,4 +58,17 @@ return [
         'strategy' => env('EVENT_STORE_PARTITION_STRATEGY', 'none'),
     ],
 
+    /*
+    |--------------------------------------------------------------------------
+    | Health Check Configuration
+    |--------------------------------------------------------------------------
+    |
+    | Thresholds for event store health checks. These control when health
+    | checks report warnings or unhealthy status.
+    |
+    */
+    'health' => [
+        'growth_rate_threshold' => (int) env('EVENT_STORE_GROWTH_RATE_THRESHOLD', 10000),
+    ],
+
 ];

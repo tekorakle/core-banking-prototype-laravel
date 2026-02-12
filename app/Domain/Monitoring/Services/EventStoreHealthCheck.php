@@ -59,20 +59,33 @@ class EventStoreHealthCheck
         }
 
         $totalEvents = DB::table('stored_events')->count();
-        $recentUnprocessed = 0;
 
         // Check if there are events in the last 5 minutes that might indicate lag
         $recentEvents = DB::table('stored_events')
             ->where('created_at', '>=', now()->subMinutes(5))
             ->count();
 
-        $healthy = $recentUnprocessed === 0;
+        // Check projector status if the projector_statuses table exists
+        $recentUnprocessed = 0;
+        if (Schema::hasTable('projector_statuses')) {
+            $lastProcessedId = DB::table('projector_statuses')
+                ->min('last_processed_event_id');
+
+            if ($lastProcessedId !== null) {
+                $recentUnprocessed = DB::table('stored_events')
+                    ->where('id', '>', (int) $lastProcessedId)
+                    ->count();
+            }
+        }
+
+        $healthy = $recentUnprocessed <= $recentEvents;
 
         return [
             'name'          => 'projector_lag',
             'healthy'       => $healthy,
             'total_events'  => $totalEvents,
             'recent_events' => $recentEvents,
+            'unprocessed'   => $recentUnprocessed,
             'message'       => $healthy ? 'No lag detected' : "Lag: {$recentUnprocessed} unprocessed events",
         ];
     }
@@ -157,15 +170,16 @@ class EventStoreHealthCheck
             ->where('created_at', '>=', now()->subDay())
             ->count();
 
-        // Alert if more than 10000 events per hour (configurable threshold)
-        $healthy = $lastHour < 10000;
+        $threshold = (int) config('event-store.health.growth_rate_threshold', 10000);
+        $healthy = $lastHour < $threshold;
 
         return [
             'name'            => 'event_growth_rate',
             'healthy'         => $healthy,
             'events_per_hour' => $lastHour,
             'events_per_day'  => $lastDay,
-            'message'         => $healthy ? 'Normal growth rate' : "High growth: {$lastHour} events/hour",
+            'threshold'       => $threshold,
+            'message'         => $healthy ? 'Normal growth rate' : "High growth: {$lastHour} events/hour (threshold: {$threshold})",
         ];
     }
 

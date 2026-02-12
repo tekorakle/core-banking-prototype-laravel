@@ -17,8 +17,8 @@ class StructuredLoggingMiddleware
      */
     public function handle(Request $request, Closure $next): Response
     {
-        $requestId = (string) ($request->header('X-Request-ID') ?: Str::uuid());
-        $traceId = (string) ($request->header('X-Trace-ID') ?: Str::uuid());
+        $requestId = $this->sanitizeTraceHeader($request->header('X-Request-ID')) ?: (string) Str::uuid();
+        $traceId = $this->sanitizeTraceHeader($request->header('X-Trace-ID')) ?: (string) Str::uuid();
         $startTime = microtime(true);
 
         // Attach identifiers to the request for downstream usage
@@ -54,5 +54,26 @@ class StructuredLoggingMiddleware
         ]);
 
         return $response;
+    }
+
+    /**
+     * Sanitize a trace header value to prevent log injection.
+     * Accepts UUIDs, alphanumeric strings with hyphens/underscores, max 128 chars.
+     */
+    private function sanitizeTraceHeader(?string $value): ?string
+    {
+        if ($value === null || $value === '') {
+            return null;
+        }
+
+        if (mb_strlen($value) > 128) {
+            return null;
+        }
+
+        if (! preg_match('/^[a-zA-Z0-9\-_.:]+$/', $value)) {
+            return null;
+        }
+
+        return $value;
     }
 }

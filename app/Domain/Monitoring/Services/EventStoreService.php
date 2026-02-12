@@ -264,36 +264,16 @@ class EventStoreService
         }
 
         $cutoffDate = now()->subDays($retainDays)->toDateTimeString();
-        $deleted = 0;
 
-        // Get all aggregate UUIDs with snapshots older than cutoff
-        $aggregateUuids = DB::table($snapshotTable)
+        // Single query: delete snapshots older than cutoff that are NOT the latest per aggregate
+        $latestIdsSubquery = DB::table($snapshotTable)
+            ->selectRaw('MAX(id) as id')
+            ->groupBy('aggregate_uuid');
+
+        return DB::table($snapshotTable)
             ->where('created_at', '<', $cutoffDate)
-            ->distinct()
-            ->pluck('aggregate_uuid');
-
-        foreach ($aggregateUuids as $uuid) {
-            // Find the latest snapshot for this aggregate
-            $latestId = DB::table($snapshotTable)
-                ->where('aggregate_uuid', $uuid)
-                ->orderByDesc('id')
-                ->value('id');
-
-            if ($latestId === null) {
-                continue;
-            }
-
-            // Delete all older snapshots for this aggregate that are beyond cutoff
-            $count = DB::table($snapshotTable)
-                ->where('aggregate_uuid', $uuid)
-                ->where('id', '<', $latestId)
-                ->where('created_at', '<', $cutoffDate)
-                ->delete();
-
-            $deleted += $count;
-        }
-
-        return $deleted;
+            ->whereNotIn('id', $latestIdsSubquery)
+            ->delete();
     }
 
     /**

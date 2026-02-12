@@ -5,6 +5,21 @@ All notable changes to the FinAegis Core Banking Platform will be documented in 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [3.3.1] - 2026-02-12
+
+### Fixed
+- **EventStoreHealthCheck**: Fixed `checkProjectorLag()` that had hardcoded `$recentUnprocessed = 0`, making the health check a no-op — now properly queries `projector_statuses` table
+- **EventStoreHealthCheck**: Made `checkEventGrowthRate()` threshold configurable via `config/event-store.php` instead of hardcoded `10000`
+- **EventStatsCommand**: Fixed PHPStan error where `$format` option could be `null` but was passed as `string`
+- **EventRebuildCommand**: Removed dead code (`$shortName`/`ReflectionClass`) in `rebuildAll()` and fixed PHPStan `class-string` error
+- **EventArchivalService**: Added batch processing to `restoreFromArchive()` to prevent memory exhaustion on large archives
+- **EventStoreService**: Optimized `cleanupSnapshots()` from N+1 per-UUID queries to a single bulk query with subquery
+- **StructuredLoggingMiddleware**: Added `sanitizeTraceHeader()` to validate `X-Request-ID`/`X-Trace-ID` headers — rejects values longer than 128 chars or containing non-alphanumeric characters to prevent log injection
+
+### Changed
+- Added `health.growth_rate_threshold` to `config/event-store.php`
+- Added `EVENT_STORE_GROWTH_RATE_THRESHOLD` to `.env.example`
+
 ## [3.3.0] - 2026-02-12
 
 ### Added

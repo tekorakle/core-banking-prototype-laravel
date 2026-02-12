@@ -174,39 +174,42 @@ class EventArchivalService
             return 0;
         }
 
-        $query = DB::table('archived_events')
-            ->where('source_table', $sourceTable);
-
-        if ($aggregateUuid !== null) {
-            $query->where('aggregate_uuid', $aggregateUuid);
-        }
-
-        $events = $query->get();
-
-        if ($events->isEmpty()) {
-            return 0;
-        }
-
+        $batchSize = (int) config('event-store.archival.batch_size', 1000);
         $restored = 0;
 
-        DB::transaction(function () use ($events, $sourceTable, &$restored) {
-            foreach ($events as $event) {
-                DB::table($sourceTable)->insert([
-                    'aggregate_uuid'    => $event->aggregate_uuid,
-                    'aggregate_version' => $event->aggregate_version,
-                    'event_version'     => $event->event_version,
-                    'event_class'       => $event->event_class,
-                    'event_properties'  => $event->event_properties,
-                    'meta_data'         => $event->meta_data,
-                    'created_at'        => $event->original_created_at,
-                ]);
+        do {
+            $query = DB::table('archived_events')
+                ->where('source_table', $sourceTable);
+
+            if ($aggregateUuid !== null) {
+                $query->where('aggregate_uuid', $aggregateUuid);
             }
 
-            $archiveIds = $events->pluck('id')->toArray();
-            DB::table('archived_events')->whereIn('id', $archiveIds)->delete();
+            $events = $query->orderBy('id')->limit($batchSize)->get();
 
-            $restored = count($archiveIds);
-        });
+            if ($events->isEmpty()) {
+                break;
+            }
+
+            DB::transaction(function () use ($events, $sourceTable, &$restored) {
+                foreach ($events as $event) {
+                    DB::table($sourceTable)->insert([
+                        'aggregate_uuid'    => $event->aggregate_uuid,
+                        'aggregate_version' => $event->aggregate_version,
+                        'event_version'     => $event->event_version,
+                        'event_class'       => $event->event_class,
+                        'event_properties'  => $event->event_properties,
+                        'meta_data'         => $event->meta_data,
+                        'created_at'        => $event->original_created_at,
+                    ]);
+                }
+
+                $archiveIds = $events->pluck('id')->toArray();
+                DB::table('archived_events')->whereIn('id', $archiveIds)->delete();
+
+                $restored += count($archiveIds);
+            });
+        } while ($events->count() === $batchSize);
 
         return $restored;
     }

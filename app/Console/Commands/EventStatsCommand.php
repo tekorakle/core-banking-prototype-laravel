@@ -31,7 +31,7 @@ class EventStatsCommand extends Command
     public function handle(EventStoreService $eventStoreService): int
     {
         $domain = $this->option('domain');
-        $format = $this->option('format');
+        $format = is_string($this->option('format')) ? $this->option('format') : 'table';
 
         $this->info('Gathering event store statistics...');
 
