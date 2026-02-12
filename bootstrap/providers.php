@@ -36,5 +36,6 @@ return [
     App\Providers\TestingServiceProvider::class,
     App\Providers\WalletServiceProvider::class,
     App\Providers\WebhookServiceProvider::class,
+    App\Infrastructure\Plugins\PluginServiceProvider::class,
     L5Swagger\L5SwaggerServiceProvider::class,
 ];
