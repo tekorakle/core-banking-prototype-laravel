@@ -15,6 +15,28 @@ class AccountDeletionController extends Controller
      * Soft-delete the authenticated user's account and revoke all tokens.
      *
      * POST /auth/delete-account
+     *
+     * @OA\Post(
+     *     path="/api/auth/delete-account",
+     *     operationId="accountDeletion",
+     *     summary="Delete user account",
+     *     description="Soft-deletes the authenticated user's account, revokes all tokens, and schedules the account for permanent deletion.",
+     *     tags={"Account Deletion"},
+     *     security={{"sanctum": {}}},
+     *     @OA\RequestBody(required=true, @OA\JsonContent(
+     *         required={"confirmation"},
+     *         @OA\Property(property="confirmation", type="string", example="DELETE", description="Must be the string 'DELETE' to confirm account deletion")
+     *     )),
+     *     @OA\Response(response=200, description="Account scheduled for deletion", @OA\JsonContent(
+     *         @OA\Property(property="success", type="boolean", example=true),
+     *         @OA\Property(property="data", type="object",
+     *             @OA\Property(property="message", type="string", example="Account has been scheduled for deletion."),
+     *             @OA\Property(property="deleted_at", type="string", format="date-time")
+     *         )
+     *     )),
+     *     @OA\Response(response=401, description="Unauthenticated"),
+     *     @OA\Response(response=422, description="Validation error — confirmation field is required and must be 'DELETE'")
+     * )
      */
     public function __invoke(Request $request): JsonResponse
     {

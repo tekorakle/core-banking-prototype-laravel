@@ -4616,6 +4616,712 @@
                 ]
             }
         },
+        "/api/audit/logs": {
+            "get": {
+                "tags": [
+                    "Audit"
+                ],
+                "summary": "Get audit logs",
+                "description": "Retrieves a paginated list of audit logs with optional filtering.",
+                "operationId": "auditGetAuditLogs",
+                "parameters": [
+                    {
+                        "name": "page",
+                        "in": "query",
+                        "description": "Page number",
+                        "required": false,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "per_page",
+                        "in": "query",
+                        "description": "Items per page",
+                        "required": false,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Audit logs retrieved successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "type": "object"
+                                            }
+                                        },
+                                        "meta": {
+                                            "properties": {
+                                                "total": {
+                                                    "type": "integer"
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/audit/logs/export": {
+            "get": {
+                "tags": [
+                    "Audit"
+                ],
+                "summary": "Export audit logs",
+                "description": "Initiates an export of audit logs. Returns an export ID and processing status.",
+                "operationId": "auditExportAuditLogs",
+                "parameters": [
+                    {
+                        "name": "format",
+                        "in": "query",
+                        "description": "Export format (e.g. csv, json)",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "from",
+                        "in": "query",
+                        "description": "Start date filter",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "format": "date-time"
+                        }
+                    },
+                    {
+                        "name": "to",
+                        "in": "query",
+                        "description": "End date filter",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "format": "date-time"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Export initiated successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "properties": {
+                                                "export_id": {
+                                                    "type": "string"
+                                                },
+                                                "status": {
+                                                    "type": "string",
+                                                    "example": "processing"
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/audit/events": {
+            "get": {
+                "tags": [
+                    "Audit"
+                ],
+                "summary": "Get audit events",
+                "description": "Retrieves a list of audit events.",
+                "operationId": "auditGetAuditEvents",
+                "responses": {
+                    "200": {
+                        "description": "Audit events retrieved successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "type": "object"
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/audit/events/{id}": {
+            "get": {
+                "tags": [
+                    "Audit"
+                ],
+                "summary": "Get audit event details",
+                "description": "Retrieves the details of a specific audit event by its ID.",
+                "operationId": "auditGetEventDetails",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Audit event ID",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Event details retrieved successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "properties": {
+                                                "id": {
+                                                    "type": "string"
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized"
+                    },
+                    "404": {
+                        "description": "Event not found"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/audit/reports": {
+            "get": {
+                "tags": [
+                    "Audit"
+                ],
+                "summary": "Get audit reports",
+                "description": "Retrieves a list of audit reports with pagination metadata.",
+                "operationId": "auditGetAuditReports",
+                "responses": {
+                    "200": {
+                        "description": "Audit reports retrieved successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "type": "object"
+                                            }
+                                        },
+                                        "meta": {
+                                            "properties": {
+                                                "total": {
+                                                    "type": "integer"
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/audit/reports/generate": {
+            "post": {
+                "tags": [
+                    "Audit"
+                ],
+                "summary": "Generate an audit report",
+                "description": "Initiates generation of a new audit report. Returns the report ID.",
+                "operationId": "auditGenerateAuditReport",
+                "requestBody": {
+                    "required": false,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "type": {
+                                        "description": "Report type",
+                                        "type": "string"
+                                    },
+                                    "from": {
+                                        "description": "Start date",
+                                        "type": "string",
+                                        "format": "date-time"
+                                    },
+                                    "to": {
+                                        "description": "End date",
+                                        "type": "string",
+                                        "format": "date-time"
+                                    },
+                                    "filters": {
+                                        "description": "Additional filters",
+                                        "type": "object"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Audit report generation initiated",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Audit report generation initiated"
+                                        },
+                                        "data": {
+                                            "properties": {
+                                                "report_id": {
+                                                    "type": "string"
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/audit/trail/{entityType}/{entityId}": {
+            "get": {
+                "tags": [
+                    "Audit"
+                ],
+                "summary": "Get entity audit trail",
+                "description": "Retrieves the audit trail for a specific entity identified by type and ID.",
+                "operationId": "auditGetEntityAuditTrail",
+                "parameters": [
+                    {
+                        "name": "entityType",
+                        "in": "path",
+                        "description": "Entity type (e.g. user, account, transaction)",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "entityId",
+                        "in": "path",
+                        "description": "Entity ID",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Entity audit trail retrieved successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "type": "object"
+                                            }
+                                        },
+                                        "meta": {
+                                            "properties": {
+                                                "entity_type": {
+                                                    "type": "string"
+                                                },
+                                                "entity_id": {
+                                                    "type": "string"
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized"
+                    },
+                    "404": {
+                        "description": "Entity not found"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/audit/users/{userId}/activity": {
+            "get": {
+                "tags": [
+                    "Audit"
+                ],
+                "summary": "Get user activity",
+                "description": "Retrieves the activity log for a specific user.",
+                "operationId": "auditGetUserActivity",
+                "parameters": [
+                    {
+                        "name": "userId",
+                        "in": "path",
+                        "description": "User ID",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "User activity retrieved successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "type": "object"
+                                            }
+                                        },
+                                        "meta": {
+                                            "properties": {
+                                                "user_id": {
+                                                    "type": "string"
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized"
+                    },
+                    "404": {
+                        "description": "User not found"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/audit/search": {
+            "get": {
+                "tags": [
+                    "Audit"
+                ],
+                "summary": "Search audit logs",
+                "description": "Searches audit logs with query parameters and returns matching results.",
+                "operationId": "auditSearchAuditLogs",
+                "parameters": [
+                    {
+                        "name": "query",
+                        "in": "query",
+                        "description": "Search query string",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "from",
+                        "in": "query",
+                        "description": "Start date filter",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "format": "date-time"
+                        }
+                    },
+                    {
+                        "name": "to",
+                        "in": "query",
+                        "description": "End date filter",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "format": "date-time"
+                        }
+                    },
+                    {
+                        "name": "action",
+                        "in": "query",
+                        "description": "Filter by action type",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Search results returned successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "type": "object"
+                                            }
+                                        },
+                                        "meta": {
+                                            "properties": {
+                                                "total": {
+                                                    "type": "integer"
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/audit/archive": {
+            "post": {
+                "tags": [
+                    "Audit"
+                ],
+                "summary": "Archive audit logs",
+                "description": "Archives audit logs based on the provided criteria.",
+                "operationId": "auditArchiveAuditLogs",
+                "requestBody": {
+                    "required": false,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "before": {
+                                        "description": "Archive logs before this date",
+                                        "type": "string",
+                                        "format": "date-time"
+                                    },
+                                    "retention_days": {
+                                        "description": "Number of days to retain",
+                                        "type": "integer"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Audit logs archived successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Audit logs archived"
+                                        },
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "type": "object"
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/auth/delete-account": {
+            "post": {
+                "tags": [
+                    "Account Deletion"
+                ],
+                "summary": "Delete user account",
+                "description": "Soft-deletes the authenticated user's account, revokes all tokens, and schedules the account for permanent deletion.",
+                "operationId": "accountDeletion",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "confirmation"
+                                ],
+                                "properties": {
+                                    "confirmation": {
+                                        "description": "Must be the string 'DELETE' to confirm account deletion",
+                                        "type": "string",
+                                        "example": "DELETE"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Account scheduled for deletion",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "data": {
+                                            "properties": {
+                                                "message": {
+                                                    "type": "string",
+                                                    "example": "Account has been scheduled for deletion."
+                                                },
+                                                "deleted_at": {
+                                                    "type": "string",
+                                                    "format": "date-time"
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    },
+                    "422": {
+                        "description": "Validation error — confirmation field is required and must be 'DELETE'"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
         "/api/auth/verify-email/{id}/{hash}": {
             "get": {
                 "tags": [
@@ -4989,6 +5695,252 @@
                 "security": [
                     {
                         "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/auth/passkey/challenge": {
+            "post": {
+                "tags": [
+                    "WebAuthn"
+                ],
+                "summary": "Generate WebAuthn challenge",
+                "description": "Generates a WebAuthn challenge for passkey authentication. This is a public endpoint that does not require authentication.",
+                "operationId": "passkeyChallenge",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "device_id"
+                                ],
+                                "properties": {
+                                    "device_id": {
+                                        "description": "Unique device identifier",
+                                        "type": "string"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Challenge generated",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "data": {
+                                            "properties": {
+                                                "challenge": {
+                                                    "type": "string"
+                                                },
+                                                "credential_id": {
+                                                    "type": "string"
+                                                },
+                                                "rp_id": {
+                                                    "type": "string"
+                                                },
+                                                "timeout": {
+                                                    "type": "integer",
+                                                    "example": 60000
+                                                },
+                                                "expires_at": {
+                                                    "type": "string",
+                                                    "format": "date-time"
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Passkey not enabled for device"
+                    },
+                    "404": {
+                        "description": "Device not found"
+                    }
+                }
+            }
+        },
+        "/api/v1/auth/passkey/authenticate": {
+            "post": {
+                "tags": [
+                    "WebAuthn"
+                ],
+                "summary": "Verify WebAuthn assertion and authenticate",
+                "description": "Verifies a WebAuthn assertion response and returns an access token on success.",
+                "operationId": "passkeyAuthenticate",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "device_id",
+                                    "challenge",
+                                    "credential_id",
+                                    "authenticator_data",
+                                    "client_data_json",
+                                    "signature"
+                                ],
+                                "properties": {
+                                    "device_id": {
+                                        "description": "Unique device identifier",
+                                        "type": "string"
+                                    },
+                                    "challenge": {
+                                        "description": "The challenge string from the challenge endpoint",
+                                        "type": "string"
+                                    },
+                                    "credential_id": {
+                                        "description": "WebAuthn credential ID",
+                                        "type": "string"
+                                    },
+                                    "authenticator_data": {
+                                        "description": "Base64-encoded authenticator data",
+                                        "type": "string"
+                                    },
+                                    "client_data_json": {
+                                        "description": "Base64-encoded client data JSON",
+                                        "type": "string"
+                                    },
+                                    "signature": {
+                                        "description": "Base64-encoded assertion signature",
+                                        "type": "string"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Authentication successful",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "data": {
+                                            "properties": {
+                                                "access_token": {
+                                                    "type": "string"
+                                                },
+                                                "token_type": {
+                                                    "type": "string",
+                                                    "example": "Bearer"
+                                                },
+                                                "expires_at": {
+                                                    "type": "string",
+                                                    "format": "date-time"
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Authentication failed"
+                    },
+                    "404": {
+                        "description": "Device not found"
+                    },
+                    "429": {
+                        "description": "Too many failed attempts, passkey blocked"
+                    }
+                }
+            }
+        },
+        "/api/auth/passkey/register": {
+            "post": {
+                "tags": [
+                    "WebAuthn"
+                ],
+                "summary": "Register a new passkey credential",
+                "description": "Registers a new WebAuthn passkey credential for the authenticated user's device.",
+                "operationId": "passkeyRegister",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "device_id",
+                                    "credential_id",
+                                    "public_key"
+                                ],
+                                "properties": {
+                                    "device_id": {
+                                        "description": "Unique device identifier",
+                                        "type": "string"
+                                    },
+                                    "credential_id": {
+                                        "description": "WebAuthn credential ID",
+                                        "type": "string"
+                                    },
+                                    "public_key": {
+                                        "description": "Base64-encoded public key",
+                                        "type": "string"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Passkey registered successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "data": {
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized"
+                    },
+                    "403": {
+                        "description": "Device does not belong to authenticated user"
+                    },
+                    "404": {
+                        "description": "Device not found"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
                     }
                 ]
             }
@@ -12100,6 +13052,675 @@
                 ]
             }
         },
+        "/api/compliance/dashboard": {
+            "get": {
+                "tags": [
+                    "Compliance"
+                ],
+                "summary": "Get compliance dashboard overview",
+                "description": "Returns the overall compliance dashboard with scores, KYC rates, pending reviews, violations, and audit dates.",
+                "operationId": "complianceDashboard",
+                "responses": {
+                    "200": {
+                        "description": "Success",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "success"
+                                        },
+                                        "data": {
+                                            "properties": {
+                                                "overall_compliance_score": {
+                                                    "type": "number",
+                                                    "format": "float",
+                                                    "example": 94.5
+                                                },
+                                                "kyc_completion_rate": {
+                                                    "type": "number",
+                                                    "format": "float",
+                                                    "example": 98.2
+                                                },
+                                                "pending_reviews": {
+                                                    "type": "integer",
+                                                    "example": 12
+                                                },
+                                                "active_violations": {
+                                                    "type": "integer",
+                                                    "example": 3
+                                                },
+                                                "last_audit_date": {
+                                                    "type": "string",
+                                                    "format": "date",
+                                                    "example": "2025-01-03"
+                                                },
+                                                "next_audit_date": {
+                                                    "type": "string",
+                                                    "format": "date",
+                                                    "example": "2025-02-03"
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/compliance/violations": {
+            "get": {
+                "tags": [
+                    "Compliance"
+                ],
+                "summary": "List all compliance violations",
+                "description": "Returns a list of all compliance violations.",
+                "operationId": "complianceGetViolations",
+                "responses": {
+                    "200": {
+                        "description": "Success",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "success"
+                                        },
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "type": "object"
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/compliance/violations/{id}": {
+            "get": {
+                "tags": [
+                    "Compliance"
+                ],
+                "summary": "Get violation details",
+                "description": "Returns detailed information about a specific compliance violation.",
+                "operationId": "complianceGetViolationDetails",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Violation ID",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "success"
+                                        },
+                                        "data": {
+                                            "type": "object",
+                                            "nullable": true
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized"
+                    },
+                    "404": {
+                        "description": "Violation not found"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/compliance/violations/{id}/resolve": {
+            "post": {
+                "tags": [
+                    "Compliance"
+                ],
+                "summary": "Resolve a compliance violation",
+                "description": "Marks a specific compliance violation as resolved.",
+                "operationId": "complianceResolveViolation",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Violation ID",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "success"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Violation resolved successfully"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized"
+                    },
+                    "404": {
+                        "description": "Violation not found"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/compliance/rules": {
+            "get": {
+                "tags": [
+                    "Compliance"
+                ],
+                "summary": "List all compliance rules",
+                "description": "Returns a list of all configured compliance rules.",
+                "operationId": "complianceGetComplianceRules",
+                "responses": {
+                    "200": {
+                        "description": "Success",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "success"
+                                        },
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "type": "object"
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/compliance/rules/{jurisdiction}": {
+            "get": {
+                "tags": [
+                    "Compliance"
+                ],
+                "summary": "Get compliance rules by jurisdiction",
+                "description": "Returns compliance rules filtered by a specific jurisdiction.",
+                "operationId": "complianceGetRulesByJurisdiction",
+                "parameters": [
+                    {
+                        "name": "jurisdiction",
+                        "in": "path",
+                        "description": "Jurisdiction code (e.g., US, EU, UK)",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "success"
+                                        },
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "type": "object"
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized"
+                    },
+                    "404": {
+                        "description": "Jurisdiction not found"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/compliance/checks": {
+            "get": {
+                "tags": [
+                    "Compliance"
+                ],
+                "summary": "List all compliance checks",
+                "description": "Returns a list of all compliance checks that have been performed.",
+                "operationId": "complianceGetComplianceChecks",
+                "responses": {
+                    "200": {
+                        "description": "Success",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "success"
+                                        },
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "type": "object"
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/compliance/checks/run": {
+            "post": {
+                "tags": [
+                    "Compliance"
+                ],
+                "summary": "Run a compliance check",
+                "description": "Initiates a new compliance check with the provided parameters.",
+                "operationId": "complianceRunComplianceCheck",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "check_type": {
+                                        "description": "Type of compliance check to run",
+                                        "type": "string",
+                                        "example": "full_audit"
+                                    },
+                                    "scope": {
+                                        "description": "Scope of the check",
+                                        "type": "string",
+                                        "example": "all_accounts"
+                                    },
+                                    "parameters": {
+                                        "description": "Additional check parameters",
+                                        "type": "object"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Success",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "success"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Compliance check initiated"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized"
+                    },
+                    "422": {
+                        "description": "Validation error"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/compliance/certifications": {
+            "get": {
+                "tags": [
+                    "Compliance"
+                ],
+                "summary": "List all compliance certifications",
+                "description": "Returns a list of all compliance certifications and their statuses.",
+                "operationId": "complianceGetCertifications",
+                "responses": {
+                    "200": {
+                        "description": "Success",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "success"
+                                        },
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "type": "object"
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/compliance/certifications/renew": {
+            "post": {
+                "tags": [
+                    "Compliance"
+                ],
+                "summary": "Renew a compliance certification",
+                "description": "Initiates the renewal process for a compliance certification.",
+                "operationId": "complianceRenewCertification",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "certification_id": {
+                                        "description": "ID of the certification to renew",
+                                        "type": "string"
+                                    },
+                                    "renewal_type": {
+                                        "description": "Type of renewal",
+                                        "type": "string",
+                                        "example": "standard"
+                                    },
+                                    "notes": {
+                                        "description": "Additional notes for the renewal",
+                                        "type": "string"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Success",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "success"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Certification renewal initiated"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized"
+                    },
+                    "422": {
+                        "description": "Validation error"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/compliance/policies": {
+            "get": {
+                "tags": [
+                    "Compliance"
+                ],
+                "summary": "List all compliance policies",
+                "description": "Returns a list of all compliance policies.",
+                "operationId": "complianceGetPolicies",
+                "responses": {
+                    "200": {
+                        "description": "Success",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "success"
+                                        },
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "type": "object"
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/compliance/policies/{id}": {
+            "put": {
+                "tags": [
+                    "Compliance"
+                ],
+                "summary": "Update a compliance policy",
+                "description": "Updates a specific compliance policy with the provided data.",
+                "operationId": "complianceUpdatePolicy",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Policy ID",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "name": {
+                                        "description": "Policy name",
+                                        "type": "string"
+                                    },
+                                    "description": {
+                                        "description": "Policy description",
+                                        "type": "string"
+                                    },
+                                    "rules": {
+                                        "description": "Policy rules",
+                                        "type": "array",
+                                        "items": {
+                                            "type": "object"
+                                        }
+                                    },
+                                    "status": {
+                                        "description": "Policy status",
+                                        "type": "string",
+                                        "example": "active"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Success",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "success"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Policy updated successfully"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized"
+                    },
+                    "404": {
+                        "description": "Policy not found"
+                    },
+                    "422": {
+                        "description": "Validation error"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
         "/api/v1/crosschain/chains": {
             "get": {
                 "tags": [
@@ -15360,6 +16981,760 @@
                 ]
             }
         },
+        "/api/compliance/regulatory-reports": {
+            "get": {
+                "tags": [
+                    "Compliance"
+                ],
+                "summary": "List regulatory reports with enhanced filtering",
+                "description": "Returns a paginated list of regulatory reports with support for filtering by type, jurisdiction, status, date range, overdue flag, and priority.",
+                "operationId": "regulatoryIndex",
+                "parameters": [
+                    {
+                        "name": "report_type",
+                        "in": "query",
+                        "description": "Filter by report type",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "jurisdiction",
+                        "in": "query",
+                        "description": "Filter by jurisdiction",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "status",
+                        "in": "query",
+                        "description": "Filter by report status",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "date_from",
+                        "in": "query",
+                        "description": "Start of reporting period",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "format": "date"
+                        }
+                    },
+                    {
+                        "name": "date_to",
+                        "in": "query",
+                        "description": "End of reporting period",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "format": "date"
+                        }
+                    },
+                    {
+                        "name": "overdue_only",
+                        "in": "query",
+                        "description": "Show only overdue reports",
+                        "required": false,
+                        "schema": {
+                            "type": "boolean"
+                        }
+                    },
+                    {
+                        "name": "priority",
+                        "in": "query",
+                        "description": "Minimum priority level",
+                        "required": false,
+                        "schema": {
+                            "type": "integer",
+                            "maximum": 5,
+                            "minimum": 1
+                        }
+                    },
+                    {
+                        "name": "page",
+                        "in": "query",
+                        "description": "Page number",
+                        "required": false,
+                        "schema": {
+                            "type": "integer",
+                            "minimum": 1
+                        }
+                    },
+                    {
+                        "name": "per_page",
+                        "in": "query",
+                        "description": "Results per page",
+                        "required": false,
+                        "schema": {
+                            "type": "integer",
+                            "maximum": 100,
+                            "minimum": 10
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Paginated list of regulatory reports",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "type": "object"
+                                            }
+                                        },
+                                        "current_page": {
+                                            "type": "integer",
+                                            "example": 1
+                                        },
+                                        "last_page": {
+                                            "type": "integer",
+                                            "example": 5
+                                        },
+                                        "per_page": {
+                                            "type": "integer",
+                                            "example": 20
+                                        },
+                                        "total": {
+                                            "type": "integer",
+                                            "example": 100
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized"
+                    },
+                    "422": {
+                        "description": "Validation error"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/compliance/regulatory-reports/{reportId}": {
+            "get": {
+                "tags": [
+                    "Compliance"
+                ],
+                "summary": "Show regulatory report details",
+                "description": "Returns detailed information for a specific regulatory report, including time until due, submission eligibility, and full filing history.",
+                "operationId": "regulatoryShow",
+                "parameters": [
+                    {
+                        "name": "reportId",
+                        "in": "path",
+                        "description": "Regulatory report ID",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Report details",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "report": {
+                                            "type": "object"
+                                        },
+                                        "time_until_due": {
+                                            "type": "string",
+                                            "example": "3 days",
+                                            "nullable": true
+                                        },
+                                        "can_be_submitted": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "filing_history": {
+                                            "type": "array",
+                                            "items": {
+                                                "properties": {
+                                                    "filing_id": {
+                                                        "type": "string"
+                                                    },
+                                                    "status": {
+                                                        "type": "string"
+                                                    },
+                                                    "filed_at": {
+                                                        "type": "string",
+                                                        "format": "date-time"
+                                                    },
+                                                    "processing_time": {
+                                                        "type": "string",
+                                                        "nullable": true
+                                                    }
+                                                },
+                                                "type": "object"
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized"
+                    },
+                    "404": {
+                        "description": "Report not found"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/compliance/regulatory-reports/generate/ctr": {
+            "post": {
+                "tags": [
+                    "Compliance"
+                ],
+                "summary": "Generate enhanced Currency Transaction Report",
+                "description": "Generates an enhanced CTR (Currency Transaction Report) for the specified date, including fraud analysis indicators.",
+                "operationId": "regulatoryGenerateEnhancedCTR",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "date"
+                                ],
+                                "properties": {
+                                    "date": {
+                                        "description": "Report date (must be today or earlier)",
+                                        "type": "string",
+                                        "format": "date",
+                                        "example": "2025-01-15"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "CTR generated successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Enhanced CTR generated successfully"
+                                        },
+                                        "report": {
+                                            "type": "object"
+                                        },
+                                        "fraud_analysis_included": {
+                                            "type": "boolean",
+                                            "example": true
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized"
+                    },
+                    "403": {
+                        "description": "Forbidden"
+                    },
+                    "422": {
+                        "description": "Validation error"
+                    },
+                    "500": {
+                        "description": "Report generation failed"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/compliance/regulatory-reports/generate/sar": {
+            "post": {
+                "tags": [
+                    "Compliance"
+                ],
+                "summary": "Generate enhanced Suspicious Activity Report",
+                "description": "Generates an enhanced SAR (Suspicious Activity Report) for the specified date range. Flags reports that require immediate filing.",
+                "operationId": "regulatoryGenerateEnhancedSAR",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "start_date",
+                                    "end_date"
+                                ],
+                                "properties": {
+                                    "start_date": {
+                                        "description": "Start date (must be today or earlier)",
+                                        "type": "string",
+                                        "format": "date",
+                                        "example": "2025-01-01"
+                                    },
+                                    "end_date": {
+                                        "description": "End date (must be on or after start_date and today or earlier)",
+                                        "type": "string",
+                                        "format": "date",
+                                        "example": "2025-01-31"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "SAR generated successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Enhanced SAR generated successfully"
+                                        },
+                                        "report": {
+                                            "type": "object"
+                                        },
+                                        "requires_immediate_filing": {
+                                            "type": "boolean",
+                                            "example": false
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized"
+                    },
+                    "403": {
+                        "description": "Forbidden"
+                    },
+                    "422": {
+                        "description": "Validation error"
+                    },
+                    "500": {
+                        "description": "Report generation failed"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/compliance/regulatory-reports/generate/aml": {
+            "post": {
+                "tags": [
+                    "Compliance"
+                ],
+                "summary": "Generate AML compliance report",
+                "description": "Generates an Anti-Money Laundering (AML) compliance report for the specified month.",
+                "operationId": "regulatoryGenerateAMLReport",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "month"
+                                ],
+                                "properties": {
+                                    "month": {
+                                        "description": "Report month in Y-m format (must be current month or earlier)",
+                                        "type": "string",
+                                        "example": "2025-01"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "AML report generated successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "AML report generated successfully"
+                                        },
+                                        "report": {
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized"
+                    },
+                    "403": {
+                        "description": "Forbidden"
+                    },
+                    "422": {
+                        "description": "Validation error"
+                    },
+                    "500": {
+                        "description": "Report generation failed"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/compliance/regulatory-reports/generate/ofac": {
+            "post": {
+                "tags": [
+                    "Compliance"
+                ],
+                "summary": "Generate OFAC sanctions screening report",
+                "description": "Generates an OFAC (Office of Foreign Assets Control) sanctions screening report for the specified date. Flags reports that require immediate action.",
+                "operationId": "regulatoryGenerateOFACReport",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "date"
+                                ],
+                                "properties": {
+                                    "date": {
+                                        "description": "Report date (must be today or earlier)",
+                                        "type": "string",
+                                        "format": "date",
+                                        "example": "2025-01-15"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "OFAC report generated successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "OFAC report generated successfully"
+                                        },
+                                        "report": {
+                                            "type": "object"
+                                        },
+                                        "requires_immediate_action": {
+                                            "type": "boolean",
+                                            "example": false
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized"
+                    },
+                    "403": {
+                        "description": "Forbidden"
+                    },
+                    "422": {
+                        "description": "Validation error"
+                    },
+                    "500": {
+                        "description": "Report generation failed"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/compliance/regulatory-reports/generate/bsa": {
+            "post": {
+                "tags": [
+                    "Compliance"
+                ],
+                "summary": "Generate BSA compliance report",
+                "description": "Generates a Bank Secrecy Act (BSA) compliance report for the specified quarter and year.",
+                "operationId": "regulatoryGenerateBSAReport",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "quarter",
+                                    "year"
+                                ],
+                                "properties": {
+                                    "quarter": {
+                                        "description": "Fiscal quarter (1-4)",
+                                        "type": "integer",
+                                        "maximum": 4,
+                                        "minimum": 1,
+                                        "example": 1
+                                    },
+                                    "year": {
+                                        "description": "Report year",
+                                        "type": "integer",
+                                        "minimum": 2020,
+                                        "example": 2025
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "BSA report generated successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "BSA report generated successfully"
+                                        },
+                                        "report": {
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized"
+                    },
+                    "403": {
+                        "description": "Forbidden"
+                    },
+                    "422": {
+                        "description": "Validation error"
+                    },
+                    "500": {
+                        "description": "Report generation failed"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/compliance/regulatory-reports/{reportId}/submit": {
+            "post": {
+                "tags": [
+                    "Compliance"
+                ],
+                "summary": "Submit a regulatory report to the authority",
+                "description": "Submits a regulatory report for filing with the appropriate regulatory authority. Supports initial, amendment, and correction filing types via API, portal, or email.",
+                "operationId": "regulatorySubmitReport",
+                "parameters": [
+                    {
+                        "name": "reportId",
+                        "in": "path",
+                        "description": "Regulatory report ID",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": false,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "filing_type": {
+                                        "description": "Type of filing",
+                                        "type": "string",
+                                        "enum": [
+                                            "initial",
+                                            "amendment",
+                                            "correction"
+                                        ],
+                                        "example": "initial"
+                                    },
+                                    "filing_method": {
+                                        "description": "Filing submission method",
+                                        "type": "string",
+                                        "enum": [
+                                            "api",
+                                            "portal",
+                                            "email"
+                                        ],
+                                        "example": "api"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Report submitted successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Report submitted successfully"
+                                        },
+                                        "filing": {
+                                            "type": "object"
+                                        },
+                                        "reference": {
+                                            "type": "string",
+                                            "example": "FIL-2025-00123"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized"
+                    },
+                    "403": {
+                        "description": "Forbidden"
+                    },
+                    "404": {
+                        "description": "Report not found"
+                    },
+                    "422": {
+                        "description": "Validation error"
+                    },
+                    "500": {
+                        "description": "Submission failed"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/compliance/regulatory-reports/filings/{filingId}/status": {
+            "get": {
+                "tags": [
+                    "Compliance"
+                ],
+                "summary": "Check the status of a regulatory filing",
+                "description": "Queries the current status of a previously submitted regulatory filing, returning the latest filing record and any status updates.",
+                "operationId": "regulatoryCheckFilingStatus",
+                "parameters": [
+                    {
+                        "name": "filingId",
+                        "in": "path",
+                        "description": "Filing record ID",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Filing status retrieved",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "filing": {
+                                            "type": "object"
+                                        },
+                                        "status_check": {
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized"
+                    },
+                    "403": {
+                        "description": "Forbidden"
+                    },
+                    "404": {
+                        "description": "Filing not found"
+                    },
+                    "500": {
+                        "description": "Status check failed"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
         "/api/exchange/orders": {
             "get": {
                 "tags": [
@@ -16740,6 +19115,191 @@
                 "security": [
                     {
                         "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/fraud/dashboard": {
+            "get": {
+                "tags": [
+                    "Fraud Detection"
+                ],
+                "summary": "Get fraud detection dashboard overview",
+                "operationId": "fraudDashboard",
+                "responses": {
+                    "200": {
+                        "description": "Success",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string"
+                                        },
+                                        "data": {
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/fraud/alerts": {
+            "get": {
+                "tags": [
+                    "Fraud Detection"
+                ],
+                "summary": "List all fraud alerts",
+                "operationId": "fraudGetAlerts",
+                "responses": {
+                    "200": {
+                        "description": "Success",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "type": "object"
+                                            }
+                                        },
+                                        "meta": {
+                                            "properties": {
+                                                "total": {
+                                                    "type": "integer"
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/fraud/alerts/{id}": {
+            "get": {
+                "tags": [
+                    "Fraud Detection"
+                ],
+                "summary": "Get details of a specific fraud alert",
+                "operationId": "fraudGetAlertDetails",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Alert ID",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/fraud/alerts/{id}/acknowledge": {
+            "post": {
+                "tags": [
+                    "Fraud Detection"
+                ],
+                "summary": "Acknowledge a fraud alert",
+                "operationId": "fraudAcknowledgeAlert",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Alert ID",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": false,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Success",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string"
+                                        },
+                                        "data": {
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
                     }
                 ]
             }
@@ -20900,6 +23460,400 @@
                                 }
                             }
                         }
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/v2/modules": {
+            "get": {
+                "tags": [
+                    "Module Management"
+                ],
+                "summary": "List all modules",
+                "description": "Returns a list of all available domain modules with optional status and type filters.",
+                "operationId": "moduleIndex",
+                "parameters": [
+                    {
+                        "name": "status",
+                        "in": "query",
+                        "description": "Filter by module status",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "type",
+                        "in": "query",
+                        "description": "Filter by module type",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "type": "object"
+                                            }
+                                        },
+                                        "meta": {
+                                            "properties": {
+                                                "total": {
+                                                    "type": "integer"
+                                                },
+                                                "installed": {
+                                                    "type": "integer"
+                                                },
+                                                "disabled": {
+                                                    "type": "integer"
+                                                },
+                                                "statuses": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "string"
+                                                    }
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized"
+                    },
+                    "422": {
+                        "description": "Invalid filter value"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/v2/modules/{name}": {
+            "get": {
+                "tags": [
+                    "Module Management"
+                ],
+                "summary": "Get module details",
+                "description": "Returns detailed information about a single module including manifest and verification status.",
+                "operationId": "moduleShow",
+                "parameters": [
+                    {
+                        "name": "name",
+                        "in": "path",
+                        "description": "Module name or package identifier",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "properties": {
+                                                "module": {
+                                                    "type": "object"
+                                                },
+                                                "manifest": {
+                                                    "type": "object",
+                                                    "nullable": true
+                                                },
+                                                "verification": {
+                                                    "type": "object"
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized"
+                    },
+                    "404": {
+                        "description": "Module not found"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/v2/modules/{name}/enable": {
+            "post": {
+                "tags": [
+                    "Module Management"
+                ],
+                "summary": "Enable a module",
+                "description": "Enables a previously disabled domain module. Requires admin privileges.",
+                "operationId": "moduleEnable",
+                "parameters": [
+                    {
+                        "name": "name",
+                        "in": "path",
+                        "description": "Module name",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Module enabled successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "type": "object"
+                                        },
+                                        "message": {
+                                            "type": "string"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized"
+                    },
+                    "422": {
+                        "description": "Enable failed"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/v2/modules/{name}/disable": {
+            "post": {
+                "tags": [
+                    "Module Management"
+                ],
+                "summary": "Disable a module",
+                "description": "Disables an active domain module. Core modules cannot be disabled. Requires admin privileges.",
+                "operationId": "moduleDisable",
+                "parameters": [
+                    {
+                        "name": "name",
+                        "in": "path",
+                        "description": "Module name",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Module disabled successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "type": "object"
+                                        },
+                                        "message": {
+                                            "type": "string"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized"
+                    },
+                    "422": {
+                        "description": "Disable failed"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/v2/modules/health": {
+            "get": {
+                "tags": [
+                    "Module Management"
+                ],
+                "summary": "Get module health summary",
+                "description": "Returns an overall health summary across all installed domain modules.",
+                "operationId": "moduleHealth",
+                "responses": {
+                    "200": {
+                        "description": "Success",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "properties": {
+                                                "healthy": {
+                                                    "type": "boolean"
+                                                },
+                                                "modules": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "properties": {
+                                                            "name": {
+                                                                "type": "string"
+                                                            },
+                                                            "healthy": {
+                                                                "type": "boolean"
+                                                            },
+                                                            "passed": {
+                                                                "type": "integer"
+                                                            },
+                                                            "failed": {
+                                                                "type": "integer"
+                                                            },
+                                                            "errors": {
+                                                                "type": "array",
+                                                                "items": {
+                                                                    "type": "string"
+                                                                }
+                                                            }
+                                                        },
+                                                        "type": "object"
+                                                    }
+                                                }
+                                            },
+                                            "type": "object"
+                                        },
+                                        "meta": {
+                                            "properties": {
+                                                "total_installed": {
+                                                    "type": "integer"
+                                                },
+                                                "healthy": {
+                                                    "type": "integer"
+                                                },
+                                                "unhealthy": {
+                                                    "type": "integer"
+                                                },
+                                                "checked_at": {
+                                                    "type": "string",
+                                                    "format": "date-time"
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/v2/modules/{name}/verify": {
+            "post": {
+                "tags": [
+                    "Module Management"
+                ],
+                "summary": "Verify module health",
+                "description": "Runs health verification checks on a specific module. Requires admin privileges.",
+                "operationId": "moduleVerify",
+                "parameters": [
+                    {
+                        "name": "name",
+                        "in": "path",
+                        "description": "Module name",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Module is healthy",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "type": "object"
+                                        },
+                                        "meta": {
+                                            "properties": {
+                                                "summary": {
+                                                    "type": "string"
+                                                },
+                                                "checked_at": {
+                                                    "type": "string",
+                                                    "format": "date-time"
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized"
+                    },
+                    "404": {
+                        "description": "Module not found"
+                    },
+                    "503": {
+                        "description": "Module is unhealthy"
                     }
                 },
                 "security": [
@@ -25589,6 +28543,55 @@
                         "sanctum": []
                     }
                 ]
+            }
+        },
+        "/api/v1/privacy/pool-stats": {
+            "get": {
+                "tags": [
+                    "Privacy"
+                ],
+                "summary": "Get privacy pool statistics",
+                "description": "Returns aggregate statistics about the privacy pool including participant count and anonymity strength.",
+                "operationId": "getPrivacyPoolStats",
+                "responses": {
+                    "200": {
+                        "description": "Pool statistics",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "properties": {
+                                                "totalPoolSize": {
+                                                    "type": "number",
+                                                    "example": 67630
+                                                },
+                                                "poolSizeCurrency": {
+                                                    "type": "string",
+                                                    "example": "USD"
+                                                },
+                                                "participantCount": {
+                                                    "type": "integer",
+                                                    "example": 10
+                                                },
+                                                "privacyStrength": {
+                                                    "type": "string",
+                                                    "example": "weak"
+                                                },
+                                                "lastUpdated": {
+                                                    "type": "string",
+                                                    "format": "date-time"
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
             }
         },
         "/api/regtech/compliance/summary": {
@@ -38536,6 +41539,30 @@
         {
             "name": "Partner BaaS",
             "description": "Partner Banking-as-a-Service dashboard, billing, SDK, widgets, and marketplace"
+        },
+        {
+            "name": "Compliance",
+            "description": "Compliance management: violations, rules, certifications, and policy enforcement"
+        },
+        {
+            "name": "Audit",
+            "description": "Audit trail: logs, events, reports, entity trails, and user activity"
+        },
+        {
+            "name": "Fraud Detection",
+            "description": "Fraud detection: alerts, patterns, cases, and investigation workflows"
+        },
+        {
+            "name": "Module Management",
+            "description": "Platform module management: enable, disable, health checks, and verification"
+        },
+        {
+            "name": "WebAuthn",
+            "description": "WebAuthn/FIDO2 passkey authentication: challenge, authenticate, and register"
+        },
+        {
+            "name": "Account Deletion",
+            "description": "Account deletion and data removal requests"
         },
         {
             "name": "Exchange Rates",
