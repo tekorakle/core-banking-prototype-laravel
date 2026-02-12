@@ -5,8 +5,12 @@ declare(strict_types=1);
 namespace App\Http\Controllers\Api;
 
 use App\Domain\Compliance\Services\Certification\AccessReviewService;
+use App\Domain\Compliance\Services\Certification\DataClassificationService;
+use App\Domain\Compliance\Services\Certification\EncryptionVerificationService;
 use App\Domain\Compliance\Services\Certification\EvidenceCollectionService;
 use App\Domain\Compliance\Services\Certification\IncidentResponseService;
+use App\Domain\Compliance\Services\Certification\KeyRotationService;
+use App\Domain\Compliance\Services\Certification\NetworkSegmentationService;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -18,6 +22,10 @@ class ComplianceCertificationController extends Controller
         private readonly EvidenceCollectionService $evidenceService,
         private readonly AccessReviewService $accessReviewService,
         private readonly IncidentResponseService $incidentResponseService,
+        private readonly DataClassificationService $classificationService,
+        private readonly EncryptionVerificationService $encryptionVerificationService,
+        private readonly KeyRotationService $keyRotationService,
+        private readonly NetworkSegmentationService $networkSegmentationService,
     ) {
     }
 
@@ -224,6 +232,129 @@ class ComplianceCertificationController extends Controller
         } catch (Throwable $e) {
             return response()->json([
                 'error'   => 'Failed to generate postmortem',
+                'message' => $e->getMessage(),
+            ], 500);
+        }
+    }
+
+    // ── PCI DSS Endpoints ──────────────────────────────────────────────
+
+    /**
+     * Get data classification report.
+     */
+    public function getDataClassification(Request $request): JsonResponse
+    {
+        try {
+            $demoMode = config('compliance-certification.soc2.demo_mode', true);
+
+            $report = $demoMode
+                ? $this->classificationService->getDemoReport()
+                : $this->classificationService->generateComplianceReport();
+
+            return response()->json([
+                'data' => $report,
+            ]);
+        } catch (Throwable $e) {
+            return response()->json([
+                'error'   => 'Failed to retrieve data classification report',
+                'message' => $e->getMessage(),
+            ], 500);
+        }
+    }
+
+    /**
+     * Run encryption verification suite.
+     */
+    public function getEncryptionVerification(): JsonResponse
+    {
+        try {
+            $demoMode = config('compliance-certification.soc2.demo_mode', true);
+
+            $results = $demoMode
+                ? $this->encryptionVerificationService->getDemoResults()
+                : $this->encryptionVerificationService->runVerification();
+
+            return response()->json([
+                'data' => $results,
+            ]);
+        } catch (Throwable $e) {
+            return response()->json([
+                'error'   => 'Failed to run encryption verification',
+                'message' => $e->getMessage(),
+            ], 500);
+        }
+    }
+
+    /**
+     * Get key rotation status report.
+     */
+    public function getKeyRotationStatus(): JsonResponse
+    {
+        try {
+            $demoMode = config('compliance-certification.soc2.demo_mode', true);
+
+            $report = $demoMode
+                ? $this->keyRotationService->getDemoReport()
+                : $this->keyRotationService->generateRotationReport();
+
+            return response()->json([
+                'data' => $report,
+            ]);
+        } catch (Throwable $e) {
+            return response()->json([
+                'error'   => 'Failed to retrieve key rotation status',
+                'message' => $e->getMessage(),
+            ], 500);
+        }
+    }
+
+    /**
+     * Rotate a specific key (demo-safe).
+     */
+    public function rotateKey(Request $request): JsonResponse
+    {
+        try {
+            $validated = $request->validate([
+                'key_identifier' => ['required', 'string'],
+                'dry_run'        => ['sometimes', 'boolean'],
+            ]);
+
+            $result = $this->keyRotationService->rotateKey(
+                $validated['key_identifier'],
+                $validated['dry_run'] ?? false,
+            );
+
+            $status = $result['success'] ? 200 : 404;
+
+            return response()->json([
+                'data' => $result,
+            ], $status);
+        } catch (Throwable $e) {
+            return response()->json([
+                'error'   => 'Failed to rotate key',
+                'message' => $e->getMessage(),
+            ], 500);
+        }
+    }
+
+    /**
+     * Get network segmentation verification report.
+     */
+    public function getNetworkSegmentation(): JsonResponse
+    {
+        try {
+            $demoMode = config('compliance-certification.soc2.demo_mode', true);
+
+            $report = $demoMode
+                ? $this->networkSegmentationService->getDemoReport()
+                : $this->networkSegmentationService->verifySegmentation();
+
+            return response()->json([
+                'data' => $report,
+            ]);
+        } catch (Throwable $e) {
+            return response()->json([
+                'error'   => 'Failed to retrieve network segmentation report',
                 'message' => $e->getMessage(),
             ], 500);
         }
