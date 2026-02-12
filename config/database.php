@@ -195,6 +195,84 @@ return [
             // 'trust_server_certificate' => env('DB_TRUST_SERVER_CERTIFICATE', 'false'),
         ],
 
+        /*
+        |----------------------------------------------------------------------
+        | Regional Read Replicas (v3.5.0 — Multi-Region Data Residency)
+        |----------------------------------------------------------------------
+        |
+        | Read-only replicas for region-local queries. Used by
+        | DataResidencyService when cross-region read optimization is enabled.
+        |
+        */
+
+        'replica-eu' => [
+            'driver'         => 'mariadb',
+            'host'           => env('DB_REPLICA_EU_HOST', '127.0.0.1'),
+            'port'           => env('DB_REPLICA_EU_PORT', '3306'),
+            'database'       => env('DB_REPLICA_EU_DATABASE', 'finaegis'),
+            'username'       => env('DB_REPLICA_EU_USERNAME', 'root'),
+            'password'       => env('DB_REPLICA_EU_PASSWORD', ''),
+            'charset'        => env('DB_CHARSET', 'utf8mb4'),
+            'collation'      => env('DB_COLLATION', 'utf8mb4_unicode_ci'),
+            'prefix'         => '',
+            'prefix_indexes' => true,
+            'strict'         => true,
+            'options'        => extension_loaded('pdo_mysql') ? array_filter([
+                PDO::MYSQL_ATTR_SSL_CA => env('MYSQL_ATTR_SSL_CA'),
+            ]) : [],
+        ],
+
+        'replica-us' => [
+            'driver'         => 'mariadb',
+            'host'           => env('DB_REPLICA_US_HOST', '127.0.0.1'),
+            'port'           => env('DB_REPLICA_US_PORT', '3306'),
+            'database'       => env('DB_REPLICA_US_DATABASE', 'finaegis'),
+            'username'       => env('DB_REPLICA_US_USERNAME', 'root'),
+            'password'       => env('DB_REPLICA_US_PASSWORD', ''),
+            'charset'        => env('DB_CHARSET', 'utf8mb4'),
+            'collation'      => env('DB_COLLATION', 'utf8mb4_unicode_ci'),
+            'prefix'         => '',
+            'prefix_indexes' => true,
+            'strict'         => true,
+            'options'        => extension_loaded('pdo_mysql') ? array_filter([
+                PDO::MYSQL_ATTR_SSL_CA => env('MYSQL_ATTR_SSL_CA'),
+            ]) : [],
+        ],
+
+        'replica-apac' => [
+            'driver'         => 'mariadb',
+            'host'           => env('DB_REPLICA_APAC_HOST', '127.0.0.1'),
+            'port'           => env('DB_REPLICA_APAC_PORT', '3306'),
+            'database'       => env('DB_REPLICA_APAC_DATABASE', 'finaegis'),
+            'username'       => env('DB_REPLICA_APAC_USERNAME', 'root'),
+            'password'       => env('DB_REPLICA_APAC_PASSWORD', ''),
+            'charset'        => env('DB_CHARSET', 'utf8mb4'),
+            'collation'      => env('DB_COLLATION', 'utf8mb4_unicode_ci'),
+            'prefix'         => '',
+            'prefix_indexes' => true,
+            'strict'         => true,
+            'options'        => extension_loaded('pdo_mysql') ? array_filter([
+                PDO::MYSQL_ATTR_SSL_CA => env('MYSQL_ATTR_SSL_CA'),
+            ]) : [],
+        ],
+
+        'replica-uk' => [
+            'driver'         => 'mariadb',
+            'host'           => env('DB_REPLICA_UK_HOST', '127.0.0.1'),
+            'port'           => env('DB_REPLICA_UK_PORT', '3306'),
+            'database'       => env('DB_REPLICA_UK_DATABASE', 'finaegis'),
+            'username'       => env('DB_REPLICA_UK_USERNAME', 'root'),
+            'password'       => env('DB_REPLICA_UK_PASSWORD', ''),
+            'charset'        => env('DB_CHARSET', 'utf8mb4'),
+            'collation'      => env('DB_COLLATION', 'utf8mb4_unicode_ci'),
+            'prefix'         => '',
+            'prefix_indexes' => true,
+            'strict'         => true,
+            'options'        => extension_loaded('pdo_mysql') ? array_filter([
+                PDO::MYSQL_ATTR_SSL_CA => env('MYSQL_ATTR_SSL_CA'),
+            ]) : [],
+        ],
+
     ],
 
     /*

@@ -6,8 +6,10 @@ namespace App\Http\Controllers\Api;
 
 use App\Domain\Compliance\Services\Certification\AccessReviewService;
 use App\Domain\Compliance\Services\Certification\DataClassificationService;
+use App\Domain\Compliance\Services\Certification\DataResidencyService;
 use App\Domain\Compliance\Services\Certification\EncryptionVerificationService;
 use App\Domain\Compliance\Services\Certification\EvidenceCollectionService;
+use App\Domain\Compliance\Services\Certification\GeoRoutingService;
 use App\Domain\Compliance\Services\Certification\IncidentResponseService;
 use App\Domain\Compliance\Services\Certification\KeyRotationService;
 use App\Domain\Compliance\Services\Certification\NetworkSegmentationService;
@@ -26,6 +28,8 @@ class ComplianceCertificationController extends Controller
         private readonly EncryptionVerificationService $encryptionVerificationService,
         private readonly KeyRotationService $keyRotationService,
         private readonly NetworkSegmentationService $networkSegmentationService,
+        private readonly DataResidencyService $dataResidencyService,
+        private readonly GeoRoutingService $geoRoutingService,
     ) {
     }
 
@@ -355,6 +359,104 @@ class ComplianceCertificationController extends Controller
         } catch (Throwable $e) {
             return response()->json([
                 'error'   => 'Failed to retrieve network segmentation report',
+                'message' => $e->getMessage(),
+            ], 500);
+        }
+    }
+
+    // ── Data Residency Endpoints ─────────────────────────────────────────
+
+    /**
+     * Get data residency status for current tenant or specified region.
+     */
+    public function getResidencyStatus(Request $request): JsonResponse
+    {
+        try {
+            $demoMode = config('compliance-certification.soc2.demo_mode', true);
+
+            $status = $demoMode
+                ? $this->dataResidencyService->getDemoStatus()
+                : $this->dataResidencyService->getResidencyStatus();
+
+            return response()->json([
+                'data' => $status,
+            ]);
+        } catch (Throwable $e) {
+            return response()->json([
+                'error'   => 'Failed to retrieve data residency status',
+                'message' => $e->getMessage(),
+            ], 500);
+        }
+    }
+
+    /**
+     * Get cross-region data transfer logs.
+     */
+    public function getTransferLogs(Request $request): JsonResponse
+    {
+        try {
+            $logs = $this->dataResidencyService->getTransferLogs(
+                $request->query('from_region'),
+                $request->query('to_region'),
+            );
+
+            return response()->json([
+                'data' => $logs,
+            ]);
+        } catch (Throwable $e) {
+            return response()->json([
+                'error'   => 'Failed to retrieve transfer logs',
+                'message' => $e->getMessage(),
+            ], 500);
+        }
+    }
+
+    /**
+     * Log a cross-region data transfer.
+     */
+    public function logTransfer(Request $request): JsonResponse
+    {
+        try {
+            $validated = $request->validate([
+                'from_region' => ['required', 'string'],
+                'to_region'   => ['required', 'string'],
+                'data_type'   => ['required', 'string'],
+                'reason'      => ['required', 'string'],
+            ]);
+
+            $log = $this->dataResidencyService->logTransfer(
+                $validated['from_region'],
+                $validated['to_region'],
+                $validated['data_type'],
+                $validated['reason'],
+            );
+
+            return response()->json([
+                'message' => 'Transfer logged successfully',
+                'data'    => $log,
+            ], 201);
+        } catch (Throwable $e) {
+            return response()->json([
+                'error'   => 'Failed to log transfer',
+                'message' => $e->getMessage(),
+            ], 500);
+        }
+    }
+
+    /**
+     * Get geo-routing configuration and available regions.
+     */
+    public function getRoutingConfig(): JsonResponse
+    {
+        try {
+            $config = $this->geoRoutingService->getRoutingConfig();
+
+            return response()->json([
+                'data' => $config,
+            ]);
+        } catch (Throwable $e) {
+            return response()->json([
+                'error'   => 'Failed to retrieve routing configuration',
                 'message' => $e->getMessage(),
             ], 500);
         }

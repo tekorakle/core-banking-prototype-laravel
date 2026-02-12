@@ -66,6 +66,12 @@ Route::middleware('auth:sanctum', 'check.token.expiration')->prefix('compliance'
         Route::get('/pci/key-rotation', [ComplianceCertificationController::class, 'getKeyRotationStatus']);
         Route::post('/pci/key-rotation/rotate', [ComplianceCertificationController::class, 'rotateKey']);
         Route::get('/pci/network-segmentation', [ComplianceCertificationController::class, 'getNetworkSegmentation']);
+
+        // Data Residency endpoints
+        Route::get('/data-residency/status', [ComplianceCertificationController::class, 'getResidencyStatus']);
+        Route::get('/data-residency/transfers', [ComplianceCertificationController::class, 'getTransferLogs']);
+        Route::post('/data-residency/transfers', [ComplianceCertificationController::class, 'logTransfer']);
+        Route::get('/data-residency/routing', [ComplianceCertificationController::class, 'getRoutingConfig']);
     });
 
     // GDPR endpoints
