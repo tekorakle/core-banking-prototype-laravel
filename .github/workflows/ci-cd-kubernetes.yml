@@ -217,7 +217,7 @@ jobs:
           version: ${{ env.HELM_VERSION }}
 
       - name: Configure kubectl
-        uses: azure/k8s-set-context@v3
+        uses: azure/k8s-set-context@v4
         with:
           kubeconfig: ${{ secrets.KUBE_CONFIG_STAGING }}
 
@@ -278,7 +278,7 @@ jobs:
           version: ${{ env.HELM_VERSION }}
 
       - name: Configure kubectl
-        uses: azure/k8s-set-context@v3
+        uses: azure/k8s-set-context@v4
         with:
           kubeconfig: ${{ secrets.KUBE_CONFIG_PRODUCTION }}
 
