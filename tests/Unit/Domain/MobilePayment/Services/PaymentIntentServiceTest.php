@@ -2,6 +2,10 @@
 
 declare(strict_types=1);
 
+use Tests\TestCase;
+
+uses(TestCase::class);
+
 use App\Domain\Commerce\Enums\MerchantStatus;
 use App\Domain\Commerce\Models\Merchant;
 use App\Domain\MobilePayment\Contracts\MerchantLookupServiceInterface;

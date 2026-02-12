@@ -2,6 +2,10 @@
 
 declare(strict_types=1);
 
+use Tests\TestCase;
+
+uses(TestCase::class);
+
 use App\Domain\MobilePayment\Enums\PaymentAsset;
 use App\Domain\MobilePayment\Enums\PaymentNetwork;
 use App\Domain\MobilePayment\Services\ReceiveAddressService;

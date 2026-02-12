@@ -5,6 +5,12 @@ All notable changes to the FinAegis Core Banking Platform will be documented in 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [3.3.3] - 2026-02-12
+
+### Fixed
+- **PerformSystemHealthChecks**: Fixed `ini_set('memory_limit', '256M')` that crashed parallel test processes already using >256MB — now only increases the limit, never decreases it
+- **MobilePayment unit tests**: Added missing `uses(TestCase::class)` to `PaymentIntentServiceTest`, `ReceiptServiceTest`, `ReceiveAddressServiceTest`, and `NetworkAvailabilityServiceTest` — fixes `BindingResolutionException` for Spatie EventSubscriber in parallel execution
+
 ## [3.3.2] - 2026-02-12
 
 ### Fixed
