@@ -26,6 +26,28 @@ class ModuleController extends Controller
 
     /**
      * List all modules with optional status filter.
+     *
+     * @OA\Get(
+     *     path="/api/v2/modules",
+     *     operationId="moduleIndex",
+     *     summary="List all modules",
+     *     description="Returns a list of all available domain modules with optional status and type filters.",
+     *     tags={"Module Management"},
+     *     security={{"sanctum": {}}},
+     *     @OA\Parameter(name="status", in="query", required=false, description="Filter by module status", @OA\Schema(type="string")),
+     *     @OA\Parameter(name="type", in="query", required=false, description="Filter by module type", @OA\Schema(type="string")),
+     *     @OA\Response(response=200, description="Success", @OA\JsonContent(
+     *         @OA\Property(property="data", type="array", @OA\Items(type="object")),
+     *         @OA\Property(property="meta", type="object",
+     *             @OA\Property(property="total", type="integer"),
+     *             @OA\Property(property="installed", type="integer"),
+     *             @OA\Property(property="disabled", type="integer"),
+     *             @OA\Property(property="statuses", type="array", @OA\Items(type="string"))
+     *         )
+     *     )),
+     *     @OA\Response(response=401, description="Unauthorized"),
+     *     @OA\Response(response=422, description="Invalid filter value")
+     * )
      */
     public function index(Request $request): JsonResponse
     {
@@ -69,6 +91,25 @@ class ModuleController extends Controller
 
     /**
      * Get detailed information about a single module.
+     *
+     * @OA\Get(
+     *     path="/api/v2/modules/{name}",
+     *     operationId="moduleShow",
+     *     summary="Get module details",
+     *     description="Returns detailed information about a single module including manifest and verification status.",
+     *     tags={"Module Management"},
+     *     security={{"sanctum": {}}},
+     *     @OA\Parameter(name="name", in="path", required=true, description="Module name or package identifier", @OA\Schema(type="string")),
+     *     @OA\Response(response=200, description="Success", @OA\JsonContent(
+     *         @OA\Property(property="data", type="object",
+     *             @OA\Property(property="module", type="object"),
+     *             @OA\Property(property="manifest", type="object", nullable=true),
+     *             @OA\Property(property="verification", type="object")
+     *         )
+     *     )),
+     *     @OA\Response(response=401, description="Unauthorized"),
+     *     @OA\Response(response=404, description="Module not found")
+     * )
      */
     public function show(string $name): JsonResponse
     {
@@ -106,6 +147,22 @@ class ModuleController extends Controller
      * Enable a disabled module.
      *
      * Requires admin privileges (enforced via route middleware).
+     *
+     * @OA\Post(
+     *     path="/api/v2/modules/{name}/enable",
+     *     operationId="moduleEnable",
+     *     summary="Enable a module",
+     *     description="Enables a previously disabled domain module. Requires admin privileges.",
+     *     tags={"Module Management"},
+     *     security={{"sanctum": {}}},
+     *     @OA\Parameter(name="name", in="path", required=true, description="Module name", @OA\Schema(type="string")),
+     *     @OA\Response(response=200, description="Module enabled successfully", @OA\JsonContent(
+     *         @OA\Property(property="data", type="object"),
+     *         @OA\Property(property="message", type="string")
+     *     )),
+     *     @OA\Response(response=401, description="Unauthorized"),
+     *     @OA\Response(response=422, description="Enable failed")
+     * )
      */
     public function enable(string $name): JsonResponse
     {
@@ -132,6 +189,22 @@ class ModuleController extends Controller
      *
      * Requires admin privileges (enforced via route middleware).
      * Core modules cannot be disabled.
+     *
+     * @OA\Post(
+     *     path="/api/v2/modules/{name}/disable",
+     *     operationId="moduleDisable",
+     *     summary="Disable a module",
+     *     description="Disables an active domain module. Core modules cannot be disabled. Requires admin privileges.",
+     *     tags={"Module Management"},
+     *     security={{"sanctum": {}}},
+     *     @OA\Parameter(name="name", in="path", required=true, description="Module name", @OA\Schema(type="string")),
+     *     @OA\Response(response=200, description="Module disabled successfully", @OA\JsonContent(
+     *         @OA\Property(property="data", type="object"),
+     *         @OA\Property(property="message", type="string")
+     *     )),
+     *     @OA\Response(response=401, description="Unauthorized"),
+     *     @OA\Response(response=422, description="Disable failed")
+     * )
      */
     public function disable(string $name): JsonResponse
     {
@@ -155,6 +228,34 @@ class ModuleController extends Controller
 
     /**
      * Get overall module health summary across all domains.
+     *
+     * @OA\Get(
+     *     path="/api/v2/modules/health",
+     *     operationId="moduleHealth",
+     *     summary="Get module health summary",
+     *     description="Returns an overall health summary across all installed domain modules.",
+     *     tags={"Module Management"},
+     *     security={{"sanctum": {}}},
+     *     @OA\Response(response=200, description="Success", @OA\JsonContent(
+     *         @OA\Property(property="data", type="object",
+     *             @OA\Property(property="healthy", type="boolean"),
+     *             @OA\Property(property="modules", type="array", @OA\Items(type="object",
+     *                 @OA\Property(property="name", type="string"),
+     *                 @OA\Property(property="healthy", type="boolean"),
+     *                 @OA\Property(property="passed", type="integer"),
+     *                 @OA\Property(property="failed", type="integer"),
+     *                 @OA\Property(property="errors", type="array", @OA\Items(type="string"))
+     *             ))
+     *         ),
+     *         @OA\Property(property="meta", type="object",
+     *             @OA\Property(property="total_installed", type="integer"),
+     *             @OA\Property(property="healthy", type="integer"),
+     *             @OA\Property(property="unhealthy", type="integer"),
+     *             @OA\Property(property="checked_at", type="string", format="date-time")
+     *         )
+     *     )),
+     *     @OA\Response(response=401, description="Unauthorized")
+     * )
      */
     public function health(): JsonResponse
     {
@@ -202,6 +303,26 @@ class ModuleController extends Controller
      * Verify health of a specific module.
      *
      * Requires admin privileges (enforced via route middleware).
+     *
+     * @OA\Post(
+     *     path="/api/v2/modules/{name}/verify",
+     *     operationId="moduleVerify",
+     *     summary="Verify module health",
+     *     description="Runs health verification checks on a specific module. Requires admin privileges.",
+     *     tags={"Module Management"},
+     *     security={{"sanctum": {}}},
+     *     @OA\Parameter(name="name", in="path", required=true, description="Module name", @OA\Schema(type="string")),
+     *     @OA\Response(response=200, description="Module is healthy", @OA\JsonContent(
+     *         @OA\Property(property="data", type="object"),
+     *         @OA\Property(property="meta", type="object",
+     *             @OA\Property(property="summary", type="string"),
+     *             @OA\Property(property="checked_at", type="string", format="date-time")
+     *         )
+     *     )),
+     *     @OA\Response(response=401, description="Unauthorized"),
+     *     @OA\Response(response=404, description="Module not found"),
+     *     @OA\Response(response=503, description="Module is unhealthy")
+     * )
      */
     public function verify(string $name): JsonResponse
     {
