@@ -1565,7 +1565,7 @@ Adds approximately 30 new mobile-facing API endpoints across wallet, TrustCert, 
 
 ---
 
-## Version 3.1.0 - Consolidation, Documentation & UI Completeness (IN PROGRESS)
+## Version 3.1.0 - Consolidation, Documentation & UI Completeness ✅ COMPLETED
 
 **Target**: February 2026
 **Theme**: Consolidation, Documentation & UI Completeness
@@ -1619,21 +1619,21 @@ After 18 releases (v1.1.0 → v3.0.0), the platform has grown to 41 domains, 266
 
 ---
 
-## Next: v3.3.0 — Event Store Optimization & Observability
+## v3.3.0 — Event Store Optimization & Observability ✅ COMPLETED
 
-**Target**: February 2026
+**Released**: February 12, 2026
 **Theme**: Production Operations Tooling
 
-### Planned Features
+### Delivered (6 Phases, PRs #493-#498)
 
-| Phase | Feature | Priority | Description |
-|-------|---------|----------|-------------|
-| 1 | Event Replay/Rebuild Commands | High | `event:replay`, `event:rebuild`, `event:snapshot` artisan commands with dry-run mode |
-| 2 | Real-Time WebSocket Dashboards | High | Live admin metrics via Soketi — route hits, queue depths, error rates |
-| 3 | Structured Logging | Medium | Standardized JSON log format, correlation IDs, domain-tagged log channels |
-| 4 | Deep Health Checks | Medium | Per-domain health endpoints (DB, Redis, queue, external services) |
-| 5 | Event Store Partitioning | Medium | Optimize event tables for high-volume domains, archival strategy |
-| 6 | Release & Integration Tests | Low | CHANGELOG, integration tests, documentation |
+| Phase | Branch | Deliverables |
+|-------|--------|-------------|
+| 1 | `feature/v3.3.0-event-store-commands` | EventStoreService, event:stats/replay/rebuild commands, snapshot:cleanup |
+| 2 | `feature/v3.3.0-observability-dashboards` | EventStoreDashboard Filament page, 4 widgets, MonitoringMetricsUpdated broadcast |
+| 3 | `feature/v3.3.0-structured-logging` | StructuredJsonFormatter, StructuredLoggingMiddleware, LogsWithDomainContext trait |
+| 4 | `feature/v3.3.0-deep-health-checks` | EventStoreHealthCheck service, checkDeep/checkDomain on HealthChecker, --deep flag, DomainHealthWidget |
+| 5 | `feature/v3.3.0-event-store-partitioning` | EventArchivalService, event:archive/compact commands, archived_events table, event-store config |
+| 6 | `feature/v3.3.0-release` | 3 integration test suites, CHANGELOG, documentation updates |
 
 ---
 
@@ -1688,7 +1688,7 @@ After 18 releases (v1.1.0 → v3.0.0), the platform has grown to 41 domains, 266
 
 ---
 
-*Document Version: 3.2.1*
+*Document Version: 3.3.0*
 *Created: January 11, 2026*
-*Updated: February 12, 2026 (v3.2.1 Patch — v3.3.0-v4.0.0 planned)*
-*Next Review: v3.3.0 Implementation*
+*Updated: February 12, 2026 (v3.3.0 Event Store Optimization & Observability released)*
+*Next Review: v3.4.0 Implementation*

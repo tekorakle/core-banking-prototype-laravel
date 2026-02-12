@@ -20,6 +20,7 @@ git status && git branch --show-current
 ### Version Status
 | Version | Status | Key Changes |
 |---------|--------|-------------|
+| v3.3.0 | ✅ Released | Event Store Optimization & Observability: Event replay/rebuild/stats/cleanup commands, observability dashboards, structured logging, deep health checks, event archival/compaction |
 | v3.2.0 | ✅ Released | Production Readiness & Plugin Architecture: Module manifests, enable/disable, modular routes, module admin API/UI, k6 load tests, query performance middleware, open-source templates |
 | v3.1.0 | ✅ Released | Consolidation, Documentation & UI Completeness: Swagger annotations, 7 feature pages, 15 Filament admin resources, 4 user-facing views, developer portal update |
 | v3.0.0 | ✅ Released | Cross-Chain & DeFi: Bridge protocols (Wormhole/LayerZero/Axelar), DeFi connectors (Uniswap/Aave/Curve/Lido), cross-chain swaps, multi-chain portfolio |

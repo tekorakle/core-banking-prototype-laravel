@@ -94,8 +94,17 @@ Key deliverables:
 - k6 load test suite (smoke/load/stress), QueryPerformanceMiddleware, performance:report command
 - GitHub community files (Dependabot, issue templates, PR template)
 - SPDX license headers, 24 integration tests covering plugin system
-Next planned: v3.3.0 — Event Store Optimization & Observability (6 phases)
-Key deliverables: Event replay/rebuild/snapshot commands, real-time WebSocket dashboards, structured logging, deep health checks, event store partitioning
+v3.3.0 — Event Store Optimization & Observability (COMPLETED)
+Status: Released (2026-02-12)
+Phases: 6 phases across 6 PRs (#493-#498)
+Key deliverables:
+- EventStoreService centralizing event store operations for 21 domains
+- event:stats, event:replay, event:rebuild, snapshot:cleanup commands with --dry-run
+- EventStoreDashboard Filament page with 5 widgets (stats, throughput, aggregate health, system metrics, domain health)
+- StructuredJsonFormatter, StructuredLoggingMiddleware, LogsWithDomainContext trait
+- EventStoreHealthCheck with connectivity, projector lag, snapshot freshness, growth rate checks
+- EventArchivalService with archive, compact, restore methods; archived_events table; event-store config
+- 3 integration test suites covering all features
 
 Future roadmap:
 - v3.4.0 — API Maturity & DX (API versioning, rate limiting per tier, SDK auto-gen, OpenAPI 100%)

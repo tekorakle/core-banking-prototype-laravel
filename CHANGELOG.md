@@ -5,6 +5,52 @@ All notable changes to the FinAegis Core Banking Platform will be documented in 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [3.3.0] - 2026-02-12
+
+### Added
+
+#### Event Store Commands (Phase 1, PR #493)
+- `EventStoreService` — centralized service for event store operations with domain-to-table mapping for 21 domains
+- `event:stats` command — display event store statistics per domain with table/json output
+- `event:replay` command — safely replay events through projectors with `--domain`, `--from`, `--to`, `--dry-run` options
+- `event:rebuild` command — rebuild aggregate state from events with `--uuid` and `--force` options
+- `snapshot:cleanup` command — clean up old snapshots keeping latest per aggregate UUID
+
+#### Real-time Observability Dashboards (Phase 2, PR #494)
+- `EventStoreDashboard` Filament admin page at `/admin/event-store-dashboard`
+- 4 dashboard widgets: EventStoreStats (30s poll), EventStoreThroughput (10s, line chart), AggregateHealth (60s), SystemMetrics (10s)
+- `MonitoringMetricsUpdated` broadcast event on `monitoring` WebSocket channel
+- Added `monitoring` channel to WebSocket configuration
+
+#### Structured Logging (Phase 3, PR #495)
+- `StructuredJsonFormatter` — Monolog formatter with timestamp, trace_id, span_id, domain, request_id, hostname
+- `StructuredLoggingMiddleware` — HTTP middleware generating request_id, logging start/end with error-level for 5xx
+- `LogsWithDomainContext` trait — auto-adds domain name and service class to log context
+- `structured` logging channel in `config/logging.php`
+
+#### Deep Health Checks (Phase 4, PR #496)
+- `EventStoreHealthCheck` service — event table connectivity, projector lag, snapshot freshness, event growth rate checks
+- `checkDeep()` and `checkDomain(string $domain)` methods on `HealthChecker`
+- `--deep` flag on `system:health-check` command for event store health checks
+- `DomainHealthWidget` — Filament widget showing domain health, snapshot age, events/hour
+
+#### Event Store Partitioning (Phase 5, PR #497)
+- `EventArchivalService` — archive, compact, restore, and stats methods for event lifecycle management
+- `event:archive` command — archive old events with `--before`, `--domain`, `--batch-size`, `--dry-run` options
+- `event:compact` command — compact events for aggregates with snapshots using `--keep-latest`, `--dry-run`
+- `archived_events` migration table for long-term event storage
+- `config/event-store.php` — archival, compaction, and partitioning configuration
+
+### Changed
+- `HealthChecker` now accepts optional `EventStoreHealthCheck` for deep checks
+- `PerformSystemHealthChecks` command supports `--deep` flag
+- `config/monitoring.php` extended with structured logging settings
+- `config/logging.php` includes `structured` channel
+- `bootstrap/app.php` registers `structured.logging` middleware alias
+- `config/websocket.php` includes `monitoring` channel
+
+---
+
 ## [3.2.1] - 2026-02-12
 
 ### Fixed
