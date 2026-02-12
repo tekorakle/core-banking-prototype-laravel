@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 use App\Http\Controllers\Api\ComplianceAlertController;
 use App\Http\Controllers\Api\ComplianceCaseController;
+use App\Http\Controllers\Api\ComplianceCertificationController;
 use App\Http\Controllers\Api\GdprController;
 use App\Http\Controllers\Api\KycController;
 use Illuminate\Support\Facades\Route;
@@ -45,6 +46,19 @@ Route::middleware('auth:sanctum', 'check.token.expiration')->prefix('compliance'
         Route::post('/submit', [KycController::class, 'submit']);
         Route::post('/documents', [KycController::class, 'upload']);
         Route::get('/documents/{documentId}/download', [KycController::class, 'downloadDocument']);
+    });
+
+    // Compliance Certification (SOC 2, PCI DSS)
+    Route::prefix('certification')->group(function () {
+        Route::get('/evidence', [ComplianceCertificationController::class, 'getEvidence']);
+        Route::post('/evidence/collect', [ComplianceCertificationController::class, 'collectEvidence']);
+        Route::get('/access-review', [ComplianceCertificationController::class, 'getAccessReview']);
+        Route::get('/access-review/privileged-users', [ComplianceCertificationController::class, 'getPrivilegedUsers']);
+        Route::get('/incidents', [ComplianceCertificationController::class, 'getIncidents']);
+        Route::post('/incidents', [ComplianceCertificationController::class, 'createIncident']);
+        Route::put('/incidents/{id}', [ComplianceCertificationController::class, 'updateIncident']);
+        Route::post('/incidents/{id}/resolve', [ComplianceCertificationController::class, 'resolveIncident']);
+        Route::get('/incidents/{id}/postmortem', [ComplianceCertificationController::class, 'getPostmortem']);
     });
 
     // GDPR endpoints
