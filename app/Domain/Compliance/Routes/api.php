@@ -59,6 +59,13 @@ Route::middleware('auth:sanctum', 'check.token.expiration')->prefix('compliance'
         Route::put('/incidents/{id}', [ComplianceCertificationController::class, 'updateIncident']);
         Route::post('/incidents/{id}/resolve', [ComplianceCertificationController::class, 'resolveIncident']);
         Route::get('/incidents/{id}/postmortem', [ComplianceCertificationController::class, 'getPostmortem']);
+
+        // PCI DSS endpoints
+        Route::get('/pci/classification', [ComplianceCertificationController::class, 'getDataClassification']);
+        Route::get('/pci/encryption', [ComplianceCertificationController::class, 'getEncryptionVerification']);
+        Route::get('/pci/key-rotation', [ComplianceCertificationController::class, 'getKeyRotationStatus']);
+        Route::post('/pci/key-rotation/rotate', [ComplianceCertificationController::class, 'rotateKey']);
+        Route::get('/pci/network-segmentation', [ComplianceCertificationController::class, 'getNetworkSegmentation']);
     });
 
     // GDPR endpoints

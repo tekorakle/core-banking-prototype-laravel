@@ -5,9 +5,11 @@ declare(strict_types=1);
 namespace App\Domain\Security\Services;
 
 use App\Domain\Security\Checks\AuthenticationCheck;
+use App\Domain\Security\Checks\DataClassificationCheck;
 use App\Domain\Security\Checks\DependencyVulnerabilityCheck;
 use App\Domain\Security\Checks\EncryptionCheck;
 use App\Domain\Security\Checks\InputValidationCheck;
+use App\Domain\Security\Checks\PciDssComplianceCheck;
 use App\Domain\Security\Checks\RateLimitingCheck;
 use App\Domain\Security\Checks\SecurityHeadersCheck;
 use App\Domain\Security\Checks\SensitiveDataExposureCheck;
@@ -145,6 +147,8 @@ class SecurityAuditService
             new RateLimitingCheck(),
             new InputValidationCheck(),
             new SensitiveDataExposureCheck(),
+            new PciDssComplianceCheck(),
+            new DataClassificationCheck(),
         ];
 
         foreach ($defaultChecks as $check) {
