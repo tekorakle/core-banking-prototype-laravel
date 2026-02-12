@@ -5,6 +5,51 @@ All notable changes to the FinAegis Core Banking Platform will be documented in 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [3.5.0] - 2026-02-12
+
+### Added
+
+#### SOC 2 Type II Preparation (Phase 1, PRs #511-#512)
+- `EvidenceCollectionService` — automated SOC 2 evidence collection with config snapshots and integrity hashing
+- `AccessReviewService` — periodic access review automation with demo mode
+- `IncidentResponseService` — security incident lifecycle management (create, update, resolve, postmortem)
+- `SecurityIncident` model with status tracking and resolution workflow
+- `Soc2DashboardController` with SOC 2 readiness overview API endpoints
+- `soc2:evidence-collect` and `soc2:access-review` artisan commands
+- `compliance-certification.php` config for SOC 2, PCI DSS, multi-region, and GDPR settings
+
+#### PCI DSS Readiness (Phase 2, PR #513)
+- `DataClassificationService` — data classification with sensitivity levels (public/internal/confidential/restricted)
+- `EncryptionVerificationService` — verification suite for at-rest, in-transit, key strength, and algorithm compliance
+- `KeyRotationService` — key rotation tracking, scheduling, and automated rotation with dry-run mode
+- `DataClassification` and `KeyRotationSchedule` models with tenant awareness
+- `pci:classify-data`, `pci:verify-encryption`, `pci:rotate-keys` artisan commands
+- 3 migrations for data classifications and key rotation schedules
+
+#### Multi-Region Deployment (Phase 3, PR #514)
+- `DataResidencyService` — data residency enforcement with region-to-disk mapping and compliance verification
+- `RegionAwareStorageService` — region-aware storage with disk selection and access verification
+- `GeoRoutingController` — geo-routing API endpoints for nearest region, latency probing, and failover
+- `DataTransferLog` model for cross-region transfer audit trail
+- `multi-region.php` config for region definitions, storage mapping, and geo-routing settings
+- 2 migrations for data transfer logs and geo-routing config
+
+#### GDPR Enhanced Compliance (Phase 4, PR #515)
+- `BreachNotificationService` — GDPR Articles 33/34 breach reporting with 72-hour deadline tracking
+- `ConsentManagementService` — granular consent management with immutable audit trail and coverage statistics
+- `DataProcessingRegisterService` — Article 30 Records of Processing Activities (ROPA) with completeness checking
+- `DataRetentionService` — automated retention policy enforcement (delete/archive/anonymize) with dry-run mode
+- `DpiaService` — Data Protection Impact Assessments (Article 35) with risk scoring and approval workflow
+- 5 models: `ConsentRecord`, `DataBreach`, `DataProtectionAssessment`, `ProcessingActivity`, `RetentionPolicy`
+- 6 event-sourcing events: `BreachDetected`, `BreachAuthorityNotified`, `BreachSubjectsNotified`, `ConsentRecorded`, `ConsentRevoked`, `RetentionPolicyEnforced`
+- `GdprEnhancedController` with 14 API endpoints under `/compliance/gdpr/v2/`
+- `gdpr:breach-check`, `gdpr:retention-enforce`, `gdpr:register-export` artisan commands
+- 5 migrations for processing activities, assessments, breaches, consents, and retention policies
+
+### Fixed
+- Duplicate `uses(Tests\TestCase::class)` declarations in Certification test directory (Pest.php global binding conflict)
+- `SecurityAuditServiceTest` check count updated from 8 to 10 to match current security check inventory
+
 ## [3.4.0] - 2026-02-12
 
 ### Added

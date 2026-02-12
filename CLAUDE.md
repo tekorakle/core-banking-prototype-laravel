@@ -20,6 +20,8 @@ git status && git branch --show-current
 ### Version Status
 | Version | Status | Key Changes |
 |---------|--------|-------------|
+| v3.5.0 | ✅ Released | Compliance Certification: SOC 2 Type II, PCI DSS readiness, multi-region deployment, GDPR enhanced (ROPA, DPIA, breach notification, consent v2, retention) |
+| v3.4.0 | ✅ Released | API Maturity & DX: API versioning, tier-aware rate limiting, SDK generation, OpenAPI annotations (143+ endpoints) |
 | v3.3.0 | ✅ Released | Event Store Optimization & Observability: Event replay/rebuild/stats/cleanup commands, observability dashboards, structured logging, deep health checks, event archival/compaction |
 | v3.2.0 | ✅ Released | Production Readiness & Plugin Architecture: Module manifests, enable/disable, modular routes, module admin API/UI, k6 load tests, query performance middleware, open-source templates |
 | v3.1.0 | ✅ Released | Consolidation, Documentation & UI Completeness: Swagger annotations, 7 feature pages, 15 Filament admin resources, 4 user-facing views, developer portal update |
