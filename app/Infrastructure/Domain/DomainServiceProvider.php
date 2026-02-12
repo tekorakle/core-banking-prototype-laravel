@@ -14,6 +14,8 @@ use App\Infrastructure\Domain\Commands\DomainRemoveCommand;
 use App\Infrastructure\Domain\Commands\DomainVerifyCommand;
 use App\Domain\Shared\EventSourcing\EventRouter;
 use App\Domain\Shared\EventSourcing\EventRouterInterface;
+use App\Domain\Shared\EventSourcing\EventUpcastingService;
+use App\Domain\Shared\EventSourcing\EventVersionRegistry;
 use Illuminate\Support\ServiceProvider;
 
 /**
@@ -62,6 +64,7 @@ class DomainServiceProvider extends ServiceProvider
         });
 
         $this->registerEventRouter();
+        $this->registerEventVersioning();
     }
 
     /**
@@ -87,6 +90,20 @@ class DomainServiceProvider extends ServiceProvider
             return new EventRouter(
                 domainTableMap: $customTables,
                 defaultTable: $defaultTable,
+            );
+        });
+    }
+
+    /**
+     * Register the Event Versioning and Upcasting services.
+     */
+    private function registerEventVersioning(): void
+    {
+        $this->app->singleton(EventVersionRegistry::class);
+
+        $this->app->singleton(EventUpcastingService::class, function ($app) {
+            return new EventUpcastingService(
+                registry: $app->make(EventVersionRegistry::class),
             );
         });
     }
