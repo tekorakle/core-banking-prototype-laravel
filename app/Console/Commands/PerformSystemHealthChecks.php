@@ -2,6 +2,7 @@
 
 namespace App\Console\Commands;
 
+use App\Domain\Monitoring\Services\EventStoreHealthCheck;
 use App\Models\SystemHealthCheck;
 use App\Models\SystemIncident;
 use Exception;
@@ -18,7 +19,7 @@ class PerformSystemHealthChecks extends Command
      *
      * @var string
      */
-    protected $signature = 'system:health-check {--service=}';
+    protected $signature = 'system:health-check {--service=} {--deep}';
 
     /**
      * The console command description.
@@ -41,6 +42,11 @@ class PerformSystemHealthChecks extends Command
             $this->checkSpecificService($service);
         } else {
             $this->checkAllServices();
+        }
+
+        // Run deep event store health checks when --deep flag is provided
+        if ($this->option('deep')) {
+            $this->runDeepHealthChecks();
         }
 
         $this->info('Health checks completed.');
@@ -347,6 +353,29 @@ class PerformSystemHealthChecks extends Command
                 'status'        => 'down',
                 'error_message' => $e->getMessage(),
             ];
+        }
+    }
+
+    private function runDeepHealthChecks(): void
+    {
+        $this->info('');
+        $this->info('Running deep event store health checks...');
+
+        try {
+            /** @var EventStoreHealthCheck $healthCheck */
+            $healthCheck = app(EventStoreHealthCheck::class);
+            $result = $healthCheck->checkAll();
+
+            $statusIcon = $result['healthy'] ? '<info>✓</info>' : '<error>✗</error>';
+            $this->line("  Event Store: {$statusIcon} {$result['status']}");
+
+            foreach ($result['checks'] as $checkName => $check) {
+                $icon = $check['healthy'] ? '<info>✓</info>' : '<error>✗</error>';
+                $message = $check['message'] ?? $check['name'];
+                $this->line("    {$icon} {$checkName}: {$message}");
+            }
+        } catch (Exception $e) {
+            $this->error("  Error running deep health checks: {$e->getMessage()}");
         }
     }
 
