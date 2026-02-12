@@ -12,6 +12,8 @@ use App\Infrastructure\Domain\Commands\DomainInstallCommand;
 use App\Infrastructure\Domain\Commands\DomainListCommand;
 use App\Infrastructure\Domain\Commands\DomainRemoveCommand;
 use App\Infrastructure\Domain\Commands\DomainVerifyCommand;
+use App\Domain\Shared\EventSourcing\EventRouter;
+use App\Domain\Shared\EventSourcing\EventRouterInterface;
 use Illuminate\Support\ServiceProvider;
 
 /**
@@ -58,6 +60,8 @@ class DomainServiceProvider extends ServiceProvider
                 domainBasePath: 'app/Domain',
             );
         });
+
+        $this->registerEventRouter();
     }
 
     /**
@@ -68,6 +72,23 @@ class DomainServiceProvider extends ServiceProvider
         if ($this->app->runningInConsole()) {
             $this->commands($this->commands);
         }
+    }
+
+
+    /**
+     * Register the Event Router for domain-based event table partitioning.
+     */
+    private function registerEventRouter(): void
+    {
+        $this->app->singleton(EventRouterInterface::class, function () {
+            $customTables = (array) config('event-store.routing.domain_tables', []);
+            $defaultTable = (string) config('event-store.routing.default_table', 'stored_events');
+
+            return new EventRouter(
+                domainTableMap: $customTables,
+                defaultTable: $defaultTable,
+            );
+        });
     }
 
     /**

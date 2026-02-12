@@ -55,7 +55,26 @@ return [
     |
     */
     'partitioning' => [
-        'strategy' => env('EVENT_STORE_PARTITION_STRATEGY', 'none'),
+        'strategy' => env('EVENT_STORE_PARTITION_STRATEGY', 'domain'),
+    ],
+
+    /*
+    |--------------------------------------------------------------------------
+    | Event Routing Configuration
+    |--------------------------------------------------------------------------
+    |
+    | Controls how events are routed to domain-specific tables.
+    | The default_table is used for events from unmapped domains.
+    | The domain_tables map overrides the built-in defaults in EventRouter.
+    |
+    */
+    'routing' => [
+        'default_table' => env('EVENT_STORE_DEFAULT_TABLE', 'stored_events'),
+
+        // Override domain-to-table mappings (leave empty to use defaults)
+        'domain_tables' => [
+            // 'Account' => 'custom_account_events',
+        ],
     ],
 
     /*

@@ -4,102 +4,115 @@ declare(strict_types=1);
 
 namespace App\Domain\Monitoring\Services;
 
+use App\Domain\Shared\EventSourcing\EventRouterInterface;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 
 class EventStoreService
 {
+    public function __construct(
+        private readonly ?EventRouterInterface $eventRouter = null,
+    ) {}
     /**
      * Domain-to-table mapping for event sourcing infrastructure.
+     *
+     * When the EventRouter is available and domain partitioning is active,
+     * event tables are resolved dynamically. Otherwise falls back to stored_events.
      *
      * @return array<string, array{event_table: string, snapshot_table: string|null}>
      */
     public function getDomainTableMap(): array
     {
+        $useRouter = $this->eventRouter && config('event-store.partitioning.strategy') === 'domain';
+
+        $resolveTable = fn (string $domain): string => $useRouter
+            ? $this->eventRouter->resolveTableForDomain($domain)
+            : 'stored_events';
+
         return [
             'Account' => [
-                'event_table'    => 'stored_events',
+                'event_table'    => $resolveTable('Account'),
                 'snapshot_table' => 'transaction_snapshots',
             ],
             'Transfer' => [
-                'event_table'    => 'stored_events',
+                'event_table'    => $resolveTable('Account'),
                 'snapshot_table' => 'transfer_snapshots',
             ],
             'Stablecoin' => [
-                'event_table'    => 'stored_events',
+                'event_table'    => $resolveTable('Stablecoin'),
                 'snapshot_table' => 'stablecoin_snapshots',
             ],
             'Collateral' => [
-                'event_table'    => 'stored_events',
+                'event_table'    => $resolveTable('Stablecoin'),
                 'snapshot_table' => 'collateral_position_snapshots',
             ],
             'Treasury' => [
-                'event_table'    => 'stored_events',
+                'event_table'    => $resolveTable('Treasury'),
                 'snapshot_table' => 'treasury_snapshots',
             ],
             'Portfolio' => [
-                'event_table'    => 'stored_events',
+                'event_table'    => $resolveTable('Treasury'),
                 'snapshot_table' => 'portfolio_snapshots',
             ],
             'Monitoring' => [
-                'event_table'    => 'stored_events',
+                'event_table'    => $resolveTable('Monitoring'),
                 'snapshot_table' => 'monitoring_metrics_snapshots',
             ],
             'Compliance' => [
-                'event_table'    => 'stored_events',
+                'event_table'    => $resolveTable('Compliance'),
                 'snapshot_table' => 'compliance_snapshots',
             ],
             'Exchange' => [
-                'event_table'    => 'stored_events',
+                'event_table'    => $resolveTable('Exchange'),
                 'snapshot_table' => null,
             ],
             'Lending' => [
-                'event_table'    => 'stored_events',
+                'event_table'    => $resolveTable('Lending'),
                 'snapshot_table' => null,
             ],
             'Payment' => [
-                'event_table'    => 'stored_events',
+                'event_table'    => $resolveTable('Payment'),
                 'snapshot_table' => null,
             ],
             'Wallet' => [
-                'event_table'    => 'stored_events',
+                'event_table'    => $resolveTable('Wallet'),
                 'snapshot_table' => null,
             ],
             'AgentProtocol' => [
-                'event_table'    => 'stored_events',
+                'event_table'    => $resolveTable('AgentProtocol'),
                 'snapshot_table' => null,
             ],
             'AI' => [
-                'event_table'    => 'stored_events',
+                'event_table'    => $resolveTable('AI'),
                 'snapshot_table' => null,
             ],
             'Batch' => [
-                'event_table'    => 'stored_events',
+                'event_table'    => $resolveTable('Batch'),
                 'snapshot_table' => null,
             ],
             'Cgo' => [
-                'event_table'    => 'stored_events',
+                'event_table'    => $resolveTable('Cgo'),
                 'snapshot_table' => null,
             ],
             'User' => [
-                'event_table'    => 'stored_events',
+                'event_table'    => $resolveTable('User'),
                 'snapshot_table' => null,
             ],
             'Performance' => [
-                'event_table'    => 'stored_events',
+                'event_table'    => $resolveTable('Performance'),
                 'snapshot_table' => null,
             ],
             'Product' => [
-                'event_table'    => 'stored_events',
+                'event_table'    => $resolveTable('Product'),
                 'snapshot_table' => null,
             ],
             'Asset' => [
-                'event_table'    => 'stored_events',
+                'event_table'    => $resolveTable('Asset'),
                 'snapshot_table' => null,
             ],
             'Mobile' => [
-                'event_table'    => 'stored_events',
+                'event_table'    => $resolveTable('Mobile'),
                 'snapshot_table' => null,
             ],
         ];
@@ -291,9 +304,16 @@ class EventStoreService
 
     /**
      * Resolve the event table for a given domain.
+     *
+     * When the EventRouter is available, delegates to it directly.
+     * Otherwise falls back to the domain table map.
      */
     public function resolveEventTable(string $domain): ?string
     {
+        if ($this->eventRouter && config('event-store.partitioning.strategy') === 'domain') {
+            return $this->eventRouter->resolveTableForDomain($domain);
+        }
+
         $map = $this->getDomainTableMap();
 
         return $map[$domain]['event_table'] ?? null;
