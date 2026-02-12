@@ -4,8 +4,6 @@ declare(strict_types=1);
 
 use App\Domain\Compliance\Services\Certification\EncryptionVerificationService;
 
-uses(Tests\TestCase::class);
-
 describe('EncryptionVerificationService', function () {
     it('runs full verification suite', function () {
         $service = new EncryptionVerificationService();

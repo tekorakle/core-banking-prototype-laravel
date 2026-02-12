@@ -6,6 +6,7 @@ use App\Http\Controllers\Api\ComplianceAlertController;
 use App\Http\Controllers\Api\ComplianceCaseController;
 use App\Http\Controllers\Api\ComplianceCertificationController;
 use App\Http\Controllers\Api\GdprController;
+use App\Http\Controllers\Api\GdprEnhancedController;
 use App\Http\Controllers\Api\KycController;
 use Illuminate\Support\Facades\Route;
 
@@ -81,5 +82,32 @@ Route::middleware('auth:sanctum', 'check.token.expiration')->prefix('compliance'
         Route::post('/export', [GdprController::class, 'requestDataExport']);
         Route::post('/delete', [GdprController::class, 'requestDeletion']);
         Route::get('/retention-policy', [GdprController::class, 'retentionPolicy']);
+    });
+
+    // GDPR Enhanced (v2) — Article 30, DPIA, Breach Notification, Consent v2, Retention
+    Route::prefix('gdpr/v2')->group(function () {
+        // Article 30 — Processing Register
+        Route::get('/register', [GdprEnhancedController::class, 'getRegister']);
+        Route::post('/register/activities', [GdprEnhancedController::class, 'createActivity']);
+        Route::get('/register/completeness', [GdprEnhancedController::class, 'getRegisterCompleteness']);
+
+        // DPIA — Data Protection Impact Assessments
+        Route::get('/dpia', [GdprEnhancedController::class, 'getDpiaSummary']);
+        Route::post('/dpia', [GdprEnhancedController::class, 'createDpia']);
+        Route::post('/dpia/{id}/approve', [GdprEnhancedController::class, 'approveDpia']);
+
+        // Breach Notification
+        Route::get('/breaches', [GdprEnhancedController::class, 'getBreachSummary']);
+        Route::post('/breaches', [GdprEnhancedController::class, 'reportBreach']);
+        Route::post('/breaches/{id}/notify-authority', [GdprEnhancedController::class, 'notifyAuthority']);
+        Route::get('/breaches/deadlines', [GdprEnhancedController::class, 'checkDeadlines']);
+
+        // Consent Management v2
+        Route::get('/consent', [GdprEnhancedController::class, 'getConsentStatus']);
+        Route::post('/consent', [GdprEnhancedController::class, 'recordConsent']);
+
+        // Data Retention
+        Route::get('/retention', [GdprEnhancedController::class, 'getRetentionSummary']);
+        Route::post('/retention/policies', [GdprEnhancedController::class, 'createRetentionPolicy']);
     });
 });

@@ -4,8 +4,6 @@ declare(strict_types=1);
 
 use App\Domain\Compliance\Services\Certification\RegionAwareStorageService;
 
-uses(Tests\TestCase::class);
-
 describe('RegionAwareStorageService', function () {
     it('returns disk for configured region', function () {
         $service = new RegionAwareStorageService();

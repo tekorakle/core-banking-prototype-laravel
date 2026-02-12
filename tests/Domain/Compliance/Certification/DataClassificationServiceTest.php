@@ -6,7 +6,7 @@ use App\Domain\Compliance\Models\DataClassification;
 use App\Domain\Compliance\Services\Certification\DataClassificationService;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
-uses(Tests\TestCase::class, RefreshDatabase::class);
+uses(RefreshDatabase::class);
 
 describe('DataClassificationService', function () {
     it('seeds default classifications', function () {

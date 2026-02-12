@@ -22,7 +22,7 @@ describe('SecurityAuditService', function (): void {
             expect($checks)->toContain('rate_limiting');
             expect($checks)->toContain('input_validation');
             expect($checks)->toContain('sensitive_data_exposure');
-            expect($checks)->toHaveCount(8);
+            expect($checks)->toHaveCount(10);
         });
     });
 
@@ -47,7 +47,7 @@ describe('SecurityAuditService', function (): void {
             $service = new SecurityAuditService();
             $report = $service->runFullAudit();
 
-            expect($report->checks)->toHaveCount(8);
+            expect($report->checks)->toHaveCount(10);
             expect($report->overallScore)->toBeGreaterThanOrEqual(0);
             expect($report->overallScore)->toBeLessThanOrEqual(100);
             expect($report->grade)->toBeIn(['A', 'B', 'C', 'D', 'F']);

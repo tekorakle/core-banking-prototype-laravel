@@ -6,7 +6,7 @@ use App\Domain\Compliance\Models\DataTransferLog;
 use App\Domain\Compliance\Services\Certification\DataResidencyService;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
-uses(Tests\TestCase::class, RefreshDatabase::class);
+uses(RefreshDatabase::class);
 
 describe('DataResidencyService', function () {
     it('returns default region when no mapping exists', function () {
