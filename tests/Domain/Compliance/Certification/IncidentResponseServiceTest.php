@@ -5,7 +5,7 @@ declare(strict_types=1);
 use App\Domain\Compliance\Models\SecurityIncident;
 use App\Domain\Compliance\Services\Certification\IncidentResponseService;
 
-uses(\Illuminate\Foundation\Testing\RefreshDatabase::class);
+uses(Illuminate\Foundation\Testing\RefreshDatabase::class);
 
 describe('IncidentResponseService', function () {
     beforeEach(function () {
@@ -14,9 +14,9 @@ describe('IncidentResponseService', function () {
 
     it('creates a new security incident', function () {
         $incident = $this->service->createIncident([
-            'title' => 'Test Incident',
+            'title'       => 'Test Incident',
             'description' => 'A test security incident',
-            'severity' => 'medium',
+            'severity'    => 'medium',
         ]);
 
         expect($incident)->toBeInstanceOf(SecurityIncident::class)
@@ -29,9 +29,9 @@ describe('IncidentResponseService', function () {
 
     it('resolves an incident', function () {
         $incident = $this->service->createIncident([
-            'title' => 'Resolve Test',
+            'title'       => 'Resolve Test',
             'description' => 'Incident to resolve',
-            'severity' => 'low',
+            'severity'    => 'low',
         ]);
 
         $resolved = $this->service->resolveIncident($incident->id, 'Issue was a false positive');
@@ -43,13 +43,13 @@ describe('IncidentResponseService', function () {
 
     it('updates an incident', function () {
         $incident = $this->service->createIncident([
-            'title' => 'Update Test',
+            'title'       => 'Update Test',
             'description' => 'Original description',
-            'severity' => 'high',
+            'severity'    => 'high',
         ]);
 
         $updated = $this->service->updateIncident($incident->id, [
-            'status' => 'investigating',
+            'status'      => 'investigating',
             'assigned_to' => 'security-team',
         ]);
 
@@ -59,14 +59,14 @@ describe('IncidentResponseService', function () {
 
     it('generates incident statistics', function () {
         $this->service->createIncident([
-            'title' => 'Stats Test 1',
+            'title'       => 'Stats Test 1',
             'description' => 'Test',
-            'severity' => 'high',
+            'severity'    => 'high',
         ]);
         $this->service->createIncident([
-            'title' => 'Stats Test 2',
+            'title'       => 'Stats Test 2',
             'description' => 'Test',
-            'severity' => 'low',
+            'severity'    => 'low',
         ]);
 
         $stats = $this->service->getIncidentStatistics();
@@ -78,9 +78,9 @@ describe('IncidentResponseService', function () {
 
     it('generates postmortem for resolved incident', function () {
         $incident = $this->service->createIncident([
-            'title' => 'Postmortem Test',
-            'description' => 'Incident for postmortem',
-            'severity' => 'critical',
+            'title'            => 'Postmortem Test',
+            'description'      => 'Incident for postmortem',
+            'severity'         => 'critical',
             'affected_systems' => ['api', 'database'],
         ]);
         $this->service->resolveIncident($incident->id, 'Root cause identified and patched');
@@ -95,14 +95,14 @@ describe('IncidentResponseService', function () {
 
     it('retrieves open incidents only', function () {
         $this->service->createIncident([
-            'title' => 'Open One',
+            'title'       => 'Open One',
             'description' => 'Test',
-            'severity' => 'medium',
+            'severity'    => 'medium',
         ]);
         $incident2 = $this->service->createIncident([
-            'title' => 'Will Close',
+            'title'       => 'Will Close',
             'description' => 'Test',
-            'severity' => 'low',
+            'severity'    => 'low',
         ]);
         $this->service->resolveIncident($incident2->id, 'Resolved');
 

@@ -5,6 +5,69 @@ All notable changes to the FinAegis Core Banking Platform will be documented in 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [4.0.0] - 2026-02-13
+
+### Added
+
+#### Event Store v2 — Domain Table Activation (Phase 1, PR #517)
+- `EventRouter` with `EventRouterInterface` — routes events to domain-specific tables by namespace
+- `EventPartitioningService` — domain-based partitioning monitoring and verification
+- Activated domain partitioning strategy in `config/event-store.php` with 21 domain table mappings
+- Integrated EventRouter into `TenantAwareStoredEventRepository` and `EventStoreService`
+
+#### Event Store v2 — Migration Tooling (Phase 2, PR #518)
+- `EventMigrationService` — batch migrate events from `stored_events` to domain-specific tables
+- `EventMigrationValidator` — count consistency, ordering, and aggregate validation
+- `EventMigration` model for tracking migration runs with progress
+- `event:migrate` command with `--domain`, `--batch`, `--dry-run`, `--verify` options
+- `event:migrate-rollback` command for failed migration rollback
+- `EventMigrationStatusWidget` for Filament admin dashboard
+
+#### Event Store v2 — Versioning & Upcasting (Phase 3, PR #519)
+- `EventUpcasterInterface` and `AbstractEventUpcaster` — event schema evolution contracts
+- `EventUpcastingService` — chained upcasting (v1→v2→v3) with batch processing
+- `EventVersionRegistry` — tracks event versions and upcaster chains
+- `event:upcast` command with `--domain`, `--event`, `--batch`, `--persist` options
+- `event:versions` command to list all event versions
+
+#### GraphQL API — Foundation (Phase 4, PR #520)
+- Installed `nuwave/lighthouse` for schema-first GraphQL at `/graphql` endpoint
+- Account domain: types, queries (by ID, UUID, paginated), `createAccount` mutation
+- `@guard(sanctum)` authentication on all operations
+- Custom `@tenant` directive for multi-tenant scoping
+
+#### GraphQL API — Core Domains (Phase 5, PR #521)
+- Wallet domain: `MultiSigWallet` queries with chain/status filtering
+- Exchange domain: `ExchangeOrder`, `Trade`, `OrderBook` types with pagination
+- Compliance domain: `KycVerification`, `ComplianceAlert`, `ComplianceCase` types
+- Subscription infrastructure: `OrderBookUpdated`, `TradeExecuted`, `WalletBalanceUpdated`
+- `AccountDataLoader` and `WalletDataLoader` for N+1 query prevention
+- `GraphQLExceptionHandler` for structured error responses
+
+#### Plugin Marketplace — Foundation (Phase 6, PR #522)
+- `PluginManager` — full lifecycle management (install/remove/enable/disable/update/discover)
+- `PluginDependencyResolver` — semver constraints (`^`, `~`, `>=`, exact) and circular detection
+- `PluginLoader` — filesystem discovery and service provider booting
+- `PluginManifest` — parse/validate plugin.json manifests
+- `Plugin` model with UUID, soft deletes, permission tracking
+- Commands: `plugin:install`, `plugin:remove`, `plugin:list`, `plugin:enable`, `plugin:disable`, `plugin:create`
+- Plugin scaffold generator with directory structure and ServiceProvider stub
+- Added `Plugins\` PSR-4 autoload namespace
+
+#### Plugin Marketplace — Sandboxing & API (Phase 7, PR #523)
+- `PluginPermissions` — 12 permission categories with descriptions and validation
+- `PluginSandbox` — runtime permission enforcement with strict mode
+- `PluginSecurityScanner` — static analysis detecting 15 dangerous code patterns
+- `PluginMarketplaceController` — REST API for plugin CRUD, scanning, and discovery
+- `PluginResource` — Filament admin panel for plugin management
+- `PluginReview` model for security review tracking
+
+### Changed
+- Event Store partitioning strategy changed from `none` to `domain` in config
+- Disabled Lighthouse schema cache in test environment
+
+---
+
 ## [3.5.0] - 2026-02-12
 
 ### Added
