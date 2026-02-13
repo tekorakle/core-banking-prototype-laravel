@@ -5,6 +5,41 @@ All notable changes to the FinAegis Core Banking Platform will be documented in 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [5.0.0] - 2026-02-13
+
+### Added
+
+#### Event Streaming Architecture (MAJOR)
+- `EventStreamPublisher` — Publish domain events to Redis Streams with XADD, batch publishing, stream trimming (MAXLEN)
+- `EventStreamConsumer` — Consumer group support with XREADGROUP, message acknowledgment (XACK), idle message claiming (XAUTOCLAIM), pending message tracking
+- `config/event-streaming.php` — 15 domain stream mappings, retention policy, consumer group configuration, block timeout settings
+- `EventStreamMonitorCommand` — `event-stream:monitor` Artisan command with `--domain` filter and `--json` output
+
+#### Live Dashboard Foundation
+- `LiveMetricsService` — Real-time metrics aggregation: domain health, event throughput, stream status, system health, projector lag with 10-second cache
+- `LiveDashboardController` — 5 REST endpoints under `/api/v1/monitoring/live-dashboard` (metrics, domain-health, event-throughput, stream-status, projector-lag)
+
+#### Multi-Channel Notification System
+- `NotificationService` — Multi-channel notifications (email, push, in-app, webhook, SMS) with pluggable channel handlers, batch queue/flush, event trigger templates for 7 domain events
+- Injectable `LoggerInterface` for unit-testable design
+
+#### API Gateway Pattern
+- `ApiGatewayMiddleware` — Unified gateway adding X-Request-Id tracing, X-API-Version, X-Gateway-Timing, X-Powered-By headers to all API responses
+
+#### Tests
+- EventStreamPublisher structure tests (class existence, method verification)
+- EventStreamConsumer structure tests (7 method verifications)
+- LiveMetricsService structure tests (6 method verifications)
+- EventStreamMonitorCommand unit tests
+- NotificationService functional tests (8 tests: instantiation, channel registration, send/queue/flush, event triggers, defaults)
+- ApiGatewayMiddleware instantiation test
+
+### Breaking Changes
+- **MAJOR version**: This is a major version release introducing streaming architecture patterns
+- Redis Streams dependency for event streaming features (requires Redis 5.0+)
+
+---
+
 ## [4.3.0] - 2026-02-13
 
 ### Added

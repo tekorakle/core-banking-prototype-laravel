@@ -20,6 +20,7 @@ git status && git branch --show-current
 ### Version Status
 | Version | Status | Key Changes |
 |---------|--------|-------------|
+| v5.0.0 | ✅ Released | Streaming Architecture (MAJOR): Event streaming (Redis Streams publisher/consumer), live dashboard (5 metrics endpoints), notification system (5 channels), API gateway middleware |
 | v4.3.0 | ✅ Released | Developer Experience: 4 new GraphQL domains (Fraud, Mobile, MobilePayment, TrustCert), dashboard widget plugin, CLI commands (schema-check, plugin-verify, domain-status), GraphQL rate limiting + query cost analysis |
 | v4.2.0 | ✅ Released | Real-time Platform: GraphQL subscriptions (4 new), plugin hook system (17 hooks), webhook-notifier + audit-exporter plugins, core domain mutations (8 new) |
 | v4.1.0 | ✅ Released | GraphQL Expansion: 6 new domains (Treasury, Payment, Lending, Stablecoin, CrossChain, DeFi), event replay filtering, projector health monitoring |

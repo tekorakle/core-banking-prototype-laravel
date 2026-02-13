@@ -1116,6 +1116,7 @@ main ─────────●─────────●─────
 | **v4.1.0** | GraphQL Expansion | 6 new GraphQL domains (Treasury, Payment, Lending, Stablecoin, CrossChain, DeFi), event replay filters, projector health monitoring | ✅ Released 2026-02-13 |
 | **v4.2.0** | Real-time Platform | GraphQL subscriptions (4 new), plugin hook system (17 hooks), example plugins, 8 core domain mutations | ✅ Released 2026-02-13 |
 | **v4.3.0** | Developer Experience | 4 new GraphQL domains, dashboard widget plugin, CLI commands, GraphQL security hardening | ✅ Released 2026-02-13 |
+| **v5.0.0** | Streaming Architecture | Event streaming (Redis Streams), live dashboard, notification system, API gateway | ✅ Released 2026-02-13 |
 
 ---
 
@@ -1714,7 +1715,66 @@ After 18 releases (v1.1.0 → v3.0.0), the platform has grown to 41 domains, 266
 
 ---
 
-*Document Version: 4.1.0*
+## v4.2.0 — Real-time Platform + Plugin Ecosystem ✅ COMPLETED
+
+**Released**: February 13, 2026
+**Theme**: Real-time Subscriptions, Plugin Hook System, Core Mutations
+
+### Delivered
+
+| Feature | Status | Description |
+|---------|--------|-------------|
+| GraphQL Subscriptions | ✅ | 4 new subscriptions (orderMatched, portfolioRebalanced, paymentStatusChanged, bridgeTransferCompleted) |
+| Plugin Hook System | ✅ | PluginHookInterface contract, PluginHookManager with priority dispatch, 17 hook points |
+| Example Plugins | ✅ | Webhook Notifier (HMAC-signed HTTP webhooks), Audit Exporter (JSON/CSV export) |
+| Core Domain Mutations | ✅ | 8 new mutations: freeze/unfreeze account, create wallet, transfer funds, place/cancel order, submit KYC, trigger AML |
+
+---
+
+## v4.3.0 — Developer Experience + Extended GraphQL ✅ COMPLETED
+
+**Released**: February 13, 2026
+**Theme**: Developer Tools, GraphQL Security, Extended Domain Coverage
+
+### Delivered
+
+| Feature | Status | Description |
+|---------|--------|-------------|
+| GraphQL — Fraud Domain | ✅ | FraudCase type, queries, escalateFraudCase mutation |
+| GraphQL — Mobile Domain | ✅ | MobileDevice type, device queries |
+| GraphQL — MobilePayment Domain | ✅ | PaymentIntent type, queries, createPaymentIntent mutation |
+| GraphQL — TrustCert Domain | ✅ | Certificate type, queries |
+| Dashboard Widget Plugin | ✅ | Filament StatsOverviewWidget with cached domain health counts |
+| CLI Commands | ✅ | graphql:schema-check, plugin:verify, domain:status |
+| GraphQL Security | ✅ | Rate limiting middleware, query cost analysis, introspection control |
+
+**GraphQL Coverage**: 14/41 domains (up from 10/41 in v4.1.0)
+
+---
+
+## v5.0.0 — Streaming Architecture + API Gateway (MAJOR) ✅ COMPLETED
+
+**Released**: February 13, 2026
+**Theme**: Event Streaming, Live Dashboard, Notification System, API Gateway
+
+### Delivered
+
+| Feature | Status | Description |
+|---------|--------|-------------|
+| Event Streaming Foundation | ✅ | EventStreamPublisher (Redis Streams XADD, batch publish, MAXLEN trimming), EventStreamConsumer (XREADGROUP, XACK, XAUTOCLAIM, consumer groups) |
+| Event Streaming Config | ✅ | 15 domain stream mappings, retention policy, consumer group settings |
+| Event Stream Monitor | ✅ | `event-stream:monitor` command with --domain filter and --json output |
+| Live Dashboard | ✅ | LiveMetricsService (domain health, event throughput, stream status, projector lag), 5 REST endpoints |
+| Notification System | ✅ | Multi-channel (email, push, in-app, webhook, SMS), pluggable handlers, batch queue/flush, 7 event triggers |
+| API Gateway | ✅ | ApiGatewayMiddleware with X-Request-Id tracing, timing, version headers |
+| Tests | ✅ | 29 new tests across 6 test files |
+
+### Breaking Changes
+- **MAJOR version**: Introduces streaming architecture patterns
+- Redis Streams dependency for event streaming (requires Redis 5.0+)
+
+---
+
+*Document Version: 5.0.0*
 *Created: January 11, 2026*
-*Updated: February 13, 2026 (v4.1.0 GraphQL Expansion released)*
-*Next Review: v4.2.0 Planning*
+*Updated: February 13, 2026 (v5.0.0 Streaming Architecture released)*

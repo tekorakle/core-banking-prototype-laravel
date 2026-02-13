@@ -192,6 +192,15 @@ Route::prefix('monitoring')->middleware(['auth:sanctum', 'check.token.expiration
     });
 });
 
+// v5.0.0 — Live Dashboard
+Route::prefix('v1/monitoring/live-dashboard')->middleware(['auth:sanctum', 'check.token.expiration'])->group(function () {
+    Route::get('/', [App\Http\Controllers\Api\V1\LiveDashboardController::class, 'index']);
+    Route::get('/domain-health', [App\Http\Controllers\Api\V1\LiveDashboardController::class, 'domainHealth']);
+    Route::get('/event-throughput', [App\Http\Controllers\Api\V1\LiveDashboardController::class, 'eventThroughput']);
+    Route::get('/stream-status', [App\Http\Controllers\Api\V1\LiveDashboardController::class, 'streamStatus']);
+    Route::get('/projector-lag', [App\Http\Controllers\Api\V1\LiveDashboardController::class, 'projectorLag']);
+});
+
 // Admin dashboard endpoint (with 2FA requirement)
 Route::prefix('admin')->middleware(['auth:sanctum', 'check.token.expiration', 'require.2fa.admin'])->group(function () {
     Route::get('/dashboard', function () {
