@@ -10,6 +10,22 @@ extend type Subscription {
     walletBalanceUpdated(wallet_id: ID!): WalletBalanceUpdate
         @subscription(class: "App\\GraphQL\\Subscriptions\\WalletBalanceUpdatedSubscription")
         @guard(with: ["sanctum"])
+
+    orderMatched(pair: String): OrderMatchedUpdate
+        @subscription(class: "App\\GraphQL\\Subscriptions\\OrderMatchedSubscription")
+        @guard(with: ["sanctum"])
+
+    portfolioRebalanced(portfolio_id: String): PortfolioRebalancedUpdate
+        @subscription(class: "App\\GraphQL\\Subscriptions\\PortfolioRebalancedSubscription")
+        @guard(with: ["sanctum"])
+
+    paymentStatusChanged(payment_id: ID): PaymentStatusUpdate
+        @subscription(class: "App\\GraphQL\\Subscriptions\\PaymentStatusChangedSubscription")
+        @guard(with: ["sanctum"])
+
+    bridgeTransferCompleted(transfer_id: ID): BridgeTransferUpdate
+        @subscription(class: "App\\GraphQL\\Subscriptions\\BridgeTransferCompletedSubscription")
+        @guard(with: ["sanctum"])
 }
 
 type OrderBookUpdate {
@@ -42,4 +58,43 @@ type WalletBalanceUpdate {
     balance: Float!
     currency: String!
     updated_at: DateTime!
+}
+
+type OrderMatchedUpdate {
+    order_id: String!
+    pair: String!
+    side: String!
+    price: Float!
+    filled_amount: Float!
+    status: String!
+    matched_at: String!
+}
+
+type PortfolioRebalancedUpdate {
+    portfolio_id: String!
+    asset_class: String!
+    old_weight: Float!
+    new_weight: Float!
+    drift_corrected: Float!
+    rebalanced_at: String!
+}
+
+type PaymentStatusUpdate {
+    payment_id: ID!
+    old_status: String!
+    new_status: String!
+    amount: Float!
+    currency: String!
+    changed_at: String!
+}
+
+type BridgeTransferUpdate {
+    transfer_id: ID!
+    source_chain: String!
+    dest_chain: String!
+    token: String!
+    amount: Float!
+    status: String!
+    dest_tx_hash: String
+    completed_at: String!
 }

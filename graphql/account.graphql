@@ -31,8 +31,21 @@ extend type Query {
         @guard(with: ["sanctum"])
 }
 
+input FreezeAccountInput {
+    id: ID!
+    reason: String
+}
+
 extend type Mutation {
     createAccount(input: CreateAccountInput! @spread): Account!
         @guard(with: ["sanctum"])
         @field(resolver: "App\\GraphQL\\Mutations\\Account\\CreateAccountMutation")
+
+    freezeAccount(input: FreezeAccountInput! @spread): Account!
+        @guard(with: ["sanctum"])
+        @field(resolver: "App\\GraphQL\\Mutations\\Account\\FreezeAccountMutation")
+
+    unfreezeAccount(id: ID!): Account!
+        @guard(with: ["sanctum"])
+        @field(resolver: "App\\GraphQL\\Mutations\\Account\\UnfreezeAccountMutation")
 }
