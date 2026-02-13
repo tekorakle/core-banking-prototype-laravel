@@ -9,6 +9,7 @@ use App\Domain\CrossChain\Models\BridgeTransaction;
 use App\Domain\CrossChain\Services\BridgeOrchestratorService;
 use Illuminate\Auth\AuthenticationException;
 use Illuminate\Support\Facades\Auth;
+use Throwable;
 
 class InitiateBridgeTransferMutation
 {
@@ -56,7 +57,7 @@ class InitiateBridgeTransferMutation
                 'provider'          => $quote->getProvider()->value,
                 'status'            => $result['status']->value ?? 'pending',
             ]);
-        } catch (\Throwable $e) {
+        } catch (Throwable $e) {
             // Fallback: create a pending transaction record for tracking.
             return BridgeTransaction::create([
                 'user_id'           => $user->id,

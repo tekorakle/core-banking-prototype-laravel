@@ -9,6 +9,7 @@ use App\Domain\MobilePayment\Services\PaymentIntentService;
 use Illuminate\Auth\AuthenticationException;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
+use Throwable;
 
 class CreatePaymentIntentMutation
 {
@@ -37,7 +38,7 @@ class CreatePaymentIntentMutation
                 'shield'           => $args['shield_enabled'] ?? false,
                 'idempotencyKey'   => $args['idempotency_key'] ?? null,
             ]);
-        } catch (\Throwable $e) {
+        } catch (Throwable $e) {
             // Fallback: create a basic payment intent record.
             return PaymentIntent::create([
                 'public_id'              => 'pi_' . Str::random(24),

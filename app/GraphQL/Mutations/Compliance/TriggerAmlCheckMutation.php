@@ -10,6 +10,7 @@ use App\Models\User;
 use Illuminate\Auth\AuthenticationException;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
+use Throwable;
 
 class TriggerAmlCheckMutation
 {
@@ -39,7 +40,7 @@ class TriggerAmlCheckMutation
             $this->amlScreeningService->performComprehensiveScreening($entity, [
                 'check_type' => $args['check_type'] ?? 'aml_screening',
             ]);
-        } catch (\Throwable $e) {
+        } catch (Throwable $e) {
             // Log but don't fail - still return the alert for tracking.
         }
 
