@@ -5,6 +5,38 @@ All notable changes to the FinAegis Core Banking Platform will be documented in 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [4.3.0] - 2026-02-13
+
+### Added
+
+#### GraphQL Expansion — 4 New Domains
+- Fraud domain: `FraudCase` type, `fraudCase`/`fraudCases` queries, `escalateFraudCase` mutation
+- Mobile domain: `MobileDevice` type, `mobileDevice`/`mobileDevices` queries
+- MobilePayment domain: `PaymentIntent` type, `paymentIntent`/`paymentIntents` queries, `createPaymentIntent` mutation
+- TrustCert domain: `Certificate` type, `certificate`/`certificates` queries
+
+#### Dashboard Widget Plugin
+- `DomainHealthWidget` — Filament StatsOverviewWidget showing account, wallet, order, payment, event, and alert counts
+- Cached database queries with 60-second TTL
+
+#### Enhanced CLI Commands
+- `graphql:schema-check` — Validate GraphQL schema consistency, report type/query/mutation coverage, detect unguarded operations
+- `plugin:verify` — Verify plugin manifest integrity, entry point existence, and security scan for dangerous function calls
+- `domain:status` — Show domain health overview with model/service/event/projector counts across 15 domains
+
+#### GraphQL Security Hardening
+- `GraphQLRateLimitMiddleware` — Separate rate limits for GraphQL (30/min guest, 120/min authenticated), configurable via `GRAPHQL_RATE_LIMIT_*` env vars
+- `GraphQLQueryCostMiddleware` — Per-query cost analysis with depth penalty, configurable max cost via `GRAPHQL_MAX_QUERY_COST` env var
+- Introspection control via `LIGHTHOUSE_SECURITY_DISABLE_INTROSPECTION` env var (set `true` for production)
+- Rate limit and cost headers in responses (`X-RateLimit-*`, `X-GraphQL-Cost`)
+
+#### Tests
+- 4 GraphQL integration tests (Fraud, Mobile, MobilePayment, TrustCert)
+- 3 CLI command unit tests (schema-check, plugin-verify, domain-status)
+- GraphQL security middleware instantiation tests
+
+---
+
 ## [4.2.0] - 2026-02-13
 
 ### Added

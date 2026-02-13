@@ -40,6 +40,12 @@ return [
             // middleware, this delegates auth and permission checks to the field level.
             Nuwave\Lighthouse\Http\Middleware\AttemptAuthentication::class,
 
+            // GraphQL-specific rate limiting (separate from REST API rate limits).
+            App\Http\Middleware\GraphQLRateLimitMiddleware::class,
+
+            // Per-query cost analysis to prevent expensive queries.
+            App\Http\Middleware\GraphQLQueryCostMiddleware::class,
+
             // Logs every incoming GraphQL query.
             // Nuwave\Lighthouse\Http\Middleware\LogGraphQLQueries::class,
         ],
@@ -231,6 +237,35 @@ return [
         'disable_introspection' => (bool) env('LIGHTHOUSE_SECURITY_DISABLE_INTROSPECTION', false)
             ? GraphQL\Validator\Rules\DisableIntrospection::ENABLED
             : GraphQL\Validator\Rules\DisableIntrospection::DISABLED,
+    ],
+
+    /*
+    |--------------------------------------------------------------------------
+    | GraphQL Rate Limiting
+    |--------------------------------------------------------------------------
+    |
+    | Separate rate limits for GraphQL queries (independent of REST API).
+    | Set via environment variables for per-environment tuning.
+    |
+    */
+
+    'rate_limiting' => [
+        'guest_limit' => env('GRAPHQL_RATE_LIMIT_GUEST', 30),
+        'auth_limit'  => env('GRAPHQL_RATE_LIMIT_AUTH', 120),
+    ],
+
+    /*
+    |--------------------------------------------------------------------------
+    | Query Cost Analysis
+    |--------------------------------------------------------------------------
+    |
+    | Per-query cost estimation to prevent expensive or deeply nested queries.
+    | The cost is calculated based on operation type, field count, and nesting depth.
+    |
+    */
+
+    'query_cost' => [
+        'max_cost' => env('GRAPHQL_MAX_QUERY_COST', 500),
     ],
 
     /*

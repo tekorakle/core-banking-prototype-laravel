@@ -1115,6 +1115,7 @@ main ─────────●─────────●─────
 | **v4.0.0** | Architecture Evolution | Event Store v2, GraphQL API, Plugin Marketplace | ✅ Released 2026-02-13 |
 | **v4.1.0** | GraphQL Expansion | 6 new GraphQL domains (Treasury, Payment, Lending, Stablecoin, CrossChain, DeFi), event replay filters, projector health monitoring | ✅ Released 2026-02-13 |
 | **v4.2.0** | Real-time Platform | GraphQL subscriptions (4 new), plugin hook system (17 hooks), example plugins, 8 core domain mutations | ✅ Released 2026-02-13 |
+| **v4.3.0** | Developer Experience | 4 new GraphQL domains, dashboard widget plugin, CLI commands, GraphQL security hardening | ✅ Released 2026-02-13 |
 
 ---
 
