@@ -43,6 +43,8 @@
                     <a href="#mobile-payment" class="text-violet-600 hover:text-violet-800">Mobile Payment</a>
                     <a href="#partner-baas" class="text-rose-600 hover:text-rose-800">Partner BaaS</a>
                     <a href="#ai" class="text-gray-600 hover:text-gray-900">AI</a>
+                    <a href="#graphql" class="text-sky-600 hover:text-sky-800">GraphQL</a>
+                    <a href="#event-streaming" class="text-lime-600 hover:text-lime-800">Event Streaming</a>
                     <a href="#webhooks" class="text-gray-600 hover:text-gray-900">Webhooks</a>
                     <a href="#errors" class="text-gray-600 hover:text-gray-900">Errors</a>
                 </nav>
@@ -1241,6 +1243,173 @@ curl -H "Authorization: Bearer your_api_key" \
                             </div>
                         </div>
                     </section>
+
+                    <!-- GraphQL API -->
+                    <section id="graphql" class="mb-16">
+                        <h2 class="text-3xl font-bold text-gray-900 mb-8">GraphQL API</h2>
+
+                        <div class="prose prose-lg max-w-none mb-8">
+                            <p>Schema-first GraphQL API powered by Lighthouse PHP. Provides queries, mutations, and subscriptions across 14 domain schemas with DataLoader-optimized resolvers and WebSocket-based real-time subscriptions.</p>
+                            <p class="text-sm text-gray-500">14 domain schemas &middot; Queries, Mutations, Subscriptions</p>
+                        </div>
+
+                        <div class="space-y-8">
+                            <div class="border rounded-lg p-6">
+                                <h3 class="text-xl font-semibold mb-4">Execute GraphQL Query / Mutation</h3>
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                                    <div>
+                                        <span class="inline-block bg-orange-100 text-orange-800 text-xs font-medium px-2.5 py-0.5 rounded">POST</span>
+                                        <span class="ml-2 font-mono text-sm">/graphql</span>
+                                    </div>
+                                </div>
+                                <p class="text-gray-600 mb-4">Execute a GraphQL query or mutation against the unified schema. Supports all 14 domain schemas including Account, Exchange, Wallet, Compliance, CrossChain, DeFi, and more.</p>
+                                <x-code-block language="bash">
+curl -X POST \
+  -H "Authorization: Bearer your_api_key" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "query": "{ accounts(first: 10) { data { id name currency balance { available total } } } }"
+  }' \
+  https://api.finaegis.org/graphql
+                                </x-code-block>
+
+                                <h4 class="font-semibold mb-2 mt-6">Example Query:</h4>
+                                <x-code-block language="graphql">
+query {
+  accounts(first: 10) {
+    data {
+      id
+      name
+      currency
+      balance {
+        available
+        total
+      }
+    }
+    paginatorInfo {
+      total
+      currentPage
+      lastPage
+    }
+  }
+}
+                                </x-code-block>
+                            </div>
+
+                            <div class="border rounded-lg p-6">
+                                <h3 class="text-xl font-semibold mb-4">GraphQL Playground</h3>
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                                    <div>
+                                        <span class="inline-block bg-green-100 text-green-800 text-xs font-medium px-2.5 py-0.5 rounded">GET</span>
+                                        <span class="ml-2 font-mono text-sm">/graphql-playground</span>
+                                    </div>
+                                </div>
+                                <p class="text-gray-600 mb-4">Interactive GraphQL explorer with schema introspection, auto-complete, and query history. Use this to explore available types, queries, mutations, and subscriptions.</p>
+                                <x-code-block language="bash">
+# Open in your browser
+https://api.finaegis.org/graphql-playground
+                                </x-code-block>
+                            </div>
+
+                            <div class="border rounded-lg p-6 bg-sky-50 border-sky-200">
+                                <h3 class="text-xl font-semibold mb-4">Available Subscriptions</h3>
+                                <p class="text-gray-600 mb-4">Real-time WebSocket subscriptions are available for the following events:</p>
+                                <ul class="list-disc list-inside text-gray-600 space-y-1">
+                                    <li><code class="bg-gray-100 px-1">accountUpdated(id: ID!)</code> - Account balance and status changes</li>
+                                    <li><code class="bg-gray-100 px-1">transactionCreated(accountId: ID!)</code> - New transactions on an account</li>
+                                    <li><code class="bg-gray-100 px-1">transferCompleted(id: ID!)</code> - Transfer completion notifications</li>
+                                    <li><code class="bg-gray-100 px-1">orderMatched(pair: String!)</code> - Exchange order match events</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- Event Streaming & Live Dashboard -->
+                    <section id="event-streaming" class="mb-16">
+                        <h2 class="text-3xl font-bold text-gray-900 mb-8">Event Streaming & Live Dashboard</h2>
+
+                        <div class="prose prose-lg max-w-none mb-8">
+                            <p>Real-time event streaming via Redis Streams with a live metrics dashboard. Monitor system health, domain status, event throughput, stream connectivity, and projector lag across all event-sourced domains.</p>
+                            <p class="text-sm text-gray-500">5 endpoints &middot; Redis Streams &middot; Real-time Metrics</p>
+                        </div>
+
+                        <div class="space-y-8">
+                            <div class="border rounded-lg p-6">
+                                <h3 class="text-xl font-semibold mb-4">System Metrics</h3>
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                                    <div>
+                                        <span class="inline-block bg-green-100 text-green-800 text-xs font-medium px-2.5 py-0.5 rounded">GET</span>
+                                        <span class="ml-2 font-mono text-sm">/v1/live-dashboard/metrics</span>
+                                    </div>
+                                </div>
+                                <p class="text-gray-600 mb-4">Retrieve aggregated system metrics including event counts, processing rates, error rates, and uptime statistics.</p>
+                                <x-code-block language="bash">
+curl -H "Authorization: Bearer your_api_key" \
+     https://api.finaegis.org/v1/live-dashboard/metrics
+                                </x-code-block>
+                            </div>
+
+                            <div class="border rounded-lg p-6">
+                                <h3 class="text-xl font-semibold mb-4">Domain Health</h3>
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                                    <div>
+                                        <span class="inline-block bg-green-100 text-green-800 text-xs font-medium px-2.5 py-0.5 rounded">GET</span>
+                                        <span class="ml-2 font-mono text-sm">/v1/live-dashboard/domain-health</span>
+                                    </div>
+                                </div>
+                                <p class="text-gray-600 mb-4">Get health status for each event-sourced domain including event store connectivity, projector status, and recent error counts.</p>
+                                <x-code-block language="bash">
+curl -H "Authorization: Bearer your_api_key" \
+     https://api.finaegis.org/v1/live-dashboard/domain-health
+                                </x-code-block>
+                            </div>
+
+                            <div class="border rounded-lg p-6">
+                                <h3 class="text-xl font-semibold mb-4">Event Throughput</h3>
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                                    <div>
+                                        <span class="inline-block bg-green-100 text-green-800 text-xs font-medium px-2.5 py-0.5 rounded">GET</span>
+                                        <span class="ml-2 font-mono text-sm">/v1/live-dashboard/event-throughput</span>
+                                    </div>
+                                </div>
+                                <p class="text-gray-600 mb-4">Monitor real-time event throughput rates per domain and aggregate, including events per second and processing latency.</p>
+                                <x-code-block language="bash">
+curl -H "Authorization: Bearer your_api_key" \
+     https://api.finaegis.org/v1/live-dashboard/event-throughput
+                                </x-code-block>
+                            </div>
+
+                            <div class="border rounded-lg p-6">
+                                <h3 class="text-xl font-semibold mb-4">Stream Status</h3>
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                                    <div>
+                                        <span class="inline-block bg-green-100 text-green-800 text-xs font-medium px-2.5 py-0.5 rounded">GET</span>
+                                        <span class="ml-2 font-mono text-sm">/v1/live-dashboard/stream-status</span>
+                                    </div>
+                                </div>
+                                <p class="text-gray-600 mb-4">Check Redis Streams connectivity, consumer group status, pending message counts, and stream memory usage.</p>
+                                <x-code-block language="bash">
+curl -H "Authorization: Bearer your_api_key" \
+     https://api.finaegis.org/v1/live-dashboard/stream-status
+                                </x-code-block>
+                            </div>
+
+                            <div class="border rounded-lg p-6">
+                                <h3 class="text-xl font-semibold mb-4">Projector Lag</h3>
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                                    <div>
+                                        <span class="inline-block bg-green-100 text-green-800 text-xs font-medium px-2.5 py-0.5 rounded">GET</span>
+                                        <span class="ml-2 font-mono text-sm">/v1/live-dashboard/projector-lag</span>
+                                    </div>
+                                </div>
+                                <p class="text-gray-600 mb-4">Monitor projector lag across all event-sourced domains showing how far behind each read model projector is from the latest events.</p>
+                                <x-code-block language="bash">
+curl -H "Authorization: Bearer your_api_key" \
+     https://api.finaegis.org/v1/live-dashboard/projector-lag
+                                </x-code-block>
+                            </div>
+                        </div>
+                    </section>
                 </div>
 
                 <!-- Sidebar -->
@@ -1257,7 +1426,7 @@ curl -H "Authorization: Bearer your_api_key" \
                         </div>
 
                         <div class="bg-white border rounded-lg p-6 mb-8">
-                            <h3 class="text-lg font-semibold mb-4">v2.0 - v3.0 API Areas</h3>
+                            <h3 class="text-lg font-semibold mb-4">Platform API Areas</h3>
                             <ul class="space-y-2 text-sm">
                                 <li><a href="#crosschain" class="text-cyan-600 hover:text-cyan-800 flex justify-between"><span>CrossChain</span><span class="text-gray-400">7 routes</span></a></li>
                                 <li><a href="#defi" class="text-emerald-600 hover:text-emerald-800 flex justify-between"><span>DeFi</span><span class="text-gray-400">8 routes</span></a></li>
@@ -1265,6 +1434,8 @@ curl -H "Authorization: Bearer your_api_key" \
                                 <li><a href="#mobile-payment" class="text-violet-600 hover:text-violet-800 flex justify-between"><span>Mobile Payment</span><span class="text-gray-400">25+ routes</span></a></li>
                                 <li><a href="#partner-baas" class="text-rose-600 hover:text-rose-800 flex justify-between"><span>Partner BaaS</span><span class="text-gray-400">24 routes</span></a></li>
                                 <li><a href="#ai" class="text-gray-600 hover:text-gray-800 flex justify-between"><span>AI Query</span><span class="text-gray-400">2 routes</span></a></li>
+                                <li><a href="#graphql" class="text-sky-600 hover:text-sky-800 flex justify-between"><span>GraphQL</span><span class="text-gray-400">14 domains</span></a></li>
+                                <li><a href="#event-streaming" class="text-lime-600 hover:text-lime-800 flex justify-between"><span>Event Streaming</span><span class="text-gray-400">5 endpoints</span></a></li>
                             </ul>
                         </div>
 
