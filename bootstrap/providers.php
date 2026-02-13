@@ -37,5 +37,6 @@ return [
     App\Providers\WalletServiceProvider::class,
     App\Providers\WebhookServiceProvider::class,
     App\Infrastructure\Plugins\PluginServiceProvider::class,
+    Nuwave\Lighthouse\Subscriptions\SubscriptionServiceProvider::class,
     L5Swagger\L5SwaggerServiceProvider::class,
 ];

@@ -102,3 +102,26 @@ extend type Query {
         @paginate(defaultCount: 15, model: "App\\Domain\\Compliance\\Models\\ComplianceCase")
         @guard(with: ["sanctum"])
 }
+
+input SubmitKycDocumentInput {
+    user_id: Int!
+    type: String!
+    document_type: String!
+    document_country: String!
+}
+
+input TriggerAmlCheckInput {
+    entity_type: String!
+    entity_id: String!
+    check_type: String
+}
+
+extend type Mutation {
+    submitKycDocument(input: SubmitKycDocumentInput! @spread): KycVerification!
+        @guard(with: ["sanctum"])
+        @field(resolver: "App\\GraphQL\\Mutations\\Compliance\\SubmitKycDocumentMutation")
+
+    triggerAmlCheck(input: TriggerAmlCheckInput! @spread): ComplianceAlert!
+        @guard(with: ["sanctum"])
+        @field(resolver: "App\\GraphQL\\Mutations\\Compliance\\TriggerAmlCheckMutation")
+}

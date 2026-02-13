@@ -5,6 +5,40 @@ All notable changes to the FinAegis Core Banking Platform will be documented in 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [4.2.0] - 2026-02-13
+
+### Added
+
+#### Real-time GraphQL Subscriptions
+- Enabled WebSocket subscription broadcaster in Lighthouse configuration
+- `orderMatched` subscription — real-time order match notifications with optional pair filter
+- `portfolioRebalanced` subscription — portfolio rebalance events with optional portfolio_id filter
+- `paymentStatusChanged` subscription — payment status updates with optional payment_id filter
+- `bridgeTransferCompleted` subscription — cross-chain transfer completion with optional transfer_id filter
+
+#### Plugin Event Hook System
+- `PluginHookInterface` contract — `getHookName()`, `handle()`, `getPriority()` methods
+- `PluginHookManager` — registration, dispatch with priority sorting, error isolation
+- 17 hook points across 6 categories: Account, Payment, Compliance, Wallet, Exchange, System
+
+#### Example Plugins
+- **Webhook Notifier** — sends HTTP POST webhooks with HMAC signatures on configured events
+- **Audit Exporter** — exports audit logs to JSON/CSV with `--format`, `--days`, `--output` options
+
+#### Core Domain Mutation Expansion
+- Account: `freezeAccount`, `unfreezeAccount` mutations
+- Wallet: `createWallet`, `transferFunds` mutations
+- Exchange: `placeOrder`, `cancelOrder` mutations
+- Compliance: `submitKycDocument`, `triggerAmlCheck` mutations
+- 8 new mutation resolver classes
+
+#### Tests
+- Plugin hook manager unit tests (register/dispatch, hook points, unregister, summary)
+- Subscription resolver instantiation tests
+- Core domain mutation feature tests (freeze/unfreeze, authentication rejection)
+
+---
+
 ## [4.1.0] - 2026-02-13
 
 ### Added

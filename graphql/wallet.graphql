@@ -26,3 +26,27 @@ extend type Query {
         @paginate(defaultCount: 15, model: "App\\Domain\\Wallet\\Models\\MultiSigWallet")
         @guard(with: ["sanctum"])
 }
+
+input CreateWalletInput {
+    name: String!
+    chain: String!
+    required_signatures: Int!
+    total_signers: Int!
+}
+
+input TransferFundsInput {
+    from_wallet_id: ID!
+    to_address: String!
+    amount: Float!
+    chain: String!
+}
+
+extend type Mutation {
+    createWallet(input: CreateWalletInput! @spread): MultiSigWallet!
+        @guard(with: ["sanctum"])
+        @field(resolver: "App\\GraphQL\\Mutations\\Wallet\\CreateWalletMutation")
+
+    transferFunds(input: TransferFundsInput! @spread): MultiSigWallet!
+        @guard(with: ["sanctum"])
+        @field(resolver: "App\\GraphQL\\Mutations\\Wallet\\TransferFundsMutation")
+}

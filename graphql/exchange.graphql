@@ -85,3 +85,22 @@ extend type Query {
         @paginate(defaultCount: 15, model: "App\\Domain\\Exchange\\Projections\\OrderBook")
         @guard(with: ["sanctum"])
 }
+
+input PlaceOrderInput {
+    base_currency: String!
+    quote_currency: String!
+    type: String!
+    order_type: String!
+    amount: Float!
+    price: Float
+}
+
+extend type Mutation {
+    placeOrder(input: PlaceOrderInput! @spread): ExchangeOrder!
+        @guard(with: ["sanctum"])
+        @field(resolver: "App\\GraphQL\\Mutations\\Exchange\\PlaceOrderMutation")
+
+    cancelOrder(order_id: String!): ExchangeOrder!
+        @guard(with: ["sanctum"])
+        @field(resolver: "App\\GraphQL\\Mutations\\Exchange\\CancelOrderMutation")
+}
