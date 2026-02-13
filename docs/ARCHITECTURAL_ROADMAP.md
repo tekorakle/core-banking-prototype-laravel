@@ -84,8 +84,8 @@ Transform FinAegis into the **premier open source core banking platform** that:
 | API Routes | 1,150+ |
 | PHPStan Level | **8** |
 | Test Files | 775+ |
-| GraphQL Domains | 14 |
-| GraphQL Schema Files | 17 |
+| GraphQL Domains | 24 |
+| GraphQL Schema Files | 27 |
 
 ---
 
@@ -180,9 +180,9 @@ Transform FinAegis into the **premier open source core banking platform** that:
 - Upcasting pipeline for event schema evolution
 - Migration tooling for seamless event store upgrades
 
-#### GraphQL API (v4.0.0-v4.3.0) -- COMPLETED
+#### GraphQL API (v4.0.0-v5.0.0) -- COMPLETED
 - Schema-first approach with Lighthouse PHP
-- 14 domains exposed via GraphQL (Fraud, Banking, Mobile, TrustCert, and more)
+- 24 domains exposed via GraphQL (Account, Wallet, Exchange, Compliance, Treasury, Payment, Lending, Stablecoin, CrossChain, DeFi, Fraud, Mobile, MobilePayment, TrustCert, Banking, Commerce, Relayer, Custodian, KeyManagement, Asset, RegTech, AI, Governance, Privacy)
 - Real-time subscriptions for live data
 - DataLoaders for N+1 query prevention
 
@@ -263,7 +263,7 @@ interface CachingQueryBus extends QueryBus
 
 The FinAegis platform has evolved from a core banking prototype to a comprehensive financial infrastructure platform spanning 41 domains. Key capabilities now include:
 
-1. **GraphQL API** - Schema-first Lighthouse PHP across 14 domains with subscriptions and DataLoaders
+1. **GraphQL API** - Schema-first Lighthouse PHP across 24 domains with subscriptions and DataLoaders
 2. **Event Streaming** - Redis Streams publisher/consumer, live dashboard, multi-channel notifications
 3. **Plugin Marketplace** - Plugin manager, sandbox execution, security scanning
 4. **Cross-Chain & DeFi** - Bridge protocols, DEX aggregation, multi-chain portfolio

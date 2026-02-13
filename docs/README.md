@@ -39,7 +39,7 @@ Welcome to the FinAegis documentation. This guide will help you understand, use,
 - [BIAN API](04-API/BIAN_API_DOCUMENTATION.md) - Banking industry standard
 - [Webhook Integration](04-API/WEBHOOK_INTEGRATION.md) - Event notifications
 - [CQRS Implementation](04-API/CQRS_IMPLEMENTATION.md) - Command/Query separation
-- [GraphQL API](../graphql-playground) - GraphQL API (14 domains)
+- [GraphQL API](../graphql-playground) - GraphQL API (24 domains)
 - [Event Streaming](../config/event-streaming.php) - Event Streaming configuration
 
 ### User Guides
@@ -105,6 +105,7 @@ Welcome to the FinAegis documentation. This guide will help you understand, use,
 - **Live Dashboard**: 5 metrics endpoints for real-time platform monitoring
 - **Multi-Channel Notification System**: Email, push, in-app, webhook, SMS notification channels
 - **API Gateway Middleware**: Request ID tracing, timing headers for observability
+- **GraphQL Schema Expansion**: 24 domain schemas (up from 14 in v4.3.0)
 
 ### Previous Releases
 - v4.3.0: Developer Experience (GraphQL Fraud/Banking/Mobile/TrustCert, CLI commands, security hardening)

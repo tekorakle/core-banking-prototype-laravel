@@ -1116,7 +1116,7 @@ main ─────────●─────────●─────
 | **v4.1.0** | GraphQL Expansion | 6 new GraphQL domains (Treasury, Payment, Lending, Stablecoin, CrossChain, DeFi), event replay filters, projector health monitoring | ✅ Released 2026-02-13 |
 | **v4.2.0** | Real-time Platform | GraphQL subscriptions (4 new), plugin hook system (17 hooks), example plugins, 8 core domain mutations | ✅ Released 2026-02-13 |
 | **v4.3.0** | Developer Experience | 4 new GraphQL domains, dashboard widget plugin, CLI commands, GraphQL security hardening | ✅ Released 2026-02-13 |
-| **v5.0.0** | Streaming Architecture | Event streaming (Redis Streams), live dashboard, notification system, API gateway | ✅ Released 2026-02-13 |
+| **v5.0.0** | Streaming Architecture | Event streaming (Redis Streams), live dashboard, notification system, API gateway, GraphQL schema expansion (24 domains) | ✅ Released 2026-02-13 |
 
 ---
 
@@ -1748,7 +1748,7 @@ After 18 releases (v1.1.0 → v3.0.0), the platform has grown to 41 domains, 266
 | CLI Commands | ✅ | graphql:schema-check, plugin:verify, domain:status |
 | GraphQL Security | ✅ | Rate limiting middleware, query cost analysis, introspection control |
 
-**GraphQL Coverage**: 14/41 domains (up from 10/41 in v4.1.0)
+**GraphQL Coverage**: 14/41 domains (up from 10/41 in v4.1.0; later expanded to 24/41 in v5.0.0)
 
 ---
 
@@ -1767,7 +1767,8 @@ After 18 releases (v1.1.0 → v3.0.0), the platform has grown to 41 domains, 266
 | Live Dashboard | ✅ | LiveMetricsService (domain health, event throughput, stream status, projector lag), 5 REST endpoints |
 | Notification System | ✅ | Multi-channel (email, push, in-app, webhook, SMS), pluggable handlers, batch queue/flush, 7 event triggers |
 | API Gateway | ✅ | ApiGatewayMiddleware with X-Request-Id tracing, timing, version headers |
-| Tests | ✅ | 29 new tests across 6 test files |
+| GraphQL Schema Expansion | ✅ | 10 new domain schemas (Custodian, KeyManagement, Banking, Commerce, Asset, RegTech, AI, Governance, Privacy, Relayer), bringing total to 24 domains |
+| Tests | ✅ | 29+ new tests across 6+ test files |
 
 ### Breaking Changes
 - **MAJOR version**: Introduces streaming architecture patterns
