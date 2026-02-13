@@ -4,10 +4,13 @@ declare(strict_types=1);
 
 namespace App\GraphQL\Mutations\Account;
 
+use App\Domain\Account\DataObjects\AccountUuid;
 use App\Domain\Account\Models\Account;
+use App\Domain\Account\Workflows\FreezeAccountWorkflow;
 use Illuminate\Auth\AuthenticationException;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Support\Facades\Auth;
+use Workflow\WorkflowStub;
 
 class FreezeAccountMutation
 {
@@ -29,7 +32,12 @@ class FreezeAccountMutation
             throw new ModelNotFoundException('Account not found.');
         }
 
-        $account->update(['frozen' => true]);
+        $accountUuid = AccountUuid::fromString($account->uuid);
+        $reason = $args['reason'] ?? 'Frozen via GraphQL';
+        $authorizedBy = $user->name ?? (string) $user->id;
+
+        $workflow = WorkflowStub::make(FreezeAccountWorkflow::class);
+        $workflow->start($accountUuid, $reason, $authorizedBy);
 
         return $account->fresh() ?? $account;
     }

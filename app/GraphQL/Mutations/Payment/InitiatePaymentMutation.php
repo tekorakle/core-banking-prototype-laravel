@@ -4,10 +4,14 @@ declare(strict_types=1);
 
 namespace App\GraphQL\Mutations\Payment;
 
+use App\Domain\Account\DataObjects\AccountUuid;
+use App\Domain\Account\DataObjects\Money;
 use App\Domain\Payment\Models\PaymentTransaction;
+use App\Domain\Payment\Workflows\TransferWorkflow;
 use Illuminate\Auth\AuthenticationException;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
+use Workflow\WorkflowStub;
 
 class InitiatePaymentMutation
 {
@@ -22,6 +26,14 @@ class InitiatePaymentMutation
             throw new AuthenticationException('Unauthenticated.');
         }
 
+        $fromAccountUuid = AccountUuid::fromString($args['account_uuid']);
+        $toAccountUuid = AccountUuid::fromString($args['to_account_uuid'] ?? $args['account_uuid']);
+        $money = new Money((int) $args['amount']);
+
+        $workflow = WorkflowStub::make(TransferWorkflow::class);
+        $workflow->start($fromAccountUuid, $toAccountUuid, $money);
+
+        // Return a read-model record for immediate GraphQL response.
         return PaymentTransaction::create([
             'aggregate_uuid' => Str::uuid()->toString(),
             'account_uuid'   => $args['account_uuid'],

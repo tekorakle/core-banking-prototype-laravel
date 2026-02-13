@@ -4,10 +4,13 @@ declare(strict_types=1);
 
 namespace App\GraphQL\Mutations\Stablecoin;
 
+use App\Domain\Account\DataObjects\AccountUuid;
 use App\Domain\Stablecoin\Models\StablecoinReserve;
+use App\Domain\Stablecoin\Workflows\MintStablecoinWorkflow;
 use Illuminate\Auth\AuthenticationException;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
+use Workflow\WorkflowStub;
 
 class MintStablecoinMutation
 {
@@ -22,6 +25,18 @@ class MintStablecoinMutation
             throw new AuthenticationException('Unauthenticated.');
         }
 
+        $accountUuid = AccountUuid::fromString($args['account_uuid'] ?? $user->uuid);
+
+        $workflow = WorkflowStub::make(MintStablecoinWorkflow::class);
+        $workflow->start(
+            $accountUuid,
+            $args['stablecoin_code'],
+            $args['collateral_asset_code'] ?? $args['stablecoin_code'],
+            (int) $args['amount'],
+            (int) $args['amount'],
+        );
+
+        // Return the read-model projection or create a fallback record.
         return StablecoinReserve::create([
             'reserve_id'      => Str::uuid()->toString(),
             'pool_id'         => $args['pool_id'],

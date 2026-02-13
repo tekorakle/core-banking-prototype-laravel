@@ -5,13 +5,18 @@ declare(strict_types=1);
 namespace App\GraphQL\Mutations\Wallet;
 
 use App\Domain\Wallet\Models\MultiSigWallet;
+use App\Domain\Wallet\Services\WalletService;
 use Illuminate\Auth\AuthenticationException;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Log;
 
 class TransferFundsMutation
 {
+    public function __construct(
+        private readonly WalletService $walletService,
+    ) {
+    }
+
     /**
      * @param  array<string, mixed>  $args
      */
@@ -30,14 +35,14 @@ class TransferFundsMutation
             throw new ModelNotFoundException('Wallet not found.');
         }
 
-        Log::info('Transfer initiated via GraphQL', [
-            'wallet_id'  => $wallet->id,
-            'to_address' => $args['to_address'],
-            'amount'     => $args['amount'],
-            'chain'      => $args['chain'],
-            'user_id'    => $user->id,
-        ]);
+        $this->walletService->transfer(
+            fromAccountUuid: $args['from_account_uuid'] ?? $wallet->id,
+            toAccountUuid: $args['to_account_uuid'] ?? $args['to_address'],
+            assetCode: $args['chain'],
+            amount: $args['amount'],
+            reference: $args['reference'] ?? null,
+        );
 
-        return $wallet;
+        return $wallet->fresh() ?? $wallet;
     }
 }

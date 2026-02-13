@@ -5,12 +5,18 @@ declare(strict_types=1);
 namespace App\GraphQL\Mutations\Fraud;
 
 use App\Domain\Fraud\Models\FraudCase;
+use App\Domain\Fraud\Services\FraudCaseService;
 use Illuminate\Auth\AuthenticationException;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Support\Facades\Auth;
 
 class EscalateFraudCaseMutation
 {
+    public function __construct(
+        private readonly FraudCaseService $fraudCaseService,
+    ) {
+    }
+
     /**
      * @param  array<string, mixed>  $args
      */
@@ -29,11 +35,8 @@ class EscalateFraudCaseMutation
             throw new ModelNotFoundException('Fraud case not found.');
         }
 
-        $fraudCase->update([
-            'severity'         => $args['severity'],
-            'resolution_notes' => $args['notes'] ?? $fraudCase->resolution_notes,
-        ]);
+        $reason = $args['notes'] ?? $args['reason'] ?? 'Escalated via GraphQL';
 
-        return $fraudCase->fresh() ?? $fraudCase;
+        return $this->fraudCaseService->escalateCase($fraudCase, $reason);
     }
 }

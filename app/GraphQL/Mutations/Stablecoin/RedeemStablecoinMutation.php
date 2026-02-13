@@ -4,11 +4,14 @@ declare(strict_types=1);
 
 namespace App\GraphQL\Mutations\Stablecoin;
 
+use App\Domain\Account\DataObjects\AccountUuid;
 use App\Domain\Stablecoin\Models\StablecoinReserve;
+use App\Domain\Stablecoin\Workflows\BurnStablecoinWorkflow;
 use Illuminate\Auth\AuthenticationException;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Support\Facades\Auth;
 use InvalidArgumentException;
+use Workflow\WorkflowStub;
 
 class RedeemStablecoinMutation
 {
@@ -36,6 +39,19 @@ class RedeemStablecoinMutation
             throw new InvalidArgumentException('Redeem amount exceeds available reserve.');
         }
 
+        $accountUuid = AccountUuid::fromString($args['account_uuid'] ?? $user->uuid);
+
+        $workflow = WorkflowStub::make(BurnStablecoinWorkflow::class);
+        $workflow->start(
+            $accountUuid,
+            $args['position_uuid'] ?? $args['reserve_id'],
+            (string) $reserve->stablecoin_code,
+            (int) $redeemAmount,
+            (int) $redeemAmount,
+            false,
+        );
+
+        // Update read-model for immediate response.
         $newAmount = number_format($currentAmount - $redeemAmount, 18, '.', '');
         $reserve->update([
             'amount'    => $newAmount,

@@ -5,12 +5,18 @@ declare(strict_types=1);
 namespace App\GraphQL\Mutations\Exchange;
 
 use App\Domain\Exchange\Projections\Order;
+use App\Domain\Exchange\Services\ExchangeService;
 use Illuminate\Auth\AuthenticationException;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Support\Facades\Auth;
 
 class CancelOrderMutation
 {
+    public function __construct(
+        private readonly ExchangeService $exchangeService,
+    ) {
+    }
+
     /**
      * @param  array<string, mixed>  $args
      */
@@ -29,10 +35,9 @@ class CancelOrderMutation
             throw new ModelNotFoundException('Order not found.');
         }
 
-        $order->update([
-            'status'       => 'cancelled',
-            'cancelled_at' => now(),
-        ]);
+        $reason = $args['reason'] ?? 'Cancelled via GraphQL';
+
+        $this->exchangeService->cancelOrder($args['order_id'], $reason);
 
         return $order->fresh() ?? $order;
     }

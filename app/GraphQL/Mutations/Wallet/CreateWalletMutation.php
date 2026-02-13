@@ -5,11 +5,18 @@ declare(strict_types=1);
 namespace App\GraphQL\Mutations\Wallet;
 
 use App\Domain\Wallet\Models\MultiSigWallet;
+use App\Domain\Wallet\Services\MultiSigWalletService;
+use App\Domain\Wallet\ValueObjects\MultiSigConfiguration;
 use Illuminate\Auth\AuthenticationException;
 use Illuminate\Support\Facades\Auth;
 
 class CreateWalletMutation
 {
+    public function __construct(
+        private readonly MultiSigWalletService $walletService,
+    ) {
+    }
+
     /**
      * @param  array<string, mixed>  $args
      */
@@ -21,13 +28,17 @@ class CreateWalletMutation
             throw new AuthenticationException('Unauthenticated.');
         }
 
-        return MultiSigWallet::create([
-            'user_id'             => $user->id,
-            'name'                => $args['name'],
-            'chain'               => $args['chain'],
-            'required_signatures' => $args['required_signatures'],
-            'total_signers'       => $args['total_signers'],
-            'status'              => 'active',
-        ]);
+        $config = MultiSigConfiguration::create(
+            requiredSignatures: (int) $args['required_signatures'],
+            totalSigners: (int) $args['total_signers'],
+            chain: $args['chain'],
+            name: $args['name'],
+        );
+
+        return $this->walletService->createWallet(
+            owner: $user,
+            config: $config,
+            metadata: [],
+        );
     }
 }
