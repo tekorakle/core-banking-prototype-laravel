@@ -19,7 +19,7 @@
 | Capability | Description |
 |------------|-------------|
 | **Event Sourcing v2** | Domain-specific event tables, migration tooling, upcasting, event streaming via Redis Streams |
-| **GraphQL API** | Lighthouse PHP with 24 domain schemas, subscriptions, DataLoaders |
+| **GraphQL API** | Lighthouse PHP with 33 domain schemas, subscriptions, DataLoaders |
 | **Plugin Marketplace** | Plugin manager, sandbox, security scanner with example plugins |
 | **CQRS** | Command/Query Bus with read/write separation across all domains |
 | **Multi-Tenancy** | Team-based isolation (stancl/tenancy v3.9) |
@@ -115,7 +115,7 @@
 
 ### v4.0.0 -- Architecture Evolution
 - Event Store v2 (domain routing, migration tooling, upcasting)
-- GraphQL API (Lighthouse PHP, 24 domain schemas, subscriptions, DataLoaders)
+- GraphQL API (Lighthouse PHP, 33 domain schemas, subscriptions, DataLoaders)
 - Plugin Marketplace (manager, sandbox, security scanner)
 
 ### v4.1.0 -- GraphQL Expansion
