@@ -1109,10 +1109,10 @@ main ─────────●─────────●─────
 | **v3.1.0** | Consolidation & UI | Documentation refresh, Swagger coverage, website features, admin UI (15 domains), user UI, developer portal | ✅ Released 2026-02-11 |
 | **v3.2.0** | Production Readiness & Plugin Architecture | Module manifests, enable/disable, modular routes, admin API/UI, k6 tests, query middleware, open-source templates | ✅ Released 2026-02-11 |
 | **v3.2.1** | Patch: GitLeaks & Dependencies | GitLeaks false positives fix, 14 dependency updates | ✅ Released 2026-02-12 |
-| **v3.3.0** | Event Store & Observability | Event replay/rebuild, real-time dashboards, structured logging, deep health checks | 🚧 Next |
-| **v3.4.0** | API Maturity & DX | API versioning, rate limiting per tier, SDK auto-generation, OpenAPI 100% | 📋 Planned |
-| **v3.5.0** | Compliance Certification | SOC 2, PCI DSS, multi-region, GDPR tooling | 📋 Planned |
-| **v4.0.0** | Architecture Evolution | Laravel 13, Event Store v2, GraphQL, Plugin Marketplace | 📋 Planned |
+| **v3.3.0** | Event Store & Observability | Event replay/rebuild, real-time dashboards, structured logging, deep health checks | ✅ Released 2026-02-12 |
+| **v3.4.0** | API Maturity & DX | API versioning, rate limiting per tier, SDK auto-generation, OpenAPI 100% | ✅ Released 2026-02-12 |
+| **v3.5.0** | Compliance Certification | SOC 2, PCI DSS, multi-region, GDPR tooling | ✅ Released 2026-02-12 |
+| **v4.0.0** | Architecture Evolution | Event Store v2, GraphQL API, Plugin Marketplace | ✅ Released 2026-02-13 |
 
 ---
 
@@ -1637,58 +1637,58 @@ After 18 releases (v1.1.0 → v3.0.0), the platform has grown to 41 domains, 266
 
 ---
 
-## Planned: v3.4.0 — API Maturity & Developer Experience
+## v3.4.0 — API Maturity & Developer Experience ✅ COMPLETED
 
-**Target**: Q1 2026
+**Released**: February 12, 2026
 **Theme**: API Polish & SDK Ecosystem
 
-### Planned Features
+### Delivered (PRs #499-#510)
 
-| Feature | Priority | Description |
-|---------|----------|-------------|
-| Formal API Versioning | High | v1/v2/v3 strategy with deprecation headers and sunset dates |
-| Rate Limiting per Tier | High | Partner tier-based rate limiting (Starter/Growth/Enterprise) |
-| API Playground | Medium | Interactive API explorer beyond Swagger UI |
-| SDK Auto-Generation CI | Medium | Automated SDK builds on release (TypeScript, Python, Go) |
-| OpenAPI 100% Coverage | Medium | Swagger annotations for all 1,140+ routes |
+| Feature | Status | Description |
+|---------|--------|-------------|
+| Formal API Versioning | ✅ | v1/v2/v3 strategy with deprecation headers and sunset dates |
+| Rate Limiting per Tier | ✅ | Partner tier-based rate limiting (Starter/Growth/Enterprise) |
+| SDK Auto-Generation CI | ✅ | Automated SDK builds on release (TypeScript, Python, Go) |
+| OpenAPI 143+ Endpoints | ✅ | Swagger annotations for 143+ endpoints across all domains |
 
 ---
 
-## Planned: v3.5.0 — Compliance Certification Readiness
+## v3.5.0 — Compliance Certification Readiness ✅ COMPLETED
 
-**Target**: Q1 2026
+**Released**: February 13, 2026
 **Theme**: Enterprise Compliance & Security
 
-### Planned Features
+### Delivered (4 Phases, PRs #511-#516)
 
-| Feature | Priority | Description |
-|---------|----------|-------------|
-| SOC 2 Type II Preparation | High | Audit trail completeness, access controls, evidence collection |
-| PCI DSS Readiness | High | Cardholder data isolation, encryption at rest/transit |
-| Multi-Region Deployment | High | Geographic distribution, data residency configuration |
-| GDPR Tooling | Medium | Data export, right-to-erasure, consent management |
-| Automated Security Scanning | Medium | SAST/DAST in CI, dependency vulnerability alerts |
-
----
-
-## Planned: v4.0.0 — Next Major Release
-
-**Target**: Q2 2026
-**Theme**: Architecture Evolution (Breaking Changes)
-
-### Candidate Features
-
-| Feature | Priority | Description |
-|---------|----------|-------------|
-| Laravel 13 Upgrade | High | Framework upgrade when available |
-| PHP 8.5 Features | High | Property hooks, asymmetric visibility |
-| Event Store v2 | High | Dedicated event store database with snapshots and projections |
-| GraphQL API | Medium | Alternative to REST for complex cross-domain queries |
-| Plugin Marketplace | Low | Community-contributed domain modules with versioned registry |
+| Feature | Status | Description |
+|---------|--------|-------------|
+| SOC 2 Type II Preparation | ✅ | Audit trail, access controls, evidence collection, 14 control families |
+| PCI DSS Readiness | ✅ | Cardholder data isolation, encryption, 12 requirement assessments |
+| Multi-Region Deployment | ✅ | Geographic distribution, data residency, region health monitoring |
+| GDPR Enhanced Compliance | ✅ | Article 30 ROPA, DPIA, breach notification, consent v2, retention policies |
 
 ---
 
-*Document Version: 3.3.0*
+## v4.0.0 — Architecture Evolution ✅ COMPLETED
+
+**Released**: February 13, 2026
+**Theme**: Event Store v2, GraphQL API, Plugin Marketplace
+
+### Delivered (7 Phases, PRs #517-#523)
+
+| Feature | Status | Description |
+|---------|--------|-------------|
+| Event Store v2 — Domain Tables | ✅ | EventRouter for namespace-based domain table routing (21 domains) |
+| Event Store v2 — Migration Tooling | ✅ | Batch migration from shared to domain tables with validation |
+| Event Store v2 — Versioning & Upcasting | ✅ | Schema evolution with chained upcasters (v1→v2→v3) |
+| GraphQL API — Foundation | ✅ | Lighthouse-PHP integration, Account domain, custom @tenant directive |
+| GraphQL API — Core Domains | ✅ | Wallet, Exchange, Compliance schemas, DataLoaders, subscriptions |
+| Plugin Marketplace — Foundation | ✅ | PluginManager, dependency resolver, 6 Artisan commands, scaffold generator |
+| Plugin Marketplace — Sandboxing | ✅ | Permission system, security scanner, marketplace API, Filament admin |
+
+---
+
+*Document Version: 4.0.0*
 *Created: January 11, 2026*
-*Updated: February 12, 2026 (v3.3.0 Event Store Optimization & Observability released)*
-*Next Review: v3.4.0 Implementation*
+*Updated: February 13, 2026 (v4.0.0 Architecture Evolution released)*
+*Next Review: v4.1.0 Planning*

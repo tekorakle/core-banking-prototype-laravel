@@ -96,6 +96,7 @@ Key deliverables:
 - SPDX license headers, 24 integration tests covering plugin system
 v3.3.0 — Event Store Optimization & Observability (COMPLETED)
 Status: Released (2026-02-12)
+Patch: v3.3.1 (2026-02-12) — PHPStan fixes, checkProjectorLag bug fix, security hardening, performance optimizations (PR #499)
 Phases: 6 phases across 6 PRs (#493-#498)
 Key deliverables:
 - EventStoreService centralizing event store operations for 21 domains
@@ -106,10 +107,32 @@ Key deliverables:
 - EventArchivalService with archive, compact, restore methods; archived_events table; event-store config
 - 3 integration test suites covering all features
 
+v3.5.0 — Compliance Certification (COMPLETED)
+Status: Released (2026-02-12)
+Phases: 4 phases across 5 PRs (#511-#516)
+Key deliverables:
+- SOC 2 Type II: evidence collection, access reviews, incident response
+- PCI DSS: data classification, encryption verification, key rotation
+- Multi-Region: data residency, region-aware storage, geo-routing
+- GDPR Enhanced: Article 30 ROPA, DPIA, breach notification (72h), consent v2, retention enforcement
+- 10 services, 10 models, 10 migrations, 6 events, 6 commands, 2 controllers
+- 90+ tests across all certification domains
+
+v4.0.0 — Architecture Evolution (COMPLETED)
+Status: Released (2026-02-13)
+Phases: 7 phases across 7 PRs (#517-#523)
+Key deliverables:
+- Event Store v2: EventRouter for namespace-based domain table routing (21 domains)
+- Event Store v2: Batch migration tooling with validation (event:migrate, event:migrate:rollback)
+- Event Store v2: Schema evolution with chained upcasters (EventUpcastingService, EventVersionRegistry)
+- GraphQL API: Lighthouse-PHP foundation, Account domain, custom @tenant directive
+- GraphQL API: Wallet, Exchange, Compliance schemas, DataLoaders, subscription stubs
+- Plugin Marketplace: PluginManager with semver dependency resolver, 6 Artisan commands
+- Plugin Marketplace: Permission sandbox, security scanner, marketplace REST API, Filament admin
+- 80+ tests across all features
+
 Future roadmap:
-- v3.4.0 — API Maturity & DX (API versioning, rate limiting per tier, SDK auto-gen, OpenAPI 100%)
-- v3.5.0 — Compliance Certification (SOC 2, PCI DSS, multi-region, GDPR tooling)
-- v4.0.0 — Architecture Evolution (Laravel 13, Event Store v2, GraphQL, Plugin Marketplace)
+- v4.1.0 — TBD (Laravel 13 upgrade when available, PHP 8.5 features)
 ## Architecture Principles (for decision-making)
 
 1. **Interface First**: Extract contracts before implementations
