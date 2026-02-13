@@ -38,7 +38,7 @@ on:
         type: string
 
 env:
-  PHP_VERSION: '8.3'
+  PHP_VERSION: '8.4'
 
 permissions:
   contents: read
