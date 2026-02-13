@@ -17,7 +17,7 @@ Transform FinAegis into the **premier open source core banking platform** that:
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────┐
-│                     FINAEGIS CORE BANKING PLATFORM (v3.0.0)              │
+│                     FINAEGIS CORE BANKING PLATFORM (v5.0.0)              │
 ├─────────────────────────────────────────────────────────────────────────┤
 │  CORE BANKING                                                            │
 │  ┌────────────┐  ┌────────────┐  ┌────────────┐  ┌────────────┐        │
@@ -74,7 +74,7 @@ Transform FinAegis into the **premier open source core banking platform** that:
 | **BaaS** | FinancialInstitution (Partner APIs, SDKs, Widgets, Billing, Marketplace) | Mature |
 | **Supporting** | User, Contact, Newsletter, Webhook, Activity, Batch, CGO, Shared | Complete |
 
-### Key Metrics (as of v3.0.0)
+### Key Metrics (as of v5.0.0)
 
 | Metric | Value |
 |--------|-------|
@@ -83,7 +83,9 @@ Transform FinAegis into the **premier open source core banking platform** that:
 | Controllers | 167 |
 | API Routes | 1,150+ |
 | PHPStan Level | **8** |
-| Test Files | 500+ |
+| Test Files | 775+ |
+| GraphQL Domains | 14 |
+| GraphQL Schema Files | 17 |
 
 ---
 
@@ -171,25 +173,30 @@ Transform FinAegis into the **premier open source core banking platform** that:
 - Multi-chain portfolio tracking
 - Cross-chain yield optimization
 
+### Completed Improvements (v4.0.0-v5.0.0)
+
+#### Event Store v2 (v4.0.0) -- COMPLETED
+- Domain-specific routing (33 domains) with configurable event tables
+- Upcasting pipeline for event schema evolution
+- Migration tooling for seamless event store upgrades
+
+#### GraphQL API (v4.0.0-v4.3.0) -- COMPLETED
+- Schema-first approach with Lighthouse PHP
+- 14 domains exposed via GraphQL (Fraud, Banking, Mobile, TrustCert, and more)
+- Real-time subscriptions for live data
+- DataLoaders for N+1 query prevention
+
+#### Plugin Marketplace (v4.0.0) -- COMPLETED
+- Plugin manager and loader architecture
+- Sandbox execution environment for plugin isolation
+- Security scanner for plugin vetting
+
+#### Event Streaming (v5.0.0) -- COMPLETED
+- Redis Streams publisher/consumer for real-time event distribution
+- Live dashboard with 5 metrics endpoints
+- Multi-channel notification system (email, push, in-app, webhook, SMS)
+
 ### Planned Improvements
-
-#### Event Store Optimization
-```php
-// Current: Single event store per domain
-exchange_events, lending_events, wallet_events...
-
-// Proposed: Unified event store with domain partitioning
-CREATE TABLE domain_events (
-    id BIGINT PRIMARY KEY,
-    domain VARCHAR(50) INDEX,
-    aggregate_uuid UUID INDEX,
-    aggregate_type VARCHAR(100),
-    event_class VARCHAR(255),
-    event_properties JSON,
-    meta_data JSON,
-    created_at TIMESTAMP INDEX
-) PARTITION BY LIST (domain);
-```
 
 #### CQRS Enhancement
 ```php
@@ -256,17 +263,20 @@ interface CachingQueryBus extends QueryBus
 
 The FinAegis platform has evolved from a core banking prototype to a comprehensive financial infrastructure platform spanning 41 domains. Key capabilities now include:
 
-1. **Cross-Chain & DeFi** - Bridge protocols, DEX aggregation, multi-chain portfolio
-2. **Privacy & Identity** - ZK-KYC, Merkle trees, Soulbound tokens, Verifiable Credentials
-3. **Mobile Payments** - Payment intents, passkeys, ERC-4337 gas abstraction
-4. **RegTech** - MiFID II, MiCA, Travel Rule, multi-jurisdiction adapters
-5. **Banking-as-a-Service** - Partner APIs, SDK generation, embeddable widgets
-6. **AI Framework** - MCP tools, NLP queries, ML anomaly detection
+1. **GraphQL API** - Schema-first Lighthouse PHP across 14 domains with subscriptions and DataLoaders
+2. **Event Streaming** - Redis Streams publisher/consumer, live dashboard, multi-channel notifications
+3. **Plugin Marketplace** - Plugin manager, sandbox execution, security scanning
+4. **Cross-Chain & DeFi** - Bridge protocols, DEX aggregation, multi-chain portfolio
+5. **Privacy & Identity** - ZK-KYC, Merkle trees, Soulbound tokens, Verifiable Credentials
+6. **Mobile Payments** - Payment intents, passkeys, ERC-4337 gas abstraction
+7. **RegTech** - MiFID II, MiCA, Travel Rule, multi-jurisdiction adapters
+8. **Banking-as-a-Service** - Partner APIs, SDK generation, embeddable widgets
+9. **AI Framework** - MCP tools, NLP queries, ML anomaly detection
 
-**v3.1.0 Focus**: Consolidation — documentation, admin UI coverage (15 new Filament resources), user-facing UI, and Swagger completeness.
+**v5.0.0 Focus**: Streaming Architecture — Redis Streams event distribution, live dashboard metrics, multi-channel notification system, and API gateway middleware.
 
 ---
 
-*Document Version: 3.1.0*
-*Last Updated: February 11, 2026*
+*Document Version: 5.0.0*
+*Last Updated: February 13, 2026*
 *Author: Architecture Review*
