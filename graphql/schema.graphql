@@ -20,3 +20,12 @@ scalar DateTime @scalar(class: "Nuwave\\Lighthouse\\Schema\\Types\\Scalars\\Date
 #import mobile-payment.graphql
 #import trust-cert.graphql
 #import subscriptions.graphql
+#import agent-protocol.graphql
+#import basket.graphql
+#import batch.graphql
+#import card-issuance.graphql
+#import cgo.graphql
+#import financial-institution.graphql
+#import product.graphql
+#import regulatory.graphql
+#import user.graphql
