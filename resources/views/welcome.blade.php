@@ -268,7 +268,7 @@
                         </div>
                         <h3 class="text-xl font-semibold mb-3">REST, GraphQL & OpenAPI</h3>
                         <p class="text-gray-600 mb-4">
-                            Comprehensive REST APIs with Swagger documentation, GraphQL across 24 domains with subscriptions, and webhook examples.
+                            Comprehensive REST APIs with Swagger documentation, GraphQL across 33 domains with subscriptions, and webhook examples.
                         </p>
                         <span class="text-blue-600 font-medium hover:text-blue-700">
                             View docs →
@@ -708,7 +708,7 @@
                             </svg>
                         </div>
                         <h3 class="text-xl font-semibold mb-3">REST & GraphQL APIs</h3>
-                        <p class="text-gray-600">OpenAPI/Swagger docs, GraphQL (24 domains), webhooks, and comprehensive test coverage</p>
+                        <p class="text-gray-600">OpenAPI/Swagger docs, GraphQL (33 domains), webhooks, and comprehensive test coverage</p>
                     </div>
                 </div>
 

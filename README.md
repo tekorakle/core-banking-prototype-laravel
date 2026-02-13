@@ -32,7 +32,7 @@ FinAegis provides the foundation for building digital banking applications. The 
 | Cross-chain & DeFi | Bridge protocols, DEX aggregation, yield optimization (v3.0.0) |
 | Modular plugin architecture | 41 domains with manifests, enable/disable, dependency resolution (v3.2.0) |
 | Compliance certification | SOC 2 Type II, PCI DSS readiness, multi-region deployment (v3.5.0) |
-| GraphQL API | Schema-first Lighthouse PHP, 24 domains, subscriptions (v4.0.0+) |
+| GraphQL API | Schema-first Lighthouse PHP, 33 domains, subscriptions (v4.0.0+) |
 | Event Store v2 | Domain routing (33 domains), upcasting, migration tooling (v4.0.0) |
 | Plugin Marketplace | Manager, loader, sandbox, security scanner (v4.0.0) |
 | Event streaming | Redis Streams publisher/consumer, live dashboard (v5.0.0) |
@@ -61,7 +61,7 @@ php artisan performance:report       # Generate performance baseline
 
 ## GraphQL API (v4.0.0-v4.3.0)
 
-FinAegis provides a schema-first GraphQL API via [Lighthouse PHP](https://lighthouse-php.com/) covering 24 domains:
+FinAegis provides a schema-first GraphQL API via [Lighthouse PHP](https://lighthouse-php.com/) covering 33 domains:
 
 ```bash
 # Available at /graphql
@@ -74,7 +74,7 @@ curl -X POST http://localhost:8000/graphql \
   -d '{"query": "{ accounts { id name balance currency } }"}'
 ```
 
-- **24 domain schemas** — Account, AI, Asset, Banking, Commerce, Compliance, CrossChain, Custodian, DeFi, Exchange, Fraud, Governance, KeyManagement, Lending, Mobile, MobilePayment, Payment, Privacy, RegTech, Relayer, Stablecoin, Treasury, TrustCert, Wallet
+- **33 domain schemas** — Account, AgentProtocol, AI, Asset, Banking, Basket, Batch, CardIssuance, Cgo, Commerce, Compliance, CrossChain, Custodian, DeFi, Exchange, FinancialInstitution, Fraud, Governance, KeyManagement, Lending, Mobile, MobilePayment, Payment, Privacy, Product, RegTech, Regulatory, Relayer, Stablecoin, Treasury, TrustCert, User, Wallet
 - **Subscriptions** — Real-time updates via WebSocket (account updates, wallet changes, compliance alerts, order matching)
 - **DataLoaders** — N+1 query prevention with batched loading
 - **Security** — `@guard(with: ["sanctum"])`, query cost analysis, introspection control
@@ -282,7 +282,7 @@ See [Domain Management Guide](docs/06-DEVELOPMENT/DOMAIN_MANAGEMENT.md) for deta
 - **Saga Pattern** - Distributed transactions with automatic rollback
 - **DDD** - 41 bounded contexts with clear boundaries
 - **Multi-Tenancy** - Team-based data isolation with stancl/tenancy v3.9
-- **GraphQL** - Schema-first Lighthouse PHP across 24 domains with subscriptions (v4.0.0+)
+- **GraphQL** - Schema-first Lighthouse PHP across 33 domains with subscriptions (v4.0.0+)
 - **Event Streaming** - Redis Streams publisher/consumer with live dashboard (v5.0.0)
 
 See [Architecture Decision Records](docs/ADR/) for detailed design rationale.
@@ -360,7 +360,7 @@ See [Kubernetes Deployment Guide](docs/06-DEVELOPMENT/KUBERNETES.md) for details
 |-------|------------|
 | **Backend** | Laravel 12, PHP 8.4+ |
 | **Event Sourcing** | Spatie Event Sourcing with Event Store v2 (domain routing, upcasting) |
-| **GraphQL** | Lighthouse PHP (schema-first, 24 domains, subscriptions) |
+| **GraphQL** | Lighthouse PHP (schema-first, 33 domains, subscriptions) |
 | **Workflows** | Laravel Workflow (Waterline) |
 | **Multi-Tenancy** | stancl/tenancy v3.9 |
 | **Database** | MySQL 8.0+ / MariaDB 10.3+ / PostgreSQL 13+ |

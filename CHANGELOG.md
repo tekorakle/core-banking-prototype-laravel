@@ -9,7 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
-#### GraphQL Schema Expansion — 10 New Domains (24 total)
+#### GraphQL Schema Expansion — 19 New Domains (33 total)
 - Privacy, RegTech, Governance, Asset, KeyManagement, Relayer, Banking, Commerce, Custodian, AI domain schemas
 - 16 new query resolvers and 31 new mutation resolvers
 - All 21 GraphQL mutations refactored to use CQRS WorkflowStub/Service patterns instead of direct Eloquent
@@ -32,15 +32,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 #### Documentation Refresh
 - `docs/01-VISION/ROADMAP.md` rewritten for v5.0.0 (41 domains, current capabilities)
 - `docs/06-DEVELOPMENT/DOMAIN_MANAGEMENT.md` updated from 29 to 41 domains with categorized registry
-- `docs/02-ARCHITECTURE/ARCHITECTURE.md` updated to v5.0 (24 GraphQL domains, streaming, plugins)
-- `docs/ARCHITECTURAL_ROADMAP.md` GraphQL metrics updated to 24 domains
+- `docs/02-ARCHITECTURE/ARCHITECTURE.md` updated to v5.0 (33 GraphQL domains, streaming, plugins)
+- `docs/ARCHITECTURAL_ROADMAP.md` GraphQL metrics updated to 33 domains
 - `docs/VERSION_ROADMAP.md` v5.0.0 GraphQL expansion documented
-- `docs/README.md` GraphQL count corrected to 24 domains
+- `docs/README.md` GraphQL count corrected to 33 domains
 - `docs/IMPLEMENTATION_PLAN.md` marked as historical (v1.x era)
 - `docs/BACKEND_UPGRADE_PLAN_v2.4.md` marked as COMPLETED
 - `docs/MOBILE_APP_SPECIFICATION.md` version context added
 - `docs/06-DEVELOPMENT/CLAUDE.md` updated to v5.0.0 with new domain entries
-- GraphQL domain count corrected from 14 to 24 across 12 files (23 occurrences)
+- GraphQL domain count corrected from 14 to 33 across 12 files (23 occurrences)
 
 #### Website Updates
 - Stablecoins & Treasury sub-products changed from "COMING SOON" to "Available"

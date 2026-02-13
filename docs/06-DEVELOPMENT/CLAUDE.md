@@ -444,7 +444,7 @@ ActivityStub::make(ValidateLiquidityActivity::class)
 
 ### GraphQL API (v4.0.0-v5.0.1)
 The platform provides a GraphQL API via Lighthouse PHP alongside the REST API:
-- **24 domain schemas**: Account, AI, Asset, Banking, Commerce, Compliance, CrossChain, Custodian, DeFi, Exchange, Fraud, Governance, KeyManagement, Lending, Mobile, MobilePayment, Payment, Privacy, RegTech, Relayer, Stablecoin, Treasury, TrustCert, Wallet
+- **33 domain schemas**: Account, AgentProtocol, AI, Asset, Banking, Basket, Batch, CardIssuance, Cgo, Commerce, Compliance, CrossChain, Custodian, DeFi, Exchange, FinancialInstitution, Fraud, Governance, KeyManagement, Lending, Mobile, MobilePayment, Payment, Privacy, Product, RegTech, Regulatory, Relayer, Stablecoin, Treasury, TrustCert, User, Wallet
 - **Schema files**: `graphql/*.graphql`
 - **Resolvers**: `app/GraphQL/Queries/`, `app/GraphQL/Mutations/`, `app/GraphQL/Subscriptions/`
 - **Access**: POST `/graphql`, GET `/graphql-playground`

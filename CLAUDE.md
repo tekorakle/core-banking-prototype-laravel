@@ -127,7 +127,7 @@ app/
 - **CQRS**: Command/Query Bus with read/write separation
 - **Sagas**: Laravel Workflow with compensation
 - **Multi-Tenancy**: Team-based isolation with `UsesTenantConnection` trait
-- **GraphQL API**: Lighthouse PHP with schema-first design, 24 domain schemas
+- **GraphQL API**: Lighthouse PHP with schema-first design, 33 domain schemas
 - **Event Streaming**: Redis Streams publisher/consumer with domain routing
 
 ### Key Services (DON'T RECREATE)

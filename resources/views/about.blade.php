@@ -236,7 +236,7 @@
                 <div class="timeline-item mb-12">
                     <h3 class="text-xl font-bold text-gray-900 mb-2">GraphQL API</h3>
                     <p class="text-gray-600">
-                        Lighthouse-powered GraphQL covering 24 domains with real-time subscriptions, N+1 safe DataLoaders, and cursor-based pagination alongside REST/OpenAPI.
+                        Lighthouse-powered GraphQL covering 33 domains with real-time subscriptions, N+1 safe DataLoaders, and cursor-based pagination alongside REST/OpenAPI.
                     </p>
                 </div>
                 <div class="timeline-item mb-12">

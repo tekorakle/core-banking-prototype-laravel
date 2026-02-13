@@ -31,7 +31,7 @@ This document provides a comprehensive overview of the FinAegis Platform archite
 ┌─────────────────────────────────────────────────────────────────────┐
 │                           Presentation Layer                        │
 ├─────────────────────────────────────────────────────────────────────┤
-│  Web UI (Filament)  │  REST API  │  GraphQL (24 domains)  │  CLI       │
+│  Web UI (Filament)  │  REST API  │  GraphQL (33 domains)  │  CLI       │
 ├─────────────────────────────────────────────────────────────────────┤
 │                          Application Layer                          │
 ├─────────────────────────────────────────────────────────────────────┤
@@ -1036,7 +1036,7 @@ The FinAegis platform represents a modern, scalable approach to core banking sys
 - ✅ **Audit Logging**: Complete operation tracking
 
 ### Implemented (v4.0.0-v5.0.0)
-- **GraphQL API**: Schema-first Lighthouse PHP across 24 domains with subscriptions and DataLoaders
+- **GraphQL API**: Schema-first Lighthouse PHP across 33 domains with subscriptions and DataLoaders
 - **Event Streaming**: Redis Streams publisher/consumer for real-time event distribution (v5.0.0)
 - **Plugin Marketplace**: Plugin manager, sandbox execution, security scanning (v4.0.0)
 - **API Gateway**: Request ID tracing, timing headers, version middleware (v5.0.0)
@@ -1145,5 +1145,5 @@ return [
 ---
 
 **Architecture Version**: 5.0.1
-**Implementation Status**: Core Complete, 41 Bounded Contexts, 24 GraphQL Domains
+**Implementation Status**: Core Complete, 41 Bounded Contexts, 33 GraphQL Domains
 **Last Updated**: February 2026
