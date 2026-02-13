@@ -13,15 +13,15 @@ describe('GraphQL Exchange API', function () {
     it('paginates orders', function () {
         $user = User::factory()->create();
         Order::create([
-            'order_id' => 'ORD-001',
-            'account_id' => 'ACC-001',
-            'type' => 'buy',
-            'order_type' => 'limit',
-            'base_currency' => 'BTC',
+            'order_id'       => 'ORD-001',
+            'account_id'     => 'ACC-001',
+            'type'           => 'buy',
+            'order_type'     => 'limit',
+            'base_currency'  => 'BTC',
             'quote_currency' => 'USD',
-            'amount' => 1.5,
-            'price' => 50000,
-            'status' => 'open',
+            'amount'         => 1.5,
+            'price'          => 50000,
+            'status'         => 'open',
         ]);
 
         $response = $this->actingAs($user, 'sanctum')
@@ -55,19 +55,19 @@ describe('GraphQL Exchange API', function () {
     it('paginates trades', function () {
         $user = User::factory()->create();
         Trade::create([
-            'trade_id' => 'TRD-001',
-            'buy_order_id' => 'ORD-001',
-            'sell_order_id' => 'ORD-002',
-            'buyer_account_id' => 'ACC-001',
+            'trade_id'          => 'TRD-001',
+            'buy_order_id'      => 'ORD-001',
+            'sell_order_id'     => 'ORD-002',
+            'buyer_account_id'  => 'ACC-001',
             'seller_account_id' => 'ACC-002',
-            'base_currency' => 'BTC',
-            'quote_currency' => 'USD',
-            'price' => 50000,
-            'amount' => 1.0,
-            'value' => 50000,
-            'maker_fee' => 0.1,
-            'taker_fee' => 0.2,
-            'maker_side' => 'buy',
+            'base_currency'     => 'BTC',
+            'quote_currency'    => 'USD',
+            'price'             => 50000,
+            'amount'            => 1.0,
+            'value'             => 50000,
+            'maker_fee'         => 0.1,
+            'taker_fee'         => 0.2,
+            'maker_side'        => 'buy',
         ]);
 
         $response = $this->actingAs($user, 'sanctum')
@@ -98,17 +98,17 @@ describe('GraphQL Exchange API', function () {
     it('queries order books', function () {
         $user = User::factory()->create();
         OrderBook::create([
-            'order_book_id' => 'OB-BTC-USD',
-            'base_currency' => 'BTC',
+            'order_book_id'  => 'OB-BTC-USD',
+            'base_currency'  => 'BTC',
             'quote_currency' => 'USD',
-            'buy_orders' => [],
-            'sell_orders' => [],
-            'best_bid' => 49900,
-            'best_ask' => 50100,
-            'last_price' => 50000,
-            'volume_24h' => 150.5,
-            'high_24h' => 51000,
-            'low_24h' => 49000,
+            'buy_orders'     => [],
+            'sell_orders'    => [],
+            'best_bid'       => 49900,
+            'best_ask'       => 50100,
+            'last_price'     => 50000,
+            'volume_24h'     => 150.5,
+            'high_24h'       => 51000,
+            'low_24h'        => 49000,
         ]);
 
         $response = $this->actingAs($user, 'sanctum')

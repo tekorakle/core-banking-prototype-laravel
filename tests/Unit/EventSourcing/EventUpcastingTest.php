@@ -93,6 +93,57 @@ describe('EventVersionRegistry', function () {
         expect($chain)->toHaveCount(0);
     });
 
+    it('detects chain gaps in upcaster versions', function () {
+        $registry = new EventVersionRegistry();
+
+        // Register v1→v2 upcaster
+        $registry->register(new MoneyAddedV1ToV2Upcaster());
+
+        // Create a v3→v4 upcaster (skipping v2→v3)
+        $v3ToV4 = new class () extends AbstractEventUpcaster {
+            public function __construct()
+            {
+                parent::__construct('gap_event', 3, 4);
+            }
+
+            public function upcast(array $payload): array
+            {
+            return $payload;
+            }
+        };
+
+        $v1ToV2 = new class () extends AbstractEventUpcaster {
+            public function __construct()
+            {
+                parent::__construct('gap_event', 1, 2);
+            }
+
+            public function upcast(array $payload): array
+            {
+            return $payload;
+            }
+        };
+
+        $registry->register($v1ToV2);
+        $registry->register($v3ToV4);
+
+        $gaps = $registry->validateChain('gap_event');
+
+        expect($gaps)->not->toBeEmpty();
+        expect($gaps[0])->toContain('v2');
+        expect($gaps[0])->toContain('v3');
+    });
+
+    it('reports no gaps for complete chain', function () {
+        $registry = new EventVersionRegistry();
+        $registry->register(new MoneyAddedV1ToV2Upcaster());
+        $registry->register(new MoneyAddedV2ToV3Upcaster());
+
+        $gaps = $registry->validateChain('money_added');
+
+        expect($gaps)->toBeEmpty();
+    });
+
     it('lists all versions', function () {
         $registry = new EventVersionRegistry();
         $registry->register(new MoneyAddedV1ToV2Upcaster());

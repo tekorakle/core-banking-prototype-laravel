@@ -14,21 +14,25 @@ class PluginSecurityScanner
      * @var array<string, string>
      */
     private array $patterns = [
-        'eval' => '/\beval\s*\(/i',
-        'exec' => '/\bexec\s*\(/i',
-        'shell_exec' => '/\bshell_exec\s*\(/i',
-        'system' => '/\bsystem\s*\(/i',
-        'passthru' => '/\bpassthru\s*\(/i',
-        'proc_open' => '/\bproc_open\s*\(/i',
-        'popen' => '/\bpopen\s*\(/i',
-        'backtick' => '/`[^`]+`/',
-        'raw_sql' => '/\bDB::raw\s*\(/i',
-        'raw_query' => '/\bDB::statement\s*\(/i',
-        'file_get_contents' => '/\bfile_get_contents\s*\(\s*[\'"]https?:/i',
-        'curl' => '/\bcurl_exec\s*\(/i',
-        'unserialize' => '/\bunserialize\s*\(/i',
+        'eval'               => '/\beval\s*\(/i',
+        'exec'               => '/\bexec\s*\(/i',
+        'shell_exec'         => '/\bshell_exec\s*\(/i',
+        'system'             => '/\bsystem\s*\(/i',
+        'passthru'           => '/\bpassthru\s*\(/i',
+        'proc_open'          => '/\bproc_open\s*\(/i',
+        'popen'              => '/\bpopen\s*\(/i',
+        'backtick'           => '/`[^`]+`/',
+        'raw_sql'            => '/\bDB::raw\s*\(/i',
+        'raw_query'          => '/\bDB::statement\s*\(/i',
+        'file_get_contents'  => '/\bfile_get_contents\s*\(\s*[\'""]https?:/i',
+        'curl'               => '/\bcurl_exec\s*\(/i',
+        'unserialize'        => '/\bunserialize\s*\(/i',
         'base64_decode_exec' => '/\bbase64_decode\s*\(.*\beval\b/i',
-        'env_access' => '/\benv\s*\(\s*[\'"][A-Z_]*(?:KEY|SECRET|PASSWORD|TOKEN)/i',
+        'env_access'         => '/\benv\s*\(\s*[\'""][A-Z_]*(?:KEY|SECRET|PASSWORD|TOKEN)/i',
+        'extract'            => '/\bextract\s*\(/i',
+        'parse_str'          => '/\bparse_str\s*\(/i',
+        'call_user_func'     => '/\bcall_user_func(?:_array)?\s*\(/i',
+        'variable_include'   => '/\b(?:include|require)(?:_once)?\s*\$/',
     ];
 
     /**
@@ -69,7 +73,7 @@ class PluginSecurityScanner
         }
 
         return [
-            'safe' => empty($issues),
+            'safe'   => empty($issues),
             'issues' => $issues,
         ];
     }
@@ -87,6 +91,7 @@ class PluginSecurityScanner
             $type = $issue['type'];
             $summary[$type] = ($summary[$type] ?? 0) + 1;
         }
+
         return $summary;
     }
 
@@ -95,9 +100,9 @@ class PluginSecurityScanner
      */
     public function getSeverity(string $type): string
     {
-        $critical = ['eval', 'exec', 'shell_exec', 'system', 'passthru', 'proc_open', 'popen', 'backtick'];
-        $high = ['raw_sql', 'raw_query', 'unserialize', 'base64_decode_exec', 'env_access'];
-        $medium = ['file_get_contents', 'curl'];
+        $critical = ['eval', 'exec', 'shell_exec', 'system', 'passthru', 'proc_open', 'popen', 'backtick', 'variable_include'];
+        $high = ['raw_sql', 'raw_query', 'unserialize', 'base64_decode_exec', 'env_access', 'extract', 'call_user_func'];
+        $medium = ['file_get_contents', 'curl', 'parse_str'];
 
         if (in_array($type, $critical, true)) {
             return 'critical';
@@ -108,6 +113,7 @@ class PluginSecurityScanner
         if (in_array($type, $medium, true)) {
             return 'medium';
         }
+
         return 'low';
     }
 }

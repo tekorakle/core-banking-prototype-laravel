@@ -12,7 +12,6 @@ type Account @model(class: "App\\Domain\\Account\\Models\\Account") {
 
 input CreateAccountInput {
     name: String!
-    user_uuid: String
 }
 
 extend type Query {

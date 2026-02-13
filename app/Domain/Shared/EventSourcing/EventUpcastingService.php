@@ -6,6 +6,8 @@ namespace App\Domain\Shared\EventSourcing;
 
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
+use JsonException;
+use Throwable;
 
 /**
  * Service for upcasting stored events to their latest schema version.
@@ -17,7 +19,8 @@ class EventUpcastingService
 {
     public function __construct(
         private readonly EventVersionRegistry $registry,
-    ) {}
+    ) {
+    }
 
     /**
      * Upcast a single event's payload to the latest version.
@@ -83,7 +86,18 @@ class EventUpcastingService
                 $currentVersion = (int) ($event->event_version ?? 1);
 
                 try {
-                    $payload = json_decode($event->event_properties, true) ?? [];
+                    try {
+                        $payload = json_decode($event->event_properties, true, 512, JSON_THROW_ON_ERROR);
+                    } catch (JsonException $e) {
+                        $errors++;
+                        Log::warning('Event JSON decode failed', [
+                            'event_id'    => $event->id,
+                            'event_class' => $eventClass,
+                            'error'       => $e->getMessage(),
+                        ]);
+                        continue;
+                    }
+
                     $result = $this->upcast($eventClass, $payload, $currentVersion);
 
                     if ($result['upcasted'] && $persist) {
@@ -98,9 +112,9 @@ class EventUpcastingService
                     if ($result['upcasted']) {
                         $upcasted++;
                     }
-                } catch (\Throwable $e) {
+                } catch (Throwable $e) {
                     $errors++;
-                    Log::warning("Event upcasting failed", [
+                    Log::warning('Event upcasting failed', [
                         'event_id'    => $event->id,
                         'event_class' => $eventClass,
                         'error'       => $e->getMessage(),

@@ -7,6 +7,7 @@ namespace App\Infrastructure\Plugins;
 use App\Domain\Shared\Models\Plugin;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Log;
+use Throwable;
 
 class PluginLoader
 {
@@ -33,7 +34,7 @@ class PluginLoader
                         if ($manifest->validate()) {
                             $manifests[$manifest->getFullName()] = $manifest;
                         }
-                    } catch (\Throwable $e) {
+                    } catch (Throwable $e) {
                         Log::warning("Failed to load plugin manifest: {$manifestPath}", [
                             'error' => $e->getMessage(),
                         ]);
@@ -72,12 +73,21 @@ class PluginLoader
             Log::warning("Plugin service provider not found: {$providerClass}", [
                 'plugin' => $plugin->getFullName(),
             ]);
+
+            return;
+        }
+
+        if (! is_subclass_of($providerClass, \Illuminate\Support\ServiceProvider::class)) {
+            Log::warning("Plugin entry point is not a ServiceProvider: {$providerClass}", [
+                'plugin' => $plugin->getFullName(),
+            ]);
+
             return;
         }
 
         try {
             app()->register($providerClass);
-        } catch (\Throwable $e) {
+        } catch (Throwable $e) {
             Log::error("Failed to boot plugin: {$plugin->getFullName()}", [
                 'error' => $e->getMessage(),
             ]);

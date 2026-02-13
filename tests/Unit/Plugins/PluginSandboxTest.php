@@ -11,11 +11,11 @@ uses(Tests\TestCase::class, Illuminate\Foundation\Testing\RefreshDatabase::class
 describe('PluginSandbox', function () {
     it('allows access with declared permissions', function () {
         $plugin = Plugin::create([
-            'vendor' => 'finaegis',
-            'name' => 'test',
-            'version' => '1.0.0',
-            'status' => 'active',
-            'path' => '/plugins/finaegis/test',
+            'vendor'      => 'finaegis',
+            'name'        => 'test',
+            'version'     => '1.0.0',
+            'status'      => 'active',
+            'path'        => '/plugins/finaegis/test',
             'permissions' => ['database:read', 'cache:read'],
         ]);
 
@@ -27,11 +27,11 @@ describe('PluginSandbox', function () {
 
     it('denies access without declared permissions', function () {
         $plugin = Plugin::create([
-            'vendor' => 'finaegis',
-            'name' => 'restricted',
-            'version' => '1.0.0',
-            'status' => 'active',
-            'path' => '/plugins/finaegis/restricted',
+            'vendor'      => 'finaegis',
+            'name'        => 'restricted',
+            'version'     => '1.0.0',
+            'status'      => 'active',
+            'path'        => '/plugins/finaegis/restricted',
             'permissions' => ['database:read'],
         ]);
 
@@ -43,27 +43,27 @@ describe('PluginSandbox', function () {
 
     it('throws on enforce without permission', function () {
         $plugin = Plugin::create([
-            'vendor' => 'finaegis',
-            'name' => 'enforced',
-            'version' => '1.0.0',
-            'status' => 'active',
-            'path' => '/plugins/finaegis/enforced',
+            'vendor'      => 'finaegis',
+            'name'        => 'enforced',
+            'version'     => '1.0.0',
+            'status'      => 'active',
+            'path'        => '/plugins/finaegis/enforced',
             'permissions' => [],
         ]);
 
         $sandbox = new PluginSandbox();
 
         expect(fn () => $sandbox->enforce($plugin, 'database:write'))
-            ->toThrow(\RuntimeException::class);
+            ->toThrow(RuntimeException::class);
     });
 
     it('checks multiple permissions with canAccess', function () {
         $plugin = Plugin::create([
-            'vendor' => 'finaegis',
-            'name' => 'multi-perm',
-            'version' => '1.0.0',
-            'status' => 'active',
-            'path' => '/plugins/finaegis/multi-perm',
+            'vendor'      => 'finaegis',
+            'name'        => 'multi-perm',
+            'version'     => '1.0.0',
+            'status'      => 'active',
+            'path'        => '/plugins/finaegis/multi-perm',
             'permissions' => ['database:read', 'cache:read', 'events:listen'],
         ]);
 
@@ -75,11 +75,11 @@ describe('PluginSandbox', function () {
 
     it('reports missing permissions', function () {
         $plugin = Plugin::create([
-            'vendor' => 'finaegis',
-            'name' => 'missing-perms',
-            'version' => '1.0.0',
-            'status' => 'active',
-            'path' => '/plugins/finaegis/missing-perms',
+            'vendor'      => 'finaegis',
+            'name'        => 'missing-perms',
+            'version'     => '1.0.0',
+            'status'      => 'active',
+            'path'        => '/plugins/finaegis/missing-perms',
             'permissions' => ['database:read'],
         ]);
 

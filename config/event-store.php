@@ -100,9 +100,9 @@ return [
     |
     */
     'versioning' => [
-        'enabled'           => env('EVENT_STORE_VERSIONING_ENABLED', true),
-        'upcast_on_replay'  => env('EVENT_STORE_UPCAST_ON_REPLAY', true),
-        'default_version'   => 1,
+        'enabled'          => env('EVENT_STORE_VERSIONING_ENABLED', true),
+        'upcast_on_replay' => env('EVENT_STORE_UPCAST_ON_REPLAY', true),
+        'default_version'  => 1,
     ],
 
 ];

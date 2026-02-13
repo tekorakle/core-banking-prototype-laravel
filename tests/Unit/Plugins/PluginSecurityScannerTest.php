@@ -90,4 +90,40 @@ PHP);
         expect($result['safe'])->toBeTrue();
         expect($result['issues'])->toBeEmpty();
     });
+
+    it('detects extract, parse_str, call_user_func, and variable includes', function () {
+        $testDir = sys_get_temp_dir() . '/plugin-scan-new-patterns-' . uniqid();
+        File::makeDirectory($testDir, 0755, true);
+        File::put("{$testDir}/risky.php", <<<'PHP'
+<?php
+extract($_POST);
+parse_str($queryString, $params);
+call_user_func($callback, $arg);
+call_user_func_array($callback, $args);
+include $userFile;
+require_once $dynamicPath;
+PHP);
+
+        $scanner = new PluginSecurityScanner();
+        $result = $scanner->scan($testDir);
+
+        expect($result['safe'])->toBeFalse();
+
+        $types = array_column($result['issues'], 'type');
+        expect($types)->toContain('extract');
+        expect($types)->toContain('parse_str');
+        expect($types)->toContain('call_user_func');
+        expect($types)->toContain('variable_include');
+
+        File::deleteDirectory($testDir);
+    });
+
+    it('classifies new pattern severities correctly', function () {
+        $scanner = new PluginSecurityScanner();
+
+        expect($scanner->getSeverity('variable_include'))->toBe('critical');
+        expect($scanner->getSeverity('extract'))->toBe('high');
+        expect($scanner->getSeverity('call_user_func'))->toBe('high');
+        expect($scanner->getSeverity('parse_str'))->toBe('medium');
+    });
 });

@@ -19,6 +19,7 @@ class PluginListCommand extends Command
 
         if ($plugins->isEmpty()) {
             $this->info('No plugins installed.');
+
             return self::SUCCESS;
         }
 

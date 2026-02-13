@@ -71,45 +71,45 @@ return [
         // Data classification levels ordered from least to most sensitive
         'classification_levels' => [
             'public' => [
-                'label'             => 'Public',
-                'encryption'        => false,
-                'access_logging'    => false,
-                'retention_days'    => null,
+                'label'          => 'Public',
+                'encryption'     => false,
+                'access_logging' => false,
+                'retention_days' => null,
             ],
             'internal' => [
-                'label'             => 'Internal',
-                'encryption'        => false,
-                'access_logging'    => true,
-                'retention_days'    => 730, // 2 years
+                'label'          => 'Internal',
+                'encryption'     => false,
+                'access_logging' => true,
+                'retention_days' => 730, // 2 years
             ],
             'confidential' => [
-                'label'             => 'Confidential',
-                'encryption'        => true,
-                'access_logging'    => true,
-                'retention_days'    => 365,
+                'label'          => 'Confidential',
+                'encryption'     => true,
+                'access_logging' => true,
+                'retention_days' => 365,
             ],
             'restricted' => [
-                'label'             => 'Restricted',
-                'encryption'        => true,
-                'access_logging'    => true,
-                'retention_days'    => 90,
+                'label'          => 'Restricted',
+                'encryption'     => true,
+                'access_logging' => true,
+                'retention_days' => 90,
             ],
         ],
 
         // Cryptographic key rotation policy
         'key_rotation' => [
-            'interval_days' => (int) env('PCI_KEY_ROTATION_INTERVAL_DAYS', 90),
-            'auto_rotate'   => env('PCI_KEY_AUTO_ROTATE', true),
-            'algorithm'     => env('PCI_KEY_ALGORITHM', 'AES-256-GCM'),
+            'interval_days'      => (int) env('PCI_KEY_ROTATION_INTERVAL_DAYS', 90),
+            'auto_rotate'        => env('PCI_KEY_AUTO_ROTATE', true),
+            'algorithm'          => env('PCI_KEY_ALGORITHM', 'AES-256-GCM'),
             'notify_before_days' => (int) env('PCI_KEY_ROTATION_NOTIFY_DAYS', 14),
         ],
 
         // Network segmentation controls
         'network_segmentation' => [
-            'enabled'     => env('PCI_NETWORK_SEGMENTATION_ENABLED', true),
-            'cde_network' => env('PCI_CDE_NETWORK', '10.0.1.0/24'), // Cardholder data environment
-            'dmz_network' => env('PCI_DMZ_NETWORK', '10.0.2.0/24'),
-            'internal_network' => env('PCI_INTERNAL_NETWORK', '10.0.3.0/24'),
+            'enabled'             => env('PCI_NETWORK_SEGMENTATION_ENABLED', true),
+            'cde_network'         => env('PCI_CDE_NETWORK', '10.0.1.0/24'), // Cardholder data environment
+            'dmz_network'         => env('PCI_DMZ_NETWORK', '10.0.2.0/24'),
+            'internal_network'    => env('PCI_INTERNAL_NETWORK', '10.0.3.0/24'),
             'firewall_rules_path' => env('PCI_FIREWALL_RULES_PATH', storage_path('compliance/pci/firewall-rules.json')),
             'verify_segmentation' => env('PCI_VERIFY_SEGMENTATION', true),
         ],
@@ -221,12 +221,12 @@ return [
 
         // Default data retention periods by data category (in days)
         'retention_defaults' => [
-            'personal_data'     => (int) env('GDPR_RETENTION_PERSONAL_DAYS', 1095),      // 3 years
-            'transaction_data'  => (int) env('GDPR_RETENTION_TRANSACTION_DAYS', 2555),    // 7 years
-            'audit_logs'        => (int) env('GDPR_RETENTION_AUDIT_DAYS', 2555),          // 7 years
-            'session_data'      => (int) env('GDPR_RETENTION_SESSION_DAYS', 90),
-            'consent_records'   => (int) env('GDPR_RETENTION_CONSENT_DAYS', 1825),        // 5 years
-            'marketing_data'    => (int) env('GDPR_RETENTION_MARKETING_DAYS', 365),
+            'personal_data'    => (int) env('GDPR_RETENTION_PERSONAL_DAYS', 1095),      // 3 years
+            'transaction_data' => (int) env('GDPR_RETENTION_TRANSACTION_DAYS', 2555),    // 7 years
+            'audit_logs'       => (int) env('GDPR_RETENTION_AUDIT_DAYS', 2555),          // 7 years
+            'session_data'     => (int) env('GDPR_RETENTION_SESSION_DAYS', 90),
+            'consent_records'  => (int) env('GDPR_RETENTION_CONSENT_DAYS', 1825),        // 5 years
+            'marketing_data'   => (int) env('GDPR_RETENTION_MARKETING_DAYS', 365),
         ],
 
         // Format for ROPA (Records of Processing Activities) and DSAR exports
@@ -291,19 +291,19 @@ return [
 
         // Dynamic Application Security Testing (DAST)
         'dast' => [
-            'enabled'    => env('SCANNING_DAST_ENABLED', true),
-            'target_url' => env('SCANNING_DAST_TARGET_URL', 'http://localhost:8000'),
-            'profile'    => env('SCANNING_DAST_PROFILE', 'full'), // full, api-only, quick
-            'auth_token' => env('SCANNING_DAST_AUTH_TOKEN'),
+            'enabled'              => env('SCANNING_DAST_ENABLED', true),
+            'target_url'           => env('SCANNING_DAST_TARGET_URL', 'http://localhost:8000'),
+            'profile'              => env('SCANNING_DAST_PROFILE', 'full'), // full, api-only, quick
+            'auth_token'           => env('SCANNING_DAST_AUTH_TOKEN'),
             'max_duration_minutes' => (int) env('SCANNING_DAST_MAX_DURATION', 120),
         ],
 
         // Container image scanning
         'container' => [
-            'enabled'         => env('SCANNING_CONTAINER_ENABLED', true),
-            'dockerfile_path' => env('SCANNING_CONTAINER_DOCKERFILE', 'Dockerfile'),
+            'enabled'            => env('SCANNING_CONTAINER_ENABLED', true),
+            'dockerfile_path'    => env('SCANNING_CONTAINER_DOCKERFILE', 'Dockerfile'),
             'severity_threshold' => env('SCANNING_CONTAINER_SEVERITY', 'high'), // low, medium, high, critical
-            'registries'      => [
+            'registries'         => [
                 env('SCANNING_CONTAINER_REGISTRY', 'ghcr.io/finaegis'),
             ],
         ],
@@ -322,11 +322,11 @@ return [
 
         // Scan scheduling
         'scheduling' => [
-            'frequency'   => env('SCANNING_FREQUENCY', 'weekly'), // daily, weekly, biweekly, monthly
-            'day_of_week' => env('SCANNING_DAY_OF_WEEK', 'sunday'),
-            'time'        => env('SCANNING_TIME', '02:00'),
-            'timezone'    => env('SCANNING_TIMEZONE', 'UTC'),
-            'notify_on_findings' => env('SCANNING_NOTIFY_ON_FINDINGS', true),
+            'frequency'             => env('SCANNING_FREQUENCY', 'weekly'), // daily, weekly, biweekly, monthly
+            'day_of_week'           => env('SCANNING_DAY_OF_WEEK', 'sunday'),
+            'time'                  => env('SCANNING_TIME', '02:00'),
+            'timezone'              => env('SCANNING_TIMEZONE', 'UTC'),
+            'notify_on_findings'    => env('SCANNING_NOTIFY_ON_FINDINGS', true),
             'notification_channels' => ['email', 'slack'],
         ],
     ],

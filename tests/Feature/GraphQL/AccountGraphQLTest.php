@@ -100,7 +100,7 @@ describe('GraphQL Account API', function () {
         expect($paginator['paginatorInfo']['hasMorePages'])->toBeTrue();
     });
 
-    it('creates an account via mutation', function () {
+    it('creates an account via mutation with authenticated user uuid', function () {
         $user = User::factory()->create();
 
         $response = $this->actingAs($user, 'sanctum')
@@ -111,6 +111,7 @@ describe('GraphQL Account API', function () {
                             id
                             name
                             frozen
+                            user_uuid
                         }
                     }
                 ',
@@ -128,5 +129,6 @@ describe('GraphQL Account API', function () {
         expect($data)->not->toBeNull();
         expect($data['name'])->toBe('GraphQL Account');
         expect($data['frozen'])->toBeFalse();
+        expect($data['user_uuid'])->toBe($user->uuid);
     });
 });

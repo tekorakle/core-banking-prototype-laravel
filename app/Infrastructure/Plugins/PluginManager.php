@@ -5,16 +5,15 @@ declare(strict_types=1);
 namespace App\Infrastructure\Plugins;
 
 use App\Domain\Shared\Models\Plugin;
-use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Str;
 
 class PluginManager
 {
     public function __construct(
         private readonly PluginLoader $loader,
         private readonly PluginDependencyResolver $dependencyResolver,
-    ) {}
+    ) {
+    }
 
     /**
      * Install a plugin from a manifest.
@@ -32,7 +31,7 @@ class PluginManager
             return [
                 'success' => false,
                 'message' => "Plugin {$manifest->getFullName()} is already installed.",
-                'plugin' => $existing,
+                'plugin'  => $existing,
             ];
         }
 
@@ -41,7 +40,7 @@ class PluginManager
             return [
                 'success' => false,
                 'message' => 'Invalid plugin manifest: vendor, name, and valid semver version are required.',
-                'plugin' => null,
+                'plugin'  => null,
             ];
         }
 
@@ -55,10 +54,11 @@ class PluginManager
             if ($deps['circular']) {
                 $reasons[] = 'Circular dependency detected';
             }
+
             return [
                 'success' => false,
                 'message' => implode('. ', $reasons),
-                'plugin' => null,
+                'plugin'  => null,
             ];
         }
 
@@ -66,19 +66,19 @@ class PluginManager
             . "/{$manifest->vendor}/{$manifest->name}";
 
         $plugin = Plugin::create([
-            'vendor' => $manifest->vendor,
-            'name' => $manifest->name,
-            'version' => $manifest->version,
+            'vendor'       => $manifest->vendor,
+            'name'         => $manifest->name,
+            'version'      => $manifest->version,
             'display_name' => $manifest->displayName,
-            'description' => $manifest->description,
-            'author' => $manifest->author,
-            'license' => $manifest->license,
-            'homepage' => $manifest->homepage,
-            'status' => 'inactive',
-            'permissions' => $manifest->permissions,
+            'description'  => $manifest->description,
+            'author'       => $manifest->author,
+            'license'      => $manifest->license,
+            'homepage'     => $manifest->homepage,
+            'status'       => 'inactive',
+            'permissions'  => $manifest->permissions,
             'dependencies' => $manifest->dependencies,
-            'path' => $pluginPath,
-            'entry_point' => $manifest->entryPoint,
+            'path'         => $pluginPath,
+            'entry_point'  => $manifest->entryPoint,
             'installed_at' => now(),
         ]);
 
@@ -89,7 +89,7 @@ class PluginManager
         return [
             'success' => true,
             'message' => "Plugin {$manifest->getFullName()} installed successfully.",
-            'plugin' => $plugin,
+            'plugin'  => $plugin,
         ];
     }
 
@@ -158,7 +158,7 @@ class PluginManager
         }
 
         $plugin->update([
-            'status' => 'active',
+            'status'       => 'active',
             'activated_at' => now(),
         ]);
 
@@ -198,7 +198,7 @@ class PluginManager
         }
 
         $plugin->update([
-            'status' => 'inactive',
+            'status'       => 'inactive',
             'activated_at' => null,
         ]);
 
@@ -229,10 +229,10 @@ class PluginManager
         }
 
         $plugin->update([
-            'version' => $manifest->version,
-            'description' => $manifest->description,
-            'permissions' => $manifest->permissions,
-            'dependencies' => $manifest->dependencies,
+            'version'         => $manifest->version,
+            'description'     => $manifest->description,
+            'permissions'     => $manifest->permissions,
+            'dependencies'    => $manifest->dependencies,
             'last_updated_at' => now(),
         ]);
 
@@ -279,7 +279,7 @@ class PluginManager
 
         return [
             'discovered' => count($manifests),
-            'new' => $newCount,
+            'new'        => $newCount,
         ];
     }
 }

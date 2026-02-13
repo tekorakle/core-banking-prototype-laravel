@@ -37,7 +37,7 @@ class PluginResource extends Resource
                     ->colors([
                         'success' => 'active',
                         'warning' => 'inactive',
-                        'danger' => 'failed',
+                        'danger'  => 'failed',
                     ]),
                 Tables\Columns\IconColumn::make('is_system')
                     ->boolean()
@@ -49,9 +49,9 @@ class PluginResource extends Resource
             ->filters([
                 Tables\Filters\SelectFilter::make('status')
                     ->options([
-                        'active' => 'Active',
+                        'active'   => 'Active',
                         'inactive' => 'Inactive',
-                        'failed' => 'Failed',
+                        'failed'   => 'Failed',
                     ]),
             ])
             ->actions([
@@ -62,7 +62,7 @@ class PluginResource extends Resource
     public static function getPages(): array
     {
         return [
-            'index' => \App\Filament\Resources\PluginResource\Pages\ListPlugins::route('/'),
+            'index' => PluginResource\Pages\ListPlugins::route('/'),
         ];
     }
 }

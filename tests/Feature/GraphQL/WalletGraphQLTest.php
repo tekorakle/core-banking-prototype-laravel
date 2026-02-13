@@ -11,12 +11,12 @@ describe('GraphQL Wallet API', function () {
     it('queries wallet by id', function () {
         $user = User::factory()->create();
         $wallet = MultiSigWallet::create([
-            'user_id' => $user->id,
-            'name' => 'Test Wallet',
-            'chain' => 'ethereum',
+            'user_id'             => $user->id,
+            'name'                => 'Test Wallet',
+            'chain'               => 'ethereum',
             'required_signatures' => 2,
-            'total_signers' => 3,
-            'status' => 'active',
+            'total_signers'       => 3,
+            'status'              => 'active',
         ]);
 
         $response = $this->actingAs($user, 'sanctum')
@@ -45,12 +45,12 @@ describe('GraphQL Wallet API', function () {
         $user = User::factory()->create();
         for ($i = 0; $i < 3; $i++) {
             MultiSigWallet::create([
-                'user_id' => $user->id,
-                'name' => "Wallet {$i}",
-                'chain' => 'ethereum',
+                'user_id'             => $user->id,
+                'name'                => "Wallet {$i}",
+                'chain'               => 'ethereum',
                 'required_signatures' => 2,
-                'total_signers' => 3,
-                'status' => 'active',
+                'total_signers'       => 3,
+                'status'              => 'active',
             ]);
         }
 

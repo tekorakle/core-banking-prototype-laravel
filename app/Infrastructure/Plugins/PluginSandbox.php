@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Infrastructure\Plugins;
 
 use App\Domain\Shared\Models\Plugin;
+use RuntimeException;
 
 class PluginSandbox
 {
@@ -23,12 +24,12 @@ class PluginSandbox
     /**
      * Enforce that a plugin has the required permission.
      *
-     * @throws \RuntimeException
+     * @throws RuntimeException
      */
     public function enforce(Plugin $plugin, string $permission): void
     {
         if (! $this->hasPermission($plugin, $permission)) {
-            throw new \RuntimeException(
+            throw new RuntimeException(
                 "Plugin {$plugin->getFullName()} does not have permission: {$permission}"
             );
         }
@@ -75,7 +76,7 @@ class PluginSandbox
         $validation = PluginPermissions::validate($declared);
 
         return [
-            'valid' => $validation['valid'],
+            'valid'      => $validation['valid'],
             'undeclared' => $validation['invalid'],
         ];
     }

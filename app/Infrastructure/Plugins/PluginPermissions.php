@@ -7,52 +7,63 @@ namespace App\Infrastructure\Plugins;
 class PluginPermissions
 {
     public const DATABASE_READ = 'database:read';
+
     public const DATABASE_WRITE = 'database:write';
+
     public const API_INTERNAL = 'api:internal';
+
     public const API_EXTERNAL = 'api:external';
+
     public const EVENTS_LISTEN = 'events:listen';
+
     public const EVENTS_DISPATCH = 'events:dispatch';
+
     public const QUEUE_DISPATCH = 'queue:dispatch';
+
     public const CACHE_READ = 'cache:read';
+
     public const CACHE_WRITE = 'cache:write';
+
     public const FILESYSTEM_READ = 'filesystem:read';
+
     public const FILESYSTEM_WRITE = 'filesystem:write';
+
     public const CONFIG_READ = 'config:read';
 
     /**
      * @var array<string, string>
      */
     private static array $descriptions = [
-        'database:read' => 'Read access to database tables',
-        'database:write' => 'Write access to database tables',
-        'api:internal' => 'Access to internal API endpoints',
-        'api:external' => 'Make outbound HTTP requests',
-        'events:listen' => 'Listen to application events',
-        'events:dispatch' => 'Dispatch application events',
-        'queue:dispatch' => 'Dispatch jobs to queues',
-        'cache:read' => 'Read from application cache',
-        'cache:write' => 'Write to application cache',
-        'filesystem:read' => 'Read files from storage',
+        'database:read'    => 'Read access to database tables',
+        'database:write'   => 'Write access to database tables',
+        'api:internal'     => 'Access to internal API endpoints',
+        'api:external'     => 'Make outbound HTTP requests',
+        'events:listen'    => 'Listen to application events',
+        'events:dispatch'  => 'Dispatch application events',
+        'queue:dispatch'   => 'Dispatch jobs to queues',
+        'cache:read'       => 'Read from application cache',
+        'cache:write'      => 'Write to application cache',
+        'filesystem:read'  => 'Read files from storage',
         'filesystem:write' => 'Write files to storage',
-        'config:read' => 'Read application configuration',
+        'config:read'      => 'Read application configuration',
     ];
 
     /**
      * @var array<string, string>
      */
     private static array $categories = [
-        'database:read' => 'Data Access',
-        'database:write' => 'Data Access',
-        'api:internal' => 'API',
-        'api:external' => 'API',
-        'events:listen' => 'Events',
-        'events:dispatch' => 'Events',
-        'queue:dispatch' => 'Queue',
-        'cache:read' => 'Cache',
-        'cache:write' => 'Cache',
-        'filesystem:read' => 'Storage',
+        'database:read'    => 'Data Access',
+        'database:write'   => 'Data Access',
+        'api:internal'     => 'API',
+        'api:external'     => 'API',
+        'events:listen'    => 'Events',
+        'events:dispatch'  => 'Events',
+        'queue:dispatch'   => 'Queue',
+        'cache:read'       => 'Cache',
+        'cache:write'      => 'Cache',
+        'filesystem:read'  => 'Storage',
         'filesystem:write' => 'Storage',
-        'config:read' => 'Configuration',
+        'config:read'      => 'Configuration',
     ];
 
     /**
@@ -100,7 +111,7 @@ class PluginPermissions
         $invalid = array_filter($permissions, fn ($p) => ! self::isValid($p));
 
         return [
-            'valid' => empty($invalid),
+            'valid'   => empty($invalid),
             'invalid' => array_values($invalid),
         ];
     }
@@ -116,6 +127,7 @@ class PluginPermissions
         foreach (self::$categories as $permission => $category) {
             $grouped[$category][] = $permission;
         }
+
         return $grouped;
     }
 }

@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\GraphQL\Exceptions;
 
-use GraphQL\Error\ClientAware;
+use Closure;
 use GraphQL\Error\Error;
 use Illuminate\Auth\AuthenticationException;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
@@ -13,7 +13,7 @@ use Nuwave\Lighthouse\Execution\ErrorHandler;
 
 class GraphQLExceptionHandler implements ErrorHandler
 {
-    public function __invoke(?Error $error, \Closure $next): ?array
+    public function __invoke(?Error $error, Closure $next): ?array
     {
         if ($error === null) {
             return $next(null);
@@ -54,7 +54,7 @@ class GraphQLExceptionHandler implements ErrorHandler
                 $error->getPath(),
                 $previous,
                 [
-                    'category' => 'validation',
+                    'category'   => 'validation',
                     'validation' => $previous->errors(),
                 ],
             ));

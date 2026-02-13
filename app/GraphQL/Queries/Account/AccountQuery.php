@@ -11,8 +11,9 @@ class AccountQuery
     /**
      * @param  array<string, mixed>  $args
      */
-    public function __invoke(mixed $rootValue, array $args): ?Account
+    public function __invoke(mixed $rootValue, array $args): Account
     {
-        return Account::find($args['id'] ?? null);
+        /** @var Account */
+        return Account::findOrFail($args['id']);
     }
 }

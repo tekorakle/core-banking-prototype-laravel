@@ -18,7 +18,8 @@ class EventPartitioningService
 {
     public function __construct(
         private readonly EventRouterInterface $eventRouter,
-    ) {}
+    ) {
+    }
 
     /**
      * Get partitioning status for all domains.

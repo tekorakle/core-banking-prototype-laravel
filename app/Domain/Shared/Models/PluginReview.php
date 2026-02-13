@@ -23,9 +23,9 @@ class PluginReview extends Model
     ];
 
     protected $casts = [
-        'scan_results' => 'array',
+        'scan_results'   => 'array',
         'security_score' => 'integer',
-        'reviewed_at' => 'datetime',
+        'reviewed_at'    => 'datetime',
     ];
 
     public function plugin(): BelongsTo

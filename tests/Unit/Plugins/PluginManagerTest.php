@@ -3,8 +3,6 @@
 declare(strict_types=1);
 
 use App\Domain\Shared\Models\Plugin;
-use App\Infrastructure\Plugins\PluginDependencyResolver;
-use App\Infrastructure\Plugins\PluginLoader;
 use App\Infrastructure\Plugins\PluginManager;
 use App\Infrastructure\Plugins\PluginManifest;
 
@@ -15,11 +13,11 @@ describe('PluginManager', function () {
         $manager = app(PluginManager::class);
 
         $manifest = PluginManifest::fromArray([
-            'vendor' => 'finaegis',
-            'name' => 'test-plugin',
-            'version' => '1.0.0',
+            'vendor'      => 'finaegis',
+            'name'        => 'test-plugin',
+            'version'     => '1.0.0',
             'description' => 'A test plugin',
-            'author' => 'FinAegis',
+            'author'      => 'FinAegis',
         ]);
 
         $result = $manager->install($manifest);
@@ -35,8 +33,8 @@ describe('PluginManager', function () {
         $manager = app(PluginManager::class);
 
         $manifest = PluginManifest::fromArray([
-            'vendor' => 'finaegis',
-            'name' => 'duplicate-plugin',
+            'vendor'  => 'finaegis',
+            'name'    => 'duplicate-plugin',
             'version' => '1.0.0',
         ]);
 
@@ -51,8 +49,8 @@ describe('PluginManager', function () {
         $manager = app(PluginManager::class);
 
         $manifest = PluginManifest::fromArray([
-            'vendor' => '',
-            'name' => '',
+            'vendor'  => '',
+            'name'    => '',
             'version' => 'invalid',
         ]);
 
@@ -66,8 +64,8 @@ describe('PluginManager', function () {
         $manager = app(PluginManager::class);
 
         $manifest = PluginManifest::fromArray([
-            'vendor' => 'finaegis',
-            'name' => 'toggle-plugin',
+            'vendor'  => 'finaegis',
+            'name'    => 'toggle-plugin',
             'version' => '1.0.0',
         ]);
 
@@ -92,8 +90,8 @@ describe('PluginManager', function () {
         $manager = app(PluginManager::class);
 
         $manifest = PluginManifest::fromArray([
-            'vendor' => 'finaegis',
-            'name' => 'removable-plugin',
+            'vendor'  => 'finaegis',
+            'name'    => 'removable-plugin',
             'version' => '1.0.0',
         ]);
 
@@ -110,12 +108,12 @@ describe('PluginManager', function () {
         $manager = app(PluginManager::class);
 
         Plugin::create([
-            'vendor' => 'finaegis',
-            'name' => 'core-plugin',
-            'version' => '1.0.0',
-            'status' => 'active',
+            'vendor'    => 'finaegis',
+            'name'      => 'core-plugin',
+            'version'   => '1.0.0',
+            'status'    => 'active',
             'is_system' => true,
-            'path' => '/plugins/finaegis/core-plugin',
+            'path'      => '/plugins/finaegis/core-plugin',
         ]);
 
         $result = $manager->remove('finaegis', 'core-plugin');
@@ -128,14 +126,14 @@ describe('PluginManager', function () {
         $manager = app(PluginManager::class);
 
         $manager->install(PluginManifest::fromArray([
-            'vendor' => 'finaegis',
-            'name' => 'plugin-a',
+            'vendor'  => 'finaegis',
+            'name'    => 'plugin-a',
             'version' => '1.0.0',
         ]));
 
         $manager->install(PluginManifest::fromArray([
-            'vendor' => 'finaegis',
-            'name' => 'plugin-b',
+            'vendor'  => 'finaegis',
+            'name'    => 'plugin-b',
             'version' => '2.0.0',
         ]));
 
@@ -147,17 +145,17 @@ describe('PluginManager', function () {
         $manager = app(PluginManager::class);
 
         $manifest = PluginManifest::fromArray([
-            'vendor' => 'finaegis',
-            'name' => 'updatable-plugin',
+            'vendor'  => 'finaegis',
+            'name'    => 'updatable-plugin',
             'version' => '1.0.0',
         ]);
 
         $manager->install($manifest);
 
         $newManifest = PluginManifest::fromArray([
-            'vendor' => 'finaegis',
-            'name' => 'updatable-plugin',
-            'version' => '2.0.0',
+            'vendor'      => 'finaegis',
+            'name'        => 'updatable-plugin',
+            'version'     => '2.0.0',
             'description' => 'Updated description',
         ]);
 

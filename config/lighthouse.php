@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 return [
     /*
@@ -201,16 +203,16 @@ return [
     */
 
     'namespaces' => [
-        'models' => ['App', 'App\\Models'],
-        'queries' => 'App\\GraphQL\\Queries',
-        'mutations' => 'App\\GraphQL\\Mutations',
+        'models'        => ['App', 'App\\Models'],
+        'queries'       => 'App\\GraphQL\\Queries',
+        'mutations'     => 'App\\GraphQL\\Mutations',
         'subscriptions' => 'App\\GraphQL\\Subscriptions',
-        'types' => 'App\\GraphQL\\Types',
-        'interfaces' => 'App\\GraphQL\\Interfaces',
-        'unions' => 'App\\GraphQL\\Unions',
-        'scalars' => 'App\\GraphQL\\Scalars',
-        'directives' => 'App\\GraphQL\\Directives',
-        'validators' => 'App\\GraphQL\\Validators',
+        'types'         => 'App\\GraphQL\\Types',
+        'interfaces'    => 'App\\GraphQL\\Interfaces',
+        'unions'        => 'App\\GraphQL\\Unions',
+        'scalars'       => 'App\\GraphQL\\Scalars',
+        'directives'    => 'App\\GraphQL\\Directives',
+        'validators'    => 'App\\GraphQL\\Validators',
     ],
 
     /*
@@ -224,8 +226,8 @@ return [
     */
 
     'security' => [
-        'max_query_complexity' => GraphQL\Validator\Rules\QueryComplexity::DISABLED,
-        'max_query_depth' => GraphQL\Validator\Rules\QueryDepth::DISABLED,
+        'max_query_complexity'  => env('LIGHTHOUSE_MAX_QUERY_COMPLEXITY', 200),
+        'max_query_depth'       => env('LIGHTHOUSE_MAX_QUERY_DEPTH', 10),
         'disable_introspection' => (bool) env('LIGHTHOUSE_SECURITY_DISABLE_INTROSPECTION', false)
             ? GraphQL\Validator\Rules\DisableIntrospection::ENABLED
             : GraphQL\Validator\Rules\DisableIntrospection::DISABLED,
@@ -283,7 +285,7 @@ return [
     |
     */
 
-    'debug' => env('LIGHTHOUSE_DEBUG', GraphQL\Error\DebugFlag::INCLUDE_DEBUG_MESSAGE | GraphQL\Error\DebugFlag::INCLUDE_TRACE),
+    'debug' => env('LIGHTHOUSE_DEBUG', GraphQL\Error\DebugFlag::INCLUDE_DEBUG_MESSAGE),
 
     /*
     |--------------------------------------------------------------------------
@@ -457,19 +459,19 @@ return [
                 'driver' => 'log',
             ],
             'echo' => [
-                'driver' => 'echo',
+                'driver'     => 'echo',
                 'connection' => env('LIGHTHOUSE_SUBSCRIPTION_REDIS_CONNECTION', 'default'),
-                'routes' => Nuwave\Lighthouse\Subscriptions\SubscriptionRouter::class . '@echoRoutes',
+                'routes'     => Nuwave\Lighthouse\Subscriptions\SubscriptionRouter::class . '@echoRoutes',
             ],
             'pusher' => [
-                'driver' => 'pusher',
+                'driver'     => 'pusher',
                 'connection' => 'pusher',
-                'routes' => Nuwave\Lighthouse\Subscriptions\SubscriptionRouter::class . '@pusher',
+                'routes'     => Nuwave\Lighthouse\Subscriptions\SubscriptionRouter::class . '@pusher',
             ],
             'reverb' => [
-                'driver' => 'pusher',
+                'driver'     => 'pusher',
                 'connection' => 'reverb',
-                'routes' => Nuwave\Lighthouse\Subscriptions\SubscriptionRouter::class . '@reverb',
+                'routes'     => Nuwave\Lighthouse\Subscriptions\SubscriptionRouter::class . '@reverb',
             ],
         ],
 

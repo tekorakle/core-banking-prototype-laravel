@@ -4,6 +4,10 @@ declare(strict_types=1);
 
 namespace App\Infrastructure\Domain;
 
+use App\Domain\Shared\EventSourcing\EventRouter;
+use App\Domain\Shared\EventSourcing\EventRouterInterface;
+use App\Domain\Shared\EventSourcing\EventUpcastingService;
+use App\Domain\Shared\EventSourcing\EventVersionRegistry;
 use App\Infrastructure\Domain\Commands\DomainCreateCommand;
 use App\Infrastructure\Domain\Commands\DomainDependenciesCommand;
 use App\Infrastructure\Domain\Commands\DomainDisableCommand;
@@ -12,10 +16,6 @@ use App\Infrastructure\Domain\Commands\DomainInstallCommand;
 use App\Infrastructure\Domain\Commands\DomainListCommand;
 use App\Infrastructure\Domain\Commands\DomainRemoveCommand;
 use App\Infrastructure\Domain\Commands\DomainVerifyCommand;
-use App\Domain\Shared\EventSourcing\EventRouter;
-use App\Domain\Shared\EventSourcing\EventRouterInterface;
-use App\Domain\Shared\EventSourcing\EventUpcastingService;
-use App\Domain\Shared\EventSourcing\EventVersionRegistry;
 use Illuminate\Support\ServiceProvider;
 
 /**
@@ -76,7 +76,6 @@ class DomainServiceProvider extends ServiceProvider
             $this->commands($this->commands);
         }
     }
-
 
     /**
      * Register the Event Router for domain-based event table partitioning.

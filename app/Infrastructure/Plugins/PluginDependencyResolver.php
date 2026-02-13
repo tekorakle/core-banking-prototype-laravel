@@ -38,8 +38,8 @@ class PluginDependencyResolver
 
         return [
             'satisfied' => empty($missing) && ! $circular,
-            'missing' => $missing,
-            'circular' => $circular,
+            'missing'   => $missing,
+            'circular'  => $circular,
         ];
     }
 
@@ -53,18 +53,21 @@ class PluginDependencyResolver
 
         if (str_starts_with($constraint, '^')) {
             $required = ltrim($constraint, '^');
+
             return version_compare($installed, $required, '>=')
                 && version_compare($installed, $this->nextMajor($required), '<');
         }
 
         if (str_starts_with($constraint, '~')) {
             $required = ltrim($constraint, '~');
+
             return version_compare($installed, $required, '>=')
                 && version_compare($installed, $this->nextMinor($required), '<');
         }
 
         if (str_starts_with($constraint, '>=')) {
             $required = trim(substr($constraint, 2));
+
             return version_compare($installed, $required, '>=');
         }
 
@@ -109,12 +112,14 @@ class PluginDependencyResolver
     private function nextMajor(string $version): string
     {
         $parts = explode('.', $version);
+
         return ((int) $parts[0] + 1) . '.0.0';
     }
 
     private function nextMinor(string $version): string
     {
         $parts = explode('.', $version);
+
         return $parts[0] . '.' . ((int) ($parts[1] ?? 0) + 1) . '.0';
     }
 
@@ -126,6 +131,7 @@ class PluginDependencyResolver
     private function extractName(string $fullName): string
     {
         $parts = explode('/', $fullName);
+
         return $parts[1] ?? $parts[0];
     }
 }

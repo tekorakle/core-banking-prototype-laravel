@@ -13,7 +13,9 @@ class EventStoreService
 {
     public function __construct(
         private readonly ?EventRouterInterface $eventRouter = null,
-    ) {}
+    ) {
+    }
+
     /**
      * Domain-to-table mapping for event sourcing infrastructure.
      *

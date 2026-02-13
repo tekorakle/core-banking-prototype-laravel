@@ -103,7 +103,6 @@ class SdkGeneratorService
         ];
     }
 
-
     /**
      * Generate an SDK from the OpenAPI spec (artisan command entry point).
      *
@@ -360,22 +359,22 @@ README;
     {
         return match ($oaType) {
             'integer', 'number' => 'number',
-            'boolean'           => 'boolean',
-            'array'             => 'any[]',
-            'object'            => 'Record<string, any>',
-            default             => 'string',
+            'boolean' => 'boolean',
+            'array'   => 'any[]',
+            'object'  => 'Record<string, any>',
+            default   => 'string',
         };
     }
 
     private function pyType(string $oaType): string
     {
         return match ($oaType) {
-            'integer'           => 'int',
-            'number'            => 'float',
-            'boolean'           => 'bool',
-            'array'             => 'list',
-            'object'            => 'dict',
-            default             => 'str',
+            'integer' => 'int',
+            'number'  => 'float',
+            'boolean' => 'bool',
+            'array'   => 'list',
+            'object'  => 'dict',
+            default   => 'str',
         };
     }
 

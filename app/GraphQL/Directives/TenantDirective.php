@@ -6,6 +6,7 @@ namespace App\GraphQL\Directives;
 
 use Closure;
 use GraphQL\Type\Definition\ResolveInfo;
+use Illuminate\Auth\Access\AuthorizationException;
 use Nuwave\Lighthouse\Schema\Directives\BaseDirective;
 use Nuwave\Lighthouse\Schema\Values\FieldValue;
 use Nuwave\Lighthouse\Support\Contracts\FieldMiddleware;
@@ -33,7 +34,7 @@ GRAPHQL;
                 return $resolver($root, $args, $context, $resolveInfo);
             }
 
-            return $resolver($root, $args, $context, $resolveInfo);
+            throw new AuthorizationException('Tenant context is required for this operation.');
         });
     }
 }

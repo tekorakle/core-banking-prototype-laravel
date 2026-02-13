@@ -243,7 +243,7 @@ return [
     */
 
     'partner_tiers' => [
-        'enabled' => env('PARTNER_TIER_RATE_LIMITING', true),
+        'enabled'          => env('PARTNER_TIER_RATE_LIMITING', true),
         'type_multipliers' => [
             'query'       => 1.0,
             'transaction' => 0.5,

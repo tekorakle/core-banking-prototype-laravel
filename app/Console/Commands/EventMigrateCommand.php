@@ -24,6 +24,12 @@ class EventMigrateCommand extends Command
         $dryRun = (bool) $this->option('dry-run');
         $verify = (bool) $this->option('verify');
 
+        if ($batchSize < 1) {
+            $this->error('Batch size must be at least 1.');
+
+            return self::FAILURE;
+        }
+
         $plan = $migrationService->getMigrationPlan(
             is_string($domain) ? $domain : null
         );

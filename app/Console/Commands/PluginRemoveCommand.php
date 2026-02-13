@@ -18,6 +18,7 @@ class PluginRemoveCommand extends Command
         $parts = explode('/', $this->argument('plugin'));
         if (count($parts) !== 2) {
             $this->error('Plugin name must be in vendor/name format.');
+
             return self::FAILURE;
         }
 
@@ -31,10 +32,12 @@ class PluginRemoveCommand extends Command
 
         if ($result['success']) {
             $this->info($result['message']);
+
             return self::SUCCESS;
         }
 
         $this->error($result['message']);
+
         return self::FAILURE;
     }
 }

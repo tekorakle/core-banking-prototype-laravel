@@ -21,6 +21,7 @@ class PluginInstallCommand extends Command
 
         if (! file_exists($manifestPath)) {
             $this->error("Plugin manifest not found at: {$manifestPath}");
+
             return self::FAILURE;
         }
 
@@ -32,10 +33,12 @@ class PluginInstallCommand extends Command
 
         if ($result['success']) {
             $this->info($result['message']);
+
             return self::SUCCESS;
         }
 
         $this->error($result['message']);
+
         return self::FAILURE;
     }
 }

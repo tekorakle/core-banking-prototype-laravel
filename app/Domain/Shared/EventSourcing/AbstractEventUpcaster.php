@@ -16,7 +16,8 @@ abstract class AbstractEventUpcaster implements EventUpcasterInterface
         private readonly string $eventClass,
         private readonly int $fromVersion,
         private readonly int $toVersion,
-    ) {}
+    ) {
+    }
 
     public function eventClass(): string
     {

@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace App\Domain\Shared\EventSourcing;
 
+use Illuminate\Support\Facades\Log;
+
 /**
  * Tracks event versions and their registered upcasters.
  *
@@ -29,6 +31,12 @@ class EventVersionRegistry
         // Track the highest version we can upcast to
         $current = $this->currentVersions[$key] ?? 1;
         $this->currentVersions[$key] = max($current, $upcaster->toVersion());
+
+        // Warn if there are chain gaps after registering
+        $gaps = $this->validateChain($key);
+        if (! empty($gaps) && app()->bound('log')) {
+            Log::warning("Event upcaster chain has gaps for {$key}", ['gaps' => $gaps]);
+        }
     }
 
     /**
@@ -99,5 +107,31 @@ class EventVersionRegistry
         }
 
         return $chain;
+    }
+
+    /**
+     * Validate the upcaster chain for an event class, detecting version gaps.
+     *
+     * @return string[] List of gap descriptions (empty if chain is complete)
+     */
+    public function validateChain(string $eventClass): array
+    {
+        $upcasters = $this->getUpcasters($eventClass);
+
+        if (empty($upcasters)) {
+            return [];
+        }
+
+        $gaps = [];
+        $expectedFrom = $upcasters[0]->fromVersion();
+
+        foreach ($upcasters as $i => $upcaster) {
+            if ($upcaster->fromVersion() !== $expectedFrom) {
+                $gaps[] = "Missing upcaster from v{$expectedFrom} to v{$upcaster->fromVersion()}";
+            }
+            $expectedFrom = $upcaster->toVersion();
+        }
+
+        return $gaps;
     }
 }

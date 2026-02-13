@@ -41,12 +41,12 @@ describe('GraphQL DataLoaders', function () {
         $walletIds = [];
         for ($i = 0; $i < 3; $i++) {
             $wallet = MultiSigWallet::create([
-                'user_id' => $user->id,
-                'name' => "Wallet {$i}",
-                'chain' => 'ethereum',
+                'user_id'             => $user->id,
+                'name'                => "Wallet {$i}",
+                'chain'               => 'ethereum',
                 'required_signatures' => 2,
-                'total_signers' => 3,
-                'status' => 'active',
+                'total_signers'       => 3,
+                'status'              => 'active',
             ]);
             $walletIds[] = $wallet->id;
         }

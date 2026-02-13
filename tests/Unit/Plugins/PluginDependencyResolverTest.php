@@ -11,19 +11,19 @@ uses(Tests\TestCase::class, Illuminate\Foundation\Testing\RefreshDatabase::class
 describe('PluginDependencyResolver', function () {
     it('resolves satisfied dependencies', function () {
         Plugin::create([
-            'vendor' => 'finaegis',
-            'name' => 'core',
+            'vendor'  => 'finaegis',
+            'name'    => 'core',
             'version' => '1.5.0',
-            'status' => 'active',
-            'path' => '/plugins/finaegis/core',
+            'status'  => 'active',
+            'path'    => '/plugins/finaegis/core',
         ]);
 
         $resolver = new PluginDependencyResolver();
 
         $manifest = PluginManifest::fromArray([
-            'vendor' => 'finaegis',
-            'name' => 'extension',
-            'version' => '1.0.0',
+            'vendor'       => 'finaegis',
+            'name'         => 'extension',
+            'version'      => '1.0.0',
             'dependencies' => ['finaegis/core' => '^1.0.0'],
         ]);
 
@@ -38,9 +38,9 @@ describe('PluginDependencyResolver', function () {
         $resolver = new PluginDependencyResolver();
 
         $manifest = PluginManifest::fromArray([
-            'vendor' => 'finaegis',
-            'name' => 'orphan',
-            'version' => '1.0.0',
+            'vendor'       => 'finaegis',
+            'name'         => 'orphan',
+            'version'      => '1.0.0',
             'dependencies' => ['finaegis/missing-dep' => '^1.0.0'],
         ]);
 
@@ -85,9 +85,9 @@ describe('PluginDependencyResolver', function () {
         $resolver = new PluginDependencyResolver();
 
         $manifest = PluginManifest::fromArray([
-            'vendor' => 'finaegis',
-            'name' => 'standalone',
-            'version' => '1.0.0',
+            'vendor'       => 'finaegis',
+            'name'         => 'standalone',
+            'version'      => '1.0.0',
             'dependencies' => [],
         ]);
 

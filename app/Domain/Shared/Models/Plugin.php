@@ -35,12 +35,12 @@ class Plugin extends Model
     ];
 
     protected $casts = [
-        'permissions' => 'array',
-        'dependencies' => 'array',
-        'metadata' => 'array',
-        'is_system' => 'boolean',
-        'installed_at' => 'datetime',
-        'activated_at' => 'datetime',
+        'permissions'     => 'array',
+        'dependencies'    => 'array',
+        'metadata'        => 'array',
+        'is_system'       => 'boolean',
+        'installed_at'    => 'datetime',
+        'activated_at'    => 'datetime',
         'last_updated_at' => 'datetime',
     ];
 

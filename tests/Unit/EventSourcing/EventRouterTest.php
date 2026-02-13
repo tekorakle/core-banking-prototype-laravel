@@ -94,7 +94,12 @@ describe('EventRouter', function () {
             'Compliance', 'Exchange', 'Lending', 'Mobile', 'Monitoring',
             'Payment', 'Performance', 'Product', 'Stablecoin', 'Treasury',
             'User', 'Wallet', 'CrossChain', 'DeFi', 'Privacy',
+            'Banking', 'Basket', 'CardIssuance', 'Commerce', 'Custodian',
+            'FinancialInstitution', 'Fraud', 'KeyManagement', 'MobilePayment',
+            'Regulatory', 'Relayer', 'TrustCert',
         ];
+
+        expect($map)->toHaveCount(33);
 
         foreach ($expectedDomains as $domain) {
             expect($map)->toHaveKey($domain);

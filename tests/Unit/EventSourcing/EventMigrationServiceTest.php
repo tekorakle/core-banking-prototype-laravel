@@ -5,7 +5,6 @@ declare(strict_types=1);
 use App\Domain\Monitoring\Services\EventMigrationService;
 use App\Domain\Monitoring\Services\EventMigrationValidator;
 use App\Domain\Shared\EventSourcing\EventRouter;
-use App\Domain\Shared\EventSourcing\EventRouterInterface;
 
 uses(Tests\TestCase::class);
 uses(Illuminate\Foundation\Testing\RefreshDatabase::class);

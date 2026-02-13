@@ -11,8 +11,9 @@ class WalletQuery
     /**
      * @param  array<string, mixed>  $args
      */
-    public function __invoke(mixed $rootValue, array $args): ?MultiSigWallet
+    public function __invoke(mixed $rootValue, array $args): MultiSigWallet
     {
-        return MultiSigWallet::find($args['id'] ?? null);
+        /** @var MultiSigWallet */
+        return MultiSigWallet::findOrFail($args['id']);
     }
 }

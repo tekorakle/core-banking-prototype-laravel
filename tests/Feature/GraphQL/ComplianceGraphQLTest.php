@@ -13,9 +13,9 @@ describe('GraphQL Compliance API', function () {
     it('paginates kyc verifications', function () {
         $user = User::factory()->create();
         KycVerification::create([
-            'user_id' => $user->id,
-            'type' => 'identity',
-            'status' => 'pending',
+            'user_id'  => $user->id,
+            'type'     => 'identity',
+            'status'   => 'pending',
             'provider' => 'manual',
         ]);
 
@@ -48,9 +48,9 @@ describe('GraphQL Compliance API', function () {
     it('paginates compliance alerts', function () {
         $user = User::factory()->create();
         ComplianceAlert::factory()->create([
-            'type' => 'suspicious_activity',
+            'type'     => 'suspicious_activity',
             'severity' => 'high',
-            'status' => 'open',
+            'status'   => 'open',
         ]);
 
         $response = $this->actingAs($user, 'sanctum')
@@ -82,12 +82,12 @@ describe('GraphQL Compliance API', function () {
         $user = User::factory()->create();
         ComplianceCase::create([
             'case_number' => 'CASE-TEST-001',
-            'title' => 'Test Case',
+            'title'       => 'Test Case',
             'description' => 'Test compliance case for GraphQL',
-            'type' => 'investigation',
-            'priority' => 'medium',
-            'status' => 'open',
-            'created_by' => $user->id,
+            'type'        => 'investigation',
+            'priority'    => 'medium',
+            'status'      => 'open',
+            'created_by'  => $user->id,
         ]);
 
         $response = $this->actingAs($user, 'sanctum')

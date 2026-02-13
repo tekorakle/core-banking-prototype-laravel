@@ -6,9 +6,12 @@ namespace App\Domain\Monitoring\Services;
 
 use App\Domain\Monitoring\Models\EventMigration;
 use App\Domain\Shared\EventSourcing\EventRouterInterface;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Schema;
+use RuntimeException;
+use Throwable;
 
 /**
  * Handles batch migration of events from shared stored_events
@@ -19,7 +22,8 @@ class EventMigrationService
     public function __construct(
         private readonly EventRouterInterface $eventRouter,
         private readonly EventMigrationValidator $validator,
-    ) {}
+    ) {
+    }
 
     /**
      * Get a migration plan showing what would be migrated.
@@ -67,6 +71,20 @@ class EventMigrationService
      */
     public function migrate(string $domain, int $batchSize = 1000, bool $dryRun = false): EventMigration
     {
+        $lock = Cache::lock("event-migration:{$domain}", 300);
+        if (! $lock->get()) {
+            throw new RuntimeException("Migration already in progress for domain: {$domain}");
+        }
+
+        try {
+            return $this->executeMigration($domain, $batchSize, $dryRun);
+        } finally {
+            $lock->release();
+        }
+    }
+
+    private function executeMigration(string $domain, int $batchSize, bool $dryRun): EventMigration
+    {
         $targetTable = $this->eventRouter->resolveTableForDomain($domain);
         $sourceTable = 'stored_events';
         $aliases = $this->getDomainEventAliases($domain);
@@ -76,14 +94,14 @@ class EventMigrationService
             : 0;
 
         $migration = EventMigration::create([
-            'domain'           => $domain,
-            'source_table'     => $sourceTable,
-            'target_table'     => $targetTable,
-            'batch_size'       => $batchSize,
-            'events_migrated'  => 0,
-            'events_total'     => $totalCount,
-            'status'           => $dryRun ? 'dry_run' : 'running',
-            'started_at'       => now(),
+            'domain'          => $domain,
+            'source_table'    => $sourceTable,
+            'target_table'    => $targetTable,
+            'batch_size'      => $batchSize,
+            'events_migrated' => 0,
+            'events_total'    => $totalCount,
+            'status'          => $dryRun ? 'dry_run' : 'running',
+            'started_at'      => now(),
         ]);
 
         if ($dryRun) {
@@ -112,7 +130,7 @@ class EventMigrationService
                 'status'          => 'completed',
                 'completed_at'    => now(),
             ]);
-        } catch (\Throwable $e) {
+        } catch (Throwable $e) {
             Log::error("Event migration failed for domain {$domain}", [
                 'error'     => $e->getMessage(),
                 'migration' => $migration->id,
@@ -170,9 +188,9 @@ class EventMigrationService
             DB::commit();
 
             return true;
-        } catch (\Throwable $e) {
+        } catch (Throwable $e) {
             DB::rollBack();
-            Log::error("Event migration rollback failed", [
+            Log::error('Event migration rollback failed', [
                 'migration' => $migrationId,
                 'error'     => $e->getMessage(),
             ]);
@@ -212,6 +230,7 @@ class EventMigrationService
                 foreach ($rows as &$row) {
                     unset($row['id']);
                 }
+                unset($row);
 
                 DB::table($targetTable)->insert($rows);
             });

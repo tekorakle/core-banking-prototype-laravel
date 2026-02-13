@@ -12,6 +12,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Log;
 use Symfony\Component\HttpFoundation\Response as SymfonyResponse;
+use Throwable;
 
 class ApiRateLimitMiddleware
 {
@@ -117,7 +118,7 @@ class ApiRateLimitMiddleware
             try {
                 $meteringService = $meteringService ?? app(PartnerUsageMeteringService::class);
                 $meteringService->recordApiCall($partner, $request->path(), true);
-            } catch (\Throwable $e) {
+            } catch (Throwable $e) {
                 Log::warning('Failed to record partner API call', ['partner_id' => $partner->id, 'error' => $e->getMessage()]);
             }
         }

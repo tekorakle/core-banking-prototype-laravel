@@ -34,7 +34,7 @@ return [
     |
     */
     'sandbox' => [
-        'enabled' => env('PLUGIN_SANDBOX_ENABLED', true),
+        'enabled'     => env('PLUGIN_SANDBOX_ENABLED', true),
         'strict_mode' => env('PLUGIN_SANDBOX_STRICT', false),
     ],
 
@@ -47,7 +47,7 @@ return [
     |
     */
     'marketplace' => [
-        'enabled' => env('PLUGIN_MARKETPLACE_ENABLED', false),
+        'enabled'      => env('PLUGIN_MARKETPLACE_ENABLED', false),
         'registry_url' => env('PLUGIN_REGISTRY_URL', ''),
     ],
 

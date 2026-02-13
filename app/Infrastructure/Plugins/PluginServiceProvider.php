@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Infrastructure\Plugins;
 
 use Illuminate\Support\ServiceProvider;
+use Throwable;
 
 class PluginServiceProvider extends ServiceProvider
 {
@@ -30,7 +31,7 @@ class PluginServiceProvider extends ServiceProvider
         if (config('plugins.auto_discover', true) && ! $this->app->runningInConsole()) {
             try {
                 $this->app->make(PluginLoader::class)->bootActivePlugins();
-            } catch (\Throwable $e) {
+            } catch (Throwable $e) {
                 \Illuminate\Support\Facades\Log::error('Plugin auto-discovery failed', [
                     'error' => $e->getMessage(),
                 ]);
