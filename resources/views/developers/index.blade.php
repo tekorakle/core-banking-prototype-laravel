@@ -140,7 +140,7 @@
                 <div class="text-center">
                     <div class="inline-flex items-center px-4 py-2 bg-white/10 backdrop-blur-sm rounded-full text-sm mb-6">
                         <span class="w-2 h-2 bg-green-400 rounded-full mr-2 animate-pulse"></span>
-                        <span>v3.0 Documentation -- 41 Domains, 1,150+ Routes</span>
+                        <span>v5.0 Documentation -- 41 Domains, 1,189+ Routes, GraphQL + REST</span>
                     </div>
                     <h1 class="text-5xl md:text-7xl font-bold mb-6 bg-clip-text text-transparent bg-gradient-to-r from-white to-blue-200">
                         Built for Developers
@@ -180,8 +180,8 @@
                     <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
                     </svg>
-                    <span class="font-medium">v3.0 Released:</span>
-                    <span class="ml-2">41 DDD domains, 1,150+ API routes including CrossChain, DeFi, RegTech, and Partner BaaS endpoints.</span>
+                    <span class="font-medium">v5.0 Released:</span>
+                    <span class="ml-2">41 DDD domains, 1,189+ API routes with GraphQL API (14 domains), Event Streaming, Plugin Marketplace, CrossChain, DeFi, RegTech, and Partner BaaS.</span>
                 </div>
             </div>
         </section>
@@ -551,6 +551,45 @@
                                 </div>
                                 <p class="text-gray-600 text-sm mb-3">Natural language transaction queries and AI-powered financial insights via the intelligent query interface.</p>
                                 <span class="text-gray-600 text-sm font-medium group-hover:text-gray-800">View endpoints &rarr;</span>
+                            </div>
+                        </a>
+
+                        <!-- GraphQL API -->
+                        <a href="{{ route('developers.show', 'api-docs') }}#graphql" class="group block">
+                            <div class="bg-white rounded-xl border border-gray-200 p-6 hover:shadow-lg transition-all hover:-translate-y-1 h-full">
+                                <div class="flex items-center mb-3">
+                                    <div class="w-10 h-10 bg-gradient-to-br from-sky-500 to-blue-600 rounded-lg flex items-center justify-center text-white mr-3">
+                                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v3m0 12v3m9-9h-3M6 12H3m15.364-6.364l-2.121 2.121M8.757 15.243l-2.121 2.121m12.728 0l-2.121-2.121M8.757 8.757L6.636 6.636"></path>
+                                        </svg>
+                                    </div>
+                                    <div>
+                                        <h4 class="text-lg font-semibold text-gray-900">GraphQL API</h4>
+                                        <span class="text-xs text-gray-500">14 domains</span>
+                                    </div>
+                                </div>
+                                <p class="text-gray-600 text-sm mb-3">Schema-first GraphQL via Lighthouse PHP with queries, mutations, subscriptions, and DataLoaders across 14 domain schemas.</p>
+                                <span class="text-sky-600 text-sm font-medium group-hover:text-sky-700">View endpoints &rarr;</span>
+                            </div>
+                        </a>
+
+                        <!-- Event Streaming -->
+                        <a href="{{ route('developers.show', 'api-docs') }}#event-streaming" class="group block">
+                            <div class="bg-white rounded-xl border border-gray-200 p-6 hover:shadow-lg transition-all hover:-translate-y-1 h-full">
+                                <div class="flex items-center mb-3">
+                                    <div class="w-10 h-10 bg-gradient-to-br from-lime-500 to-green-600 rounded-lg flex items-center justify-center text-white mr-3">
+                                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.348 14.651a3.75 3.75 0 010-5.303m5.304 0a3.75 3.75 0 010 5.303m-7.425 2.122a6.75 6.75 0 010-9.546m9.546 0a6.75 6.75 0 010 9.546M5.106 18.894c-3.808-3.808-3.808-9.98 0-13.789m13.788 0c3.808 3.808 3.808 9.981 0 13.79M12 12h.008v.007H12V12zm.375 0a.375.375 0 11-.75 0 .375.375 0 01.75 0z"></path>
+                                        </svg>
+                                    </div>
+                                    <div>
+                                        <h4 class="text-lg font-semibold text-gray-900">Event Streaming</h4>
+                                        <span class="text-xs text-gray-500">5 endpoints</span>
+                                    </div>
+                                </div>
+                                <p class="text-gray-600 text-sm mb-3">Redis Streams-based event publishing, consumer groups, live metrics dashboard with projector lag and throughput monitoring.</p>
+                                <span class="text-lime-600 text-sm font-medium group-hover:text-lime-700">View endpoints &rarr;</span>
                             </div>
                         </a>
 
