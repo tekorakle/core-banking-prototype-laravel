@@ -266,9 +266,9 @@
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"></path>
                             </svg>
                         </div>
-                        <h3 class="text-xl font-semibold mb-3">REST & OpenAPI</h3>
+                        <h3 class="text-xl font-semibold mb-3">REST, GraphQL & OpenAPI</h3>
                         <p class="text-gray-600 mb-4">
-                            Comprehensive REST APIs with Swagger documentation and webhook examples.
+                            Comprehensive REST APIs with Swagger documentation, GraphQL across 14 domains with subscriptions, and webhook examples.
                         </p>
                         <span class="text-blue-600 font-medium hover:text-blue-700">
                             View docs →
@@ -707,8 +707,8 @@
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"></path>
                             </svg>
                         </div>
-                        <h3 class="text-xl font-semibold mb-3">REST APIs</h3>
-                        <p class="text-gray-600">OpenAPI/Swagger docs, webhooks, and comprehensive test coverage</p>
+                        <h3 class="text-xl font-semibold mb-3">REST & GraphQL APIs</h3>
+                        <p class="text-gray-600">OpenAPI/Swagger docs, GraphQL (14 domains), webhooks, and comprehensive test coverage</p>
                     </div>
                 </div>
 
