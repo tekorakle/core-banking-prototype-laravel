@@ -5,6 +5,36 @@ All notable changes to the FinAegis Core Banking Platform will be documented in 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [4.1.0] - 2026-02-13
+
+### Added
+
+#### GraphQL Expansion — 6 New Domains
+- Treasury domain: `AssetAllocation` type, `portfolio`/`portfolios` queries, `createPortfolio`/`rebalancePortfolio` mutations
+- Payment domain: `PaymentTransaction` type, `payment`/`payments` queries, `initiatePayment` mutation
+- Lending domain: `LoanApplication` type, `loanApplication`/`loanApplications` queries, `applyForLoan`/`approveLoan` mutations
+- Stablecoin domain: `StablecoinReserve` type, `stablecoinReserve`/`stablecoinReserves` queries, `mintStablecoin`/`redeemStablecoin` mutations
+- CrossChain domain: `BridgeTransaction` type, `bridgeTransaction`/`bridgeTransactions` queries, `initiateBridgeTransfer` mutation
+- DeFi domain: `DeFiPosition` type, `defiPosition`/`defiPositions` queries, `openPosition`/`closePosition` mutations
+
+#### Event Replay Filtering Enhancement
+- Added `--event-type` filter option to `event:replay` command for replaying specific event classes
+- Added `--aggregate-id` filter option to `event:replay` command for replaying specific aggregates
+- Selective replay support without full domain replay
+
+#### Projector Health Monitoring
+- `ProjectorHealthService` — track all registered projectors, detect stale/failed status
+- `projector:health` Artisan command with `--domain` and `--stale-only` options
+- REST endpoint at `/api/monitoring/projector-health` with cached status
+- Stale projector detection endpoint at `/api/monitoring/projector-health/stale`
+
+#### Integration Tests
+- 6 GraphQL domain integration tests (Treasury, Payment, Lending, Stablecoin, CrossChain, DeFi)
+- Event replay filter unit tests
+- Projector health service unit tests
+
+---
+
 ## [4.0.0] - 2026-02-13
 
 ### Added

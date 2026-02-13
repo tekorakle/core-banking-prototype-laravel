@@ -183,6 +183,9 @@ Route::prefix('monitoring')->middleware(['auth:sanctum', 'check.token.expiration
     Route::get('/alerts', [App\Http\Controllers\Api\MonitoringController::class, 'alerts']);
     Route::put('/alerts/{alertId}/acknowledge', [App\Http\Controllers\Api\MonitoringController::class, 'acknowledgeAlert']);
 
+    Route::get('/projector-health', [App\Http\Controllers\Api\ProjectorHealthController::class, 'index']);
+    Route::get('/projector-health/stale', [App\Http\Controllers\Api\ProjectorHealthController::class, 'stale']);
+
     Route::middleware('is_admin')->group(function () {
         Route::post('/workflow/start', [App\Http\Controllers\Api\MonitoringController::class, 'startWorkflow']);
         Route::post('/workflow/stop', [App\Http\Controllers\Api\MonitoringController::class, 'stopWorkflow']);

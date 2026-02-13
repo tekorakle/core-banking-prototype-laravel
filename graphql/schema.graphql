@@ -9,5 +9,11 @@ scalar DateTime @scalar(class: "Nuwave\\Lighthouse\\Schema\\Types\\Scalars\\Date
 #import wallet.graphql
 #import exchange.graphql
 #import compliance.graphql
+#import treasury.graphql
+#import payment.graphql
+#import lending.graphql
+#import stablecoin.graphql
+#import crosschain.graphql
+#import defi.graphql
 # Subscriptions require SubscriptionServiceProvider registration and a broadcast driver.
 # Uncomment after configuring: #import subscriptions.graphql

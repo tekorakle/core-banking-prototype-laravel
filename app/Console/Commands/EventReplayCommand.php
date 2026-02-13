@@ -21,6 +21,8 @@ class EventReplayCommand extends Command
     protected $signature = 'event:replay
                             {--domain= : Replay events for a specific domain}
                             {--projector= : Replay through a specific projector class}
+                            {--event-type= : Replay only specific event classes (e.g. AccountCreated)}
+                            {--aggregate-id= : Replay only events for a specific aggregate UUID}
                             {--from= : Replay events from this date (Y-m-d)}
                             {--to= : Replay events up to this date (Y-m-d)}
                             {--dry-run : Show what would be replayed without executing}';
@@ -39,12 +41,24 @@ class EventReplayCommand extends Command
     {
         $domain = $this->option('domain');
         $projectorClass = $this->option('projector');
+        $eventType = $this->option('event-type');
+        $aggregateId = $this->option('aggregate-id');
         $from = $this->option('from');
         $to = $this->option('to');
         $dryRun = (bool) $this->option('dry-run');
 
         if ($dryRun) {
             $this->warn('DRY RUN - No events will be replayed.');
+        }
+
+        // Display event-type filter if provided
+        if ($eventType) {
+            $this->info("Event type filter: {$eventType}");
+        }
+
+        // Display aggregate-id filter if provided
+        if ($aggregateId) {
+            $this->info("Aggregate ID filter: {$aggregateId}");
         }
 
         // Validate projector class if provided
@@ -113,8 +127,12 @@ class EventReplayCommand extends Command
         // Determine which projectors to replay
         $projectors = $this->resolveProjectors($projectorClass, $domain);
 
-        DB::transaction(function () use ($projectors) {
-            Projectionist::replay($projectors);
+        DB::transaction(function () use ($projectors, $eventType, $aggregateId) {
+            if ($eventType || $aggregateId) {
+                $this->replayWithFilters($projectors, $eventType, $aggregateId);
+            } else {
+                Projectionist::replay($projectors);
+            }
         });
 
         $this->info('Event replay completed successfully.');
@@ -145,5 +163,44 @@ class EventReplayCommand extends Command
         }
 
         return $projectors;
+    }
+
+    /**
+     * Replay events with event-type and/or aggregate-id filters.
+     *
+     * @param  Collection<int, mixed>  $projectors
+     */
+    private function replayWithFilters(Collection $projectors, ?string $eventType, ?string $aggregateId): void
+    {
+        $query = DB::table('stored_events');
+
+        if ($eventType) {
+            $query->where('event_class', 'LIKE', "%{$eventType}");
+        }
+
+        if ($aggregateId) {
+            $query->where('aggregate_uuid', $aggregateId);
+        }
+
+        $eventCount = $query->count();
+        $this->info("Filtered events to replay: {$eventCount}");
+
+        if ($eventCount === 0) {
+            $this->warn('No events match the provided filters.');
+
+            return;
+        }
+
+        Projectionist::replay($projectors, onEventReplayed: function (object $event) use ($eventType, $aggregateId): bool {
+            if ($eventType && ! str_ends_with($event::class, $eventType)) {
+                return false;
+            }
+
+            if ($aggregateId && method_exists($event, 'aggregateRootUuid') && $event->aggregateRootUuid() !== $aggregateId) {
+                return false;
+            }
+
+            return true;
+        });
     }
 }

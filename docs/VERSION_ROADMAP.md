@@ -1113,6 +1113,7 @@ main ─────────●─────────●─────
 | **v3.4.0** | API Maturity & DX | API versioning, rate limiting per tier, SDK auto-generation, OpenAPI 100% | ✅ Released 2026-02-12 |
 | **v3.5.0** | Compliance Certification | SOC 2, PCI DSS, multi-region, GDPR tooling | ✅ Released 2026-02-12 |
 | **v4.0.0** | Architecture Evolution | Event Store v2, GraphQL API, Plugin Marketplace | ✅ Released 2026-02-13 |
+| **v4.1.0** | GraphQL Expansion | 6 new GraphQL domains (Treasury, Payment, Lending, Stablecoin, CrossChain, DeFi), event replay filters, projector health monitoring | ✅ Released 2026-02-13 |
 
 ---
 
@@ -1688,7 +1689,30 @@ After 18 releases (v1.1.0 → v3.0.0), the platform has grown to 41 domains, 266
 
 ---
 
-*Document Version: 4.0.0*
+## v4.1.0 — GraphQL Expansion + Platform Hardening ✅ COMPLETED
+
+**Released**: February 13, 2026
+**Theme**: GraphQL Coverage Expansion, Event Replay Filtering, Projector Health Monitoring
+
+### Delivered
+
+| Feature | Status | Description |
+|---------|--------|-------------|
+| GraphQL — Treasury Domain | ✅ | AssetAllocation type, portfolio queries, createPortfolio/rebalancePortfolio mutations |
+| GraphQL — Payment Domain | ✅ | PaymentTransaction type, payment queries, initiatePayment mutation |
+| GraphQL — Lending Domain | ✅ | LoanApplication type, loan queries, applyForLoan/approveLoan mutations |
+| GraphQL — Stablecoin Domain | ✅ | StablecoinReserve type, reserve queries, mintStablecoin/redeemStablecoin mutations |
+| GraphQL — CrossChain Domain | ✅ | BridgeTransaction type, bridge queries, initiateBridgeTransfer mutation |
+| GraphQL — DeFi Domain | ✅ | DeFiPosition type, position queries, openPosition/closePosition mutations |
+| Event Replay Filtering | ✅ | --event-type and --aggregate-id filter options for selective replay |
+| Projector Health Monitoring | ✅ | ProjectorHealthService, projector:health command, REST endpoint |
+| Integration Tests | ✅ | 8 test files covering all new GraphQL domains, event replay, projector health |
+
+**GraphQL Coverage**: 10/41 domains (up from 4/41 in v4.0.0)
+
+---
+
+*Document Version: 4.1.0*
 *Created: January 11, 2026*
-*Updated: February 13, 2026 (v4.0.0 Architecture Evolution released)*
-*Next Review: v4.1.0 Planning*
+*Updated: February 13, 2026 (v4.1.0 GraphQL Expansion released)*
+*Next Review: v4.2.0 Planning*

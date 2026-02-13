@@ -20,6 +20,7 @@ git status && git branch --show-current
 ### Version Status
 | Version | Status | Key Changes |
 |---------|--------|-------------|
+| v4.1.0 | ✅ Released | GraphQL Expansion: 6 new domains (Treasury, Payment, Lending, Stablecoin, CrossChain, DeFi), event replay filtering, projector health monitoring |
 | v4.0.0 | ✅ Released | Architecture Evolution: Event Store v2 (domain routing, migration tooling, upcasting), GraphQL API (lighthouse-php, 4 domains, subscriptions, DataLoaders), Plugin Marketplace (manager, sandbox, security scanner) |
 | v3.5.0 | ✅ Released | Compliance Certification: SOC 2 Type II, PCI DSS readiness, multi-region deployment, GDPR enhanced (ROPA, DPIA, breach notification, consent v2, retention) |
 | v3.4.0 | ✅ Released | API Maturity & DX: API versioning, tier-aware rate limiting, SDK generation, OpenAPI annotations (143+ endpoints) |
