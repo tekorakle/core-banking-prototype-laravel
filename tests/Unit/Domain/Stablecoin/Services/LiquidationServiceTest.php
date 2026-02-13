@@ -42,7 +42,7 @@ class LiquidationServiceTest extends ServiceTestCase
     #[Test]
     public function test_class_exists(): void
     {
-        $this->assertTrue(class_exists(LiquidationService::class));
+        $this->assertNotEmpty((new ReflectionClass(LiquidationService::class))->getName());
     }
 
     #[Test]
@@ -84,7 +84,7 @@ class LiquidationServiceTest extends ServiceTestCase
     #[Test]
     public function test_has_liquidate_position_method(): void
     {
-        $this->assertTrue(method_exists($this->service, 'liquidatePosition'));
+        $this->assertTrue((new ReflectionClass($this->service))->hasMethod('liquidatePosition'));
     }
 
     #[Test]

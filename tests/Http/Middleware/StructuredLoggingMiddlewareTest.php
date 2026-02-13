@@ -6,11 +6,11 @@ use App\Http\Middleware\StructuredLoggingMiddleware;
 
 describe('StructuredLoggingMiddleware', function () {
     it('exists and is a valid class', function () {
-        expect(class_exists(StructuredLoggingMiddleware::class))->toBeTrue();
+        expect((new ReflectionClass(StructuredLoggingMiddleware::class))->getName())->not->toBeEmpty();
     });
 
     it('has handle method', function () {
-        expect(method_exists(StructuredLoggingMiddleware::class, 'handle'))->toBeTrue();
+        expect((new ReflectionClass(StructuredLoggingMiddleware::class))->hasMethod('handle'))->toBeTrue();
     });
 
     it('handle method accepts request and closure', function () {

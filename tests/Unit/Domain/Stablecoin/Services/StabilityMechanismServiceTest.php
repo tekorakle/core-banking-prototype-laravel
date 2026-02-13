@@ -39,7 +39,7 @@ class StabilityMechanismServiceTest extends ServiceTestCase
     #[Test]
     public function test_class_exists(): void
     {
-        $this->assertTrue(class_exists(StabilityMechanismService::class));
+        $this->assertNotEmpty((new ReflectionClass(StabilityMechanismService::class))->getName());
     }
 
     #[Test]
@@ -77,7 +77,7 @@ class StabilityMechanismServiceTest extends ServiceTestCase
     #[Test]
     public function test_has_execute_stability_mechanisms_method(): void
     {
-        $this->assertTrue(method_exists($this->service, 'executeStabilityMechanisms'));
+        $this->assertTrue((new ReflectionClass($this->service))->hasMethod('executeStabilityMechanisms'));
     }
 
     #[Test]

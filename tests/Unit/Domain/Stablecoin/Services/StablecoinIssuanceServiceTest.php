@@ -41,7 +41,7 @@ class StablecoinIssuanceServiceTest extends ServiceTestCase
     #[Test]
     public function test_class_exists(): void
     {
-        $this->assertTrue(class_exists(StablecoinIssuanceService::class));
+        $this->assertNotEmpty((new ReflectionClass(StablecoinIssuanceService::class))->getName());
     }
 
     #[Test]
@@ -74,7 +74,7 @@ class StablecoinIssuanceServiceTest extends ServiceTestCase
     #[Test]
     public function test_has_mint_method(): void
     {
-        $this->assertTrue(method_exists($this->service, 'mint'));
+        $this->assertTrue((new ReflectionClass($this->service))->hasMethod('mint'));
     }
 
     #[Test]

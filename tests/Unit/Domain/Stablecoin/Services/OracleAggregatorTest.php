@@ -24,7 +24,7 @@ class OracleAggregatorTest extends TestCase
     #[Test]
     public function test_class_exists(): void
     {
-        $this->assertTrue(class_exists(OracleAggregator::class));
+        $this->assertNotEmpty((new ReflectionClass(OracleAggregator::class))->getName());
     }
 
     #[Test]
@@ -76,7 +76,7 @@ class OracleAggregatorTest extends TestCase
     #[Test]
     public function test_has_register_oracle_method(): void
     {
-        $this->assertTrue(method_exists($this->aggregator, 'registerOracle'));
+        $this->assertTrue((new ReflectionClass($this->aggregator))->hasMethod('registerOracle'));
     }
 
     #[Test]
@@ -97,7 +97,7 @@ class OracleAggregatorTest extends TestCase
     #[Test]
     public function test_has_get_aggregated_price_method(): void
     {
-        $this->assertTrue(method_exists($this->aggregator, 'getAggregatedPrice'));
+        $this->assertTrue((new ReflectionClass($this->aggregator))->hasMethod('getAggregatedPrice'));
     }
 
     #[Test]

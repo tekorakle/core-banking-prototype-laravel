@@ -6,30 +6,30 @@ use App\Domain\Shared\EventSourcing\EventStreamConsumer;
 
 describe('EventStreamConsumer', function () {
     it('class exists and is instantiable', function () {
-        expect(class_exists(EventStreamConsumer::class))->toBeTrue();
+        expect((new ReflectionClass(EventStreamConsumer::class))->getName())->not->toBeEmpty();
     });
 
     it('has createConsumerGroup method', function () {
-        expect(method_exists(EventStreamConsumer::class, 'createConsumerGroup'))->toBeTrue();
+        expect((new ReflectionClass(EventStreamConsumer::class))->hasMethod('createConsumerGroup'))->toBeTrue();
     });
 
     it('has consume method', function () {
-        expect(method_exists(EventStreamConsumer::class, 'consume'))->toBeTrue();
+        expect((new ReflectionClass(EventStreamConsumer::class))->hasMethod('consume'))->toBeTrue();
     });
 
     it('has acknowledge method', function () {
-        expect(method_exists(EventStreamConsumer::class, 'acknowledge'))->toBeTrue();
+        expect((new ReflectionClass(EventStreamConsumer::class))->hasMethod('acknowledge'))->toBeTrue();
     });
 
     it('has getPending method', function () {
-        expect(method_exists(EventStreamConsumer::class, 'getPending'))->toBeTrue();
+        expect((new ReflectionClass(EventStreamConsumer::class))->hasMethod('getPending'))->toBeTrue();
     });
 
     it('has claimIdleMessages method', function () {
-        expect(method_exists(EventStreamConsumer::class, 'claimIdleMessages'))->toBeTrue();
+        expect((new ReflectionClass(EventStreamConsumer::class))->hasMethod('claimIdleMessages'))->toBeTrue();
     });
 
     it('has getConsumerGroupInfo method', function () {
-        expect(method_exists(EventStreamConsumer::class, 'getConsumerGroupInfo'))->toBeTrue();
+        expect((new ReflectionClass(EventStreamConsumer::class))->hasMethod('getConsumerGroupInfo'))->toBeTrue();
     });
 });

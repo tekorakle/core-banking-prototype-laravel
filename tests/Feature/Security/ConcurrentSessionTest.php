@@ -246,7 +246,7 @@ class ConcurrentSessionTest extends TestCase
 
         // Check database directly - all tokens should be deleted
         $dbTokenCount = PersonalAccessToken::where('tokenable_id', $this->user->id)
-            ->where('tokenable_type', get_class($this->user))
+            ->where('tokenable_type', $this->user::class)
             ->count();
         $this->assertEquals(0, $dbTokenCount);
     }

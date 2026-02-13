@@ -40,10 +40,10 @@ describe('EventStoreDashboard', function () {
     });
 
     it('has getHeaderWidgets method', function () {
-        expect(method_exists(EventStoreDashboard::class, 'getHeaderWidgets'))->toBeTrue();
+        expect((new ReflectionClass(EventStoreDashboard::class))->hasMethod('getHeaderWidgets'))->toBeTrue();
     });
 
     it('has getHeaderWidgetsColumns method', function () {
-        expect(method_exists(EventStoreDashboard::class, 'getHeaderWidgetsColumns'))->toBeTrue();
+        expect((new ReflectionClass(EventStoreDashboard::class))->hasMethod('getHeaderWidgetsColumns'))->toBeTrue();
     });
 });

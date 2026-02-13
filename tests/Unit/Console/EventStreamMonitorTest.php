@@ -6,7 +6,7 @@ use App\Console\Commands\EventStreamMonitorCommand;
 
 describe('EventStreamMonitorCommand', function () {
     it('class exists', function () {
-        expect(class_exists(EventStreamMonitorCommand::class))->toBeTrue();
+        expect((new ReflectionClass(EventStreamMonitorCommand::class))->getName())->not->toBeEmpty();
     });
 
     it('has the expected command name constant', function () {

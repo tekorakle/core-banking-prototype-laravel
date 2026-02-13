@@ -59,11 +59,6 @@ class TenantIsolationPocTest extends BaseTestCase
 
     public function test_tenant_model_can_be_created(): void
     {
-        // Skip if tenancy not properly configured
-        if (! class_exists(Tenant::class)) {
-            $this->markTestSkipped('Tenant model not available');
-        }
-
         $tenant = Tenant::create([
             'id'   => 'test-tenant-1',
             'name' => 'Test Tenant',

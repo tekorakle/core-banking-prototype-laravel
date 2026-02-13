@@ -129,10 +129,10 @@ it('can warm up caches for accounts', function () {
 
 it('optimized transfer workflow exists and can be instantiated', function () {
     // Test that the optimized workflow class exists
-    expect(class_exists(OptimizedAssetTransferWorkflow::class))->toBeTrue();
+    expect((new ReflectionClass(OptimizedAssetTransferWorkflow::class))->getName())->not->toBeEmpty();
 
     // Test that the optimized activity exists
-    expect(class_exists(OptimizedInitiateAssetTransferActivity::class))->toBeTrue();
+    expect((new ReflectionClass(OptimizedInitiateAssetTransferActivity::class))->getName())->not->toBeEmpty();
 
     // Test that the optimization service is registered
     $service = app(TransferOptimizationService::class);

@@ -28,7 +28,7 @@ class CollateralServiceTest extends ServiceTestCase
     #[Test]
     public function test_class_exists(): void
     {
-        $this->assertTrue(class_exists(CollateralService::class));
+        $this->assertNotEmpty((new ReflectionClass(CollateralService::class))->getName());
     }
 
     #[Test]
@@ -68,7 +68,7 @@ class CollateralServiceTest extends ServiceTestCase
         ];
 
         foreach ($expectedMethods as $method) {
-            $this->assertTrue(method_exists($this->service, $method));
+            $this->assertTrue((new ReflectionClass($this->service))->hasMethod($method));
         }
     }
 

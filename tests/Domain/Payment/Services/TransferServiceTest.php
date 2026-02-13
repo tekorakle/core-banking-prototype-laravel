@@ -13,7 +13,7 @@ beforeEach(function () {
 });
 
 it('has transfer method', function () {
-    expect(method_exists($this->transferService, 'transfer'))->toBeTrue();
+    expect((new ReflectionClass($this->transferService))->hasMethod('transfer'))->toBeTrue();
 });
 
 it('can be instantiated from container', function () {

@@ -44,7 +44,7 @@ describe('Structured Logging Integration', function () {
             ->getMiddlewareAliases ?? [];
 
         // Check via bootstrap/app.php middleware configuration
-        expect(class_exists(StructuredLoggingMiddleware::class))->toBeTrue();
+        expect((new ReflectionClass(StructuredLoggingMiddleware::class))->getName())->not->toBeEmpty();
     });
 
     it('structured channel is configured in logging config', function () {

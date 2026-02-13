@@ -19,7 +19,7 @@ describe('DomainHealthWidget', function () {
     });
 
     it('has getStats method', function () {
-        expect(method_exists(DomainHealthWidget::class, 'getStats'))->toBeTrue();
+        expect((new ReflectionClass(DomainHealthWidget::class))->hasMethod('getStats'))->toBeTrue();
     });
 
     it('has sort order 5', function () {

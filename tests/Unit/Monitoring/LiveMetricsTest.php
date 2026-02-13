@@ -6,30 +6,30 @@ use App\Domain\Monitoring\Services\LiveMetricsService;
 
 describe('LiveMetricsService', function () {
     it('class exists', function () {
-        expect(class_exists(LiveMetricsService::class))->toBeTrue();
+        expect((new ReflectionClass(LiveMetricsService::class))->getName())->not->toBeEmpty();
     });
 
     it('has getMetrics method', function () {
-        expect(method_exists(LiveMetricsService::class, 'getMetrics'))->toBeTrue();
+        expect((new ReflectionClass(LiveMetricsService::class))->hasMethod('getMetrics'))->toBeTrue();
     });
 
     it('has getDomainHealth method', function () {
-        expect(method_exists(LiveMetricsService::class, 'getDomainHealth'))->toBeTrue();
+        expect((new ReflectionClass(LiveMetricsService::class))->hasMethod('getDomainHealth'))->toBeTrue();
     });
 
     it('has getEventThroughput method', function () {
-        expect(method_exists(LiveMetricsService::class, 'getEventThroughput'))->toBeTrue();
+        expect((new ReflectionClass(LiveMetricsService::class))->hasMethod('getEventThroughput'))->toBeTrue();
     });
 
     it('has getStreamStatus method', function () {
-        expect(method_exists(LiveMetricsService::class, 'getStreamStatus'))->toBeTrue();
+        expect((new ReflectionClass(LiveMetricsService::class))->hasMethod('getStreamStatus'))->toBeTrue();
     });
 
     it('has getSystemHealth method', function () {
-        expect(method_exists(LiveMetricsService::class, 'getSystemHealth'))->toBeTrue();
+        expect((new ReflectionClass(LiveMetricsService::class))->hasMethod('getSystemHealth'))->toBeTrue();
     });
 
     it('has getProjectorLag method', function () {
-        expect(method_exists(LiveMetricsService::class, 'getProjectorLag'))->toBeTrue();
+        expect((new ReflectionClass(LiveMetricsService::class))->hasMethod('getProjectorLag'))->toBeTrue();
     });
 });

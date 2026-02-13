@@ -79,7 +79,7 @@ class PortfolioRebalancingWorkflowTest extends TestCase
         ];
 
         foreach ($requiredActivities as $activity) {
-            $this->assertTrue(class_exists($activity), "Activity class {$activity} must exist");
+            $this->assertNotEmpty((new ReflectionClass($activity))->getName(), "Activity class {$activity} must exist");
         }
     }
 

@@ -26,7 +26,7 @@ describe('EventStoreStatsWidget', function () {
     });
 
     it('has getStats method', function () {
-        expect(method_exists(EventStoreStatsWidget::class, 'getStats'))->toBeTrue();
+        expect((new ReflectionClass(EventStoreStatsWidget::class))->hasMethod('getStats'))->toBeTrue();
     });
 
     it('has sort order 1', function () {
@@ -58,11 +58,11 @@ describe('EventStoreThroughputWidget', function () {
     });
 
     it('has getData method', function () {
-        expect(method_exists(EventStoreThroughputWidget::class, 'getData'))->toBeTrue();
+        expect((new ReflectionClass(EventStoreThroughputWidget::class))->hasMethod('getData'))->toBeTrue();
     });
 
     it('has getType method', function () {
-        expect(method_exists(EventStoreThroughputWidget::class, 'getType'))->toBeTrue();
+        expect((new ReflectionClass(EventStoreThroughputWidget::class))->hasMethod('getType'))->toBeTrue();
     });
 });
 
@@ -80,7 +80,7 @@ describe('AggregateHealthWidget', function () {
     });
 
     it('has getStats method', function () {
-        expect(method_exists(AggregateHealthWidget::class, 'getStats'))->toBeTrue();
+        expect((new ReflectionClass(AggregateHealthWidget::class))->hasMethod('getStats'))->toBeTrue();
     });
 });
 
@@ -98,7 +98,7 @@ describe('SystemMetricsWidget', function () {
     });
 
     it('has getStats method', function () {
-        expect(method_exists(SystemMetricsWidget::class, 'getStats'))->toBeTrue();
+        expect((new ReflectionClass(SystemMetricsWidget::class))->hasMethod('getStats'))->toBeTrue();
     });
 });
 
