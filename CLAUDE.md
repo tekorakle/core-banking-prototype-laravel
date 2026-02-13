@@ -20,6 +20,7 @@ git status && git branch --show-current
 ### Version Status
 | Version | Status | Key Changes |
 |---------|--------|-------------|
+| v4.3.0 | ✅ Released | Developer Experience: 4 new GraphQL domains (Fraud, Mobile, MobilePayment, TrustCert), dashboard widget plugin, CLI commands (schema-check, plugin-verify, domain-status), GraphQL rate limiting + query cost analysis |
 | v4.2.0 | ✅ Released | Real-time Platform: GraphQL subscriptions (4 new), plugin hook system (17 hooks), webhook-notifier + audit-exporter plugins, core domain mutations (8 new) |
 | v4.1.0 | ✅ Released | GraphQL Expansion: 6 new domains (Treasury, Payment, Lending, Stablecoin, CrossChain, DeFi), event replay filtering, projector health monitoring |
 | v4.0.0 | ✅ Released | Architecture Evolution: Event Store v2 (domain routing, migration tooling, upcasting), GraphQL API (lighthouse-php, 4 domains, subscriptions, DataLoaders), Plugin Marketplace (manager, sandbox, security scanner) |

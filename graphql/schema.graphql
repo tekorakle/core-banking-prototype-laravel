@@ -15,4 +15,8 @@ scalar DateTime @scalar(class: "Nuwave\\Lighthouse\\Schema\\Types\\Scalars\\Date
 #import stablecoin.graphql
 #import crosschain.graphql
 #import defi.graphql
+#import fraud.graphql
+#import mobile.graphql
+#import mobile-payment.graphql
+#import trust-cert.graphql
 #import subscriptions.graphql
