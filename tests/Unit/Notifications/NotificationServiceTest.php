@@ -14,7 +14,8 @@ describe('NotificationService', function () {
         $service = new NotificationService();
         expect($service->hasChannel('email'))->toBeFalse();
 
-        $service->registerChannel('email', function () {});
+        $service->registerChannel('email', function () {
+        });
         expect($service->hasChannel('email'))->toBeTrue();
         expect($service->getRegisteredChannels())->toContain('email');
     });

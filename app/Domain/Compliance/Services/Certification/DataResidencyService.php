@@ -73,8 +73,10 @@ class DataResidencyService
         $isAllowed = false;
 
         foreach ($allowedPairs as $pair) {
-            if (($pair[0] === $fromRegion && $pair[1] === $toRegion)
-                || ($pair[0] === $toRegion && $pair[1] === $fromRegion)) {
+            if (
+                ($pair[0] === $fromRegion && $pair[1] === $toRegion)
+                || ($pair[0] === $toRegion && $pair[1] === $fromRegion)
+            ) {
                 $isAllowed = true;
                 break;
             }

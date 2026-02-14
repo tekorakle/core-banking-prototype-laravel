@@ -19,8 +19,10 @@ class PluginCreateCommand extends Command
         $name = $this->argument('name');
 
         $namePattern = '/^[a-zA-Z0-9_-]+$/';
-        if (! is_string($vendor) || ! preg_match($namePattern, $vendor)
-            || ! is_string($name) || ! preg_match($namePattern, $name)) {
+        if (
+            ! is_string($vendor) || ! preg_match($namePattern, $vendor)
+            || ! is_string($name) || ! preg_match($namePattern, $name)
+        ) {
             $this->error('Vendor and name must contain only alphanumeric characters, hyphens, and underscores.');
 
             return self::FAILURE;

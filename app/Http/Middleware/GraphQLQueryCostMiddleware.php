@@ -95,10 +95,12 @@ class GraphQLQueryCostMiddleware
         $lines = preg_split('/\R/', $query) ?: [];
         foreach ($lines as $line) {
             $trimmed = trim($line);
-            if (! empty($trimmed) && ! str_starts_with($trimmed, '{') && ! str_starts_with($trimmed, '}')
+            if (
+                ! empty($trimmed) && ! str_starts_with($trimmed, '{') && ! str_starts_with($trimmed, '}')
                 && ! str_starts_with($trimmed, '#') && ! str_starts_with($trimmed, 'query')
                 && ! str_starts_with($trimmed, 'mutation') && ! str_starts_with($trimmed, 'subscription')
-                && ! str_starts_with($trimmed, '$') && ! str_starts_with($trimmed, '...')) {
+                && ! str_starts_with($trimmed, '$') && ! str_starts_with($trimmed, '...')
+            ) {
                 $fieldCount++;
             }
         }

@@ -6,47 +6,48 @@ use App\Domain\Shared\EventSourcing\AbstractEventUpcaster;
 use App\Domain\Shared\EventSourcing\EventUpcastingService;
 use App\Domain\Shared\EventSourcing\EventVersionRegistry;
 
-// Example upcasters for testing
-class MoneyAddedV1ToV2Upcaster extends AbstractEventUpcaster
+function createMoneyAddedV1ToV2Upcaster(): AbstractEventUpcaster
 {
-    public function __construct()
-    {
-        parent::__construct('money_added', 1, 2);
-    }
+    return new class () extends AbstractEventUpcaster {
+        public function __construct()
+        {
+            parent::__construct('money_added', 1, 2);
+        }
 
-    public function upcast(array $payload): array
-    {
-        // v2 adds 'currency' field defaulting to 'USD'
-        $payload['currency'] = $payload['currency'] ?? 'USD';
+        public function upcast(array $payload): array
+        {
+            $payload['currency'] = $payload['currency'] ?? 'USD';
 
-        return $payload;
-    }
+            return $payload;
+        }
+    };
 }
 
-class MoneyAddedV2ToV3Upcaster extends AbstractEventUpcaster
+function createMoneyAddedV2ToV3Upcaster(): AbstractEventUpcaster
 {
-    public function __construct()
-    {
-        parent::__construct('money_added', 2, 3);
-    }
-
-    public function upcast(array $payload): array
-    {
-        // v3 renames 'money' to 'amount' and adds 'source'
-        if (isset($payload['money'])) {
-            $payload['amount'] = $payload['money'];
-            unset($payload['money']);
+    return new class () extends AbstractEventUpcaster {
+        public function __construct()
+        {
+            parent::__construct('money_added', 2, 3);
         }
-        $payload['source'] = $payload['source'] ?? 'internal';
 
-        return $payload;
-    }
+        public function upcast(array $payload): array
+        {
+            if (isset($payload['money'])) {
+                $payload['amount'] = $payload['money'];
+                unset($payload['money']);
+            }
+            $payload['source'] = $payload['source'] ?? 'internal';
+
+            return $payload;
+        }
+    };
 }
 
 describe('EventVersionRegistry', function () {
     it('registers upcasters and tracks versions', function () {
         $registry = new EventVersionRegistry();
-        $registry->register(new MoneyAddedV1ToV2Upcaster());
+        $registry->register(createMoneyAddedV1ToV2Upcaster());
 
         expect($registry->hasUpcasters('money_added'))->toBeTrue();
         expect($registry->getCurrentVersion('money_added'))->toBe(2);
@@ -55,8 +56,8 @@ describe('EventVersionRegistry', function () {
 
     it('tracks highest version across multiple upcasters', function () {
         $registry = new EventVersionRegistry();
-        $registry->register(new MoneyAddedV1ToV2Upcaster());
-        $registry->register(new MoneyAddedV2ToV3Upcaster());
+        $registry->register(createMoneyAddedV1ToV2Upcaster());
+        $registry->register(createMoneyAddedV2ToV3Upcaster());
 
         expect($registry->getCurrentVersion('money_added'))->toBe(3);
     });
@@ -64,8 +65,8 @@ describe('EventVersionRegistry', function () {
     it('returns ordered upcasters', function () {
         $registry = new EventVersionRegistry();
         // Register in reverse order
-        $registry->register(new MoneyAddedV2ToV3Upcaster());
-        $registry->register(new MoneyAddedV1ToV2Upcaster());
+        $registry->register(createMoneyAddedV2ToV3Upcaster());
+        $registry->register(createMoneyAddedV1ToV2Upcaster());
 
         $upcasters = $registry->getUpcasters('money_added');
 
@@ -76,8 +77,8 @@ describe('EventVersionRegistry', function () {
 
     it('builds upcast chain from specific version', function () {
         $registry = new EventVersionRegistry();
-        $registry->register(new MoneyAddedV1ToV2Upcaster());
-        $registry->register(new MoneyAddedV2ToV3Upcaster());
+        $registry->register(createMoneyAddedV1ToV2Upcaster());
+        $registry->register(createMoneyAddedV2ToV3Upcaster());
 
         // From v1 → should chain v1→v2, v2→v3
         $chain = $registry->getUpcastChain('money_added', 1);
@@ -97,7 +98,7 @@ describe('EventVersionRegistry', function () {
         $registry = new EventVersionRegistry();
 
         // Register v1→v2 upcaster
-        $registry->register(new MoneyAddedV1ToV2Upcaster());
+        $registry->register(createMoneyAddedV1ToV2Upcaster());
 
         // Create a v3→v4 upcaster (skipping v2→v3)
         $v3ToV4 = new class () extends AbstractEventUpcaster {
@@ -108,7 +109,7 @@ describe('EventVersionRegistry', function () {
 
             public function upcast(array $payload): array
             {
-            return $payload;
+                return $payload;
             }
         };
 
@@ -120,7 +121,7 @@ describe('EventVersionRegistry', function () {
 
             public function upcast(array $payload): array
             {
-            return $payload;
+                return $payload;
             }
         };
 
@@ -136,8 +137,8 @@ describe('EventVersionRegistry', function () {
 
     it('reports no gaps for complete chain', function () {
         $registry = new EventVersionRegistry();
-        $registry->register(new MoneyAddedV1ToV2Upcaster());
-        $registry->register(new MoneyAddedV2ToV3Upcaster());
+        $registry->register(createMoneyAddedV1ToV2Upcaster());
+        $registry->register(createMoneyAddedV2ToV3Upcaster());
 
         $gaps = $registry->validateChain('money_added');
 
@@ -146,8 +147,8 @@ describe('EventVersionRegistry', function () {
 
     it('lists all versions', function () {
         $registry = new EventVersionRegistry();
-        $registry->register(new MoneyAddedV1ToV2Upcaster());
-        $registry->register(new MoneyAddedV2ToV3Upcaster());
+        $registry->register(createMoneyAddedV1ToV2Upcaster());
+        $registry->register(createMoneyAddedV2ToV3Upcaster());
 
         $versions = $registry->getAllVersions();
 
@@ -160,8 +161,8 @@ describe('EventVersionRegistry', function () {
 describe('EventUpcastingService', function () {
     it('upcasts event from v1 to latest', function () {
         $registry = new EventVersionRegistry();
-        $registry->register(new MoneyAddedV1ToV2Upcaster());
-        $registry->register(new MoneyAddedV2ToV3Upcaster());
+        $registry->register(createMoneyAddedV1ToV2Upcaster());
+        $registry->register(createMoneyAddedV2ToV3Upcaster());
 
         $service = new EventUpcastingService($registry);
 
@@ -178,8 +179,8 @@ describe('EventUpcastingService', function () {
 
     it('upcasts from intermediate version', function () {
         $registry = new EventVersionRegistry();
-        $registry->register(new MoneyAddedV1ToV2Upcaster());
-        $registry->register(new MoneyAddedV2ToV3Upcaster());
+        $registry->register(createMoneyAddedV1ToV2Upcaster());
+        $registry->register(createMoneyAddedV2ToV3Upcaster());
 
         $service = new EventUpcastingService($registry);
 
@@ -206,7 +207,7 @@ describe('EventUpcastingService', function () {
 
     it('returns unchanged payload when already at latest version', function () {
         $registry = new EventVersionRegistry();
-        $registry->register(new MoneyAddedV1ToV2Upcaster());
+        $registry->register(createMoneyAddedV1ToV2Upcaster());
 
         $service = new EventUpcastingService($registry);
 
@@ -220,7 +221,7 @@ describe('EventUpcastingService', function () {
 
 describe('AbstractEventUpcaster', function () {
     it('reports correct event class and versions', function () {
-        $upcaster = new MoneyAddedV1ToV2Upcaster();
+        $upcaster = createMoneyAddedV1ToV2Upcaster();
 
         expect($upcaster->eventClass())->toBe('money_added');
         expect($upcaster->fromVersion())->toBe(1);
@@ -228,7 +229,7 @@ describe('AbstractEventUpcaster', function () {
     });
 
     it('supports matching event class and version', function () {
-        $upcaster = new MoneyAddedV1ToV2Upcaster();
+        $upcaster = createMoneyAddedV1ToV2Upcaster();
 
         expect($upcaster->supports('money_added', 1))->toBeTrue();
         expect($upcaster->supports('money_added', 2))->toBeFalse();
