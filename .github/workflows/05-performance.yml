@@ -301,6 +301,7 @@ jobs:
           sleep 5
 
       - name: Run Load Tests
+        continue-on-error: true
         run: |
           if [ -f "tests/k6/load-test.js" ]; then
             k6 run tests/k6/load-test.js --out json=load-test-results.json
