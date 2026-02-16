@@ -96,11 +96,12 @@ Welcome to the FinAegis documentation. This guide will help you understand, use,
 
 ## Platform Status
 
-- **Version**: 5.1.1 (Mobile App Landing Page)
+- **Version**: 5.1.2 (Production Landing Page Fix)
 - **Status**: Demonstration Prototype
 - **Last Updated**: February 16, 2026
 
-### Current Release Features (v5.1.1)
+### Current Release Features (v5.1.2)
+- **v5.1.2**: Production CSS fix for `/app` landing page — standalone pre-compiled Tailwind CSS (CSP-compliant, Vite-independent)
 - **v5.1.1**: Mobile app landing page (`/app`) with email signup, flaky Azure HSM test fix
 - **v5.1.0**: 21 mobile API endpoints, GraphQL 33-domain full coverage, blockchain address models, CI hardening
 - **Event Streaming**: Redis Streams publisher/consumer for real-time event distribution

@@ -5,6 +5,14 @@ All notable changes to the FinAegis Core Banking Platform will be documented in 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [5.1.2] - 2026-02-16
+
+### Fixed
+- Production landing page CSS broken — `public/build/` is gitignored so Vite-compiled CSS missed `/app` page classes; replaced `@vite()` with pre-compiled standalone Tailwind CSS (`public/css/app-landing.css`) generated via Tailwind CLI
+- CSP violation blocking Tailwind CDN — initial CDN fix was rejected by Content Security Policy `script-src`; resolved by self-hosting pre-compiled CSS (no external scripts needed)
+
+---
+
 ## [5.1.1] - 2026-02-16
 
 ### Added

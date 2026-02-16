@@ -20,6 +20,7 @@ git status && git branch --show-current
 ### Version Status
 | Version | Status | Key Changes |
 |---------|--------|-------------|
+| v5.1.2 | ✅ Released | Production Landing Page Fix: standalone pre-compiled CSS for `/app` (CSP-compliant, Vite-independent) |
 | v5.1.1 | ✅ Released | Mobile App Landing Page: `/app` teaser with email signup, feature showcase, flaky Azure HSM test fix |
 | v5.1.0 | ✅ Released | Mobile API Completeness: 21 mobile endpoints (Privacy, Commerce, Card, Wallet, Mobile), GraphQL 33-domain full coverage, blockchain address models, CI hardening, axios CVE fix |
 | v5.0.1 | ✅ Released | Platform Hardening: GraphQL CQRS alignment (21 mutations), OpenAPI 100% coverage (52 controllers), Plugin Marketplace UI, PHP 8.4 CI, 97 test conversions, documentation refresh |

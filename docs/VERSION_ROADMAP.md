@@ -1120,6 +1120,7 @@ main ─────────●─────────●─────
 | **v5.0.1** | Platform Hardening | GraphQL CQRS alignment (21 mutations), OpenAPI 100%, Plugin Marketplace UI, PHP 8.4 CI, 97 test conversions, doc refresh | ✅ Released 2026-02-13 |
 | **v5.1.0** | Mobile API Completeness | 21 mobile endpoints, GraphQL 33-domain full coverage, blockchain models, CI hardening, axios CVE fix | ✅ Released 2026-02-16 |
 | **v5.1.1** | Mobile App Landing Page | Landing page at `/app` with email signup, flaky Azure HSM test fix | ✅ Released 2026-02-16 |
+| **v5.1.2** | Production Landing Page Fix | Standalone pre-compiled CSS for `/app` (CSP-compliant, Vite-independent) | ✅ Released 2026-02-16 |
 
 ---
 
@@ -1831,6 +1832,23 @@ After 18 releases (v1.1.0 → v3.0.0), the platform has grown to 41 domains, 266
 
 ---
 
-*Document Version: 5.1.1*
+## v5.1.2 — Production Landing Page Fix ✅ COMPLETED
+
+**Released**: February 16, 2026
+**Theme**: Production CSS Fix, CSP Compliance
+
+### Delivered
+
+| Feature | Status | Description |
+|---------|--------|-------------|
+| Standalone Tailwind CSS | ✅ | Pre-compiled `public/css/app-landing.css` via Tailwind CLI — no Vite dependency |
+| CSP Compliance | ✅ | Self-hosted CSS instead of CDN script — no CSP `script-src` changes needed |
+
+### Root Cause
+The `/app` landing page rendered correctly locally but broke in production because `public/build/` is gitignored. The Vite-compiled CSS on production was built before `app.blade.php` existed, so Tailwind purged all its utility classes. Initial CDN fix was blocked by Content Security Policy. Final solution: pre-compiled standalone CSS committed to git.
+
+---
+
+*Document Version: 5.1.2*
 *Created: January 11, 2026*
-*Updated: February 16, 2026 (v5.1.1 Mobile App Landing Page released)*
+*Updated: February 16, 2026 (v5.1.2 Production Landing Page Fix released)*
