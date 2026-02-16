@@ -301,7 +301,7 @@ describe('AzureKeyVaultHsmProvider', function (): void {
     });
 
     describe('OAuth token management', function (): void {
-        it('authenticates via Azure AD and caches token', function (): void {
+        it('authenticates via Azure AD and caches token for reuse', function (): void {
             Http::fake([
                 'login.microsoftonline.com/*' => Http::response([
                     'access_token' => 'new-access-token',
@@ -312,10 +312,17 @@ describe('AzureKeyVaultHsmProvider', function (): void {
             ]);
 
             $provider = createAzureProvider();
+
+            // First call triggers Azure AD authentication
+            expect($provider->isAvailable())->toBeTrue();
+
+            Http::assertSent(fn ($request) => str_contains((string) $request->url(), 'login.microsoftonline.com'));
+
+            // Second call should reuse the cached token (no additional auth request)
             $provider->isAvailable();
 
-            // Token should be cached now
-            expect(Cache::get('azure_hsm:access_token'))->toBe('new-access-token');
+            // Exactly 1 auth request + 2 vault requests = 3 total
+            Http::assertSentCount(3);
         });
 
         it('returns false when Azure AD auth fails', function (): void {
