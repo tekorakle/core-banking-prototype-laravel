@@ -11,6 +11,10 @@ Route::get('/', function () {
     return view('welcome');
 })->name('home');
 
+Route::get('/app', function () {
+    return view('app');
+})->name('app.landing');
+
 // WebSocket endpoint with origin validation
 Route::get('/ws', function (Request $request) {
     $origin = $request->header('Origin');
