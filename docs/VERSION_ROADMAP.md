@@ -1119,6 +1119,7 @@ main ─────────●─────────●─────
 | **v5.0.0** | Streaming Architecture | Event streaming (Redis Streams), live dashboard, notification system, API gateway, GraphQL schema expansion (33 domains) | ✅ Released 2026-02-13 |
 | **v5.0.1** | Platform Hardening | GraphQL CQRS alignment (21 mutations), OpenAPI 100%, Plugin Marketplace UI, PHP 8.4 CI, 97 test conversions, doc refresh | ✅ Released 2026-02-13 |
 | **v5.1.0** | Mobile API Completeness | 21 mobile endpoints, GraphQL 33-domain full coverage, blockchain models, CI hardening, axios CVE fix | ✅ Released 2026-02-16 |
+| **v5.1.1** | Mobile App Landing Page | Landing page at `/app` with email signup, flaky Azure HSM test fix | ✅ Released 2026-02-16 |
 
 ---
 
@@ -1816,6 +1817,20 @@ After 18 releases (v1.1.0 → v3.0.0), the platform has grown to 41 domains, 266
 
 ---
 
-*Document Version: 5.1.0*
+## v5.1.1 — Mobile App Landing Page ✅ COMPLETED
+
+**Released**: February 16, 2026
+**Theme**: Mobile App Teaser, CI Test Stability
+
+### Delivered
+
+| Feature | Status | Description |
+|---------|--------|-------------|
+| Mobile App Landing Page | ✅ | Futuristic dark-theme page at `/app` with email signup, feature cards, Shamir's SSS explainer, platform architecture section, FAQ |
+| Azure HSM Test Fix | ✅ | Resolved flaky OAuth token caching test — race condition with parallel Redis in CI |
+
+---
+
+*Document Version: 5.1.1*
 *Created: January 11, 2026*
-*Updated: February 16, 2026 (v5.1.0 Mobile API Completeness released)*
+*Updated: February 16, 2026 (v5.1.1 Mobile App Landing Page released)*

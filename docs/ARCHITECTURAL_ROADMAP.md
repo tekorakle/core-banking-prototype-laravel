@@ -17,7 +17,7 @@ Transform FinAegis into the **premier open source core banking platform** that:
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────┐
-│                     FINAEGIS CORE BANKING PLATFORM (v5.1.0)              │
+│                     FINAEGIS CORE BANKING PLATFORM (v5.1.1)              │
 ├─────────────────────────────────────────────────────────────────────────┤
 │  CORE BANKING                                                            │
 │  ┌────────────┐  ┌────────────┐  ┌────────────┐  ┌────────────┐        │
@@ -74,7 +74,7 @@ Transform FinAegis into the **premier open source core banking platform** that:
 | **BaaS** | FinancialInstitution (Partner APIs, SDKs, Widgets, Billing, Marketplace) | Mature |
 | **Supporting** | User, Contact, Newsletter, Webhook, Activity, Batch, Cgo, Shared | Complete |
 
-### Key Metrics (as of v5.1.0)
+### Key Metrics (as of v5.1.1)
 
 | Metric | Value |
 |--------|-------|
@@ -273,10 +273,10 @@ The FinAegis platform has evolved from a core banking prototype to a comprehensi
 8. **Banking-as-a-Service** - Partner APIs, SDK generation, embeddable widgets
 9. **AI Framework** - MCP tools, NLP queries, ML anomaly detection
 
-**v5.1.0 Focus**: Mobile API Completeness — 21 mobile endpoints, GraphQL 33-domain full coverage, blockchain address models, CI/CD hardening.
+**v5.1.1 Focus**: Mobile App Landing Page — teaser page at `/app` with email signup and feature showcase, plus CI test stability fix.
 
 ---
 
-*Document Version: 5.1.0*
+*Document Version: 5.1.1*
 *Last Updated: February 16, 2026*
 *Author: Architecture Review*
