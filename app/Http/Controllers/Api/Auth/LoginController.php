@@ -185,6 +185,132 @@ class LoginController extends Controller
     }
 
     /**
+     * Refresh the current access token.
+     *
+     * Revokes the current token and issues a new one with the same scopes,
+     * effectively extending the session.
+     *
+     * @OA\Post(
+     *     path="/api/auth/refresh",
+     *     summary="Refresh access token",
+     *     description="Revokes the current token and issues a new one with fresh expiration",
+     *     operationId="refreshToken",
+     *     tags={"Authentication"},
+     *     security={{"bearerAuth":{}}},
+     *
+     * @OA\Response(
+     *         response=200,
+     *         description="Token refreshed successfully",
+     *
+     * @OA\JsonContent(
+     *
+     * @OA\Property(property="success",      type="boolean", example=true),
+     * @OA\Property(
+     *                 property="data",
+     *                 type="object",
+     * @OA\Property(property="access_token", type="string", example="3|newTokenHere..."),
+     * @OA\Property(property="token_type",   type="string", example="Bearer"),
+     * @OA\Property(property="expires_in",   type="integer", nullable=true, example=86400, description="Token expiration time in seconds")
+     *             )
+     *         )
+     *     ),
+     *
+     * @OA\Response(
+     *         response=401,
+     *         description="Unauthenticated",
+     *
+     * @OA\JsonContent(
+     * @OA\Property(property="message", type="string", example="Unauthenticated")
+     *         )
+     *     )
+     * )
+     */
+    public function refresh(Request $request): JsonResponse
+    {
+        /** @var User $user */
+        $user = $request->user();
+
+        // Preserve the current token's name for the new token
+        $currentToken = $user->currentAccessToken();
+        $tokenName = $currentToken->name ?? 'refreshed-token';
+
+        // Revoke the current token
+        $currentToken->delete();
+
+        // Issue a new token with appropriate scopes
+        $newToken = $this->createTokenWithScopes($user, $tokenName);
+
+        return response()->json(
+            [
+                'success' => true,
+                'data'    => [
+                    'access_token' => $newToken,
+                    'token_type'   => 'Bearer',
+                    'expires_in'   => config('sanctum.expiration') ? config('sanctum.expiration') * 60 : null,
+                ],
+            ]
+        );
+    }
+
+    /**
+     * Logout from all devices by revoking all tokens.
+     *
+     * @OA\Post(
+     *     path="/api/auth/logout-all",
+     *     summary="Logout from all devices",
+     *     description="Revokes all tokens for the authenticated user across all devices",
+     *     operationId="logoutAll",
+     *     tags={"Authentication"},
+     *     security={{"bearerAuth":{}}},
+     *
+     * @OA\Response(
+     *         response=200,
+     *         description="All sessions terminated",
+     *
+     * @OA\JsonContent(
+     * @OA\Property(property="success", type="boolean", example=true),
+     * @OA\Property(property="data",    type="object",
+     * @OA\Property(property="message", type="string", example="All sessions terminated successfully"),
+     * @OA\Property(property="revoked_count", type="integer", example=3)
+     *             )
+     *         )
+     *     ),
+     *
+     * @OA\Response(
+     *         response=401,
+     *         description="Unauthenticated",
+     *
+     * @OA\JsonContent(
+     * @OA\Property(property="message", type="string", example="Unauthenticated")
+     *         )
+     *     )
+     * )
+     */
+    public function logoutAll(Request $request): JsonResponse
+    {
+        /** @var User $user */
+        $user = $request->user();
+        $revokedCount = $user->tokens()->count();
+
+        // Revoke all tokens for the user
+        $user->tokens()->delete();
+
+        // Invalidate session (only for web)
+        if ($request->hasSession()) {
+            $request->session()->invalidate();
+            $request->session()->regenerateToken();
+        }
+
+        return response()->json([
+            'success' => true,
+            'data'    => [
+                'message'       => 'All sessions terminated successfully',
+                'revoked_count' => $revokedCount,
+            ],
+        ]);
+    }
+
+    /**
      * Get current user.
      *
      * @OA\Get(

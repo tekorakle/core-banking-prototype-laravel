@@ -113,8 +113,50 @@ class TokenExpirationTest extends TestCase
 
     public function test_token_refresh_maintains_scopes(): void
     {
-        // LoginController::refresh() is not yet implemented
-        $this->markTestSkipped('Token refresh endpoint not yet implemented (LoginController::refresh missing)');
+        config(['sanctum.expiration' => 60]);
+
+        // Login to get a token
+        $loginResponse = $this->postJson('/api/auth/login', [
+            'email'    => $this->user->email,
+            'password' => 'password',
+        ]);
+
+        $loginResponse->assertOk();
+        $token = $loginResponse->json('data.access_token');
+        $tokenCountBefore = $this->user->tokens()->count();
+
+        // Refresh the token
+        $refreshResponse = $this->withHeader('Authorization', 'Bearer ' . $token)
+            ->postJson('/api/auth/refresh');
+
+        $refreshResponse->assertOk()
+            ->assertJsonStructure([
+                'success',
+                'data' => [
+                    'access_token',
+                    'token_type',
+                    'expires_in',
+                ],
+            ])
+            ->assertJsonPath('success', true)
+            ->assertJsonPath('data.token_type', 'Bearer')
+            ->assertJsonPath('data.expires_in', 3600);
+
+        $newToken = $refreshResponse->json('data.access_token');
+        $this->assertNotEmpty($newToken);
+        $this->assertNotEquals($token, $newToken);
+
+        // Token count should remain the same (old revoked, new created)
+        $this->assertEquals($tokenCountBefore, $this->user->tokens()->count());
+
+        // New token should work
+        $newTokenResponse = $this->withHeader('Authorization', 'Bearer ' . $newToken)
+            ->getJson('/api/auth/user');
+        $newTokenResponse->assertOk();
+
+        // New token should have expiration set
+        $newTokenRecord = $this->user->tokens()->latest('id')->first();
+        $this->assertNotNull($newTokenRecord->expires_at);
     }
 
     public function test_multiple_expired_tokens_are_handled_correctly(): void

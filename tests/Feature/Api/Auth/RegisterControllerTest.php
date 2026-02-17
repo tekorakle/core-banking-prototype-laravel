@@ -21,16 +21,19 @@ class RegisterControllerTest extends ControllerTestCase
 
         $response->assertStatus(201)
             ->assertJsonStructure([
-                'message',
-                'user' => [
-                    'id',
-                    'name',
-                    'email',
-                    'email_verified_at',
+                'success',
+                'data' => [
+                    'user' => [
+                        'id',
+                        'name',
+                        'email',
+                    ],
+                    'access_token',
+                    'token_type',
+                    'expires_in',
                 ],
-                'access_token',
-                'token_type',
-            ]);
+            ])
+            ->assertJsonPath('success', true);
 
         $this->assertDatabaseHas('users', [
             'name'  => 'John Doe',
@@ -100,7 +103,7 @@ class RegisterControllerTest extends ControllerTestCase
         ]);
 
         $response->assertStatus(201);
-        $token = $response->json('access_token');
+        $token = $response->json('data.access_token');
         $this->assertNotEmpty($token);
 
         // Test that the token works

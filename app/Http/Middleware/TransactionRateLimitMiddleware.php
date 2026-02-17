@@ -289,7 +289,7 @@ class TransactionRateLimitMiddleware
      */
     private function incrementCounters(int $userId, string $transactionType, Request $request): void
     {
-        $config = self::TRANSACTION_LIMITS[$transactionType];
+        $config = self::TRANSACTION_LIMITS[$transactionType] ?? self::TRANSACTION_LIMITS['transfer'];
 
         // Increment hourly counter
         $hourlyKey = "tx_rate_limit:{$userId}:{$transactionType}:hourly";

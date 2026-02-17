@@ -111,8 +111,10 @@ class PasskeyController extends Controller
      *     @OA\Response(response=200, description="Authentication successful", @OA\JsonContent(
      *         @OA\Property(property="success", type="boolean", example=true),
      *         @OA\Property(property="data", type="object",
+     *             @OA\Property(property="user", type="object"),
      *             @OA\Property(property="access_token", type="string"),
      *             @OA\Property(property="token_type", type="string", example="Bearer"),
+     *             @OA\Property(property="expires_in", type="integer", nullable=true, example=86400),
      *             @OA\Property(property="expires_at", type="string", format="date-time")
      *         )
      *     )),
@@ -169,8 +171,10 @@ class PasskeyController extends Controller
         return response()->json([
             'success' => true,
             'data'    => [
+                'user'         => $device->user,
                 'access_token' => $result['token'],
                 'token_type'   => 'Bearer',
+                'expires_in'   => config('sanctum.expiration') ? config('sanctum.expiration') * 60 : null,
                 'expires_at'   => $result['expires_at']->toIso8601String(),
             ],
         ]);

@@ -146,7 +146,32 @@ class ConcurrentSessionTest extends TestCase
 
     public function test_logout_all_revokes_all_sessions(): void
     {
-        $this->markTestSkipped('LoginController::logoutAll not yet implemented');
+        // Create multiple tokens for the user
+        $tokens = [];
+        for ($i = 1; $i <= 3; $i++) {
+            $response = $this->postJson('/api/auth/login', [
+                'email'       => $this->user->email,
+                'password'    => 'password',
+                'device_name' => "Device {$i}",
+            ]);
+            $response->assertOk();
+            $tokens[] = $response->json('data.access_token');
+        }
+
+        $tokenCountBefore = $this->user->tokens()->count();
+        $this->assertGreaterThanOrEqual(3, $tokenCountBefore);
+
+        // Logout all using the last token
+        $response = $this->withHeader('Authorization', 'Bearer ' . $tokens[2])
+            ->postJson('/api/auth/logout-all');
+
+        $response->assertOk()
+            ->assertJsonPath('success', true)
+            ->assertJsonPath('data.message', 'All sessions terminated successfully')
+            ->assertJsonPath('data.revoked_count', $tokenCountBefore);
+
+        // All tokens should be deleted from the database
+        $this->assertEquals(0, $this->user->tokens()->count());
     }
 
     public function test_concurrent_session_limit_is_per_user(): void
