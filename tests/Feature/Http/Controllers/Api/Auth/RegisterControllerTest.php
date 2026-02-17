@@ -29,8 +29,10 @@ class RegisterControllerTest extends ControllerTestCase
                         'email',
                     ],
                     'access_token',
+                    'refresh_token',
                     'token_type',
                     'expires_in',
+                    'refresh_expires_in',
                 ],
             ])
             ->assertJsonPath('success', true)
@@ -39,6 +41,7 @@ class RegisterControllerTest extends ControllerTestCase
             ->assertJsonPath('data.token_type', 'Bearer');
 
         $this->assertNotEmpty($response->json('data.access_token'));
+        $this->assertNotEmpty($response->json('data.refresh_token'));
 
         // Verify user was created
         $this->assertDatabaseHas('users', [

@@ -116,17 +116,19 @@ class RegisterController extends Controller
             ]
         );
 
-        // Create a personal access token for the user with appropriate scopes
-        $token = $this->createTokenWithScopes($user, 'api-token');
+        // Create access/refresh token pair
+        $tokenPair = $this->createTokenPair($user, 'api-token');
 
         return response()->json(
             [
                 'success' => true,
                 'data'    => [
-                    'user'         => $user,
-                    'access_token' => $token,
-                    'token_type'   => 'Bearer',
-                    'expires_in'   => config('sanctum.expiration') ? config('sanctum.expiration') * 60 : null,
+                    'user'               => $user,
+                    'access_token'       => $tokenPair['access_token'],
+                    'refresh_token'      => $tokenPair['refresh_token'],
+                    'token_type'         => 'Bearer',
+                    'expires_in'         => $tokenPair['expires_in'],
+                    'refresh_expires_in' => $tokenPair['refresh_expires_in'],
                 ],
             ],
             201

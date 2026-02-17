@@ -42,7 +42,8 @@ describe('LoginController response envelope', function (): void {
 
         expect($source)->toContain("'success' => true")
             ->and($source)->toContain("'data'    => [")
-            ->and($source)->toContain("'access_token' => \$plainToken");
+            ->and($source)->toContain("'access_token'")
+            ->and($source)->toContain("'refresh_token'");
     });
 });
 

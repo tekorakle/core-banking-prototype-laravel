@@ -171,11 +171,13 @@ class PasskeyController extends Controller
         return response()->json([
             'success' => true,
             'data'    => [
-                'user'         => $device->user,
-                'access_token' => $result['token'],
-                'token_type'   => 'Bearer',
-                'expires_in'   => config('sanctum.expiration') ? config('sanctum.expiration') * 60 : null,
-                'expires_at'   => $result['expires_at']->toIso8601String(),
+                'user'               => $device->user,
+                'access_token'       => $result['access_token'],
+                'refresh_token'      => $result['refresh_token'],
+                'token_type'         => 'Bearer',
+                'expires_in'         => config('sanctum.expiration') ? (int) config('sanctum.expiration') * 60 : null,
+                'refresh_expires_in' => config('sanctum.refresh_token_expiration') ? (int) config('sanctum.refresh_token_expiration') * 60 : null,
+                'expires_at'         => $result['expires_at']->toIso8601String(),
             ],
         ]);
     }

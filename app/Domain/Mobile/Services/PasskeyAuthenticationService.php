@@ -49,7 +49,7 @@ class PasskeyAuthenticationService
      * @param  string  $authenticatorData  The authenticator data (base64url)
      * @param  string  $clientDataJSON  The client data JSON (base64url)
      * @param  string  $signature  The signature from the authenticator (base64url)
-     * @return array{token: string, expires_at: \Carbon\Carbon, session_id: string}|null
+     * @return array{access_token: string, refresh_token: string, expires_at: \Carbon\Carbon, session_id: string}|null
      *
      * @throws BiometricBlockedException If the device is temporarily blocked
      */
@@ -176,7 +176,7 @@ class PasskeyAuthenticationService
                 if (! $user) {
                     throw new RuntimeException('User not found for device');
                 }
-                $plainToken = $this->createTokenWithScopes($user, 'mobile-passkey');
+                $tokenPair = $this->createTokenPair($user, 'mobile-passkey');
 
                 $device->update(['last_active_at' => now()]);
 
@@ -187,9 +187,10 @@ class PasskeyAuthenticationService
                 ]);
 
                 return [
-                    'token'      => $plainToken,
-                    'expires_at' => $session->expires_at,
-                    'session_id' => $session->id,
+                    'access_token'  => $tokenPair['access_token'],
+                    'refresh_token' => $tokenPair['refresh_token'],
+                    'expires_at'    => $session->expires_at,
+                    'session_id'    => $session->id,
                 ];
             });
         } catch (BiometricBlockedException $e) {

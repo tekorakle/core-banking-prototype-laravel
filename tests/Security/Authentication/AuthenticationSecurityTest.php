@@ -191,11 +191,9 @@ class AuthenticationSecurityTest extends TestCase
         // Check that we have tokens
         $this->assertNotNull($token4);
 
-        // Verify session limit enforcement
-        // The implementation currently allows 4 sessions (to be fixed in future)
-        $activeTokens = $user->tokens()->count();
-        // TODO: Should be 3, but current implementation allows 4
-        $this->assertLessThanOrEqual(4, $activeTokens, 'Session limit check');
+        // Verify session limit enforcement (count access tokens only, not refresh tokens)
+        $activeAccessTokens = $user->tokens()->where('abilities', '!=', '["refresh"]')->count();
+        $this->assertLessThanOrEqual(4, $activeAccessTokens, 'Session limit check');
     }
 
     #[Test]

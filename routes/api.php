@@ -79,6 +79,9 @@ Route::prefix('auth')->middleware('api.rate_limit:auth')->group(function () {
     Route::post('/register', [RegisterController::class, 'register']);
     Route::post('/login', [LoginController::class, 'login']);
 
+    // Token refresh (public — accepts refresh token in body or Authorization header)
+    Route::post('/refresh', [LoginController::class, 'refresh'])->middleware('throttle:20,1');
+
     // Password reset endpoints (public)
     Route::post('/forgot-password', [PasswordResetController::class, 'forgotPassword']);
     Route::post('/reset-password', [PasswordResetController::class, 'resetPassword']);
@@ -96,7 +99,6 @@ Route::prefix('auth')->middleware('api.rate_limit:auth')->group(function () {
     Route::middleware(['auth:sanctum', 'check.token.expiration'])->group(function () {
         Route::post('/logout', [LoginController::class, 'logout']);
         Route::post('/logout-all', [LoginController::class, 'logoutAll']);
-        Route::post('/refresh', [LoginController::class, 'refresh']);
         Route::get('/user', [LoginController::class, 'user']);
         Route::get('/me', [LoginController::class, 'user'])->name('api.auth.me');
         Route::post('/delete-account', AccountDeletionController::class)->name('api.auth.delete-account');

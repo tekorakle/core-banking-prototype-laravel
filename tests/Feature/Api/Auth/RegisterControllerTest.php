@@ -29,8 +29,10 @@ class RegisterControllerTest extends ControllerTestCase
                         'email',
                     ],
                     'access_token',
+                    'refresh_token',
                     'token_type',
                     'expires_in',
+                    'refresh_expires_in',
                 ],
             ])
             ->assertJsonPath('success', true);

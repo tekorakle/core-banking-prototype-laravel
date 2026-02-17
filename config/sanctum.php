@@ -50,6 +50,19 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | Refresh Token Expiration Minutes
+    |--------------------------------------------------------------------------
+    |
+    | This value controls the number of minutes until a refresh token will be
+    | considered expired. Refresh tokens are long-lived tokens used to obtain
+    | new access tokens after they expire.
+    |
+    */
+
+    'refresh_token_expiration' => env('SANCTUM_REFRESH_TOKEN_EXPIRATION', 43200), // 30 days
+
+    /*
+    |--------------------------------------------------------------------------
     | Token Prefix
     |--------------------------------------------------------------------------
     |
