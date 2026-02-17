@@ -1832,6 +1832,24 @@ After 18 releases (v1.1.0 → v3.0.0), the platform has grown to 41 domains, 266
 
 ---
 
+## v5.1.3 — Mobile API Compatibility ✅ COMPLETED
+
+**Released**: February 17, 2026
+**Theme**: Mobile Onboarding Fixes, Auth Response Standardization, Token Refresh
+
+### Delivered
+
+| Feature | Status | Description |
+|---------|--------|-------------|
+| Optional `owner_address` | ✅ | `POST /api/v1/relayer/account` no longer requires `owner_address` — derives deterministic address from authenticated user during onboarding |
+| Auth response standardization | ✅ | Register endpoint now returns standard `{ success, data }` envelope with full User model, matching login format |
+| Token refresh endpoint | ✅ | `POST /api/auth/refresh` implemented — revokes current token, issues new one with fresh expiration |
+| Logout-all endpoint | ✅ | `POST /api/auth/logout-all` implemented — revokes all tokens across all devices |
+| Passkey auth response | ✅ | `authenticate` now returns `user` object and `expires_in` for consistent mobile session handling |
+| Rate limiter crash fix | ✅ | `TransactionRateLimitMiddleware.incrementCounters()` no longer crashes on unknown transaction types (`relayer`) |
+
+---
+
 ## v5.1.2 — Production Landing Page Fix ✅ COMPLETED
 
 **Released**: February 16, 2026
@@ -1849,6 +1867,6 @@ The `/app` landing page rendered correctly locally but broke in production becau
 
 ---
 
-*Document Version: 5.1.2*
+*Document Version: 5.1.3*
 *Created: January 11, 2026*
-*Updated: February 16, 2026 (v5.1.2 Production Landing Page Fix released)*
+*Updated: February 17, 2026 (v5.1.3 Mobile API Compatibility released)*

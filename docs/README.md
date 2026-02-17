@@ -96,11 +96,12 @@ Welcome to the FinAegis documentation. This guide will help you understand, use,
 
 ## Platform Status
 
-- **Version**: 5.1.2 (Production Landing Page Fix)
+- **Version**: 5.1.3 (Mobile API Compatibility)
 - **Status**: Demonstration Prototype
-- **Last Updated**: February 16, 2026
+- **Last Updated**: February 17, 2026
 
-### Current Release Features (v5.1.2)
+### Current Release Features (v5.1.3)
+- **v5.1.3**: Mobile API compat — optional `owner_address` for smart account onboarding, auth response standardization, token refresh & logout-all endpoints, rate limiter fix
 - **v5.1.2**: Production CSS fix for `/app` landing page — standalone pre-compiled Tailwind CSS (CSP-compliant, Vite-independent)
 - **v5.1.1**: Mobile app landing page (`/app`) with email signup, flaky Azure HSM test fix
 - **v5.1.0**: 21 mobile API endpoints, GraphQL 33-domain full coverage, blockchain address models, CI hardening

@@ -20,6 +20,7 @@ git status && git branch --show-current
 ### Version Status
 | Version | Status | Key Changes |
 |---------|--------|-------------|
+| v5.1.3 | ✅ Released | Mobile API Compat: optional `owner_address` for smart account onboarding, auth response standardization, token refresh/logout-all endpoints, rate limiter 500 fix |
 | v5.1.2 | ✅ Released | Production Landing Page Fix: standalone pre-compiled CSS for `/app` (CSP-compliant, Vite-independent) |
 | v5.1.1 | ✅ Released | Mobile App Landing Page: `/app` teaser with email signup, feature showcase, flaky Azure HSM test fix |
 | v5.1.0 | ✅ Released | Mobile API Completeness: 21 mobile endpoints (Privacy, Commerce, Card, Wallet, Mobile), GraphQL 33-domain full coverage, blockchain address models, CI hardening, axios CVE fix |

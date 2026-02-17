@@ -5,6 +5,21 @@ All notable changes to the FinAegis Core Banking Platform will be documented in 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [5.1.3] - 2026-02-17
+
+### Fixed
+- `POST /api/v1/relayer/account` required `owner_address` — unusable during mobile onboarding when user has no wallet; now optional with server-side derivation from authenticated user
+- Register endpoint response inconsistency — returned flat `{ message, user: {subset}, access_token }` instead of standard `{ success, data: { user, access_token, token_type, expires_in } }` envelope; now matches login format with full User model
+- Passkey authenticate response missing `user` object and `expires_in` — mobile had incomplete session data after passkey auth
+- `TransactionRateLimitMiddleware` crashed (500) on relayer endpoints — `incrementCounters()` lacked null-coalesce fallback for unknown transaction types like `relayer`
+
+### Added
+- `POST /api/auth/refresh` — token refresh endpoint (route existed but method was missing); revokes current token and issues a new one
+- `POST /api/auth/logout-all` — revoke all tokens across all devices (route existed but method was missing)
+- `expires_in` field in register and passkey auth responses for consistent token lifetime visibility
+
+---
+
 ## [5.1.2] - 2026-02-16
 
 ### Fixed
