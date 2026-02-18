@@ -1121,6 +1121,8 @@ main ─────────●─────────●─────
 | **v5.1.0** | Mobile API Completeness | 21 mobile endpoints, GraphQL 33-domain full coverage, blockchain models, CI hardening, axios CVE fix | ✅ Released 2026-02-16 |
 | **v5.1.1** | Mobile App Landing Page | Landing page at `/app` with email signup, flaky Azure HSM test fix | ✅ Released 2026-02-16 |
 | **v5.1.2** | Production Landing Page Fix | Standalone pre-compiled CSS for `/app` (CSP-compliant, Vite-independent) | ✅ Released 2026-02-16 |
+| **v5.1.3** | Mobile API Compatibility | Auth response standardization, token refresh/logout-all endpoints, rate limiter fix | ✅ Released 2026-02-17 |
+| **v5.1.4** | Refresh Token Mechanism | Proper access/refresh token pairs, token rotation, PHPStan fix, OpenAPI docs update | ✅ Released 2026-02-18 |
 
 ---
 
@@ -1832,6 +1834,26 @@ After 18 releases (v1.1.0 → v3.0.0), the platform has grown to 41 domains, 266
 
 ---
 
+## v5.1.4 — Refresh Token Mechanism ✅ COMPLETED
+
+**Released**: February 18, 2026
+**Theme**: Proper Access/Refresh Token Pairs, Tech Debt, Documentation
+
+### Delivered
+
+| Feature | Status | Description |
+|---------|--------|-------------|
+| Refresh token mechanism | ✅ | Access tokens (short-lived, role-based) paired with refresh tokens (`['refresh']` ability, 30-day default) via Sanctum `abilities` column — no DB migration |
+| Token rotation | ✅ | `POST /api/auth/refresh` revokes old access+refresh pair, issues new pair; prevents replay attacks |
+| Public refresh endpoint | ✅ | `/refresh` route moved out of `auth:sanctum` middleware — works after access tokens expire; accepts token via body or `Authorization: Bearer` |
+| Auth response enrichment | ✅ | `refresh_token` and `refresh_expires_in` in login, register, passkey auth, and refresh responses |
+| Session limit fix | ✅ | `enforceSessionLimits()` now excludes refresh tokens from concurrent session count |
+| PHPStan config fix | ✅ | `config/sanctum.php` `explode()` type error resolved with `(string)` cast |
+| OpenAPI docs update | ✅ | Swagger annotations for login and register endpoints now include `refresh_token` and `refresh_expires_in` |
+| Security tests | ✅ | 5 new tests: refresh after expiry, reject access tokens for refresh, reject expired refresh tokens, token rotation, missing token |
+
+---
+
 ## v5.1.3 — Mobile API Compatibility ✅ COMPLETED
 
 **Released**: February 17, 2026
@@ -1867,6 +1889,6 @@ The `/app` landing page rendered correctly locally but broke in production becau
 
 ---
 
-*Document Version: 5.1.3*
+*Document Version: 5.1.4*
 *Created: January 11, 2026*
-*Updated: February 17, 2026 (v5.1.3 Mobile API Compatibility released)*
+*Updated: February 18, 2026 (v5.1.4 Refresh Token Mechanism released)*

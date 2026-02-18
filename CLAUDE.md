@@ -20,6 +20,7 @@ git status && git branch --show-current
 ### Version Status
 | Version | Status | Key Changes |
 |---------|--------|-------------|
+| v5.1.4 | ✅ Released | Refresh Token Mechanism: proper access/refresh token pairs with rotation, PHPStan fix, OpenAPI docs update |
 | v5.1.3 | ✅ Released | Mobile API Compat: optional `owner_address` for smart account onboarding, auth response standardization, token refresh/logout-all endpoints, rate limiter 500 fix |
 | v5.1.2 | ✅ Released | Production Landing Page Fix: standalone pre-compiled CSS for `/app` (CSP-compliant, Vite-independent) |
 | v5.1.1 | ✅ Released | Mobile App Landing Page: `/app` teaser with email signup, feature showcase, flaky Azure HSM test fix |

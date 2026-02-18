@@ -28,7 +28,7 @@ class LoginController extends Controller
      * @OA\Post(
      *     path="/api/auth/login",
      *     summary="Login user",
-     *     description="Authenticate user with email and password to receive an access token",
+     *     description="Authenticate user with email and password to receive an access/refresh token pair",
      *     operationId="login",
      *     tags={"Authentication"},
      *
@@ -63,8 +63,10 @@ class LoginController extends Controller
      * @OA\Property(property="email_verified_at", type="string", nullable=true)
      *                 ),
      * @OA\Property(property="access_token",      type="string", example="2|VVGVrIVokPBXkWLOi2yK13eHlQwQtQQONX5GCngZ..."),
+     * @OA\Property(property="refresh_token",     type="string", example="3|rEfReShToKeNhErE..."),
      * @OA\Property(property="token_type",        type="string", example="Bearer"),
-     * @OA\Property(property="expires_in",        type="integer", nullable=true, example=null, description="Token expiration time in seconds")
+     * @OA\Property(property="expires_in",        type="integer", nullable=true, example=86400, description="Access token expiration time in seconds"),
+     * @OA\Property(property="refresh_expires_in", type="integer", nullable=true, example=2592000, description="Refresh token expiration time in seconds")
      *             )
      *         )
      *     ),
