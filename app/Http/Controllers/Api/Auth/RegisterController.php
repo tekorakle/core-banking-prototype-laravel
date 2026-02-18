@@ -63,8 +63,10 @@ class RegisterController extends Controller
      * @OA\Property(property="email_verified_at",     type="string", nullable=true, example=null)
      *                 ),
      * @OA\Property(property="access_token",          type="string", example="1|aBcDeFgHiJkLmNoPqRsTuVwXyZ..."),
+     * @OA\Property(property="refresh_token",         type="string", example="2|rEfReShToKeNhErE..."),
      * @OA\Property(property="token_type",            type="string", example="Bearer"),
-     * @OA\Property(property="expires_in",            type="integer", nullable=true, example=86400, description="Token expiration time in seconds")
+     * @OA\Property(property="expires_in",            type="integer", nullable=true, example=86400, description="Access token expiration time in seconds"),
+     * @OA\Property(property="refresh_expires_in",    type="integer", nullable=true, example=2592000, description="Refresh token expiration time in seconds")
      *             )
      *         )
      *     ),

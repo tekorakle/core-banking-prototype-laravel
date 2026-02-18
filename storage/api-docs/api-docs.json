@@ -5449,7 +5449,7 @@
                     "Authentication"
                 ],
                 "summary": "Login user",
-                "description": "Authenticate user with email and password to receive an access token",
+                "description": "Authenticate user with email and password to receive an access/refresh token pair",
                 "operationId": "login",
                 "requestBody": {
                     "required": true,
@@ -5520,14 +5520,24 @@
                                                     "type": "string",
                                                     "example": "2|VVGVrIVokPBXkWLOi2yK13eHlQwQtQQONX5GCngZ..."
                                                 },
+                                                "refresh_token": {
+                                                    "type": "string",
+                                                    "example": "3|rEfReShToKeNhErE..."
+                                                },
                                                 "token_type": {
                                                     "type": "string",
                                                     "example": "Bearer"
                                                 },
                                                 "expires_in": {
-                                                    "description": "Token expiration time in seconds",
+                                                    "description": "Access token expiration time in seconds",
                                                     "type": "integer",
-                                                    "example": null,
+                                                    "example": 86400,
+                                                    "nullable": true
+                                                },
+                                                "refresh_expires_in": {
+                                                    "description": "Refresh token expiration time in seconds",
+                                                    "type": "integer",
+                                                    "example": 2592000,
                                                     "nullable": true
                                                 }
                                             },
@@ -5588,6 +5598,162 @@
                                         "message": {
                                             "type": "string",
                                             "example": "Logged out successfully"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthenticated",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Unauthenticated"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/auth/refresh": {
+            "post": {
+                "tags": [
+                    "Authentication"
+                ],
+                "summary": "Refresh access token",
+                "description": "Uses a refresh token to obtain a new access/refresh token pair. Does not require auth:sanctum middleware.",
+                "operationId": "refreshToken",
+                "requestBody": {
+                    "required": false,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "refresh_token": {
+                                        "description": "Refresh token (alternatively send via Authorization: Bearer header)",
+                                        "type": "string",
+                                        "example": "2|xyz..."
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Token refreshed successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "data": {
+                                            "properties": {
+                                                "access_token": {
+                                                    "type": "string",
+                                                    "example": "3|newTokenHere..."
+                                                },
+                                                "refresh_token": {
+                                                    "type": "string",
+                                                    "example": "4|newRefreshHere..."
+                                                },
+                                                "token_type": {
+                                                    "type": "string",
+                                                    "example": "Bearer"
+                                                },
+                                                "expires_in": {
+                                                    "description": "Access token expiration time in seconds",
+                                                    "type": "integer",
+                                                    "example": 86400,
+                                                    "nullable": true
+                                                },
+                                                "refresh_expires_in": {
+                                                    "description": "Refresh token expiration time in seconds",
+                                                    "type": "integer",
+                                                    "example": 2592000,
+                                                    "nullable": true
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Invalid or expired refresh token",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": false
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Invalid or expired refresh token."
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/auth/logout-all": {
+            "post": {
+                "tags": [
+                    "Authentication"
+                ],
+                "summary": "Logout from all devices",
+                "description": "Revokes all tokens for the authenticated user across all devices",
+                "operationId": "logoutAll",
+                "responses": {
+                    "200": {
+                        "description": "All sessions terminated",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "data": {
+                                            "properties": {
+                                                "message": {
+                                                    "type": "string",
+                                                    "example": "All sessions terminated successfully"
+                                                },
+                                                "revoked_count": {
+                                                    "type": "integer",
+                                                    "example": 3
+                                                }
+                                            },
+                                            "type": "object"
                                         }
                                     },
                                     "type": "object"
@@ -5839,12 +6005,20 @@
                                         },
                                         "data": {
                                             "properties": {
+                                                "user": {
+                                                    "type": "object"
+                                                },
                                                 "access_token": {
                                                     "type": "string"
                                                 },
                                                 "token_type": {
                                                     "type": "string",
                                                     "example": "Bearer"
+                                                },
+                                                "expires_in": {
+                                                    "type": "integer",
+                                                    "example": 86400,
+                                                    "nullable": true
                                                 },
                                                 "expires_at": {
                                                     "type": "string",
@@ -6237,39 +6411,60 @@
                             "application/json": {
                                 "schema": {
                                     "properties": {
-                                        "message": {
-                                            "type": "string",
-                                            "example": "User registered successfully"
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": true
                                         },
-                                        "user": {
+                                        "data": {
                                             "properties": {
-                                                "id": {
+                                                "user": {
+                                                    "properties": {
+                                                        "id": {
+                                                            "type": "integer",
+                                                            "example": 1
+                                                        },
+                                                        "name": {
+                                                            "type": "string",
+                                                            "example": "John Doe"
+                                                        },
+                                                        "email": {
+                                                            "type": "string",
+                                                            "example": "john@example.com"
+                                                        },
+                                                        "email_verified_at": {
+                                                            "type": "string",
+                                                            "example": null,
+                                                            "nullable": true
+                                                        }
+                                                    },
+                                                    "type": "object"
+                                                },
+                                                "access_token": {
+                                                    "type": "string",
+                                                    "example": "1|aBcDeFgHiJkLmNoPqRsTuVwXyZ..."
+                                                },
+                                                "refresh_token": {
+                                                    "type": "string",
+                                                    "example": "2|rEfReShToKeNhErE..."
+                                                },
+                                                "token_type": {
+                                                    "type": "string",
+                                                    "example": "Bearer"
+                                                },
+                                                "expires_in": {
+                                                    "description": "Access token expiration time in seconds",
                                                     "type": "integer",
-                                                    "example": 1
+                                                    "example": 86400,
+                                                    "nullable": true
                                                 },
-                                                "name": {
-                                                    "type": "string",
-                                                    "example": "John Doe"
-                                                },
-                                                "email": {
-                                                    "type": "string",
-                                                    "example": "john@example.com"
-                                                },
-                                                "email_verified_at": {
-                                                    "type": "string",
-                                                    "example": null,
+                                                "refresh_expires_in": {
+                                                    "description": "Refresh token expiration time in seconds",
+                                                    "type": "integer",
+                                                    "example": 2592000,
                                                     "nullable": true
                                                 }
                                             },
                                             "type": "object"
-                                        },
-                                        "access_token": {
-                                            "type": "string",
-                                            "example": "1|aBcDeFgHiJkLmNoPqRsTuVwXyZ..."
-                                        },
-                                        "token_type": {
-                                            "type": "string",
-                                            "example": "Bearer"
                                         }
                                     },
                                     "type": "object"
@@ -37185,7 +37380,7 @@
                     "Smart Accounts"
                 ],
                 "summary": "Create or retrieve a smart account",
-                "description": "Create or retrieve a smart account.\n\nReturns the counterfactual smart account address for the given owner.\nThe account is computed deterministically but not deployed on-chain\nuntil the first transaction.",
+                "description": "Create or retrieve a smart account.\n\nReturns the counterfactual smart account address for the given owner.\nThe account is computed deterministically but not deployed on-chain\nuntil the first transaction.\n\nIf owner_address is omitted, the server derives a deterministic address\nfrom the authenticated user, enabling initial account creation during\nonboarding when the user has no wallet yet.",
                 "operationId": "db3d0966b9d62887c4b1a9f102719b22",
                 "requestBody": {
                     "required": true,
@@ -37193,13 +37388,14 @@
                         "application/json": {
                             "schema": {
                                 "required": [
-                                    "owner_address",
                                     "network"
                                 ],
                                 "properties": {
                                     "owner_address": {
+                                        "description": "EOA owner address. If omitted, derived from authenticated user.",
                                         "type": "string",
-                                        "example": "0x742d35Cc6634C0532925a3b844Bc454e4438f44e"
+                                        "example": "0x742d35Cc6634C0532925a3b844Bc454e4438f44e",
+                                        "nullable": true
                                     },
                                     "network": {
                                         "type": "string",
@@ -37265,6 +37461,9 @@
                     },
                     "401": {
                         "description": "Unauthorized"
+                    },
+                    "422": {
+                        "description": "Validation error"
                     }
                 },
                 "security": [

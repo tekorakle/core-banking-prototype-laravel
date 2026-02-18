@@ -173,8 +173,39 @@ Key deliverables:
 - API Gateway Middleware: Centralized request routing, rate limiting, authentication
 - 41 domains total, 775+ test files, 6300+ tests, PHPStan Level 8
 
+v5.1.0 — Mobile API Completeness & GraphQL Full Coverage (COMPLETED)
+Status: Released (2026-02-16)
+Key deliverables:
+- 21 missing mobile API endpoints (Privacy 11, Commerce 4, Card Issuance 3, Mobile 2, Wallet 1)
+- GraphQL schemas for 9 remaining domains (completing 33-domain coverage)
+- GraphQL integration tests for 14 domains
+- BlockchainAddress/BlockchainTransaction Eloquent models with UUID support
+- 42 new feature tests, 9 pre-existing test failures fixed
+- CI hardening: k6 non-blocking, PHPStan bootstrap, PHPCS fixes
+- Security: axios CVE-2025-27152 fix, PHPStan generic types, MariaDB timestamp fixes
+
+v5.1.3 — Mobile API Compatibility (COMPLETED)
+Status: Released (2026-02-17)
+Key deliverables:
+- Optional `owner_address` for `POST /api/v1/relayer/account` — mobile onboarding fix
+- Auth response standardization (register, passkey) — `{ success, data }` envelope with full User model
+- Token refresh endpoint (`POST /api/auth/refresh`) and logout-all (`POST /api/auth/logout-all`)
+- Rate limiter crash fix for unknown transaction types
+
+v5.1.4 — Refresh Token Mechanism (COMPLETED)
+Status: Released (2026-02-18)
+Key deliverables:
+- Proper access/refresh token pairs using Sanctum `abilities` column — no DB migration
+- Token rotation on refresh (old pair revoked, new pair issued)
+- `POST /api/auth/refresh` moved to public route group (works after access tokens expire)
+- `refresh_token` and `refresh_expires_in` in all auth responses
+- `sanctum.refresh_token_expiration` config (default: 30 days)
+- PHPStan `config/sanctum.php` type error fixed
+- OpenAPI/Swagger annotations updated for login/register endpoints
+- 5 new security tests for refresh token flows
+
 Future roadmap:
-- v5.1.0 — TBD (Laravel 13 upgrade when available, PHP 8.5 features)
+- v5.2.0 — TBD (Laravel 13 upgrade when available, PHP 8.5 features)
 
 ---
 

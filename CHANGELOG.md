@@ -5,6 +5,24 @@ All notable changes to the FinAegis Core Banking Platform will be documented in 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [5.1.4] - 2026-02-18
+
+### Added
+- Proper refresh token mechanism with token rotation — access tokens (short-lived, role-based abilities) paired with refresh tokens (`['refresh']` ability, 30-day lifetime) using Sanctum's `abilities` column; no DB migration needed
+- `POST /api/auth/refresh` now accepts refresh token via request body (`refresh_token`) or `Authorization: Bearer` header — endpoint moved out of `auth:sanctum` middleware so it works after access tokens expire
+- Token pair rotation on refresh — old access + refresh tokens are revoked before issuing new pair, preventing replay attacks
+- `refresh_token`, `refresh_expires_in` fields in login, register, passkey auth, and refresh responses
+- `sanctum.refresh_token_expiration` config (default: 30 days / 43200 minutes)
+- `createTokenPair()` and `createRefreshToken()` methods in `HasApiScopes` trait
+- 5 new security tests: refresh after access token expiry, reject access tokens for refresh, reject expired refresh tokens, token rotation revocation, missing token handling
+- Session limit enforcement now excludes refresh tokens from count
+
+### Fixed
+- PHPStan type error in `config/sanctum.php` — `explode()` received `bool|string` from `env()`, now cast to `(string)`
+- OpenAPI/Swagger annotations for login and register endpoints missing `refresh_token` and `refresh_expires_in` fields
+
+---
+
 ## [5.1.3] - 2026-02-17
 
 ### Fixed

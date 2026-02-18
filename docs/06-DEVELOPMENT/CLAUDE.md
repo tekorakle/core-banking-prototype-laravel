@@ -2145,6 +2145,6 @@ $user->assignRole('customer_business');
 
 ---
 
-**Last Updated**: 2026-02-17
-**Version**: 5.1.3
-**Status**: Production Ready - v5.1.3 with Mobile API Compatibility, Token Refresh, Smart Account Onboarding, Auth Standardization
+**Last Updated**: 2026-02-18
+**Version**: 5.1.4
+**Status**: Production Ready - v5.1.4 with Refresh Token Mechanism, Token Rotation, PHPStan Fix, OpenAPI Update
