@@ -37,17 +37,11 @@ class SecurityHeaders
         $permissions = $this->getPermissionsPolicy();
         $response->headers->set('Permissions-Policy', $permissions);
 
-        // HSTS - different values for different environments
+        // HSTS - only set in production where HTTPS is guaranteed
         if (app()->environment('production')) {
             $response->headers->set(
                 'Strict-Transport-Security',
                 'max-age=31536000; includeSubDomains; preload'
-            );
-        } elseif (app()->environment('testing', 'local', 'development')) {
-            // Set a shorter HSTS duration for testing
-            $response->headers->set(
-                'Strict-Transport-Security',
-                'max-age=31536000; includeSubDomains'
             );
         }
 
@@ -76,10 +70,10 @@ class SecurityHeaders
         $apiEndpoint = config('security.csp.api_endpoint', '');
         $wsEndpoint = config('security.csp.ws_endpoint', '');
 
-        // Build policies
+        // Build production policies (no unsafe-eval)
         $policies = [
             "default-src 'self'",
-            "script-src 'self' 'unsafe-inline' 'unsafe-eval' " . implode(' ', $scriptSources),
+            "script-src 'self' 'unsafe-inline' " . implode(' ', $scriptSources),
             "style-src 'self' 'unsafe-inline' " . implode(' ', $styleSources),
             "img-src 'self' data: https:",
             "font-src 'self' " . implode(' ', $fontSources),
@@ -97,7 +91,7 @@ class SecurityHeaders
             $policies[] = 'upgrade-insecure-requests';
         }
 
-        // In local/development, allow more flexibility
+        // In local/development, allow more flexibility (unsafe-eval needed for Vite HMR)
         if (app()->environment('local', 'development')) {
             // Get local hostnames
             $localHosts = explode(',', config('app.local_hostnames', 'localhost,127.0.0.1'));
