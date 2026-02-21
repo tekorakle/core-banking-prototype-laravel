@@ -1,7 +1,7 @@
 # FinAegis Prototype Roadmap
 
-**Last Updated:** 2026-02-13
-**Current Version:** v5.0.1
+**Last Updated:** 2026-02-21
+**Current Version:** v5.1.5
 **Domains:** 41 bounded contexts
 
 ---
@@ -132,9 +132,46 @@
 - Live monitoring dashboard with 5 endpoints
 - Notification service, enhanced observability
 
-### v5.0.1 -- Platform Hardening (Current)
+### v5.0.1 -- Platform Hardening
 - GraphQL CQRS alignment (21 mutations), OpenAPI 100% coverage
 - Plugin Marketplace UI, PHP 8.4 CI, 97 test conversions, documentation refresh
+
+### v5.1.0 -- Mobile API Completeness & GraphQL Full Coverage
+- 21 missing mobile API endpoints (Privacy, Commerce, Card Issuance, Mobile, Wallet)
+- GraphQL schemas for 9 remaining domains (completing 33-domain coverage)
+- BlockchainAddress/BlockchainTransaction Eloquent models
+- CI hardening, axios CVE fix, 42 new feature tests
+
+### v5.1.1 -- Mobile App Landing Page
+- `/app` teaser page with email signup and feature showcase
+- Flaky Azure HSM test fix
+
+### v5.1.2 -- Production Landing Page Fix
+- Standalone pre-compiled CSS for `/app` (CSP-compliant, Vite-independent)
+
+### v5.1.3 -- Mobile API Compatibility
+- Optional `owner_address` for smart account onboarding
+- Auth response standardization, token refresh/logout-all endpoints
+- Rate limiter crash fix for unknown transaction types
+
+### v5.1.4 -- Refresh Token Mechanism
+- Access/refresh token pairs with rotation via Sanctum abilities
+- `POST /api/auth/refresh` on public route, PHPStan fix, OpenAPI update
+
+### v5.1.5 -- Dependency Cleanup & Production Readiness (Current)
+- Upgrade l5-swagger 9 to 10 (swagger-php 5 to 6, modern architecture)
+- Fix PSR-4 autoloading for plugin directories
+- Production environment template (`.env.production.example`)
+- Card API enhancements: network selection, labels, transactions, biometric cancel
+
+---
+
+## Future Roadmap
+
+### v5.2.0 -- OpenAPI Attribute Migration (Planned)
+- Migrate 10,000+ `@OA\` docblock annotations to PHP 8 `#[OA\]` attributes
+- Drop `doctrine/annotations` dependency entirely
+- Laravel 13 upgrade when available, PHP 8.5 features
 
 ---
 

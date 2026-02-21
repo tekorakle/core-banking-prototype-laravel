@@ -463,7 +463,7 @@ Plugin marketplace with sandboxing and security scanning:
 - **Manager**: `app/Infrastructure/Plugins/PluginManager.php`
 - **Sandbox**: `app/Infrastructure/Plugins/PluginSandbox.php`
 - **Security Scanner**: `app/Infrastructure/Plugins/PluginSecurityScanner.php`
-- **Example plugins**: `plugins/webhook-notifier/`, `plugins/audit-exporter/`, `plugins/dashboard-widget/`
+- **Example plugins**: `plugins/WebhookNotifier/`, `plugins/AuditExporter/`, `plugins/DashboardWidget/`
 - **Commands**: `php artisan plugin:install`, `php artisan plugin:scan`
 
 ### Workflow Orchestration (Saga Pattern)
