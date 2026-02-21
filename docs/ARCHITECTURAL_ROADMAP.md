@@ -17,7 +17,7 @@ Transform FinAegis into the **premier open source core banking platform** that:
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────┐
-│                     FINAEGIS CORE BANKING PLATFORM (v5.1.4)              │
+│                     FINAEGIS CORE BANKING PLATFORM (v5.1.5)              │
 ├─────────────────────────────────────────────────────────────────────────┤
 │  CORE BANKING                                                            │
 │  ┌────────────┐  ┌────────────┐  ┌────────────┐  ┌────────────┐        │
@@ -74,7 +74,7 @@ Transform FinAegis into the **premier open source core banking platform** that:
 | **BaaS** | FinancialInstitution (Partner APIs, SDKs, Widgets, Billing, Marketplace) | Mature |
 | **Supporting** | User, Contact, Newsletter, Webhook, Activity, Batch, Cgo, Shared | Complete |
 
-### Key Metrics (as of v5.1.4)
+### Key Metrics (as of v5.1.5)
 
 | Metric | Value |
 |--------|-------|
@@ -273,10 +273,10 @@ The FinAegis platform has evolved from a core banking prototype to a comprehensi
 8. **Banking-as-a-Service** - Partner APIs, SDK generation, embeddable widgets
 9. **AI Framework** - MCP tools, NLP queries, ML anomaly detection
 
-**v5.1.4 Focus**: Refresh token mechanism — proper access/refresh token pairs with rotation, tech debt cleanup, OpenAPI documentation update.
+**v5.1.5 Focus**: Dependency cleanup — l5-swagger 9→10 (swagger-php 6), PSR-4 plugin fix, `.env.production.example` for mobile backend deployment, passkey test fix.
 
 ---
 
-*Document Version: 5.1.4*
-*Last Updated: February 18, 2026*
+*Document Version: 5.1.5*
+*Last Updated: February 21, 2026*
 *Author: Architecture Review*

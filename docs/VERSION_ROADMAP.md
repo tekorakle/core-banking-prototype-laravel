@@ -1123,6 +1123,7 @@ main ─────────●─────────●─────
 | **v5.1.2** | Production Landing Page Fix | Standalone pre-compiled CSS for `/app` (CSP-compliant, Vite-independent) | ✅ Released 2026-02-16 |
 | **v5.1.3** | Mobile API Compatibility | Auth response standardization, token refresh/logout-all endpoints, rate limiter fix | ✅ Released 2026-02-17 |
 | **v5.1.4** | Refresh Token Mechanism | Proper access/refresh token pairs, token rotation, PHPStan fix, OpenAPI docs update | ✅ Released 2026-02-18 |
+| **v5.1.5** | Dependency Cleanup & Production Readiness | l5-swagger 9→10 (swagger-php 6), PSR-4 plugin fix, `.env.production.example` for mobile backend, passkey test fix | ✅ Released 2026-02-21 |
 
 ---
 
@@ -1889,6 +1890,6 @@ The `/app` landing page rendered correctly locally but broke in production becau
 
 ---
 
-*Document Version: 5.1.4*
+*Document Version: 5.1.5*
 *Created: January 11, 2026*
-*Updated: February 18, 2026 (v5.1.4 Refresh Token Mechanism released)*
+*Updated: February 21, 2026 (v5.1.5 Dependency Cleanup & Production Readiness released)*

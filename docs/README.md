@@ -96,11 +96,12 @@ Welcome to the FinAegis documentation. This guide will help you understand, use,
 
 ## Platform Status
 
-- **Version**: 5.1.4 (Refresh Token Mechanism)
-- **Status**: Demonstration Prototype
-- **Last Updated**: February 18, 2026
+- **Version**: 5.1.5 (Dependency Cleanup & Production Readiness)
+- **Status**: Demonstration Prototype / Production Mobile Backend
+- **Last Updated**: February 21, 2026
 
-### Current Release Features (v5.1.4)
+### Current Release Features (v5.1.5)
+- **v5.1.5**: Dependency cleanup — l5-swagger 9→10 (swagger-php 6), PSR-4 plugin fix, `.env.production.example` for mobile backend deployment, passkey test fix
 - **v5.1.4**: Refresh token mechanism — proper access/refresh token pairs with rotation, PHPStan fix, OpenAPI docs update
 - **v5.1.3**: Mobile API compat — optional `owner_address` for smart account onboarding, auth response standardization, token refresh & logout-all endpoints, rate limiter fix
 - **v5.1.2**: Production CSS fix for `/app` landing page — standalone pre-compiled Tailwind CSS (CSP-compliant, Vite-independent)

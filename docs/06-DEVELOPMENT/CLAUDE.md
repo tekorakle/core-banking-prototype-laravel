@@ -2145,6 +2145,6 @@ $user->assignRole('customer_business');
 
 ---
 
-**Last Updated**: 2026-02-18
-**Version**: 5.1.4
-**Status**: Production Ready - v5.1.4 with Refresh Token Mechanism, Token Rotation, PHPStan Fix, OpenAPI Update
+**Last Updated**: 2026-02-21
+**Version**: 5.1.5
+**Status**: Production Ready - v5.1.5 with Dependency Cleanup (l5-swagger 10, swagger-php 6), PSR-4 Plugin Fix, Production Env Template

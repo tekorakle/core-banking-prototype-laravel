@@ -20,6 +20,7 @@ git status && git branch --show-current
 ### Version Status
 | Version | Status | Key Changes |
 |---------|--------|-------------|
+| v5.1.5 | ✅ Released | Dependency Cleanup: l5-swagger 9→10 (swagger-php 6), PSR-4 plugin fix, `.env.production.example`, passkey test fix |
 | v5.1.4 | ✅ Released | Refresh Token Mechanism: proper access/refresh token pairs with rotation, PHPStan fix, OpenAPI docs update |
 | v5.1.3 | ✅ Released | Mobile API Compat: optional `owner_address` for smart account onboarding, auth response standardization, token refresh/logout-all endpoints, rate limiter 500 fix |
 | v5.1.2 | ✅ Released | Production Landing Page Fix: standalone pre-compiled CSS for `/app` (CSP-compliant, Vite-independent) |
@@ -260,7 +261,7 @@ Before marking any task complete:
 
 | Category | Files |
 |----------|-------|
-| Config | `.env.example`, `phpunit.xml`, `phpstan.neon`, `.php-cs-fixer.php` |
+| Config | `.env.example`, `.env.production.example`, `phpunit.xml`, `phpstan.neon`, `.php-cs-fixer.php` |
 | CI/CD | `.github/workflows/ci-pipeline.yml`, `.github/workflows/security.yml` |
 | Docs | `docs/`, `README.md` |
 
