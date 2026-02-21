@@ -184,169 +184,20 @@
                                 </div>
                             </div>
 
-                            <!-- Placeholder Transactions -->
-                            <div class="divide-y divide-gray-200 dark:divide-gray-700">
-                                <!-- Transaction 1 -->
-                                <div class="grid grid-cols-1 md:grid-cols-6 gap-2 md:gap-4 py-4 items-center">
-                                    <div class="text-sm text-gray-600 dark:text-gray-400">
-                                        <span class="md:hidden text-xs font-medium text-gray-500 dark:text-gray-400 uppercase mr-2">Date:</span>
-                                        Feb 10, 2026
-                                    </div>
-                                    <div class="text-sm text-gray-900 dark:text-white">
-                                        <span class="md:hidden text-xs font-medium text-gray-500 dark:text-gray-400 uppercase mr-2">Route:</span>
-                                        <span class="inline-flex items-center">
-                                            Ethereum
-                                            <svg class="w-4 h-4 mx-1 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path>
-                                            </svg>
-                                            Polygon
-                                        </span>
-                                    </div>
-                                    <div class="text-sm text-gray-900 dark:text-white">
-                                        <span class="md:hidden text-xs font-medium text-gray-500 dark:text-gray-400 uppercase mr-2">Token:</span>
-                                        USDC
-                                    </div>
-                                    <div class="text-sm text-gray-900 dark:text-white md:text-right">
-                                        <span class="md:hidden text-xs font-medium text-gray-500 dark:text-gray-400 uppercase mr-2">Amount:</span>
-                                        1,500.00
-                                    </div>
-                                    <div class="md:text-center">
-                                        <span class="md:hidden text-xs font-medium text-gray-500 dark:text-gray-400 uppercase mr-2">Status:</span>
-                                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200">
-                                            Completed
-                                        </span>
-                                    </div>
-                                    <div class="text-sm text-gray-600 dark:text-gray-400">
-                                        <span class="md:hidden text-xs font-medium text-gray-500 dark:text-gray-400 uppercase mr-2">Provider:</span>
-                                        Wormhole
-                                    </div>
-                                </div>
-
-                                <!-- Transaction 2 -->
-                                <div class="grid grid-cols-1 md:grid-cols-6 gap-2 md:gap-4 py-4 items-center">
-                                    <div class="text-sm text-gray-600 dark:text-gray-400">
-                                        <span class="md:hidden text-xs font-medium text-gray-500 dark:text-gray-400 uppercase mr-2">Date:</span>
-                                        Feb 9, 2026
-                                    </div>
-                                    <div class="text-sm text-gray-900 dark:text-white">
-                                        <span class="md:hidden text-xs font-medium text-gray-500 dark:text-gray-400 uppercase mr-2">Route:</span>
-                                        <span class="inline-flex items-center">
-                                            Arbitrum
-                                            <svg class="w-4 h-4 mx-1 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path>
-                                            </svg>
-                                            Optimism
-                                        </span>
-                                    </div>
-                                    <div class="text-sm text-gray-900 dark:text-white">
-                                        <span class="md:hidden text-xs font-medium text-gray-500 dark:text-gray-400 uppercase mr-2">Token:</span>
-                                        ETH
-                                    </div>
-                                    <div class="text-sm text-gray-900 dark:text-white md:text-right">
-                                        <span class="md:hidden text-xs font-medium text-gray-500 dark:text-gray-400 uppercase mr-2">Amount:</span>
-                                        0.5000
-                                    </div>
-                                    <div class="md:text-center">
-                                        <span class="md:hidden text-xs font-medium text-gray-500 dark:text-gray-400 uppercase mr-2">Status:</span>
-                                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200">
-                                            Pending
-                                        </span>
-                                    </div>
-                                    <div class="text-sm text-gray-600 dark:text-gray-400">
-                                        <span class="md:hidden text-xs font-medium text-gray-500 dark:text-gray-400 uppercase mr-2">Provider:</span>
-                                        LayerZero
-                                    </div>
-                                </div>
-
-                                <!-- Transaction 3 -->
-                                <div class="grid grid-cols-1 md:grid-cols-6 gap-2 md:gap-4 py-4 items-center">
-                                    <div class="text-sm text-gray-600 dark:text-gray-400">
-                                        <span class="md:hidden text-xs font-medium text-gray-500 dark:text-gray-400 uppercase mr-2">Date:</span>
-                                        Feb 8, 2026
-                                    </div>
-                                    <div class="text-sm text-gray-900 dark:text-white">
-                                        <span class="md:hidden text-xs font-medium text-gray-500 dark:text-gray-400 uppercase mr-2">Route:</span>
-                                        <span class="inline-flex items-center">
-                                            BSC
-                                            <svg class="w-4 h-4 mx-1 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path>
-                                            </svg>
-                                            Ethereum
-                                        </span>
-                                    </div>
-                                    <div class="text-sm text-gray-900 dark:text-white">
-                                        <span class="md:hidden text-xs font-medium text-gray-500 dark:text-gray-400 uppercase mr-2">Token:</span>
-                                        WBTC
-                                    </div>
-                                    <div class="text-sm text-gray-900 dark:text-white md:text-right">
-                                        <span class="md:hidden text-xs font-medium text-gray-500 dark:text-gray-400 uppercase mr-2">Amount:</span>
-                                        0.0250
-                                    </div>
-                                    <div class="md:text-center">
-                                        <span class="md:hidden text-xs font-medium text-gray-500 dark:text-gray-400 uppercase mr-2">Status:</span>
-                                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200">
-                                            Completed
-                                        </span>
-                                    </div>
-                                    <div class="text-sm text-gray-600 dark:text-gray-400">
-                                        <span class="md:hidden text-xs font-medium text-gray-500 dark:text-gray-400 uppercase mr-2">Provider:</span>
-                                        Axelar
-                                    </div>
-                                </div>
-
-                                <!-- Transaction 4 -->
-                                <div class="grid grid-cols-1 md:grid-cols-6 gap-2 md:gap-4 py-4 items-center">
-                                    <div class="text-sm text-gray-600 dark:text-gray-400">
-                                        <span class="md:hidden text-xs font-medium text-gray-500 dark:text-gray-400 uppercase mr-2">Date:</span>
-                                        Feb 7, 2026
-                                    </div>
-                                    <div class="text-sm text-gray-900 dark:text-white">
-                                        <span class="md:hidden text-xs font-medium text-gray-500 dark:text-gray-400 uppercase mr-2">Route:</span>
-                                        <span class="inline-flex items-center">
-                                            Polygon
-                                            <svg class="w-4 h-4 mx-1 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path>
-                                            </svg>
-                                            Arbitrum
-                                        </span>
-                                    </div>
-                                    <div class="text-sm text-gray-900 dark:text-white">
-                                        <span class="md:hidden text-xs font-medium text-gray-500 dark:text-gray-400 uppercase mr-2">Token:</span>
-                                        USDT
-                                    </div>
-                                    <div class="text-sm text-gray-900 dark:text-white md:text-right">
-                                        <span class="md:hidden text-xs font-medium text-gray-500 dark:text-gray-400 uppercase mr-2">Amount:</span>
-                                        3,200.00
-                                    </div>
-                                    <div class="md:text-center">
-                                        <span class="md:hidden text-xs font-medium text-gray-500 dark:text-gray-400 uppercase mr-2">Status:</span>
-                                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200">
-                                            Failed
-                                        </span>
-                                    </div>
-                                    <div class="text-sm text-gray-600 dark:text-gray-400">
-                                        <span class="md:hidden text-xs font-medium text-gray-500 dark:text-gray-400 uppercase mr-2">Provider:</span>
-                                        Wormhole
-                                    </div>
-                                </div>
-                            </div>
-
-                            <!-- Empty State (hidden when transactions exist, shown as reference) -->
-                            {{--
+                            <!-- Empty State -->
                             <div class="bg-gray-50 dark:bg-gray-700 rounded-lg p-8 text-center">
-                                <svg class="w-12 h-12 text-gray-400 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <svg class="w-12 h-12 text-gray-400 mx-auto mb-4" aria-hidden="true" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4"></path>
                                 </svg>
                                 <p class="text-gray-600 dark:text-gray-400">No bridge transactions yet</p>
                                 <p class="text-sm text-gray-500 dark:text-gray-500 mt-1">Your cross-chain transfer history will appear here</p>
                                 <a href="#" class="inline-flex items-center mt-4 px-4 py-2 bg-teal-600 text-white text-sm font-medium rounded-lg hover:bg-teal-700 transition">
-                                    <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <svg class="w-4 h-4 mr-2" aria-hidden="true" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
                                     </svg>
                                     Start Your First Bridge
                                 </a>
                             </div>
-                            --}}
                         </div>
                     </div>
                 </div>

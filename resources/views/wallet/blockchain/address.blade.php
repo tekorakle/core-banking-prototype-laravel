@@ -63,13 +63,16 @@
                                             {{ number_format($balance['available'], 8) }} {{ $supportedChains[$address->chain]['symbol'] }}
                                         </p>
                                         @php
-                                            // Mock USD conversion
-                                            $usdRate = $supportedChains[$address->chain]['symbol'] === 'BTC' ? 30000 : 
-                                                      ($supportedChains[$address->chain]['symbol'] === 'ETH' ? 2000 : 1);
-                                            $usdValue = $balance['available'] * $usdRate;
+                                            $symbol = $supportedChains[$address->chain]['symbol'];
+                                            $usdRate = $usdRates[$symbol] ?? null;
+                                            $usdValue = $usdRate !== null ? $balance['available'] * $usdRate : null;
                                         @endphp
                                         <p class="text-sm text-gray-600 dark:text-gray-400">
-                                            ≈ ${{ number_format($usdValue, 2) }} USD
+                                            @if($usdValue !== null)
+                                                ≈ ${{ number_format($usdValue, 2) }} USD
+                                            @else
+                                                Rate unavailable
+                                            @endif
                                         </p>
                                     </div>
                                     @if($balance['pending'] > 0)
@@ -90,10 +93,7 @@
                         <h4 class="text-md font-semibold mb-3">Receive {{ $supportedChains[$address->chain]['symbol'] }}</h4>
                         <div class="flex items-center space-x-4">
                             <div class="bg-white p-4 rounded-lg border border-gray-200">
-                                <!-- QR Code placeholder - in production, generate actual QR code -->
-                                <div class="w-48 h-48 bg-gray-100 flex items-center justify-center">
-                                    <span class="text-gray-400">QR Code</span>
-                                </div>
+                                <div id="address-qrcode" class="flex items-center justify-center" style="min-width: 192px; min-height: 192px;"></div>
                             </div>
                             <div class="flex-1">
                                 <p class="text-sm text-gray-600 dark:text-gray-400 mb-2">
@@ -231,7 +231,28 @@
     </div>
 
     @push('scripts')
+    <script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.3/build/qrcode.min.js"></script>
     <script>
+        // Generate QR code for receive address
+        (function() {
+            const container = document.getElementById('address-qrcode');
+            const canvas = document.createElement('canvas');
+            canvas.style.display = 'block';
+            container.appendChild(canvas);
+
+            QRCode.toCanvas(canvas, '{{ $address->address }}', {
+                width: 192,
+                height: 192,
+                margin: 2,
+                color: { dark: '#000000', light: '#FFFFFF' },
+                errorCorrectionLevel: 'H'
+            }, function(error) {
+                if (error) {
+                    container.innerHTML = '<div class="text-red-500 text-sm">Error generating QR code</div>';
+                }
+            });
+        })();
+
         function copyAddress(address) {
             navigator.clipboard.writeText(address).then(function() {
                 // Show success notification

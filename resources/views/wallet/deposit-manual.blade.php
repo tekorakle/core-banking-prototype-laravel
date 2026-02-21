@@ -16,27 +16,31 @@
                         </p>
                     </div>
 
+                    <x-demo-banner>
+                        <p>You're in demo mode. The bank details below are simulated. Do not send real funds.</p>
+                    </x-demo-banner>
+
                     <div class="bg-gray-50 dark:bg-gray-700 rounded-lg p-6 mb-6">
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                             <div>
                                 <p class="text-sm font-medium text-gray-500 dark:text-gray-400">Bank Name</p>
-                                <p class="text-lg font-semibold">FinAegis Banking Ltd.</p>
+                                <p class="text-lg font-semibold">{{ $bankDetails['bank_name'] ?? 'Not configured' }}</p>
                             </div>
                             <div>
                                 <p class="text-sm font-medium text-gray-500 dark:text-gray-400">Account Name</p>
-                                <p class="text-lg font-semibold">FinAegis Core Banking</p>
+                                <p class="text-lg font-semibold">{{ $bankDetails['account_name'] ?? 'Not configured' }}</p>
                             </div>
                             <div>
                                 <p class="text-sm font-medium text-gray-500 dark:text-gray-400">Account Number</p>
-                                <p class="text-lg font-semibold">1234567890</p>
+                                <p class="text-lg font-semibold">{{ $bankDetails['account_number'] ?: 'Not configured' }}</p>
                             </div>
                             <div>
                                 <p class="text-sm font-medium text-gray-500 dark:text-gray-400">Routing Number</p>
-                                <p class="text-lg font-semibold">021000021</p>
+                                <p class="text-lg font-semibold">{{ $bankDetails['routing_number'] ?: 'Not configured' }}</p>
                             </div>
                             <div>
                                 <p class="text-sm font-medium text-gray-500 dark:text-gray-400">SWIFT/BIC</p>
-                                <p class="text-lg font-semibold">FINAEGISXXX</p>
+                                <p class="text-lg font-semibold">{{ $bankDetails['swift_code'] ?: 'Not configured' }}</p>
                             </div>
                             <div>
                                 <p class="text-sm font-medium text-gray-500 dark:text-gray-400">Reference Code</p>
