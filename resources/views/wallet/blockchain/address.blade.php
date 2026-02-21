@@ -9,8 +9,9 @@
                    class="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition">
                     Send {{ $supportedChains[$address->chain]['symbol'] }}
                 </a>
-                <button onclick="copyAddress('{{ $address->address }}')" 
-                        class="px-4 py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-700 transition">
+                <button onclick="copyAddress('{{ $address->address }}')"
+                        class="px-4 py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-700 transition"
+                        aria-label="Copy wallet address to clipboard">
                     Copy Address
                 </button>
             </div>
@@ -148,7 +149,7 @@
                     
                     @if($transactions->isEmpty())
                         <div class="text-center py-8">
-                            <svg class="mx-auto h-12 w-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <svg class="mx-auto h-12 w-12 text-gray-400" aria-hidden="true" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"></path>
                             </svg>
                             <p class="mt-2 text-gray-600 dark:text-gray-400">No transactions yet</p>
