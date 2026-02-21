@@ -204,8 +204,18 @@ Key deliverables:
 - OpenAPI/Swagger annotations updated for login/register endpoints
 - 5 new security tests for refresh token flows
 
+v5.1.5 — Dependency Cleanup & Production Readiness (COMPLETED)
+Status: Released (2026-02-21)
+Key deliverables:
+- l5-swagger upgrade 9.0.1 → 10.1.0 (swagger-php 5 → 6)
+- doctrine/annotations as direct dependency (docblock OA support)
+- PSR-4 fix: plugin directories renamed to PascalCase
+- .env.production.example for mobile backend deployment
+- PasskeyAuthenticationServiceTest fix (v5.1.4 token pair alignment)
+- Roadmap updated with v5.1.0–v5.1.4 entries
+
 Future roadmap:
-- v5.2.0 — TBD (Laravel 13 upgrade when available, PHP 8.5 features)
+- v5.2.0 — OpenAPI Attribute Migration (10,385 @OA\ docblocks → PHP 8 #[OA\] attributes, drop doctrine/annotations), Laravel 13 upgrade when available, PHP 8.5 features
 
 ---
 

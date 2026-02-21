@@ -5,6 +5,22 @@ All notable changes to the FinAegis Core Banking Platform will be documented in 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [5.1.5] - 2026-02-21
+
+### Changed
+- Upgraded `darkaonline/l5-swagger` from v9 to v10 — pulls in `zircote/swagger-php` v6, drops transitive `doctrine/annotations` dependency
+- Added `doctrine/annotations ^2.0` as direct dependency — required for existing 10,385 `@OA\` docblock annotations until attribute migration (planned v5.2.0)
+- Renamed plugin directories from kebab-case to PascalCase (`audit-exporter` → `AuditExporter`, `dashboard-widget` → `DashboardWidget`, `webhook-notifier` → `WebhookNotifier`) — fixes PSR-4 autoloading violations
+
+### Added
+- `.env.production.example` — production environment template with demo mode disabled, real service drivers (Pimlico bundler, Alchemy balance provider), Redis sessions/queues, HTTPS enforcement, HSM enabled
+
+### Fixed
+- PasskeyAuthenticationServiceTest expected `$result['token']` but service returns `access_token`/`refresh_token` after v5.1.4 token format change
+- OpenAPI `@OA\Info` version updated from 5.0.0 to 5.1.5
+
+---
+
 ## [5.1.4] - 2026-02-18
 
 ### Added
