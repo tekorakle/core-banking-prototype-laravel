@@ -161,43 +161,6 @@
                                 </a>
                             </div>
 
-                            <!-- Positions Table -->
-                            <div class="overflow-x-auto">
-                                <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700 hidden" id="positions-table">
-                                    <thead>
-                                        <tr>
-                                            <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Protocol</th>
-                                            <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Type</th>
-                                            <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Chain</th>
-                                            <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Asset</th>
-                                            <th class="px-4 py-3 text-right text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Amount</th>
-                                            <th class="px-4 py-3 text-right text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Value (USD)</th>
-                                            <th class="px-4 py-3 text-right text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">APY</th>
-                                            <th class="px-4 py-3 text-right text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Health</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody class="divide-y divide-gray-200 dark:divide-gray-700">
-                                        {{-- Placeholder row for future data --}}
-                                        <tr>
-                                            <td class="px-4 py-4 whitespace-nowrap text-sm font-medium text-gray-900 dark:text-white">Aave</td>
-                                            <td class="px-4 py-4 whitespace-nowrap">
-                                                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-400">
-                                                    Lending
-                                                </span>
-                                            </td>
-                                            <td class="px-4 py-4 whitespace-nowrap text-sm text-gray-600 dark:text-gray-400">Ethereum</td>
-                                            <td class="px-4 py-4 whitespace-nowrap text-sm text-gray-600 dark:text-gray-400">USDC</td>
-                                            <td class="px-4 py-4 whitespace-nowrap text-sm text-right text-gray-900 dark:text-white">0.00</td>
-                                            <td class="px-4 py-4 whitespace-nowrap text-sm text-right text-gray-900 dark:text-white">$0.00</td>
-                                            <td class="px-4 py-4 whitespace-nowrap text-sm text-right text-green-600 dark:text-green-400">3.45%</td>
-                                            <td class="px-4 py-4 whitespace-nowrap text-sm text-right">
-                                                <span class="text-green-600 dark:text-green-400">1.85</span>
-                                            </td>
-                                        </tr>
-                                    </tbody>
-                                </table>
-                            </div>
-
                             <!-- Empty State -->
                             <div class="text-center py-12" id="positions-empty">
                                 <svg class="w-16 h-16 text-gray-300 dark:text-gray-600 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">

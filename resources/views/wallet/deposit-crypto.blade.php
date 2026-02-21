@@ -16,19 +16,23 @@
                         </p>
                     </div>
 
+                    <x-demo-banner>
+                        <p>You're in demo mode. Do not send real cryptocurrency to the addresses shown below.</p>
+                    </x-demo-banner>
+
                     <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
                         <button onclick="selectCrypto('BTC')" class="crypto-option p-4 border-2 border-gray-200 dark:border-gray-600 rounded-lg hover:border-blue-500 transition-colors cursor-pointer text-center">
                             <div class="text-3xl mb-2">₿</div>
                             <h4 class="font-semibold">Bitcoin (BTC)</h4>
                             <p class="text-sm text-gray-500 dark:text-gray-400">Network: Bitcoin</p>
                         </button>
-                        
+
                         <button onclick="selectCrypto('ETH')" class="crypto-option p-4 border-2 border-gray-200 dark:border-gray-600 rounded-lg hover:border-blue-500 transition-colors cursor-pointer text-center">
                             <div class="text-3xl mb-2">Ξ</div>
                             <h4 class="font-semibold">Ethereum (ETH)</h4>
                             <p class="text-sm text-gray-500 dark:text-gray-400">Network: ERC-20</p>
                         </button>
-                        
+
                         <button onclick="selectCrypto('USDT')" class="crypto-option p-4 border-2 border-gray-200 dark:border-gray-600 rounded-lg hover:border-blue-500 transition-colors cursor-pointer text-center">
                             <div class="text-3xl mb-2">₮</div>
                             <h4 class="font-semibold">Tether (USDT)</h4>
@@ -88,23 +92,25 @@
     <script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.3/build/qrcode.min.js"></script>
     
     <script>
+        const configuredAddresses = @json($cryptoAddresses ?? []);
+
         function selectCrypto(crypto) {
             // Remove active state from all options
             document.querySelectorAll('.crypto-option').forEach(el => {
                 el.classList.remove('border-blue-500');
             });
-            
+
             // Add active state to selected option
             event.target.closest('.crypto-option').classList.add('border-blue-500');
-            
+
             // Show deposit details
             document.getElementById('depositDetails').classList.remove('hidden');
-            
-            // Update crypto-specific details
+
+            // Update crypto-specific details — addresses from server config
             const addresses = {
-                'BTC': '1A1zP1eP5QGefi2DMPTfTL5SLmv7DivfNa',
-                'ETH': '0x742d35Cc6634C0532925a3b844Bc9e7595f06789',
-                'USDT': 'TN3W4H6rK2UM6GnKms9iFGQfVY73Gmwm7T'
+                'BTC': configuredAddresses.btc || '',
+                'ETH': configuredAddresses.eth || '',
+                'USDT': configuredAddresses.usdt || ''
             };
             
             const minDeposits = {
@@ -120,13 +126,17 @@
             };
             
             const address = addresses[crypto];
-            document.getElementById('cryptoAddress').value = address;
+            document.getElementById('cryptoAddress').value = address || 'Not configured';
             document.getElementById('selectedCrypto').textContent = crypto;
             document.getElementById('minDeposit').textContent = minDeposits[crypto];
             document.getElementById('confirmations').textContent = confirmations[crypto];
-            
-            // Generate QR code
-            generateQRCode(address, crypto);
+
+            // Generate QR code only if address is configured
+            if (address) {
+                generateQRCode(address, crypto);
+            } else {
+                document.getElementById('qrcode').innerHTML = '<div class="text-gray-400 text-sm p-4">Address not configured</div>';
+            }
         }
         
         function generateQRCode(address, crypto) {

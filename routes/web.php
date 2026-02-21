@@ -675,13 +675,18 @@ Route::middleware([
             // Manual bank transfer
             Route::get('/manual', function () {
                 $account = Auth::user()->accounts()->first();
+                $bankDetails = config('cgo.bank_details');
+                $isDemo = app()->environment('demo');
 
-                return view('wallet.deposit-manual', compact('account'));
+                return view('wallet.deposit-manual', compact('account', 'bankDetails', 'isDemo'));
             })->name('manual');
 
-            // Crypto deposits (placeholder)
+            // Crypto deposits
             Route::get('/crypto', function () {
-                return view('wallet.deposit-crypto');
+                $cryptoAddresses = config('cgo.deposit_addresses');
+                $isDemo = app()->environment('demo');
+
+                return view('wallet.deposit-crypto', compact('cryptoAddresses', 'isDemo'));
             })->name('crypto');
         });
 

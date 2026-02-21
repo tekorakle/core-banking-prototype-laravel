@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Domain\Account\Models\BlockchainAddress;
 use App\Domain\Account\Models\BlockchainTransaction;
+use App\Domain\Asset\Services\ExchangeRateService;
 use App\Domain\Wallet\Contracts\KeyManagementServiceInterface;
 use App\Domain\Wallet\Contracts\WalletConnectorInterface;
 use App\Models\User;
@@ -22,7 +23,8 @@ class BlockchainWalletController extends Controller
 {
     public function __construct(
         private WalletConnectorInterface $walletConnector,
-        private KeyManagementServiceInterface $keyManagementService
+        private KeyManagementServiceInterface $keyManagementService,
+        private ExchangeRateService $exchangeRateService
     ) {
     }
 
@@ -65,7 +67,10 @@ class BlockchainWalletController extends Controller
         // Get supported chains
         $supportedChains = $this->getSupportedChains();
 
-        return view('wallet.blockchain.index', compact('addresses', 'balances', 'recentTransactions', 'supportedChains'));
+        // Get USD exchange rates for each chain symbol
+        $usdRates = $this->getUsdRates($supportedChains);
+
+        return view('wallet.blockchain.index', compact('addresses', 'balances', 'recentTransactions', 'supportedChains', 'usdRates'));
     }
 
     /**
@@ -181,7 +186,10 @@ class BlockchainWalletController extends Controller
         // Get supported chains
         $supportedChains = $this->getSupportedChains();
 
-        return view('wallet.blockchain.address', compact('address', 'balance', 'transactions', 'statistics', 'supportedChains'));
+        // Get USD exchange rates for each chain symbol
+        $usdRates = $this->getUsdRates($supportedChains);
+
+        return view('wallet.blockchain.address', compact('address', 'balance', 'transactions', 'statistics', 'supportedChains', 'usdRates'));
     }
 
     /**
@@ -490,5 +498,27 @@ class BlockchainWalletController extends Controller
             'first_transaction'  => $transactions->min('created_at'),
             'last_transaction'   => $transactions->max('created_at'),
         ];
+    }
+
+    /**
+     * Get USD exchange rates for each supported chain symbol.
+     *
+     * @return array<string, float|null> Map of symbol => USD rate
+     */
+    private function getUsdRates(array $supportedChains): array
+    {
+        $rates = [];
+
+        foreach ($supportedChains as $chain) {
+            $symbol = $chain['symbol'];
+            try {
+                $rate = $this->exchangeRateService->getRate($symbol, 'USD');
+                $rates[$symbol] = $rate ? (float) $rate->rate : null;
+            } catch (Exception) {
+                $rates[$symbol] = null;
+            }
+        }
+
+        return $rates;
     }
 }
