@@ -125,6 +125,19 @@ Use descriptive branch names following this pattern:
 
 ## Coding Standards
 
+### SPDX License Headers
+
+All new PHP files should include an SPDX license header at the top of the file, immediately after the opening `<?php` tag:
+
+```php
+<?php
+
+// SPDX-License-Identifier: Apache-2.0
+// Copyright 2024-2026 FinAegis
+```
+
+Existing files will be updated incrementally via automated tooling in a future release.
+
 ### PHP Code Style
 
 We follow PSR-12 with additional rules defined in `.php-cs-fixer.php`.
