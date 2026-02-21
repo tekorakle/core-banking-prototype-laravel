@@ -13,11 +13,6 @@ return [
                  * Route for accessing api documentation interface
                  */
                 'api' => 'api/documentation',
-
-                /*
-                 * Route for accessing parsed swagger annotations.
-                 */
-                'docs' => 'docs',
             ],
             'paths' => [
                 /*
@@ -34,11 +29,6 @@ return [
                  * File name of the generated json documentation file
                  */
                 'docs_json' => 'api-docs.json',
-
-                /*
-                 * Absolute path to file containing the swagger annotations
-                 */
-                'docs_url' => null,
 
                 /*
                  * File name of the generated YAML documentation file
@@ -76,11 +66,6 @@ return [
     ],
     'defaults' => [
         'routes' => [
-            /*
-             * Route for accessing parsed swagger annotations.
-             */
-            'docs' => 'docs',
-
             /*
              * Route for Oauth2 authentication callback.
              */
@@ -146,11 +131,15 @@ return [
             ],
 
             /**
-             * analyser: defaults to \OpenApi\StaticAnalyser .
+             * analyser: ReflectionAnalyser with both DocBlock and Attribute support.
+             * l5-swagger v10 defaults to attributes-only; we need docblock support too.
              *
              * @see OpenApi\scan
              */
-            'analyser' => null,
+            'analyser' => new OpenApi\Analysers\ReflectionAnalyser([
+                new OpenApi\Analysers\DocBlockAnnotationFactory(),
+                new OpenApi\Analysers\AttributeAnnotationFactory(),
+            ]),
 
             /**
              * analysis: defaults to a new \OpenApi\Analysis .

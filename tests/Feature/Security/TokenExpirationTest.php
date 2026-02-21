@@ -6,7 +6,6 @@ namespace Tests\Feature\Security;
 
 use App\Models\User;
 use Carbon\Carbon;
-use Laravel\Sanctum\PersonalAccessToken;
 use Tests\TestCase;
 
 class TokenExpirationTest extends TestCase

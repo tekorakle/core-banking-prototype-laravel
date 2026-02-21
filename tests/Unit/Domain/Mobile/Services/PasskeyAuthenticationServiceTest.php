@@ -120,7 +120,8 @@ describe('PasskeyAuthenticationService', function (): void {
             );
 
             expect($result)->not->toBeNull();
-            expect($result['token'])->toBeString()->not->toBeEmpty();
+            expect($result['access_token'])->toBeString()->not->toBeEmpty();
+            expect($result['refresh_token'])->toBeString()->not->toBeEmpty();
             expect($result['expires_at'])->toBeInstanceOf(Carbon\Carbon::class);
             expect($result['session_id'])->not->toBeEmpty();
         });
