@@ -30,7 +30,7 @@ class SecurityHeaders
         $response->headers->set('Referrer-Policy', 'strict-origin-when-cross-origin');
 
         // Content Security Policy
-        $csp = $this->getContentSecurityPolicy();
+        $csp = $this->getContentSecurityPolicy($request);
         $response->headers->set('Content-Security-Policy', $csp);
 
         // Permissions Policy (formerly Feature Policy)
@@ -60,8 +60,23 @@ class SecurityHeaders
     /**
      * Get Content Security Policy directives.
      */
-    private function getContentSecurityPolicy(): string
+    private function getContentSecurityPolicy(Request $request): string
     {
+        // Swagger UI requires relaxed CSP (CDN assets + unsafe-eval for JSON rendering)
+        if ($request->is('api/documentation*') || $request->is('docs*')) {
+            return implode('; ', [
+                "default-src 'self'",
+                "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://cdn.jsdelivr.net https://unpkg.com",
+                "style-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net https://unpkg.com https://fonts.bunny.net",
+                "img-src 'self' data: https:",
+                "font-src 'self' https://fonts.bunny.net https://cdn.jsdelivr.net",
+                "connect-src 'self'",
+                "frame-src 'self'",
+                "base-uri 'self'",
+                "form-action 'self'",
+            ]);
+        }
+
         // Get configured sources
         $fontSources = explode(',', config('security.csp.font_sources', ''));
         $styleSources = explode(',', config('security.csp.style_sources', ''));

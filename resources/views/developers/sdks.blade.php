@@ -186,7 +186,7 @@
                     <div class="flex flex-wrap items-center justify-center gap-3 mb-6">
                         <span class="inline-flex items-center px-4 py-2 bg-green-500/20 backdrop-blur-sm rounded-full text-sm">
                             <span class="w-2 h-2 bg-green-400 rounded-full mr-2"></span>
-                            <span>REST API v5.0</span>
+                            <span>REST API v5.2</span>
                         </span>
                         <span class="inline-flex items-center px-4 py-2 bg-green-500/20 backdrop-blur-sm rounded-full text-sm">
                             <span class="w-2 h-2 bg-green-400 rounded-full mr-2"></span>
@@ -639,8 +639,8 @@ curl -X POST https://api.finaegis.org/api/v1/partner/sdk/generate \
         "language": "go",
         "version": "5.0.0",
         "package_name": "github.com/finaegis/sdk-go",
-        "download_url": "https://sdk.finaegis.org/packages/go/finaegis-sdk-go-5.0.0.tar.gz",
-        "install_command": "go get github.com/finaegis/sdk-go@v5.0.0"
+        "download_url": "https://sdk.finaegis.org/packages/go/finaegis-sdk-go-5.2.0.tar.gz",
+        "install_command": "go get github.com/finaegis/sdk-go@v5.2.0"
       },
       {
         "language": "php",
@@ -678,7 +678,7 @@ curl -X POST https://api.finaegis.org/api/v1/partner/sdk/generate \
                         <div>
                             <p class="text-sm font-medium text-gray-700 mb-2">Go</p>
                             <div class="bg-gray-900 rounded-lg p-4 font-mono text-green-400 text-sm">
-                                <code>go get github.com/finaegis/sdk-go@v5.0.0</code>
+                                <code>go get github.com/finaegis/sdk-go@v5.2.0</code>
                             </div>
                         </div>
                         <div>
@@ -754,7 +754,7 @@ client = FinAegis(
                         <div class="bg-gradient-to-r from-cyan-600 to-teal-600 px-6 py-4">
                             <div class="flex items-center">
                                 <span class="w-8 h-8 bg-white text-cyan-600 rounded-full flex items-center justify-center font-bold text-sm mr-3">2</span>
-                                <h3 class="text-lg font-semibold text-white">Access Cross-Chain and DeFi Modules (v5.0)</h3>
+                                <h3 class="text-lg font-semibold text-white">Access Cross-Chain and DeFi Modules (v5.2)</h3>
                             </div>
                         </div>
                         <div class="p-6">
@@ -919,12 +919,12 @@ console.log('Total volume:', insights.data.analytics.total_volume);</pre>
                             <div class="border border-gray-200 rounded-lg p-4">
                                 <h4 class="font-semibold text-gray-900 mb-1">client.crosschain</h4>
                                 <p class="text-sm text-gray-600">Bridge protocols, multi-chain portfolio</p>
-                                <span class="text-xs text-gray-400">v5.0+</span>
+                                <span class="text-xs text-gray-400">v5.2+</span>
                             </div>
                             <div class="border border-gray-200 rounded-lg p-4">
                                 <h4 class="font-semibold text-gray-900 mb-1">client.defi</h4>
                                 <p class="text-sm text-gray-600">DEX aggregation, lending, staking, yield</p>
-                                <span class="text-xs text-gray-400">v5.0+</span>
+                                <span class="text-xs text-gray-400">v5.2+</span>
                             </div>
                             <div class="border border-gray-200 rounded-lg p-4">
                                 <h4 class="font-semibold text-gray-900 mb-1">client.ai</h4>

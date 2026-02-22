@@ -5,7 +5,7 @@
 @section('seo')
     @include('partials.seo', [
         'title' => 'Features - Modern Banking Platform',
-        'description' => 'FinAegis features - Global Currency Unit (GCU), cross-chain bridges, DeFi protocols, privacy-preserving identity, mobile payments, RegTech compliance, BaaS, and AI analytics.',
+        'description' => 'FinAegis features - Global Currency Unit (GCU), x402 protocol, cross-chain bridges, DeFi protocols, privacy-preserving identity, mobile payments, RegTech compliance, BaaS, and AI analytics.',
         'keywords' => 'FinAegis features, GCU, global currency unit, cross-chain, DeFi, privacy, mobile payments, RegTech, BaaS, AI, multi-tenancy',
     ])
 
@@ -441,6 +441,25 @@
                         Redis Streams-powered event streaming with a live dashboard, consumer groups, backpressure handling, and dead-letter queues.
                     </p>
                     <a href="{{ route('features') }}" class="text-teal-600 font-medium hover:text-teal-700">
+                        Learn more &rarr;
+                    </a>
+                </div>
+
+                <!-- x402 Protocol -->
+                <div class="feature-card bg-white border border-gray-200 rounded-xl p-8">
+                    <div class="w-14 h-14 bg-emerald-100 rounded-lg flex items-center justify-center mb-6">
+                        <svg class="w-8 h-8 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z"></path>
+                        </svg>
+                    </div>
+                    <div class="flex items-center gap-2 mb-3">
+                        <h3 class="text-xl font-semibold">x402 Protocol</h3>
+                        <span class="inline-flex items-center px-2 py-0.5 bg-green-100 text-green-700 text-xs rounded-full font-medium">Available</span>
+                    </div>
+                    <p class="text-gray-600 mb-4">
+                        HTTP-native micropayments with USDC on Base. Instant settlement, AI agent autonomous payments, spending limits, and multi-network support.
+                    </p>
+                    <a href="{{ route('features.show', 'x402-protocol') }}" class="text-emerald-600 font-medium hover:text-emerald-700">
                         Learn more &rarr;
                     </a>
                 </div>

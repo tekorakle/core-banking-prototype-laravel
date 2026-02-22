@@ -140,7 +140,7 @@
                 <div class="text-center">
                     <div class="inline-flex items-center px-4 py-2 bg-white/10 backdrop-blur-sm rounded-full text-sm mb-6">
                         <span class="w-2 h-2 bg-green-400 rounded-full mr-2 animate-pulse"></span>
-                        <span>v5.0 Documentation -- 41 Domains, 1,189+ Routes, GraphQL + REST</span>
+                        <span>v5.2 Documentation -- 42 Domains, 1,200+ Routes, GraphQL + REST + x402</span>
                     </div>
                     <h1 class="text-5xl md:text-7xl font-bold mb-6 bg-clip-text text-transparent bg-gradient-to-r from-white to-blue-200">
                         Built for Developers
@@ -180,8 +180,8 @@
                     <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
                     </svg>
-                    <span class="font-medium">v5.0 Released:</span>
-                    <span class="ml-2">41 DDD domains, 1,189+ API routes with GraphQL API (33 domains), Event Streaming, Plugin Marketplace, CrossChain, DeFi, RegTech, and Partner BaaS.</span>
+                    <span class="font-medium">v5.2 Released:</span>
+                    <span class="ml-2">42 DDD domains, 1,200+ API routes with GraphQL API (34 domains), x402 Protocol, Event Streaming, Plugin Marketplace, CrossChain, DeFi, RegTech, and Partner BaaS.</span>
                 </div>
             </div>
         </section>
@@ -437,7 +437,7 @@
                 <!-- Platform API Area Cards -->
                 <div class="mt-16">
                     <h3 class="text-2xl font-bold text-gray-900 mb-2 text-center">Platform API Areas</h3>
-                    <p class="text-gray-600 text-center mb-8">Explore the full breadth of the FinAegis platform across 41 DDD domains</p>
+                    <p class="text-gray-600 text-center mb-8">Explore the full breadth of the FinAegis platform across 42 DDD domains</p>
                     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
 
                         <!-- CrossChain -->
@@ -566,10 +566,10 @@
                                     </div>
                                     <div>
                                         <h4 class="text-lg font-semibold text-gray-900">GraphQL API</h4>
-                                        <span class="text-xs text-gray-500">33 domains</span>
+                                        <span class="text-xs text-gray-500">34 domains</span>
                                     </div>
                                 </div>
-                                <p class="text-gray-600 text-sm mb-3">Schema-first GraphQL via Lighthouse PHP with queries, mutations, subscriptions, and DataLoaders across 33 domain schemas.</p>
+                                <p class="text-gray-600 text-sm mb-3">Schema-first GraphQL via Lighthouse PHP with queries, mutations, subscriptions, and DataLoaders across 34 domain schemas.</p>
                                 <span class="text-sky-600 text-sm font-medium group-hover:text-sky-700">View endpoints &rarr;</span>
                             </div>
                         </a>
@@ -590,6 +590,25 @@
                                 </div>
                                 <p class="text-gray-600 text-sm mb-3">Redis Streams-based event publishing, consumer groups, live metrics dashboard with projector lag and throughput monitoring.</p>
                                 <span class="text-lime-600 text-sm font-medium group-hover:text-lime-700">View endpoints &rarr;</span>
+                            </div>
+                        </a>
+
+                        <!-- x402 Protocol -->
+                        <a href="{{ route('developers.show', 'api-docs') }}#x402" class="group block">
+                            <div class="bg-white rounded-xl border border-gray-200 p-6 hover:shadow-lg transition-all hover:-translate-y-1 h-full">
+                                <div class="flex items-center mb-3">
+                                    <div class="w-10 h-10 bg-gradient-to-br from-emerald-500 to-green-600 rounded-lg flex items-center justify-center text-white mr-3">
+                                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z"></path>
+                                        </svg>
+                                    </div>
+                                    <div>
+                                        <h4 class="text-lg font-semibold text-gray-900">x402 Protocol</h4>
+                                        <span class="text-xs text-gray-500">15+ endpoints</span>
+                                    </div>
+                                </div>
+                                <p class="text-gray-600 text-sm mb-3">HTTP-native micropayments. Monetize APIs with USDC on Base. GraphQL + REST with AI agent payment support.</p>
+                                <span class="text-emerald-600 text-sm font-medium group-hover:text-emerald-700">View endpoints &rarr;</span>
                             </div>
                         </a>
 
@@ -671,7 +690,7 @@
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 <div class="grid grid-cols-2 md:grid-cols-5 gap-8 text-center">
                     <div>
-                        <div class="text-4xl md:text-5xl font-bold mb-2">1,150+</div>
+                        <div class="text-4xl md:text-5xl font-bold mb-2">1,200+</div>
                         <p class="text-indigo-200 flex items-center justify-center">
                             <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 9l3 3-3 3m5 0h3M5 20h14a2 2 0 002-2V6a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
@@ -680,7 +699,7 @@
                         </p>
                     </div>
                     <div>
-                        <div class="text-4xl md:text-5xl font-bold mb-2">41</div>
+                        <div class="text-4xl md:text-5xl font-bold mb-2">42</div>
                         <p class="text-indigo-200 flex items-center justify-center">
                             <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"></path>
