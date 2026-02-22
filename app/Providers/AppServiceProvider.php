@@ -4,6 +4,9 @@ namespace App\Providers;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\ServiceProvider;
+use OpenApi\Analysers\AttributeAnnotationFactory;
+use OpenApi\Analysers\DocBlockAnnotationFactory;
+use OpenApi\Analysers\ReflectionAnalyser;
 use URL;
 
 class AppServiceProvider extends ServiceProvider
@@ -31,6 +34,17 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
+        // L5-Swagger: inject the analyser at generation time (not in config) so
+        // config:cache / optimize works. Object instances are not serializable.
+        $this->app->resolving(\L5Swagger\GeneratorFactory::class, function () {
+            if (config('l5-swagger.defaults.scanOptions.analyser') === null) {
+                config(['l5-swagger.defaults.scanOptions.analyser' => new ReflectionAnalyser([
+                    new DocBlockAnnotationFactory(),
+                    new AttributeAnnotationFactory(),
+                ])]);
+            }
+        });
+
         // Configure factory namespace resolution for domain models
         /**
          * @param class-string<\Illuminate\Database\Eloquent\Model> $modelName

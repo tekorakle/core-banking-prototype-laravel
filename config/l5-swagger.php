@@ -131,15 +131,13 @@ return [
             ],
 
             /**
-             * analyser: ReflectionAnalyser with both DocBlock and Attribute support.
-             * l5-swagger v10 defaults to attributes-only; we need docblock support too.
+             * analyser: Set to null here so the config is serializable for caching.
+             * The actual ReflectionAnalyser with DocBlock + Attribute support is
+             * registered in AppServiceProvider (or the l5-swagger service provider).
              *
              * @see OpenApi\scan
              */
-            'analyser' => new OpenApi\Analysers\ReflectionAnalyser([
-                new OpenApi\Analysers\DocBlockAnnotationFactory(),
-                new OpenApi\Analysers\AttributeAnnotationFactory(),
-            ]),
+            'analyser' => null,
 
             /**
              * analysis: defaults to a new \OpenApi\Analysis .
