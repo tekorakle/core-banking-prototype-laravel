@@ -36,8 +36,10 @@ class TransferAgent extends BaseAgent
     {
         $lower = strtolower($query);
 
-        if (str_contains($lower, 'status') || str_contains($lower, 'track')
-            || str_contains($lower, 'check')) {
+        if (
+            str_contains($lower, 'status') || str_contains($lower, 'track')
+            || str_contains($lower, 'check')
+        ) {
             return ['payment.status'];
         }
 

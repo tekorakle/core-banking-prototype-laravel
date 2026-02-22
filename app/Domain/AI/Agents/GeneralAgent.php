@@ -39,13 +39,17 @@ class GeneralAgent extends BaseAgent
     {
         $lower = strtolower($query);
 
-        if (str_contains($lower, 'capabilities') || str_contains($lower, 'what can')
-            || str_contains($lower, 'features') || str_contains($lower, 'what do')) {
+        if (
+            str_contains($lower, 'capabilities') || str_contains($lower, 'what can')
+            || str_contains($lower, 'features') || str_contains($lower, 'what do')
+        ) {
             return $this->capabilitiesResponse();
         }
 
-        if (str_contains($lower, 'hello') || str_contains($lower, 'hi ')
-            || $lower === 'hi' || str_contains($lower, 'hey')) {
+        if (
+            str_contains($lower, 'hello') || str_contains($lower, 'hi ')
+            || $lower === 'hi' || str_contains($lower, 'hey')
+        ) {
             return "Hello! I'm your AI financial assistant powered by FinAegis.\n\n"
                 . "I can help you with:\n"
                 . "- Checking account balances and transactions\n"

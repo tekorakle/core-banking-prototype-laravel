@@ -38,14 +38,18 @@ class TradingAgent extends BaseAgent
         $lower = strtolower($query);
         $tools = [];
 
-        if (str_contains($lower, 'quote') || str_contains($lower, 'price')
+        if (
+            str_contains($lower, 'quote') || str_contains($lower, 'price')
             || str_contains($lower, 'rate') || str_contains($lower, 'convert')
-            || str_contains($lower, 'exchange') || str_contains($lower, 'gcu')) {
+            || str_contains($lower, 'exchange') || str_contains($lower, 'gcu')
+        ) {
             $tools[] = 'exchange.quote';
         }
 
-        if (str_contains($lower, 'trade') || str_contains($lower, 'buy')
-            || str_contains($lower, 'sell') || str_contains($lower, 'swap')) {
+        if (
+            str_contains($lower, 'trade') || str_contains($lower, 'buy')
+            || str_contains($lower, 'sell') || str_contains($lower, 'swap')
+        ) {
             $tools[] = 'exchange.trade';
         }
 

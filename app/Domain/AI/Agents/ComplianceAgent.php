@@ -37,13 +37,17 @@ class ComplianceAgent extends BaseAgent
         $lower = strtolower($query);
         $tools = [];
 
-        if (str_contains($lower, 'kyc') || str_contains($lower, 'identity')
-            || str_contains($lower, 'verify') || str_contains($lower, 'verification')) {
+        if (
+            str_contains($lower, 'kyc') || str_contains($lower, 'identity')
+            || str_contains($lower, 'verify') || str_contains($lower, 'verification')
+        ) {
             $tools[] = 'compliance.kyc';
         }
 
-        if (str_contains($lower, 'aml') || str_contains($lower, 'screening')
-            || str_contains($lower, 'risk') || str_contains($lower, 'audit')) {
+        if (
+            str_contains($lower, 'aml') || str_contains($lower, 'screening')
+            || str_contains($lower, 'risk') || str_contains($lower, 'audit')
+        ) {
             $tools[] = 'compliance.aml_screening';
         }
 
