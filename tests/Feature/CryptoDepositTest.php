@@ -72,7 +72,7 @@ class CryptoDepositTest extends TestCase
     }
 
     #[Test]
-    public function test_crypto_deposit_page_uses_config_driven_addresses()
+    public function test_crypto_deposit_page_uses_config_driven_addresses(): void
     {
         config(['cgo.deposit_addresses' => [
             'btc'  => 'tb1qtest_btc_address',
@@ -94,7 +94,7 @@ class CryptoDepositTest extends TestCase
     }
 
     #[Test]
-    public function test_crypto_deposit_page_handles_empty_addresses()
+    public function test_crypto_deposit_page_handles_empty_addresses(): void
     {
         config(['cgo.deposit_addresses' => [
             'btc'  => '',

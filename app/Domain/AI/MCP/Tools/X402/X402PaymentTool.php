@@ -125,8 +125,8 @@ class X402PaymentTool implements MCPToolInterface
                 'payment' => [
                     'resource'    => $requirements->resource->url,
                     'description' => $requirements->resource->description,
-                    'amount'      => $firstAccept?->amount ?? 'unknown',
-                    'network'     => $firstAccept?->network ?? 'unknown',
+                    'amount'      => $firstAccept->amount ?? 'unknown',
+                    'network'     => $firstAccept->network ?? 'unknown',
                 ],
                 'instructions' => 'Retry the original request with the PAYMENT-SIGNATURE header from the headers field.',
             ];
@@ -134,8 +134,8 @@ class X402PaymentTool implements MCPToolInterface
             Log::info('MCP Tool: x402 payment processed', [
                 'agent_id' => $agentId,
                 'resource' => $requirements->resource->url,
-                'amount'   => $firstAccept?->amount ?? 'unknown',
-                'network'  => $firstAccept?->network ?? 'unknown',
+                'amount'   => $firstAccept->amount ?? 'unknown',
+                'network'  => $firstAccept->network ?? 'unknown',
             ]);
 
             return ToolExecutionResult::success($result, $durationMs);

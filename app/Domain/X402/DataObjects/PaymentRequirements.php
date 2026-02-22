@@ -66,7 +66,9 @@ readonly class PaymentRequirements
         }
 
         // Validate amount is a positive numeric string
-        if (bccomp((string) $data['amount'], '0') <= 0) {
+        /** @var numeric-string $amountStr */
+        $amountStr = (string) $data['amount'];
+        if (bccomp($amountStr, '0') <= 0) {
             throw \App\Domain\X402\Exceptions\X402InvalidPayloadException::invalidField('amount', 'Amount must be positive');
         }
 

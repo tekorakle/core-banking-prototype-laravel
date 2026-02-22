@@ -96,7 +96,7 @@ readonly class PaymentRequired
             throw X402InvalidPayloadException::invalidBase64('Failed to decode PaymentRequired base64 string.');
         }
 
-        /** @var array|null $data */
+        /** @var array<string, mixed>|null $data */
         $data = json_decode($decoded, true);
 
         if (! is_array($data)) {

@@ -34,7 +34,7 @@ readonly class PaymentPayload
     /**
      * Serialize to a plain array.
      *
-     * @return array{x402Version: int, resource: array, accepted: array, payload: array<string, mixed>, extensions: ?array<string, mixed>}
+     * @return array{x402Version: int, resource: array<string, mixed>, accepted: array<string, mixed>, payload: array<string, mixed>, extensions: ?array<string, mixed>}
      */
     public function toArray(): array
     {
@@ -90,7 +90,7 @@ readonly class PaymentPayload
             throw X402InvalidPayloadException::invalidBase64('Failed to decode PaymentPayload base64 string.');
         }
 
-        /** @var array|null $data */
+        /** @var array<string, mixed>|null $data */
         $data = json_decode($decoded, true);
 
         if (! is_array($data)) {

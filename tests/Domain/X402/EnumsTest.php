@@ -38,8 +38,8 @@ test('X402Network returns USDC decimals as 6', function () {
 });
 
 test('X402Network has labels', function () {
-    expect(X402Network::BASE_MAINNET->label())->toBeString()->not->toBeEmpty();
-    expect(X402Network::BASE_SEPOLIA->label())->toBeString()->not->toBeEmpty();
+    expect(X402Network::BASE_MAINNET->label())->toBeString()->not->toBeEmpty(); // @phpstan-ignore property.notFound
+    expect(X402Network::BASE_SEPOLIA->label())->toBeString()->not->toBeEmpty(); // @phpstan-ignore property.notFound
 });
 
 test('SettlementStatus has expected statuses', function () {

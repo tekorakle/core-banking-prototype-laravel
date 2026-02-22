@@ -21,6 +21,7 @@ class X402EIP712SignerService implements X402SignerInterface
     private ?string $signerAddress = null;
 
     public function __construct(
+        /** @phpstan-ignore property.onlyWritten */
         private readonly string $signerKeyId = 'default',
     ) {
     }

@@ -44,7 +44,7 @@ test('encodes PaymentRequired to Base64', function () {
     expect($decoded)->not->toBeFalse();
 
     // Verify it's valid JSON
-    $json = json_decode($decoded, true);
+    $json = json_decode((string) $decoded, true);
     expect($json)->toBeArray();
     expect($json)->toHaveKey('x402Version');
 });
@@ -96,10 +96,12 @@ test('encodes SettleResponse to Base64', function () {
     expect($decoded)->not->toBeFalse();
 });
 
+/** @phpstan-ignore-next-line method.notFound */
 test('throws on invalid base64 input', function () {
     $this->codec->decodePaymentRequired('not-valid-base64!!!');
 })->throws(X402InvalidPayloadException::class);
 
+/** @phpstan-ignore-next-line method.notFound */
 test('throws on invalid JSON after base64 decode', function () {
     $encoded = base64_encode('not valid json');
     $this->codec->decodePaymentRequired($encoded);
