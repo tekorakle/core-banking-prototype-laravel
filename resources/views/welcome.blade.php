@@ -58,7 +58,7 @@
                         Built in the Open
                     </h1>
                     <p class="text-xl md:text-2xl mb-8 text-purple-100 max-w-4xl mx-auto">
-                        A modern core banking platform with 41 DDD domains—featuring the <a href="{{ route('features.show', 'gcu') }}" class="text-white underline hover:text-purple-100">Global Currency Unit</a>, cross-chain bridges, DeFi protocols, privacy-preserving identity, mobile payments, RegTech compliance, and AI-powered analytics.
+                        A modern core banking platform with 42 DDD domains—featuring the <a href="{{ route('features.show', 'gcu') }}" class="text-white underline hover:text-purple-100">Global Currency Unit</a>, cross-chain bridges, DeFi protocols, privacy-preserving identity, mobile payments, RegTech compliance, AI-powered analytics, and HTTP-native micropayments via the x402 protocol.
                     </p>
                     <p class="mb-8">
                         <a href="{{ route('about') }}" class="text-purple-200 hover:text-white underline">Learn about the project →</a>
@@ -101,7 +101,7 @@
                                 What Is FinAegis?
                             </h2>
                             <p class="text-lg mb-6 text-indigo-100">
-                                FinAegis is an open-source demonstration of how a modern core banking platform could work. It showcases 41 DDD domains with event sourcing, CQRS, cross-chain bridges, DeFi protocols, and AI integration.
+                                FinAegis is an open-source demonstration of how a modern core banking platform could work. It showcases 42 DDD domains with event sourcing, CQRS, cross-chain bridges, DeFi protocols, AI integration, and HTTP-native micropayments.
                             </p>
                             <div class="space-y-4 mb-8">
                                 <div class="flex items-start">
@@ -176,7 +176,7 @@
                 <div class="text-center mb-16">
                     <h2 class="text-4xl font-bold text-gray-900 mb-4">What's Implemented</h2>
                     <p class="text-xl text-gray-600 max-w-3xl mx-auto">
-                        41 DDD domains covering core banking, cross-chain DeFi, privacy, mobile payments, compliance, and AI
+                        42 DDD domains covering core banking, cross-chain DeFi, privacy, mobile payments, compliance, AI, and API monetization
                     </p>
                 </div>
 
@@ -386,6 +386,21 @@
                             Learn more →
                         </span>
                     </a>
+
+                    <div class="feature-card bg-white border border-gray-200 rounded-xl p-8 block hover:border-sky-500 transition-all">
+                        <div class="w-14 h-14 bg-sky-100 rounded-lg flex items-center justify-center mb-6">
+                            <svg class="w-8 h-8 text-sky-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z"></path>
+                            </svg>
+                        </div>
+                        <h3 class="text-xl font-semibold mb-3">x402 Micropayments</h3>
+                        <p class="text-gray-600 mb-4">
+                            Monetize any API endpoint with per-request stablecoin payments. Built on the x402 protocol, enabling USDC-based pay-per-call on Base with instant settlement and agent-level spending controls.
+                        </p>
+                        <span class="text-sky-600 font-medium">
+                            v5.2.0
+                        </span>
+                    </div>
                 </div>
 
                 <div class="text-center mt-12">

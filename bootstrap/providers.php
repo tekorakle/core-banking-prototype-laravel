@@ -35,6 +35,7 @@ return [
     App\Providers\TenancyServiceProvider::class,
     App\Providers\TestingServiceProvider::class,
     App\Providers\WalletServiceProvider::class,
+    App\Providers\X402ServiceProvider::class,
     App\Providers\WebhookServiceProvider::class,
     App\Infrastructure\Plugins\PluginServiceProvider::class,
     Nuwave\Lighthouse\Subscriptions\SubscriptionServiceProvider::class,

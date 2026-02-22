@@ -20,6 +20,8 @@ git status && git branch --show-current
 ### Version Status
 | Version | Status | Key Changes |
 |---------|--------|-------------|
+| v5.2.0 | ✅ Released | X402 Protocol: HTTP-native micropayments (USDC on Base), payment gate middleware, facilitator integration, AI agent payments, spending limits, GraphQL/REST APIs, MCP tool |
+| v5.1.6 | ✅ Released | Security Hardening: copyright year, accessibility improvements, CSP headers, email config defaults |
 | v5.1.5 | ✅ Released | Dependency Cleanup: l5-swagger 9→10 (swagger-php 6), PSR-4 plugin fix, `.env.production.example`, passkey test fix |
 | v5.1.4 | ✅ Released | Refresh Token Mechanism: proper access/refresh token pairs with rotation, PHPStan fix, OpenAPI docs update |
 | v5.1.3 | ✅ Released | Mobile API Compat: optional `owner_address` for smart account onboarding, auth response standardization, token refresh/logout-all endpoints, rate limiter 500 fix |
@@ -104,7 +106,7 @@ php artisan tenants:export-data <id> --format=json       # Export data
 
 ```
 app/
-├── Domain/           # DDD bounded contexts (41 domains)
+├── Domain/           # DDD bounded contexts (42 domains)
 │   ├── Account/      # Account management
 │   ├── Exchange/     # Trading engine
 │   ├── Lending/      # P2P lending
@@ -119,6 +121,7 @@ app/
 │   ├── Relayer/      # ERC-4337 Gas Abstraction, Smart Accounts (v2.6.0)
 │   ├── MobilePayment/# Payment Intents, Receipts, Activity Feed (v2.7.0)
 │   ├── RegTech/      # MiFID II, MiCA, Travel Rule, Jurisdiction Adapters (v2.8.0)
+│   ├── X402/         # HTTP 402 Protocol, Payment Gate, AI Agent Payments (v5.2.0)
 │   ├── CrossChain/   # Bridge protocols, cross-chain swaps, multi-chain portfolio (v3.0.0)
 │   ├── DeFi/         # DEX aggregation, lending, staking, yield optimization (v3.0.0)
 │   └── Shared/       # CQRS interfaces, events
@@ -133,12 +136,18 @@ app/
 - **CQRS**: Command/Query Bus with read/write separation
 - **Sagas**: Laravel Workflow with compensation
 - **Multi-Tenancy**: Team-based isolation with `UsesTenantConnection` trait
-- **GraphQL API**: Lighthouse PHP with schema-first design, 33 domain schemas
+- **GraphQL API**: Lighthouse PHP with schema-first design, 34 domain schemas
 - **Event Streaming**: Redis Streams publisher/consumer with domain routing
 
 ### Key Services (DON'T RECREATE)
 | Need | Existing Service |
 |------|------------------|
+| X402 Payment Gate | `X402PaymentGateMiddleware` (X402) |
+| X402 Settlement | `X402SettlementService` (X402) |
+| X402 Client | `X402ClientService` (X402) |
+| X402 Verification | `X402PaymentVerificationService` (X402) |
+| X402 Pricing | `X402PricingService` (X402) |
+| X402 MCP Tool | `X402PaymentTool` (AI/MCP) |
 | Hardware Wallets | `HardwareWalletManager` (Wallet) |
 | Ledger Signing | `LedgerSignerService` (Wallet) |
 | Trezor Signing | `TrezorSignerService` (Wallet) |

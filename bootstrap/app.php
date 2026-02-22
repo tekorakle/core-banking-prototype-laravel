@@ -80,6 +80,8 @@ return Application::configure(basePath: dirname(__DIR__))
             'structured.logging' => App\Http\Middleware\StructuredLoggingMiddleware::class,
             // API versioning middleware (v3.4.0)
             'api.version' => App\Http\Middleware\ApiVersionMiddleware::class,
+            // X402 Payment Protocol middleware (v5.2.0)
+            'x402.payment' => App\Http\Middleware\X402PaymentGateMiddleware::class,
         ]);
 
         // Prepend CORS middleware to handle it before other middleware
