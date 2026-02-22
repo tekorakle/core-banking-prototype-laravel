@@ -45,6 +45,7 @@
                     <a href="#ai" class="text-gray-600 hover:text-gray-900">AI</a>
                     <a href="#graphql" class="text-sky-600 hover:text-sky-800">GraphQL</a>
                     <a href="#event-streaming" class="text-lime-600 hover:text-lime-800">Event Streaming</a>
+                    <a href="#x402" class="text-emerald-600 hover:text-emerald-800">x402 Protocol</a>
                     <a href="#webhooks" class="text-gray-600 hover:text-gray-900">Webhooks</a>
                     <a href="#errors" class="text-gray-600 hover:text-gray-900">Errors</a>
                 </nav>
@@ -60,7 +61,7 @@
                         <h2 class="text-3xl font-bold text-gray-900 mb-8">Getting Started</h2>
                         
                         <div class="prose prose-lg max-w-none">
-                            <p>The FinAegis API provides programmatic access to our multi-asset banking platform spanning 41 DDD domains with over 1,150 routes. Our API is organized around REST principles with predictable, resource-oriented URLs. Domains include core banking, CrossChain bridging, DeFi protocols, RegTech compliance, Mobile Payment, Partner BaaS, and AI-powered queries.</p>
+                            <p>The FinAegis API provides programmatic access to our multi-asset banking platform spanning 42 DDD domains with over 1,200 routes. Our API is organized around REST principles with predictable, resource-oriented URLs. Domains include core banking, CrossChain bridging, DeFi protocols, RegTech compliance, Mobile Payment, Partner BaaS, and AI-powered queries.</p>
                             
                             <h3>Base URL</h3>
                             <x-code-block language="plaintext">
@@ -1249,8 +1250,8 @@ curl -H "Authorization: Bearer your_api_key" \
                         <h2 class="text-3xl font-bold text-gray-900 mb-8">GraphQL API</h2>
 
                         <div class="prose prose-lg max-w-none mb-8">
-                            <p>Schema-first GraphQL API powered by Lighthouse PHP. Provides queries, mutations, and subscriptions across 33 domain schemas with DataLoader-optimized resolvers and WebSocket-based real-time subscriptions.</p>
-                            <p class="text-sm text-gray-500">33 domain schemas &middot; Queries, Mutations, Subscriptions</p>
+                            <p>Schema-first GraphQL API powered by Lighthouse PHP. Provides queries, mutations, and subscriptions across 34 domain schemas with DataLoader-optimized resolvers and WebSocket-based real-time subscriptions.</p>
+                            <p class="text-sm text-gray-500">34 domain schemas &middot; Queries, Mutations, Subscriptions</p>
                         </div>
 
                         <div class="space-y-8">
@@ -1262,7 +1263,7 @@ curl -H "Authorization: Bearer your_api_key" \
                                         <span class="ml-2 font-mono text-sm">/graphql</span>
                                     </div>
                                 </div>
-                                <p class="text-gray-600 mb-4">Execute a GraphQL query or mutation against the unified schema. Supports all 33 domain schemas including Account, AgentProtocol, Basket, Batch, CardIssuance, Cgo, Compliance, CrossChain, DeFi, Exchange, FinancialInstitution, Product, Regulatory, User, Wallet, and more.</p>
+                                <p class="text-gray-600 mb-4">Execute a GraphQL query or mutation against the unified schema. Supports all 34 domain schemas including Account, AgentProtocol, Basket, Batch, CardIssuance, Cgo, Compliance, CrossChain, DeFi, Exchange, FinancialInstitution, Product, Regulatory, User, Wallet, and more.</p>
                                 <x-code-block language="bash">
 curl -X POST \
   -H "Authorization: Bearer your_api_key" \
@@ -1410,6 +1411,143 @@ curl -H "Authorization: Bearer your_api_key" \
                             </div>
                         </div>
                     </section>
+
+                    <!-- x402 Protocol API -->
+                    <section id="x402" class="mb-16">
+                        <h2 class="text-3xl font-bold text-gray-900 mb-8">x402 Protocol API</h2>
+
+                        <div class="prose prose-lg max-w-none mb-8">
+                            <p>The x402 Protocol enables HTTP-native micropayments using USDC on Base. Monetize any API endpoint by returning HTTP 402 responses with payment requirements. Supports AI agent autonomous payments, spending limits, and multi-network settlement.</p>
+                            <p class="text-sm text-gray-500">15+ endpoints &middot; <a href="/api/documentation#/X402" target="_blank" class="text-emerald-600 hover:text-emerald-800">View in Swagger UI</a></p>
+                        </div>
+
+                        <div class="space-y-8">
+                            <div class="border rounded-lg p-6">
+                                <h3 class="text-xl font-semibold mb-4">Protocol Status</h3>
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                                    <div>
+                                        <span class="inline-block bg-green-100 text-green-800 text-xs font-medium px-2.5 py-0.5 rounded">GET</span>
+                                        <span class="ml-2 font-mono text-sm">/v2/x402/status</span>
+                                    </div>
+                                </div>
+                                <p class="text-gray-600 mb-4">Get the current x402 protocol status including supported networks, assets, and facilitator connectivity.</p>
+                                <x-code-block language="bash">
+curl -H "Authorization: Bearer your_api_key" \
+     https://api.finaegis.org/v2/x402/status
+                                </x-code-block>
+                            </div>
+
+                            <div class="border rounded-lg p-6">
+                                <h3 class="text-xl font-semibold mb-4">Supported Networks</h3>
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                                    <div>
+                                        <span class="inline-block bg-green-100 text-green-800 text-xs font-medium px-2.5 py-0.5 rounded">GET</span>
+                                        <span class="ml-2 font-mono text-sm">/v2/x402/supported</span>
+                                    </div>
+                                </div>
+                                <p class="text-gray-600 mb-4">List all supported blockchain networks and payment assets for x402 settlement.</p>
+                                <x-code-block language="bash">
+curl -H "Authorization: Bearer your_api_key" \
+     https://api.finaegis.org/v2/x402/supported
+                                </x-code-block>
+                            </div>
+
+                            <div class="border rounded-lg p-6">
+                                <h3 class="text-xl font-semibold mb-4">Monetized Endpoints</h3>
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                                    <div>
+                                        <span class="inline-block bg-orange-100 text-orange-800 text-xs font-medium px-2.5 py-0.5 rounded">POST</span>
+                                        <span class="ml-2 font-mono text-sm">/v2/x402/endpoints</span>
+                                    </div>
+                                </div>
+                                <p class="text-gray-600 mb-4">Register an API endpoint for x402 monetization with pricing configuration.</p>
+                                <x-code-block language="bash">
+curl -X POST \
+  -H "Authorization: Bearer your_api_key" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "path": "/v2/premium/data",
+    "price_usd_cents": 100,
+    "network": "eip155:8453",
+    "asset": "USDC",
+    "description": "Premium market data"
+  }' \
+  https://api.finaegis.org/v2/x402/endpoints
+                                </x-code-block>
+                            </div>
+
+                            <div class="border rounded-lg p-6">
+                                <h3 class="text-xl font-semibold mb-4">Payment History</h3>
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                                    <div>
+                                        <span class="inline-block bg-green-100 text-green-800 text-xs font-medium px-2.5 py-0.5 rounded">GET</span>
+                                        <span class="ml-2 font-mono text-sm">/v2/x402/payments</span>
+                                    </div>
+                                </div>
+                                <p class="text-gray-600 mb-4">Retrieve payment history and settlement status for x402 transactions.</p>
+                                <x-code-block language="bash">
+curl -H "Authorization: Bearer your_api_key" \
+     "https://api.finaegis.org/v2/x402/payments?page=1&per_page=20"
+                                </x-code-block>
+                            </div>
+
+                            <div class="border rounded-lg p-6">
+                                <h3 class="text-xl font-semibold mb-4">Spending Limits</h3>
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                                    <div>
+                                        <span class="inline-block bg-green-100 text-green-800 text-xs font-medium px-2.5 py-0.5 rounded">GET</span>
+                                        <span class="ml-2 font-mono text-sm">/v2/x402/spending-limits</span>
+                                    </div>
+                                </div>
+                                <p class="text-gray-600 mb-4">View and manage spending limits for automated x402 payments including AI agent budgets.</p>
+                                <x-code-block language="bash">
+curl -H "Authorization: Bearer your_api_key" \
+     https://api.finaegis.org/v2/x402/spending-limits
+                                </x-code-block>
+                            </div>
+
+                            <div class="border rounded-lg p-6 bg-emerald-50 border-emerald-200">
+                                <h3 class="text-xl font-semibold mb-4">Handling 402 Responses</h3>
+                                <p class="text-gray-600 mb-4">When a client hits a monetized endpoint without payment, it receives an HTTP 402 with payment requirements in headers:</p>
+                                <x-code-block language="plaintext">
+HTTP/1.1 402 Payment Required
+X-Payment-Required: true
+X-Payment-Network: eip155:8453
+X-Payment-Asset: USDC
+X-Payment-Amount: 0.01
+X-Payment-Receiver: 0x...
+X-Payment-Facilitator: https://x402.org/facilitator
+                                </x-code-block>
+
+                                <h4 class="font-semibold mb-2 mt-6">JavaScript Client Example:</h4>
+                                <x-code-block language="javascript">
+const response = await fetch('https://api.finaegis.org/v2/premium/data', {
+  headers: { 'Authorization': 'Bearer YOUR_API_KEY' }
+});
+
+if (response.status === 402) {
+  const paymentInfo = {
+    network: response.headers.get('X-Payment-Network'),
+    asset: response.headers.get('X-Payment-Asset'),
+    amount: response.headers.get('X-Payment-Amount'),
+    receiver: response.headers.get('X-Payment-Receiver'),
+  };
+
+  // Sign and submit payment, then retry with proof
+  const proof = await signPayment(paymentInfo);
+  const paid = await fetch('https://api.finaegis.org/v2/premium/data', {
+    headers: {
+      'Authorization': 'Bearer YOUR_API_KEY',
+      'X-Payment-Signature': proof.signature,
+      'X-Payment-Payload': proof.payload,
+    }
+  });
+  const data = await paid.json(); // 200 + data
+}
+                                </x-code-block>
+                            </div>
+                        </div>
+                    </section>
                 </div>
 
                 <!-- Sidebar -->
@@ -1436,6 +1574,7 @@ curl -H "Authorization: Bearer your_api_key" \
                                 <li><a href="#ai" class="text-gray-600 hover:text-gray-800 flex justify-between"><span>AI Query</span><span class="text-gray-400">2 routes</span></a></li>
                                 <li><a href="#graphql" class="text-sky-600 hover:text-sky-800 flex justify-between"><span>GraphQL</span><span class="text-gray-400">33 domains</span></a></li>
                                 <li><a href="#event-streaming" class="text-lime-600 hover:text-lime-800 flex justify-between"><span>Event Streaming</span><span class="text-gray-400">5 endpoints</span></a></li>
+                                <li><a href="#x402" class="text-emerald-600 hover:text-emerald-800 flex justify-between"><span>x402 Protocol</span><span class="text-gray-400">15+ endpoints</span></a></li>
                             </ul>
                         </div>
 
