@@ -14,13 +14,14 @@ class AIAgentServiceTest extends TestCase
 {
     private AIAgentService $service;
 
-    private AgentOrchestratorService&MockInterface $orchestrator;
+    /** @var AgentOrchestratorService&MockInterface */
+    private AgentOrchestratorService $orchestrator; // @phpstan-ignore property.phpDocType
 
     protected function setUp(): void
     {
         parent::setUp();
 
-        $this->orchestrator = Mockery::mock(AgentOrchestratorService::class);
+        $this->orchestrator = Mockery::mock(AgentOrchestratorService::class); // @phpstan-ignore assign.propertyType
         $this->service = new AIAgentService($this->orchestrator);
     }
 

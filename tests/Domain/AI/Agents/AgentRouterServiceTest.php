@@ -19,23 +19,19 @@ class AgentRouterServiceTest extends TestCase
 {
     private AgentRouterService $router;
 
-    private ToolRegistry $toolRegistry;
-
-    private LLMOrchestrationService $llmService;
-
     protected function setUp(): void
     {
         parent::setUp();
 
-        $this->toolRegistry = Mockery::mock(ToolRegistry::class);
-        $this->llmService = Mockery::mock(LLMOrchestrationService::class);
+        $toolRegistry = Mockery::mock(ToolRegistry::class);
+        $llmService = Mockery::mock(LLMOrchestrationService::class);
 
         $this->router = new AgentRouterService();
-        $this->router->registerAgent(new FinancialAgent($this->toolRegistry, $this->llmService));
-        $this->router->registerAgent(new TradingAgent($this->toolRegistry, $this->llmService));
-        $this->router->registerAgent(new ComplianceAgent($this->toolRegistry, $this->llmService));
-        $this->router->registerAgent(new TransferAgent($this->toolRegistry, $this->llmService));
-        $this->router->registerAgent(new GeneralAgent($this->toolRegistry, $this->llmService));
+        $this->router->registerAgent(new FinancialAgent($toolRegistry, $llmService)); // @phpstan-ignore argument.type, argument.type
+        $this->router->registerAgent(new TradingAgent($toolRegistry, $llmService)); // @phpstan-ignore argument.type, argument.type
+        $this->router->registerAgent(new ComplianceAgent($toolRegistry, $llmService)); // @phpstan-ignore argument.type, argument.type
+        $this->router->registerAgent(new TransferAgent($toolRegistry, $llmService)); // @phpstan-ignore argument.type, argument.type
+        $this->router->registerAgent(new GeneralAgent($toolRegistry, $llmService)); // @phpstan-ignore argument.type, argument.type
     }
 
     protected function tearDown(): void

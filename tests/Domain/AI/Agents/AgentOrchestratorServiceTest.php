@@ -25,7 +25,7 @@ class AgentOrchestratorServiceTest extends TestCase
         $llmService = Mockery::mock(LLMOrchestrationService::class);
 
         $router = new AgentRouterService();
-        $router->registerAgent(new GeneralAgent($toolRegistry, $llmService));
+        $router->registerAgent(new GeneralAgent($toolRegistry, $llmService)); // @phpstan-ignore argument.type, argument.type
 
         $composer = new AgentResponseComposerService();
 
