@@ -4,6 +4,7 @@ return [
     App\Infrastructure\Domain\DomainServiceProvider::class,
     App\Providers\AccountServiceProvider::class,
     App\Providers\AgentProtocolServiceProvider::class,
+    App\Providers\AgentServiceProvider::class,
     App\Providers\AIInfrastructureServiceProvider::class,
     App\Providers\MCPToolServiceProvider::class,
     App\Providers\AppServiceProvider::class,

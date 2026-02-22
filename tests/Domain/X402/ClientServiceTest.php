@@ -8,11 +8,11 @@ use App\Domain\X402\Contracts\X402SignerInterface;
 use App\Domain\X402\DataObjects\PaymentRequired;
 use App\Domain\X402\DataObjects\PaymentRequirements;
 use App\Domain\X402\DataObjects\ResourceInfo;
+use App\Domain\X402\Exceptions\X402InvalidPayloadException;
 use App\Domain\X402\Models\X402SpendingLimit;
 use App\Domain\X402\Services\X402ClientService;
 use App\Domain\X402\Services\X402HeaderCodecService;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use App\Domain\X402\Exceptions\X402InvalidPayloadException;
 use RuntimeException;
 use Tests\TestCase;
 

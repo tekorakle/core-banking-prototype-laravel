@@ -100,7 +100,10 @@ class X402PaymentVerificationService
 
         // Validate amount is sufficient
         $requiredAmount = $this->pricingService->usdToAtomicUnits($config->price);
-        if (bccomp($payload->accepted->amount, $requiredAmount) < 0) {
+        /** @var numeric-string $paymentAmount */
+        $paymentAmount = $payload->accepted->amount;
+        /** @var numeric-string $requiredAmount */
+        if (bccomp($paymentAmount, $requiredAmount) < 0) {
             return new VerifyResponse(
                 isValid: false,
                 invalidReason: 'invalid_exact_evm_payload_authorization_value',

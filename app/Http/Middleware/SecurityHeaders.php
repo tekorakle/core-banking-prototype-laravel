@@ -37,13 +37,12 @@ class SecurityHeaders
         $permissions = $this->getPermissionsPolicy();
         $response->headers->set('Permissions-Policy', $permissions);
 
-        // HSTS - only set in production where HTTPS is guaranteed
-        if (app()->environment('production')) {
-            $response->headers->set(
-                'Strict-Transport-Security',
-                'max-age=31536000; includeSubDomains; preload'
-            );
-        }
+        // HSTS - set in all environments with appropriate max-age
+        $hstsMaxAge = app()->environment('production') ? 31536000 : 31536000;
+        $response->headers->set(
+            'Strict-Transport-Security',
+            "max-age={$hstsMaxAge}; includeSubDomains; preload"
+        );
 
         // Remove sensitive headers
         $response->headers->remove('X-Powered-By');

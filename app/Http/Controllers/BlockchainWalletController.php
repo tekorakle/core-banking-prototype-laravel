@@ -503,6 +503,7 @@ class BlockchainWalletController extends Controller
     /**
      * Get USD exchange rates for each supported chain symbol.
      *
+     * @param array<string, array<string, mixed>> $supportedChains
      * @return array<string, float|null> Map of symbol => USD rate
      */
     private function getUsdRates(array $supportedChains): array

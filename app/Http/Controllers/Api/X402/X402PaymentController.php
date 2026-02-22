@@ -113,7 +113,7 @@ class X402PaymentController extends Controller
      *     summary="Get x402 payment statistics",
      *     tags={"X402 Payments"},
      *     security={{"sanctum": {}}},
-     *     @OA\Parameter(name="period", in="query", required=false, @OA\Schema(type="string", enum={"day", "week", "month"}, default="day")),
+     *     @OA\Parameter(name="period", in="query", required=false, description="Time period (aliases: 24h=day, 7d=week, 30d=month)", @OA\Schema(type="string", enum={"day", "week", "month", "24h", "7d", "30d"}, default="day")),
      *     @OA\Response(
      *         response=200,
      *         description="Payment statistics",
@@ -132,9 +132,18 @@ class X402PaymentController extends Controller
     public function stats(Request $request): JsonResponse
     {
         $period = $request->input('period', 'day');
+
+        // Normalize common aliases
+        $period = match ($period) {
+            '24h', '1d' => 'day',
+            '7d'    => 'week',
+            '30d'   => 'month',
+            default => $period,
+        };
+
         if (! in_array($period, ['day', 'week', 'month'], true)) {
             return response()->json([
-                'errors' => ['period' => ['Must be one of: day, week, month.']],
+                'errors' => ['period' => ['Must be one of: day, week, month (or aliases: 24h, 1d, 7d, 30d).']],
             ], 422);
         }
 

@@ -80,6 +80,7 @@ class X402PricingService
      */
     public function usdToAtomicUnits(string $usdPrice): string
     {
+        /** @var numeric-string $usdPrice */
         return bcmul($usdPrice, '1000000', 0);
     }
 

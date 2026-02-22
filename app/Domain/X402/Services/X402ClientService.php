@@ -115,6 +115,7 @@ class X402ClientService
      */
     private function enforceSpendingLimit(string $agentId, string $amount): void
     {
+        /** @var numeric-string $amount */
         // Reject non-positive amounts to prevent budget manipulation
         if (bccomp($amount, '0') <= 0) {
             throw new RuntimeException('Payment amount must be positive.');
@@ -125,6 +126,7 @@ class X402ClientService
 
             if ($limit === null) {
                 // Check against global config limits
+                /** @var numeric-string $maxAutoPay */
                 $maxAutoPay = (string) config('x402.client.max_auto_pay_amount', '100000');
                 if (bccomp($amount, $maxAutoPay) > 0) {
                     throw new RuntimeException(
@@ -136,7 +138,9 @@ class X402ClientService
             }
 
             // Check per-transaction limit
-            if ($limit->per_transaction_limit !== null && bccomp($amount, (string) $limit->per_transaction_limit) > 0) {
+            /** @var numeric-string $perTxLimit */
+            $perTxLimit = (string) $limit->per_transaction_limit;
+            if ($limit->per_transaction_limit !== null && bccomp($amount, $perTxLimit) > 0) {
                 throw new RuntimeException(
                     "Payment of {$amount} atomic USDC exceeds per-transaction limit of {$limit->per_transaction_limit} atomic USDC."
                 );
@@ -148,7 +152,9 @@ class X402ClientService
                 );
             }
 
-            if (! $limit->auto_pay_enabled && bccomp($amount, (string) config('x402.agent_spending.require_approval_above', '1000000')) > 0) {
+            /** @var numeric-string $approvalThreshold */
+            $approvalThreshold = (string) config('x402.agent_spending.require_approval_above', '1000000');
+            if (! $limit->auto_pay_enabled && bccomp($amount, $approvalThreshold) > 0) {
                 throw new RuntimeException(
                     "Payment of {$amount} atomic USDC exceeds the auto-pay threshold. Manual approval is required before this payment can proceed."
                 );
