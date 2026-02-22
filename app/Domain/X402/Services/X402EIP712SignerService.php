@@ -18,12 +18,11 @@ use RuntimeException;
  */
 class X402EIP712SignerService implements X402SignerInterface
 {
-    private string $signerAddress;
+    private ?string $signerAddress = null;
 
     public function __construct(
         private readonly string $signerKeyId = 'default',
     ) {
-        $this->signerAddress = (string) config('x402.client.signer_address', '0x0000000000000000000000000000000000000000');
     }
 
     /**
@@ -77,10 +76,14 @@ class X402EIP712SignerService implements X402SignerInterface
     }
 
     /**
-     * Get the signer wallet address.
+     * Get the signer wallet address (lazy-loaded from config).
      */
     public function getAddress(): string
     {
+        if ($this->signerAddress === null) {
+            $this->signerAddress = (string) config('x402.client.signer_address', '0x0000000000000000000000000000000000000000');
+        }
+
         return $this->signerAddress;
     }
 

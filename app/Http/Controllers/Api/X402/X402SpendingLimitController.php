@@ -8,6 +8,7 @@ use App\Domain\X402\Models\X402SpendingLimit;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Validator;
 
 /**
@@ -31,7 +32,7 @@ class X402SpendingLimitController extends Controller
      *     summary="List agent spending limits",
      *     tags={"X402 Spending Limits"},
      *     security={{"sanctum": {}}},
-     *     @OA\Parameter(name="per_page", in="query", required=false, @OA\Schema(type="integer", default=50, maximum=100)),
+     *     @OA\Parameter(name="per_page", in="query", required=false, @OA\Schema(type="integer", default=20, maximum=100)),
      *     @OA\Response(
      *         response=200,
      *         description="List of spending limits"
@@ -41,7 +42,7 @@ class X402SpendingLimitController extends Controller
      */
     public function index(Request $request): JsonResponse
     {
-        $perPage = min(max((int) $request->input('per_page', 50), 1), 100);
+        $perPage = min(max((int) $request->input('per_page', 20), 1), 100);
 
         $limits = X402SpendingLimit::where('team_id', $request->user()?->currentTeam?->id)
             ->orderBy('agent_id')
@@ -99,21 +100,32 @@ class X402SpendingLimitController extends Controller
 
         $teamId = $request->user()?->currentTeam?->id;
 
-        $limit = X402SpendingLimit::updateOrCreate(
-            [
-                'agent_id' => $request->input('agent_id'),
-                'team_id'  => $teamId,
-            ],
-            [
+        $existing = X402SpendingLimit::where('agent_id', $request->input('agent_id'))
+            ->where('team_id', $teamId)
+            ->first();
+
+        if ($existing) {
+            $existing->update([
+                'agent_type'            => $request->input('agent_type', $existing->agent_type),
+                'daily_limit'           => $request->input('daily_limit'),
+                'per_transaction_limit' => $request->input('per_transaction_limit', $existing->per_transaction_limit),
+                'auto_pay_enabled'      => $request->boolean('auto_pay_enabled', $existing->auto_pay_enabled),
+            ]);
+            $existing->refresh();
+            $limit = $existing;
+            $statusCode = 200;
+        } else {
+            $limit = X402SpendingLimit::create([
+                'agent_id'              => $request->input('agent_id'),
+                'team_id'               => $teamId,
                 'agent_type'            => $request->input('agent_type', 'default'),
                 'daily_limit'           => $request->input('daily_limit'),
                 'per_transaction_limit' => $request->input('per_transaction_limit', config('x402.agent_spending.default_per_transaction_limit')),
                 'auto_pay_enabled'      => $request->boolean('auto_pay_enabled', false),
                 'limit_resets_at'       => now()->addDay(),
-            ]
-        );
-
-        $statusCode = $limit->wasRecentlyCreated ? 201 : 200;
+            ]);
+            $statusCode = 201;
+        }
 
         return response()->json([
             'data'    => $limit->toApiResponse(),
@@ -186,9 +198,10 @@ class X402SpendingLimitController extends Controller
         }
 
         $limit->update($validator->validated());
+        $limit->refresh();
 
         return response()->json([
-            'data'    => $limit->fresh()->toApiResponse(),
+            'data'    => $limit->toApiResponse(),
             'message' => 'Spending limit updated.',
         ]);
     }
@@ -202,21 +215,18 @@ class X402SpendingLimitController extends Controller
      *     tags={"X402 Spending Limits"},
      *     security={{"sanctum": {}}},
      *     @OA\Parameter(name="agentId", in="path", required=true, @OA\Schema(type="string")),
-     *     @OA\Response(response=200, description="Spending limit removed"),
+     *     @OA\Response(response=204, description="Spending limit removed"),
      *     @OA\Response(response=404, description="Not found"),
      *     @OA\Response(response=401, description="Unauthenticated")
      * )
      */
-    public function destroy(Request $request, string $agentId): JsonResponse
+    public function destroy(Request $request, string $agentId): Response
     {
         $limit = X402SpendingLimit::where('agent_id', $agentId)
             ->where('team_id', $request->user()?->currentTeam?->id)
             ->firstOrFail();
         $limit->delete();
 
-        return response()->json([
-            'data'    => ['agent_id' => $agentId],
-            'message' => 'Spending limit removed.',
-        ]);
+        return response()->noContent();
     }
 }

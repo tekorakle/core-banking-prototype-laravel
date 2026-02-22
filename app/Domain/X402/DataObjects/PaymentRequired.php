@@ -34,11 +34,11 @@ readonly class PaymentRequired
     /**
      * Serialize to a plain array.
      *
-     * @return array{x402Version: int, resource: array, accepts: array<array>, error: ?string, extensions: ?array<string, mixed>}
+     * @return array<string, mixed>
      */
     public function toArray(): array
     {
-        return [
+        return array_filter([
             'x402Version' => $this->x402Version,
             'resource'    => $this->resource->toArray(),
             'accepts'     => array_map(
@@ -47,7 +47,7 @@ readonly class PaymentRequired
             ),
             'error'      => $this->error,
             'extensions' => $this->extensions,
-        ];
+        ], static fn ($v) => $v !== null);
     }
 
     /**

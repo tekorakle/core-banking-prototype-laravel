@@ -14,7 +14,11 @@ class DeleteX402SpendingLimitMutation
      */
     public function __invoke($_, array $args): bool
     {
-        $limit = X402SpendingLimit::where('agent_id', $args['agent_id'])->firstOrFail();
+        $teamId = auth()->user()?->currentTeam?->id;
+
+        $limit = X402SpendingLimit::where('agent_id', $args['agent_id'])
+            ->where('team_id', $teamId)
+            ->firstOrFail();
         $limit->delete();
 
         return true;
