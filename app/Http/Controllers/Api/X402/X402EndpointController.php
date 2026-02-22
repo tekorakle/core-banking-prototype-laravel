@@ -8,6 +8,8 @@ use App\Domain\X402\Models\X402MonetizedEndpoint;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
 
@@ -33,7 +35,7 @@ class X402EndpointController extends Controller
      *     security={{"sanctum": {}}},
      *     @OA\Parameter(name="active", in="query", required=false, @OA\Schema(type="boolean")),
      *     @OA\Parameter(name="network", in="query", required=false, @OA\Schema(type="string")),
-     *     @OA\Parameter(name="per_page", in="query", required=false, @OA\Schema(type="integer", default=50, maximum=100)),
+     *     @OA\Parameter(name="per_page", in="query", required=false, @OA\Schema(type="integer", default=20, maximum=100)),
      *     @OA\Response(
      *         response=200,
      *         description="List of monetized endpoints"
@@ -54,7 +56,7 @@ class X402EndpointController extends Controller
             $query->where('network', $request->input('network'));
         }
 
-        $perPage = min(max((int) $request->input('per_page', 50), 1), 100);
+        $perPage = min(max((int) $request->input('per_page', 20), 1), 100);
 
         $endpoints = $query->orderBy('path')->paginate($perPage);
 
@@ -119,6 +121,8 @@ class X402EndpointController extends Controller
             'team_id'     => $request->user()?->currentTeam?->id,
         ]);
 
+        Cache::forget("x402:route:{$endpoint->method}:{$endpoint->path}");
+
         return response()->json([
             'data'    => $endpoint->toApiResponse(),
             'message' => 'Endpoint monetized successfully.',
@@ -164,7 +168,10 @@ class X402EndpointController extends Controller
      *             @OA\Property(property="price", type="string", example="0.02"),
      *             @OA\Property(property="network", type="string"),
      *             @OA\Property(property="description", type="string"),
-     *             @OA\Property(property="is_active", type="boolean")
+     *             @OA\Property(property="is_active", type="boolean"),
+     *             @OA\Property(property="asset", type="string", enum={"USDC"}),
+     *             @OA\Property(property="scheme", type="string", enum={"exact", "upto"}),
+     *             @OA\Property(property="mime_type", type="string", example="application/json")
      *         )
      *     ),
      *     @OA\Response(response=200, description="Endpoint updated"),
@@ -183,16 +190,25 @@ class X402EndpointController extends Controller
             'network'     => ['sometimes', 'string', 'regex:/^eip155:\d+$/'],
             'description' => ['sometimes', 'nullable', 'string', 'max:1000'],
             'is_active'   => ['sometimes', 'boolean'],
+            'asset'       => ['sometimes', 'string', Rule::in(['USDC'])],
+            'scheme'      => ['sometimes', 'string', Rule::in(['exact', 'upto'])],
+            'mime_type'   => ['sometimes', 'string', 'max:255'],
         ]);
 
         if ($validator->fails()) {
             return response()->json(['errors' => $validator->errors()], 422);
         }
 
+        $oldCacheKey = "x402:route:{$endpoint->method}:{$endpoint->path}";
+
         $endpoint->update($validator->validated());
+        $endpoint->refresh();
+
+        Cache::forget($oldCacheKey);
+        Cache::forget("x402:route:{$endpoint->method}:{$endpoint->path}");
 
         return response()->json([
-            'data'    => $endpoint->fresh()->toApiResponse(),
+            'data'    => $endpoint->toApiResponse(),
             'message' => 'Endpoint updated successfully.',
         ]);
     }
@@ -206,20 +222,20 @@ class X402EndpointController extends Controller
      *     tags={"X402 Endpoints"},
      *     security={{"sanctum": {}}},
      *     @OA\Parameter(name="id", in="path", required=true, @OA\Schema(type="string", format="uuid")),
-     *     @OA\Response(response=200, description="Endpoint removed"),
+     *     @OA\Response(response=204, description="Endpoint removed"),
      *     @OA\Response(response=404, description="Not found"),
      *     @OA\Response(response=401, description="Unauthenticated")
      * )
      */
-    public function destroy(Request $request, string $id): JsonResponse
+    public function destroy(Request $request, string $id): Response
     {
         $endpoint = X402MonetizedEndpoint::where('team_id', $request->user()?->currentTeam?->id)
             ->findOrFail($id);
+
+        Cache::forget("x402:route:{$endpoint->method}:{$endpoint->path}");
+
         $endpoint->delete();
 
-        return response()->json([
-            'data'    => ['id' => $id],
-            'message' => 'Monetized endpoint removed.',
-        ]);
+        return response()->noContent();
     }
 }

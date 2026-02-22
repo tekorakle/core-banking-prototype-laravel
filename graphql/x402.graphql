@@ -133,53 +133,53 @@ type X402NetworkInfo {
 
 extend type Query {
     "Retrieve a single x402 payment by ID."
-    x402Payment(id: ID! @eq): X402Payment
-        @find
+    x402Payment(id: ID!): X402Payment
         @guard(with: ["sanctum"])
+        @field(resolver: "App\\GraphQL\\Queries\\X402\\X402PaymentQuery")
 
     "List x402 payments with optional filters."
     x402Payments(
         page: Int @rules(apply: ["integer", "min:1"])
         first: Int @rules(apply: ["integer", "min:1", "max:100"])
         "Filter by settlement status."
-        status: String @where(operator: "=") @rules(apply: ["in:pending,verified,settled,failed,expired"])
+        status: String @rules(apply: ["in:pending,verified,settled,failed,expired"])
         "Filter by CAIP-2 network."
-        network: String @where(operator: "=")
+        network: String
         "Filter by payer blockchain address."
-        payer_address: String @where(operator: "=")
+        payer_address: String
     ): [X402Payment!]!
-        @paginate(defaultCount: 20, model: "App\\Domain\\X402\\Models\\X402Payment")
         @guard(with: ["sanctum"])
+        @field(resolver: "App\\GraphQL\\Queries\\X402\\X402PaymentsQuery")
 
     "Retrieve a single monetized endpoint by ID."
-    x402MonetizedEndpoint(id: ID! @eq): X402MonetizedEndpoint
-        @find
+    x402MonetizedEndpoint(id: ID!): X402MonetizedEndpoint
         @guard(with: ["sanctum"])
+        @field(resolver: "App\\GraphQL\\Queries\\X402\\X402MonetizedEndpointsQuery")
 
     "List monetized endpoints with optional filters."
     x402MonetizedEndpoints(
         page: Int @rules(apply: ["integer", "min:1"])
         first: Int @rules(apply: ["integer", "min:1", "max:100"])
         "Filter by active/inactive status."
-        is_active: Boolean @where(operator: "=")
+        is_active: Boolean
         "Filter by CAIP-2 network."
-        network: String @where(operator: "=")
+        network: String
     ): [X402MonetizedEndpoint!]!
-        @paginate(defaultCount: 20, model: "App\\Domain\\X402\\Models\\X402MonetizedEndpoint")
         @guard(with: ["sanctum"])
+        @field(resolver: "App\\GraphQL\\Queries\\X402\\X402MonetizedEndpointsQuery")
 
     "Retrieve a spending limit by agent ID."
-    x402SpendingLimit(agent_id: String! @where(operator: "=")): X402SpendingLimit
-        @first
+    x402SpendingLimit(agent_id: String!): X402SpendingLimit
         @guard(with: ["sanctum"])
+        @field(resolver: "App\\GraphQL\\Queries\\X402\\X402SpendingLimitsQuery")
 
     "List all agent spending limits."
     x402SpendingLimits(
         page: Int @rules(apply: ["integer", "min:1"])
         first: Int @rules(apply: ["integer", "min:1", "max:100"])
     ): [X402SpendingLimit!]!
-        @paginate(defaultCount: 20, model: "App\\Domain\\X402\\Models\\X402SpendingLimit")
         @guard(with: ["sanctum"])
+        @field(resolver: "App\\GraphQL\\Queries\\X402\\X402SpendingLimitsQuery")
 
     "Get the current x402 protocol configuration."
     x402ProtocolStatus: X402ProtocolStatus!
@@ -224,6 +224,12 @@ input UpdateX402MonetizedEndpointInput {
     description: String @rules(apply: ["max:1000"])
     "Updated active status."
     is_active: Boolean
+    "Updated token symbol."
+    asset: String @rules(apply: ["in:USDC"])
+    "Updated payment scheme."
+    scheme: String @rules(apply: ["in:exact,upto"])
+    "Updated response MIME type."
+    mime_type: String @rules(apply: ["max:255"])
 }
 
 "Input for setting an agent spending limit."

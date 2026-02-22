@@ -12,6 +12,7 @@ use App\Domain\X402\DataObjects\SettleResponse;
 use App\Domain\X402\Enums\SettlementStatus;
 use App\Domain\X402\Events\X402PaymentFailed;
 use App\Domain\X402\Events\X402PaymentSettled;
+use App\Domain\X402\Events\X402PaymentVerified;
 use App\Domain\X402\Exceptions\X402SettlementException;
 use App\Domain\X402\Models\X402Payment;
 use Illuminate\Support\Facades\Event;
@@ -33,8 +34,33 @@ class X402SettlementService
     {
         $requirements = $this->verificationService->buildRequirements($config);
 
-        // Record payment attempt
+        // Record payment attempt (with idempotency check)
         $payment = $this->recordPaymentAttempt($payload, $requirements, $config);
+
+        // If this is a duplicate (already settled/failed), return early
+        if (! $payment->wasRecentlyCreated && ! $payment->isPending()) {
+            Log::info('x402: Duplicate payment detected, returning existing result', [
+                'payment_id' => $payment->id,
+                'status'     => $payment->status->value,
+            ]);
+
+            return new SettleResponse(
+                success: $payment->isSettled(),
+                transaction: $payment->transaction_hash ?? '',
+                network: $payment->network,
+                payer: $payment->payer_address,
+                errorReason: $payment->error_reason,
+                errorMessage: $payment->error_message,
+            );
+        }
+
+        // Dispatch verification event
+        Event::dispatch(new X402PaymentVerified(
+            paymentId: $payment->id,
+            payerAddress: $payment->payer_address ?? '',
+            network: $requirements->network,
+            amount: $requirements->amount,
+        ));
 
         try {
             Log::info('x402: Initiating settlement', [
@@ -94,7 +120,7 @@ class X402SettlementService
     }
 
     /**
-     * Record a payment attempt in the database.
+     * Record a payment attempt in the database with idempotency via payload_hash.
      */
     private function recordPaymentAttempt(
         PaymentPayload $payload,
@@ -102,19 +128,23 @@ class X402SettlementService
         MonetizedRouteConfig $config,
     ): X402Payment {
         $payerAddress = $this->extractPayerAddress($payload);
+        $payloadHash = hash('sha256', json_encode($payload->toArray(), JSON_THROW_ON_ERROR));
 
-        return X402Payment::create([
-            'payer_address'   => $payerAddress,
-            'pay_to_address'  => $requirements->payTo,
-            'amount'          => $requirements->amount,
-            'network'         => $requirements->network,
-            'asset'           => $requirements->asset,
-            'scheme'          => $requirements->scheme,
-            'status'          => SettlementStatus::PENDING->value,
-            'endpoint_method' => $config->method,
-            'endpoint_path'   => $config->path,
-            'payment_payload' => $payload->toArray(),
-        ]);
+        return X402Payment::firstOrCreate(
+            ['payload_hash' => $payloadHash],
+            [
+                'payer_address'   => $payerAddress,
+                'pay_to_address'  => $requirements->payTo,
+                'amount'          => $requirements->amount,
+                'network'         => $requirements->network,
+                'asset'           => $requirements->asset,
+                'scheme'          => $requirements->scheme,
+                'status'          => SettlementStatus::PENDING->value,
+                'endpoint_method' => $config->method,
+                'endpoint_path'   => $config->path,
+                'payment_payload' => $payload->toArray(),
+            ],
+        );
     }
 
     /**

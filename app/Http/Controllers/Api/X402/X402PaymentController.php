@@ -9,6 +9,7 @@ use App\Domain\X402\Models\X402Payment;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 /**
  * X402 Payment History Controller.
@@ -143,20 +144,28 @@ class X402PaymentController extends Controller
             default => now()->subDay(),
         };
 
-        $query = X402Payment::where('team_id', $request->user()?->currentTeam?->id)
-            ->where('created_at', '>=', $since);
+        /** @var object{total_payments: int, total_settled: int, total_failed: int, total_volume_atomic: string, unique_payers: int} $stats */
+        $stats = DB::table('x402_payments')
+            ->where('team_id', $request->user()?->currentTeam?->id)
+            ->where('created_at', '>=', $since)
+            ->selectRaw('COUNT(*) as total_payments')
+            ->selectRaw("SUM(CASE WHEN status = 'settled' THEN 1 ELSE 0 END) as total_settled")
+            ->selectRaw("SUM(CASE WHEN status = 'failed' THEN 1 ELSE 0 END) as total_failed")
+            ->selectRaw("COALESCE(SUM(CASE WHEN status = 'settled' THEN CAST(amount AS DECIMAL(20,0)) ELSE 0 END), 0) as total_volume_atomic")
+            ->selectRaw('COUNT(DISTINCT payer_address) as unique_payers')
+            ->first();
 
-        $totalAtomic = (string) ((clone $query)->where('status', 'settled')->sum('amount') ?: 0);
+        $totalAtomic = (string) ($stats->total_volume_atomic ?? 0);
 
         return response()->json([
             'data' => [
                 'period'              => $period,
-                'total_payments'      => (clone $query)->count(),
-                'total_settled'       => (clone $query)->where('status', 'settled')->count(),
-                'total_failed'        => (clone $query)->where('status', 'failed')->count(),
+                'total_payments'      => (int) $stats->total_payments,
+                'total_settled'       => (int) $stats->total_settled,
+                'total_failed'        => (int) $stats->total_failed,
                 'total_volume_atomic' => $totalAtomic,
                 'total_volume_usd'    => bcdiv($totalAtomic, '1000000', 6),
-                'unique_payers'       => (clone $query)->whereNotNull('payer_address')->distinct()->count('payer_address'),
+                'unique_payers'       => (int) $stats->unique_payers,
             ],
         ]);
     }

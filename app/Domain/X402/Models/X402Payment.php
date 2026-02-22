@@ -28,6 +28,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property string|null $error_reason
  * @property string|null $error_message
  * @property array<string, mixed>|null $payment_payload
+ * @property string|null $payload_hash
  * @property array<string, mixed>|null $extensions
  * @property int|null $team_id
  * @property \Carbon\Carbon|null $verified_at
@@ -55,6 +56,7 @@ class X402Payment extends Model
         'error_reason',
         'error_message',
         'payment_payload',
+        'payload_hash',
         'extensions',
         'team_id',
         'verified_at',

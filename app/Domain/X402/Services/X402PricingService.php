@@ -10,6 +10,7 @@ use App\Domain\X402\DataObjects\PaymentRequirements;
 use App\Domain\X402\DataObjects\ResourceInfo;
 use App\Domain\X402\Models\X402MonetizedEndpoint;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Log;
 
 class X402PricingService
@@ -26,17 +27,14 @@ class X402PricingService
         $method = strtoupper($request->method());
         $path = '/' . ltrim($request->path(), '/');
 
-        // Database lookup first
-        $endpoint = X402MonetizedEndpoint::query()
-            ->active()
-            ->forRoute($method, $path)
-            ->first();
+        return Cache::remember("x402:route:{$method}:{$path}", 60, function () use ($method, $path): ?MonetizedRouteConfig {
+            $endpoint = X402MonetizedEndpoint::query()
+                ->active()
+                ->forRoute($method, $path)
+                ->first();
 
-        if ($endpoint !== null) {
-            return $endpoint->toMonetizedRouteConfig();
-        }
-
-        return null;
+            return $endpoint?->toMonetizedRouteConfig();
+        });
     }
 
     /**
