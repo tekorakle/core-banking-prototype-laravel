@@ -1,0 +1,169 @@
+type X402Payment @model(class: "App\\Domain\\X402\\Models\\X402Payment") {
+    id: ID!
+    payer_address: String
+    pay_to_address: String!
+    amount: String!
+    network: String!
+    asset: String!
+    scheme: String!
+    status: String!
+    transaction_hash: String
+    endpoint_method: String!
+    endpoint_path: String!
+    error_reason: String
+    error_message: String
+    verified_at: DateTime
+    settled_at: DateTime
+    created_at: DateTime!
+    updated_at: DateTime!
+}
+
+type X402MonetizedEndpoint @model(class: "App\\Domain\\X402\\Models\\X402MonetizedEndpoint") {
+    id: ID!
+    method: String!
+    path: String!
+    price: String!
+    network: String!
+    asset: String!
+    scheme: String!
+    description: String
+    mime_type: String!
+    is_active: Boolean!
+    created_at: DateTime!
+    updated_at: DateTime!
+}
+
+type X402SpendingLimit @model(class: "App\\Domain\\X402\\Models\\X402SpendingLimit") {
+    id: ID!
+    agent_id: String!
+    agent_type: String!
+    daily_limit: String!
+    spent_today: String!
+    per_transaction_limit: String
+    auto_pay_enabled: Boolean!
+    limit_resets_at: DateTime!
+    created_at: DateTime!
+    updated_at: DateTime!
+}
+
+type X402ProtocolStatus {
+    enabled: Boolean!
+    version: Int!
+    protocol: String!
+    default_network: String!
+    supported_schemes: [String!]!
+    client_enabled: Boolean!
+}
+
+type X402PaymentStats {
+    period: String!
+    total_payments: Int!
+    total_settled: Int!
+    total_failed: Int!
+    total_volume_usd: String!
+    unique_payers: Int!
+}
+
+type X402NetworkInfo {
+    id: String!
+    name: String!
+    testnet: Boolean!
+    chain_id: Int!
+    usdc_address: String!
+    usdc_decimals: Int!
+}
+
+extend type Query {
+    x402Payment(id: ID! @eq): X402Payment
+        @find
+        @guard(with: ["sanctum"])
+
+    x402Payments(
+        page: Int @rules(apply: ["integer", "min:1"])
+        first: Int @rules(apply: ["integer", "min:1", "max:100"])
+        status: String @where(operator: "=")
+        network: String @where(operator: "=")
+        payer_address: String @where(operator: "=")
+    ): [X402Payment!]!
+        @paginate(defaultCount: 20, model: "App\\Domain\\X402\\Models\\X402Payment")
+        @guard(with: ["sanctum"])
+
+    x402MonetizedEndpoint(id: ID! @eq): X402MonetizedEndpoint
+        @find
+        @guard(with: ["sanctum"])
+
+    x402MonetizedEndpoints(
+        page: Int @rules(apply: ["integer", "min:1"])
+        first: Int @rules(apply: ["integer", "min:1", "max:100"])
+        is_active: Boolean @where(operator: "=")
+        network: String @where(operator: "=")
+    ): [X402MonetizedEndpoint!]!
+        @paginate(defaultCount: 20, model: "App\\Domain\\X402\\Models\\X402MonetizedEndpoint")
+        @guard(with: ["sanctum"])
+
+    x402SpendingLimit(agent_id: String! @where(operator: "=")): X402SpendingLimit
+        @first
+        @guard(with: ["sanctum"])
+
+    x402SpendingLimits(
+        page: Int @rules(apply: ["integer", "min:1"])
+        first: Int @rules(apply: ["integer", "min:1", "max:100"])
+    ): [X402SpendingLimit!]!
+        @paginate(defaultCount: 20, model: "App\\Domain\\X402\\Models\\X402SpendingLimit")
+        @guard(with: ["sanctum"])
+
+    x402ProtocolStatus: X402ProtocolStatus!
+        @field(resolver: "App\\GraphQL\\Queries\\X402\\X402ProtocolStatusQuery")
+
+    x402SupportedNetworks: [X402NetworkInfo!]!
+        @field(resolver: "App\\GraphQL\\Queries\\X402\\X402SupportedNetworksQuery")
+
+    x402PaymentStats(period: String): X402PaymentStats!
+        @guard(with: ["sanctum"])
+        @field(resolver: "App\\GraphQL\\Queries\\X402\\X402PaymentStatsQuery")
+}
+
+input CreateX402MonetizedEndpointInput {
+    method: String!
+    path: String!
+    price: String!
+    network: String
+    description: String
+    is_active: Boolean
+}
+
+input UpdateX402MonetizedEndpointInput {
+    price: String
+    network: String
+    description: String
+    is_active: Boolean
+}
+
+input SetX402SpendingLimitInput {
+    agent_id: String!
+    daily_limit: String!
+    per_transaction_limit: String
+    auto_pay_enabled: Boolean
+}
+
+extend type Mutation {
+    createX402MonetizedEndpoint(input: CreateX402MonetizedEndpointInput! @spread): X402MonetizedEndpoint!
+        @guard(with: ["sanctum"])
+        @field(resolver: "App\\GraphQL\\Mutations\\X402\\CreateX402MonetizedEndpointMutation")
+
+    updateX402MonetizedEndpoint(id: ID!, input: UpdateX402MonetizedEndpointInput! @spread): X402MonetizedEndpoint!
+        @guard(with: ["sanctum"])
+        @field(resolver: "App\\GraphQL\\Mutations\\X402\\UpdateX402MonetizedEndpointMutation")
+
+    deleteX402MonetizedEndpoint(id: ID!): Boolean!
+        @guard(with: ["sanctum"])
+        @field(resolver: "App\\GraphQL\\Mutations\\X402\\DeleteX402MonetizedEndpointMutation")
+
+    setX402SpendingLimit(input: SetX402SpendingLimitInput! @spread): X402SpendingLimit!
+        @guard(with: ["sanctum"])
+        @field(resolver: "App\\GraphQL\\Mutations\\X402\\SetX402SpendingLimitMutation")
+
+    deleteX402SpendingLimit(agent_id: String!): Boolean!
+        @guard(with: ["sanctum"])
+        @field(resolver: "App\\GraphQL\\Mutations\\X402\\DeleteX402SpendingLimitMutation")
+}
