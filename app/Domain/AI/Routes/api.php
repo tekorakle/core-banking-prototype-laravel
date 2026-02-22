@@ -5,6 +5,7 @@ declare(strict_types=1);
 use App\Http\Controllers\Api\AgentsDiscoveryController;
 use App\Http\Controllers\Api\AI\AIQueryController;
 use App\Http\Controllers\Api\AIAgentController;
+use App\Http\Controllers\Api\DemoAIChatController;
 use App\Http\Controllers\Api\MCPToolsController;
 use Illuminate\Support\Facades\Route;
 
@@ -30,6 +31,11 @@ Route::prefix('ai')->middleware(['auth:sanctum', 'check.token.expiration', 'api.
         Route::post('/spending-analysis', [AIQueryController::class, 'spendingAnalysis'])->name('api.ai.query.spending-analysis');
     });
 });
+
+// Demo AI chat endpoint (public, rate-limited)
+Route::post('/demo/ai-chat', [DemoAIChatController::class, 'chat'])
+    ->middleware('throttle:60,1')
+    ->name('api.demo.ai.chat');
 
 // AGENTS.md Discovery endpoints (public for AI tools)
 Route::prefix('agents')->group(function () {
