@@ -8,7 +8,6 @@ use App\Domain\X402\DataObjects\MonetizedRouteConfig;
 use App\Domain\X402\DataObjects\PaymentRequired;
 use App\Domain\X402\DataObjects\PaymentRequirements;
 use App\Domain\X402\DataObjects\ResourceInfo;
-use App\Domain\X402\Enums\X402Network;
 use App\Domain\X402\Models\X402MonetizedEndpoint;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
@@ -48,7 +47,6 @@ class X402PricingService
         MonetizedRouteConfig $config,
         ?string $error = null,
     ): PaymentRequired {
-        $network = X402Network::tryFrom($config->network);
         $assetAddress = $this->resolveAssetAddress($config->network, $config->asset);
         $atomicAmount = $this->usdToAtomicUnits($config->price);
         $payTo = config('x402.server.pay_to', '');
@@ -84,9 +82,7 @@ class X402PricingService
      */
     public function usdToAtomicUnits(string $usdPrice): string
     {
-        $price = (float) $usdPrice;
-
-        return (string) (int) round($price * 1_000_000);
+        return bcmul($usdPrice, '1000000', 0);
     }
 
     /**
@@ -94,7 +90,7 @@ class X402PricingService
      */
     public function atomicToUsd(string $atomicAmount): float
     {
-        return (int) $atomicAmount / 1_000_000;
+        return (float) bcdiv($atomicAmount, '1000000', 6);
     }
 
     /**

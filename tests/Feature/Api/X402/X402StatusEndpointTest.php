@@ -2,9 +2,6 @@
 
 declare(strict_types=1);
 
-use App\Models\User;
-use Laravel\Sanctum\Sanctum;
-
 test('x402 status endpoint returns protocol info', function () {
     config(['x402.enabled' => true]);
     config(['x402.version' => 2]);

@@ -40,6 +40,12 @@ readonly class ResourceInfo
      */
     public static function fromArray(array $data): self
     {
+        foreach (['url', 'description', 'mimeType'] as $field) {
+            if (! array_key_exists($field, $data)) {
+                throw \App\Domain\X402\Exceptions\X402InvalidPayloadException::missingField($field);
+            }
+        }
+
         return new self(
             url: $data['url'],
             description: $data['description'],

@@ -10,14 +10,14 @@ namespace App\Domain\X402\DataObjects;
  * Defines the HTTP method, path, pricing, network, and asset details
  * used by the x402 middleware to construct 402 Payment Required responses.
  *
- * Amounts are expressed in atomic USDC units (6 decimals).
+ * Amounts are expressed in USD (e.g. "0.01" for one cent).
  */
 readonly class MonetizedRouteConfig
 {
     /**
      * @param string $method      HTTP method (GET, POST, etc.).
      * @param string $path        Route path (e.g. "/api/v1/premium/data").
-     * @param string $price       Price in atomic units (6 decimals for USDC).
+     * @param string $price       Price in USD (e.g. "0.01" for one cent).
      * @param string $network     CAIP-2 network identifier (e.g. "eip155:8453").
      * @param string $asset       Asset symbol or contract address.
      * @param string $scheme      Payment scheme (exact | upto).

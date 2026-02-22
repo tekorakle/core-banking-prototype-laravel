@@ -8,6 +8,7 @@ use App\Domain\X402\Contracts\X402SignerInterface;
 use App\Domain\X402\DataObjects\PaymentPayload;
 use App\Domain\X402\DataObjects\PaymentRequirements;
 use App\Domain\X402\Models\X402SpendingLimit;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use RuntimeException;
 
@@ -79,6 +80,8 @@ class X402ClientService
      * Select the best payment option from available requirements.
      *
      * Prefers Base mainnet, then Base Sepolia (testnet), then other EVM.
+     *
+     * @param array<PaymentRequirements> $accepts
      */
     private function selectPaymentOption(array $accepts): ?PaymentRequirements
     {
@@ -105,39 +108,51 @@ class X402ClientService
     /**
      * Enforce agent spending limits before authorizing a payment.
      *
+     * Uses a database transaction with row-level locking to prevent
+     * race conditions where concurrent requests could exceed limits.
+     *
      * @throws RuntimeException If spending limit would be exceeded
      */
     private function enforceSpendingLimit(string $agentId, string $amount, string $network): void
     {
-        $limit = X402SpendingLimit::where('agent_id', $agentId)->first();
+        DB::transaction(function () use ($agentId, $amount) {
+            $limit = X402SpendingLimit::where('agent_id', $agentId)->lockForUpdate()->first();
 
-        if ($limit === null) {
-            // Check against global config limits
-            $maxAutoPay = (string) config('x402.client.max_auto_pay_amount', '100000');
-            if (bccomp($amount, $maxAutoPay) > 0) {
+            if ($limit === null) {
+                // Check against global config limits
+                $maxAutoPay = (string) config('x402.client.max_auto_pay_amount', '100000');
+                if (bccomp($amount, $maxAutoPay) > 0) {
+                    throw new RuntimeException(
+                        "Payment amount {$amount} exceeds auto-pay limit {$maxAutoPay}. Human approval required."
+                    );
+                }
+
+                return;
+            }
+
+            $limit->resetIfNeeded();
+
+            // Check per-transaction limit
+            if ($limit->per_transaction_limit !== null && bccomp($amount, (string) $limit->per_transaction_limit) > 0) {
                 throw new RuntimeException(
-                    "Payment amount {$amount} exceeds auto-pay limit {$maxAutoPay}. Human approval required."
+                    "Payment amount {$amount} exceeds per-transaction limit {$limit->per_transaction_limit}."
                 );
             }
 
-            return;
-        }
+            if (! $limit->canSpend($amount)) {
+                throw new RuntimeException(
+                    "Payment amount {$amount} would exceed agent daily limit. Remaining: {$limit->remainingDailyBudget()}"
+                );
+            }
 
-        $limit->resetIfNeeded();
+            if (! $limit->auto_pay_enabled && bccomp($amount, (string) config('x402.agent_spending.require_approval_above', '1000000')) > 0) {
+                throw new RuntimeException(
+                    'Payment amount exceeds auto-pay threshold. Human approval required.'
+                );
+            }
 
-        if (! $limit->canSpend($amount)) {
-            throw new RuntimeException(
-                "Payment amount {$amount} would exceed agent daily limit. Remaining: {$limit->remainingDailyBudget()}"
-            );
-        }
-
-        if (! $limit->auto_pay_enabled && bccomp($amount, (string) config('x402.agent_spending.require_approval_above', '1000000')) > 0) {
-            throw new RuntimeException(
-                'Payment amount exceeds auto-pay threshold. Human approval required.'
-            );
-        }
-
-        // Record spending
-        $limit->recordSpending($amount);
+            // Record spending atomically within this transaction
+            $limit->recordSpending($amount);
+        });
     }
 }

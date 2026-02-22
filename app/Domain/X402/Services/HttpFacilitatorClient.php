@@ -47,7 +47,7 @@ class HttpFacilitatorClient implements FacilitatorClientInterface
             if (! $response->successful()) {
                 Log::warning('x402: Facilitator verify returned non-200', [
                     'status' => $response->status(),
-                    'body'   => $response->body(),
+                    'body'   => substr($response->body(), 0, 500),
                 ]);
 
                 return new VerifyResponse(
@@ -98,7 +98,7 @@ class HttpFacilitatorClient implements FacilitatorClientInterface
             if (! $response->successful()) {
                 Log::warning('x402: Facilitator settle returned non-200', [
                     'status' => $response->status(),
-                    'body'   => $response->body(),
+                    'body'   => substr($response->body(), 0, 500),
                 ]);
 
                 return new SettleResponse(
@@ -118,7 +118,9 @@ class HttpFacilitatorClient implements FacilitatorClientInterface
             ]);
 
             throw new X402SettlementException(
-                'Facilitator settlement failed: ' . $e->getMessage(),
+                message: 'Facilitator settlement failed: ' . $e->getMessage(),
+                errorReason: 'facilitator_unavailable',
+                errorMessage: $e->getMessage(),
                 previous: $e,
             );
         }

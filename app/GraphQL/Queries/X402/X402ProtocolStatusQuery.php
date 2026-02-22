@@ -15,7 +15,7 @@ class X402ProtocolStatusQuery
     {
         return [
             'enabled'           => (bool) config('x402.enabled', false),
-            'version'           => (int) config('x402.version', 1),
+            'version'           => (int) config('x402.version', 2),
             'protocol'          => 'x402',
             'default_network'   => (string) config('x402.server.default_network', 'eip155:8453'),
             'supported_schemes' => ['exact'],

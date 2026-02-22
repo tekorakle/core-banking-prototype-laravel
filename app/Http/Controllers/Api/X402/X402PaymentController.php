@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers\Api\X402;
 
+use App\Domain\X402\Enums\SettlementStatus;
 use App\Domain\X402\Models\X402Payment;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\JsonResponse;
@@ -32,7 +33,7 @@ class X402PaymentController extends Controller
      *     @OA\Parameter(name="status", in="query", required=false, @OA\Schema(type="string", enum={"pending", "verified", "settled", "failed", "expired"})),
      *     @OA\Parameter(name="network", in="query", required=false, @OA\Schema(type="string")),
      *     @OA\Parameter(name="payer_address", in="query", required=false, @OA\Schema(type="string")),
-     *     @OA\Parameter(name="per_page", in="query", required=false, @OA\Schema(type="integer", default=20)),
+     *     @OA\Parameter(name="per_page", in="query", required=false, @OA\Schema(type="integer", default=20, maximum=100)),
      *     @OA\Response(
      *         response=200,
      *         description="Paginated payment records"
@@ -45,7 +46,10 @@ class X402PaymentController extends Controller
         $query = X402Payment::query();
 
         if ($request->filled('status')) {
-            $query->where('status', $request->input('status'));
+            $status = SettlementStatus::tryFrom($request->input('status'));
+            if ($status !== null) {
+                $query->where('status', $status->value);
+            }
         }
 
         if ($request->filled('network')) {
@@ -56,10 +60,20 @@ class X402PaymentController extends Controller
             $query->where('payer_address', $request->input('payer_address'));
         }
 
-        $payments = $query->orderByDesc('created_at')
-            ->paginate((int) $request->input('per_page', 20));
+        $perPage = min(max((int) $request->input('per_page', 20), 1), 100);
 
-        return response()->json($payments);
+        $payments = $query->orderByDesc('created_at')
+            ->paginate($perPage);
+
+        return response()->json([
+            'data' => collect($payments->items())->map(fn ($p) => $p->toApiResponse()),
+            'meta' => [
+                'current_page' => $payments->currentPage(),
+                'last_page'    => $payments->lastPage(),
+                'per_page'     => $payments->perPage(),
+                'total'        => $payments->total(),
+            ],
+        ]);
     }
 
     /**
@@ -101,6 +115,7 @@ class X402PaymentController extends Controller
      *             @OA\Property(property="total_payments", type="integer"),
      *             @OA\Property(property="total_settled", type="integer"),
      *             @OA\Property(property="total_failed", type="integer"),
+     *             @OA\Property(property="total_volume_atomic", type="string"),
      *             @OA\Property(property="total_volume_usd", type="string"),
      *             @OA\Property(property="unique_payers", type="integer")
      *         )
@@ -111,6 +126,12 @@ class X402PaymentController extends Controller
     public function stats(Request $request): JsonResponse
     {
         $period = $request->input('period', 'day');
+        if (! in_array($period, ['day', 'week', 'month'], true)) {
+            return response()->json([
+                'errors' => ['period' => ['Must be one of: day, week, month']],
+            ], 422);
+        }
+
         $since = match ($period) {
             'week'  => now()->subWeek(),
             'month' => now()->subMonth(),
@@ -119,13 +140,16 @@ class X402PaymentController extends Controller
 
         $query = X402Payment::where('created_at', '>=', $since);
 
+        $totalAtomic = (string) ((clone $query)->where('status', 'settled')->sum('amount') ?: 0);
+
         return response()->json([
-            'period'           => $period,
-            'total_payments'   => (clone $query)->count(),
-            'total_settled'    => (clone $query)->where('status', 'settled')->count(),
-            'total_failed'     => (clone $query)->where('status', 'failed')->count(),
-            'total_volume_usd' => (clone $query)->where('status', 'settled')->sum('amount') ?: '0',
-            'unique_payers'    => (clone $query)->whereNotNull('payer_address')->distinct('payer_address')->count(),
+            'period'              => $period,
+            'total_payments'      => (clone $query)->count(),
+            'total_settled'       => (clone $query)->where('status', 'settled')->count(),
+            'total_failed'        => (clone $query)->where('status', 'failed')->count(),
+            'total_volume_atomic' => $totalAtomic,
+            'total_volume_usd'    => bcdiv($totalAtomic, '1000000', 6),
+            'unique_payers'       => (clone $query)->whereNotNull('payer_address')->distinct('payer_address')->count(),
         ]);
     }
 }

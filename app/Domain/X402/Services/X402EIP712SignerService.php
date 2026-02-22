@@ -7,6 +7,7 @@ namespace App\Domain\X402\Services;
 use App\Domain\X402\Contracts\X402SignerInterface;
 use App\Domain\X402\Enums\X402Network;
 use Illuminate\Support\Facades\Log;
+use RuntimeException;
 
 /**
  * EIP-712 signer for creating x402 TransferWithAuthorization payloads.
@@ -19,8 +20,9 @@ class X402EIP712SignerService implements X402SignerInterface
 {
     private string $signerAddress;
 
-    public function __construct()
-    {
+    public function __construct(
+        private readonly string $signerKeyId = 'default',
+    ) {
         $this->signerAddress = (string) config('x402.client.signer_address', '0x0000000000000000000000000000000000000000');
     }
 
@@ -90,6 +92,13 @@ class X402EIP712SignerService implements X402SignerInterface
      */
     private function sign(string $network, string $verifyingContract, array $message, array $extra): string
     {
+        if (app()->isProduction()) {
+            throw new RuntimeException(
+                'X402EIP712SignerService demo signer must not be used in production. '
+                . 'Bind a real X402SignerInterface implementation (e.g., HSM-backed signer).'
+            );
+        }
+
         // Build EIP-712 domain separator
         $networkEnum = X402Network::tryFrom($network);
         $chainId = $networkEnum?->chainId() ?? 1;
@@ -110,6 +119,7 @@ class X402EIP712SignerService implements X402SignerInterface
         // that the test facilitator accepts.
         $dataToSign = json_encode(['domain' => $domain, 'message' => $message], JSON_THROW_ON_ERROR);
 
-        return '0x' . hash('sha512', $dataToSign) . str_repeat('0', 2);
+        // Produce a valid 65-byte signature: 130 hex chars + '1c' (v=28)
+        return '0x' . substr(hash('sha512', $dataToSign), 0, 128) . '1c';
     }
 }

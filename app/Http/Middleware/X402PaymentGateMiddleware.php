@@ -4,7 +4,9 @@ declare(strict_types=1);
 
 namespace App\Http\Middleware;
 
+use App\Domain\X402\DataObjects\MonetizedRouteConfig;
 use App\Domain\X402\Events\X402PaymentRequested;
+use App\Domain\X402\Exceptions\X402SettlementException;
 use App\Domain\X402\Services\X402HeaderCodecService;
 use App\Domain\X402\Services\X402PaymentVerificationService;
 use App\Domain\X402\Services\X402PricingService;
@@ -52,10 +54,8 @@ class X402PaymentGateMiddleware
             return $next($request);
         }
 
-        // Check for payment signature header
-        $paymentHeader = $request->header('PAYMENT-SIGNATURE')
-            ?? $request->header('Payment-Signature')
-            ?? $request->header('payment-signature');
+        // Check for payment signature header (case-insensitive per RFC 7230)
+        $paymentHeader = $request->header('PAYMENT-SIGNATURE');
 
         if ($paymentHeader === null || $paymentHeader === '') {
             return $this->requirePayment($request, $routeConfig);
@@ -70,14 +70,11 @@ class X402PaymentGateMiddleware
                 'path'  => $request->path(),
             ]);
 
-            return $this->requirePayment($request, $routeConfig, 'Invalid payment payload: ' . $e->getMessage());
+            return $this->requirePayment($request, $routeConfig, 'The payment signature header could not be decoded. Ensure it is a valid base64-encoded x402 payment payload.');
         }
 
-        // Build requirements from route config for verification
-        $requirements = $this->verification->buildRequirements($routeConfig);
-
         // Verify the payment with the facilitator
-        $verifyResult = $this->verification->verify($payload, $requirements);
+        $verifyResult = $this->verification->verify($payload, $routeConfig);
 
         if (! $verifyResult->isValid) {
             Log::warning('x402: Payment verification failed', [
@@ -90,7 +87,16 @@ class X402PaymentGateMiddleware
         }
 
         // Settle the payment
-        $settleResponse = $this->settlement->settle($payload, $requirements);
+        try {
+            $settleResponse = $this->settlement->settle($payload, $routeConfig);
+        } catch (X402SettlementException $e) {
+            Log::error('x402: Settlement exception', [
+                'error' => $e->getMessage(),
+                'path'  => $request->path(),
+            ]);
+
+            return $this->requirePayment($request, $routeConfig, 'Settlement failed. Please try again.');
+        }
 
         if (! $settleResponse->success) {
             Log::error('x402: Payment settlement failed', [
@@ -99,7 +105,7 @@ class X402PaymentGateMiddleware
                 'path'    => $request->path(),
             ]);
 
-            return $this->requirePayment($request, $routeConfig, 'Settlement failed: ' . $settleResponse->errorMessage);
+            return $this->requirePayment($request, $routeConfig, 'Settlement was not successful. Please try again.');
         }
 
         // Attach payment metadata to request for downstream use
@@ -122,7 +128,7 @@ class X402PaymentGateMiddleware
     /**
      * Return a 402 Payment Required response with requirements header.
      */
-    private function requirePayment(Request $request, mixed $routeConfig, ?string $error = null): Response
+    private function requirePayment(Request $request, MonetizedRouteConfig $routeConfig, ?string $error = null): Response
     {
         $paymentRequired = $this->pricing->buildPaymentRequired($request, $routeConfig, $error);
         $encodedHeader = $this->codec->encodePaymentRequired($paymentRequired);

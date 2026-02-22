@@ -3,7 +3,6 @@
 declare(strict_types=1);
 
 use App\Domain\X402\DataObjects\MonetizedRouteConfig;
-use App\Domain\X402\DataObjects\PaymentPayload;
 use App\Domain\X402\DataObjects\PaymentRequired;
 use App\Domain\X402\DataObjects\PaymentRequirements;
 use App\Domain\X402\DataObjects\ResourceInfo;
@@ -88,7 +87,7 @@ test('PaymentRequired can be created with Base64 encoding', function () {
 test('VerifyResponse can be created from array', function () {
     $response = VerifyResponse::fromArray([
         'isValid' => true,
-        'payer' => '0x1234567890abcdef1234567890abcdef12345678',
+        'payer'   => '0x1234567890abcdef1234567890abcdef12345678',
     ]);
 
     expect($response->isValid)->toBeTrue();
@@ -97,8 +96,8 @@ test('VerifyResponse can be created from array', function () {
 
 test('VerifyResponse handles invalid state', function () {
     $response = VerifyResponse::fromArray([
-        'isValid' => false,
-        'invalidReason' => 'insufficient_funds',
+        'isValid'        => false,
+        'invalidReason'  => 'insufficient_funds',
         'invalidMessage' => 'Not enough USDC',
     ]);
 

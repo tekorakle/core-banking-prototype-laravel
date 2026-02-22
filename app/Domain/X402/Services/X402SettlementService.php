@@ -80,7 +80,12 @@ class X402SettlementService
 
             throw $e instanceof X402SettlementException
                 ? $e
-                : new X402SettlementException($e->getMessage(), previous: $e);
+                : new X402SettlementException(
+                    message: $e->getMessage(),
+                    errorReason: 'settlement_exception',
+                    errorMessage: $e->getMessage(),
+                    previous: $e,
+                );
         }
     }
 

@@ -22,6 +22,7 @@ class X402SupportedNetworksQuery
             'chain_id'      => $n->chainId(),
             'usdc_address'  => $n->usdcAddress(),
             'usdc_decimals' => $n->usdcDecimals(),
+            'explorer_url'  => $n->explorerUrl(),
         ])->values()->all();
     }
 }

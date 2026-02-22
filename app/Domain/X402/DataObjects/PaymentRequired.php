@@ -16,7 +16,7 @@ use App\Domain\X402\Exceptions\X402InvalidPayloadException;
 readonly class PaymentRequired
 {
     /**
-     * @param int                       $x402Version  Protocol version (currently 1).
+     * @param int                       $x402Version  Protocol version (currently 2).
      * @param ResourceInfo              $resource     Metadata about the protected resource.
      * @param array<PaymentRequirements> $accepts     Acceptable payment options.
      * @param string|null               $error        Optional error description.
@@ -57,6 +57,12 @@ readonly class PaymentRequired
      */
     public static function fromArray(array $data): self
     {
+        foreach (['x402Version', 'resource', 'accepts'] as $field) {
+            if (! array_key_exists($field, $data)) {
+                throw X402InvalidPayloadException::missingField($field);
+            }
+        }
+
         return new self(
             x402Version: $data['x402Version'],
             resource: ResourceInfo::fromArray($data['resource']),

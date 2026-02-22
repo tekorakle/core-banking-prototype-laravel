@@ -33,6 +33,7 @@ class X402EndpointController extends Controller
      *     security={{"sanctum": {}}},
      *     @OA\Parameter(name="active", in="query", required=false, @OA\Schema(type="boolean")),
      *     @OA\Parameter(name="network", in="query", required=false, @OA\Schema(type="string")),
+     *     @OA\Parameter(name="per_page", in="query", required=false, @OA\Schema(type="integer", default=50, maximum=100)),
      *     @OA\Response(
      *         response=200,
      *         description="List of monetized endpoints"
@@ -52,10 +53,18 @@ class X402EndpointController extends Controller
             $query->where('network', $request->input('network'));
         }
 
-        $endpoints = $query->orderBy('path')->get();
+        $perPage = min(max((int) $request->input('per_page', 50), 1), 100);
+
+        $endpoints = $query->orderBy('path')->paginate($perPage);
 
         return response()->json([
-            'data' => $endpoints->map(fn ($e) => $e->toApiResponse()),
+            'data' => collect($endpoints->items())->map(fn ($e) => $e->toApiResponse()),
+            'meta' => [
+                'current_page' => $endpoints->currentPage(),
+                'last_page'    => $endpoints->lastPage(),
+                'per_page'     => $endpoints->perPage(),
+                'total'        => $endpoints->total(),
+            ],
         ]);
     }
 
@@ -204,6 +213,7 @@ class X402EndpointController extends Controller
         $endpoint->delete();
 
         return response()->json([
+            'data'    => ['id' => $id],
             'message' => 'Monetized endpoint removed.',
         ]);
     }

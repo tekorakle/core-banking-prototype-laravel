@@ -35,7 +35,7 @@ return [
 
         'default_asset' => env('X402_DEFAULT_ASSET', 'USDC'),
 
-        'max_timeout_seconds' => (int) env('X402_MAX_TIMEOUT', 60),
+        'max_timeout_seconds' => (int) env('X402_MAX_TIMEOUT_SECONDS', 60),
 
         'settle_before_response' => (bool) env('X402_SETTLE_BEFORE_RESPONSE', true),
     ],
@@ -73,6 +73,8 @@ return [
         'enabled' => (bool) env('X402_CLIENT_ENABLED', false),
 
         'signer_key_id' => env('X402_CLIENT_SIGNER_KEY_ID'),
+
+        'signer_address' => env('X402_CLIENT_SIGNER_ADDRESS', ''),
 
         'auto_pay' => (bool) env('X402_CLIENT_AUTO_PAY', false),
 
@@ -114,9 +116,9 @@ return [
     */
 
     'contracts' => [
-        'permit2' => '0x000000000022D473030F116dDEE9F6B43aC78BA3',
+        'permit2'             => '0x000000000022D473030F116dDEE9F6B43aC78BA3',
         'exact_permit2_proxy' => '0x4020615294c913F045dc10f0a5cdEbd86c280001',
-        'upto_permit2_proxy' => '0x4020633461b2895a48930Ff97eE8fCdE8E520002',
+        'upto_permit2_proxy'  => '0x4020633461b2895a48930Ff97eE8fCdE8E520002',
     ],
 
     /*

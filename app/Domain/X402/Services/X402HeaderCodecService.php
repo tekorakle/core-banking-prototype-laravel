@@ -12,6 +12,9 @@ use JsonException;
 
 class X402HeaderCodecService
 {
+    /** Maximum allowed Base64 header size (~8KB encoded = ~6KB decoded). */
+    private const MAX_HEADER_SIZE = 8192;
+
     /**
      * Encode a PaymentRequired object for the PAYMENT-REQUIRED response header.
      */
@@ -27,6 +30,10 @@ class X402HeaderCodecService
      */
     public function decodePaymentPayload(string $header): PaymentPayload
     {
+        if (strlen($header) > self::MAX_HEADER_SIZE) {
+            throw X402InvalidPayloadException::invalidBase64('PAYMENT-SIGNATURE header exceeds maximum allowed size');
+        }
+
         $decoded = base64_decode($header, true);
         if ($decoded === false) {
             throw X402InvalidPayloadException::invalidBase64('Failed to decode PAYMENT-SIGNATURE header');
@@ -57,6 +64,10 @@ class X402HeaderCodecService
      */
     public function decodePaymentRequired(string $header): PaymentRequired
     {
+        if (strlen($header) > self::MAX_HEADER_SIZE) {
+            throw X402InvalidPayloadException::invalidBase64('PAYMENT-REQUIRED header exceeds maximum allowed size');
+        }
+
         $decoded = base64_decode($header, true);
         if ($decoded === false) {
             throw X402InvalidPayloadException::invalidBase64('Failed to decode PAYMENT-REQUIRED header');

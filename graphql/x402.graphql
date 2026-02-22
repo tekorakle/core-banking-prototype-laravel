@@ -60,6 +60,7 @@ type X402PaymentStats {
     total_payments: Int!
     total_settled: Int!
     total_failed: Int!
+    total_volume_atomic: String!
     total_volume_usd: String!
     unique_payers: Int!
 }
@@ -71,6 +72,7 @@ type X402NetworkInfo {
     chain_id: Int!
     usdc_address: String!
     usdc_decimals: Int!
+    explorer_url: String!
 }
 
 extend type Query {
@@ -141,6 +143,7 @@ input UpdateX402MonetizedEndpointInput {
 
 input SetX402SpendingLimitInput {
     agent_id: String!
+    agent_type: String
     daily_limit: String!
     per_transaction_limit: String
     auto_pay_enabled: Boolean

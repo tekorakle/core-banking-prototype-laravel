@@ -59,6 +59,12 @@ readonly class PaymentRequirements
      */
     public static function fromArray(array $data): self
     {
+        foreach (['scheme', 'network', 'asset', 'amount', 'payTo', 'maxTimeoutSeconds'] as $field) {
+            if (! array_key_exists($field, $data)) {
+                throw \App\Domain\X402\Exceptions\X402InvalidPayloadException::missingField($field);
+            }
+        }
+
         return new self(
             scheme: $data['scheme'],
             network: $data['network'],

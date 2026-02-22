@@ -31,6 +31,7 @@ class X402SpendingLimitController extends Controller
      *     summary="List agent spending limits",
      *     tags={"X402 Spending Limits"},
      *     security={{"sanctum": {}}},
+     *     @OA\Parameter(name="per_page", in="query", required=false, @OA\Schema(type="integer", default=50, maximum=100)),
      *     @OA\Response(
      *         response=200,
      *         description="List of spending limits"
@@ -38,12 +39,20 @@ class X402SpendingLimitController extends Controller
      *     @OA\Response(response=401, description="Unauthenticated")
      * )
      */
-    public function index(): JsonResponse
+    public function index(Request $request): JsonResponse
     {
-        $limits = X402SpendingLimit::orderBy('agent_id')->get();
+        $perPage = min(max((int) $request->input('per_page', 50), 1), 100);
+
+        $limits = X402SpendingLimit::orderBy('agent_id')->paginate($perPage);
 
         return response()->json([
-            'data' => $limits->map(fn ($l) => $l->toApiResponse()),
+            'data' => collect($limits->items())->map(fn ($l) => $l->toApiResponse()),
+            'meta' => [
+                'current_page' => $limits->currentPage(),
+                'last_page'    => $limits->lastPage(),
+                'per_page'     => $limits->perPage(),
+                'total'        => $limits->total(),
+            ],
         ]);
     }
 
@@ -60,6 +69,7 @@ class X402SpendingLimitController extends Controller
      *         @OA\JsonContent(
      *             required={"agent_id", "daily_limit"},
      *             @OA\Property(property="agent_id", type="string"),
+     *             @OA\Property(property="agent_type", type="string", example="ai_agent"),
      *             @OA\Property(property="daily_limit", type="string", example="10000000"),
      *             @OA\Property(property="per_transaction_limit", type="string", example="1000000"),
      *             @OA\Property(property="auto_pay_enabled", type="boolean", example=true)
@@ -75,6 +85,7 @@ class X402SpendingLimitController extends Controller
     {
         $validator = Validator::make($request->all(), [
             'agent_id'              => ['required', 'string', 'max:255'],
+            'agent_type'            => ['nullable', 'string', 'max:100'],
             'daily_limit'           => ['required', 'string', 'regex:/^\d+$/'],
             'per_transaction_limit' => ['nullable', 'string', 'regex:/^\d+$/'],
             'auto_pay_enabled'      => ['nullable', 'boolean'],
@@ -87,8 +98,9 @@ class X402SpendingLimitController extends Controller
         $limit = X402SpendingLimit::updateOrCreate(
             ['agent_id' => $request->input('agent_id')],
             [
+                'agent_type'            => $request->input('agent_type', 'default'),
                 'daily_limit'           => $request->input('daily_limit'),
-                'per_transaction_limit' => $request->input('per_transaction_limit', config('x402.agent_spending.per_transaction_limit')),
+                'per_transaction_limit' => $request->input('per_transaction_limit', config('x402.agent_spending.default_per_transaction_limit')),
                 'auto_pay_enabled'      => $request->boolean('auto_pay_enabled', false),
                 'limit_resets_at'       => now()->addDay(),
             ]
@@ -190,6 +202,7 @@ class X402SpendingLimitController extends Controller
         $limit->delete();
 
         return response()->json([
+            'data'    => ['agent_id' => $agentId],
             'message' => 'Spending limit removed.',
         ]);
     }

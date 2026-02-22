@@ -31,19 +31,12 @@ class X402ServiceProvider extends ServiceProvider
             'x402'
         );
 
-        // Bind the facilitator HTTP client
-        $this->app->bind(FacilitatorClientInterface::class, function ($app) {
-            $httpClient = Http::baseUrl((string) config('x402.facilitator.url', 'https://x402.org/facilitator'))
-                ->timeout((int) config('x402.facilitator.timeout', 30))
-                ->withHeaders([
-                    'Content-Type' => 'application/json',
-                    'Accept'       => 'application/json',
-                ]);
-
+        // Bind the facilitator HTTP client as singleton (shared by verification and settlement)
+        $this->app->singleton(FacilitatorClientInterface::class, function ($app) {
             return new HttpFacilitatorClient(
-                http: $httpClient,
+                http: Http::getFacadeRoot(),
                 facilitatorUrl: (string) config('x402.facilitator.url', 'https://x402.org/facilitator'),
-                timeoutSeconds: (int) config('x402.facilitator.timeout', 30),
+                timeoutSeconds: (int) config('x402.facilitator.timeout_seconds', 30),
             );
         });
 
@@ -62,14 +55,14 @@ class X402ServiceProvider extends ServiceProvider
         $this->app->singleton(X402PaymentVerificationService::class, function ($app) {
             return new X402PaymentVerificationService(
                 facilitator: $app->make(FacilitatorClientInterface::class),
-                pricing: $app->make(X402PricingService::class),
+                pricingService: $app->make(X402PricingService::class),
             );
         });
 
         $this->app->singleton(X402SettlementService::class, function ($app) {
             return new X402SettlementService(
                 facilitator: $app->make(FacilitatorClientInterface::class),
-                verification: $app->make(X402PaymentVerificationService::class),
+                verificationService: $app->make(X402PaymentVerificationService::class),
             );
         });
 

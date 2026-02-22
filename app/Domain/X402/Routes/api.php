@@ -21,10 +21,14 @@ Route::prefix('v1/x402')->name('api.x402.')->group(function () {
             ->middleware('transaction.rate_limit:x402')
             ->name('endpoints.store');
         Route::get('/endpoints/{id}', [X402EndpointController::class, 'show'])->name('endpoints.show');
-        Route::put('/endpoints/{id}', [X402EndpointController::class, 'update'])->name('endpoints.update');
-        Route::delete('/endpoints/{id}', [X402EndpointController::class, 'destroy'])->name('endpoints.destroy');
+        Route::put('/endpoints/{id}', [X402EndpointController::class, 'update'])
+            ->middleware('transaction.rate_limit:x402')
+            ->name('endpoints.update');
+        Route::delete('/endpoints/{id}', [X402EndpointController::class, 'destroy'])
+            ->middleware('transaction.rate_limit:x402')
+            ->name('endpoints.destroy');
 
-        // Payment history and details
+        // Payment history and details (stats before {id} wildcard)
         Route::get('/payments', [X402PaymentController::class, 'index'])->name('payments.index');
         Route::get('/payments/stats', [X402PaymentController::class, 'stats'])->name('payments.stats');
         Route::get('/payments/{id}', [X402PaymentController::class, 'show'])->name('payments.show');
@@ -35,7 +39,11 @@ Route::prefix('v1/x402')->name('api.x402.')->group(function () {
             ->middleware('transaction.rate_limit:x402')
             ->name('spending-limits.store');
         Route::get('/spending-limits/{agentId}', [X402SpendingLimitController::class, 'show'])->name('spending-limits.show');
-        Route::put('/spending-limits/{agentId}', [X402SpendingLimitController::class, 'update'])->name('spending-limits.update');
-        Route::delete('/spending-limits/{agentId}', [X402SpendingLimitController::class, 'destroy'])->name('spending-limits.destroy');
+        Route::put('/spending-limits/{agentId}', [X402SpendingLimitController::class, 'update'])
+            ->middleware('transaction.rate_limit:x402')
+            ->name('spending-limits.update');
+        Route::delete('/spending-limits/{agentId}', [X402SpendingLimitController::class, 'destroy'])
+            ->middleware('transaction.rate_limit:x402')
+            ->name('spending-limits.destroy');
     });
 });

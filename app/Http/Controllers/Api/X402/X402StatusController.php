@@ -35,8 +35,7 @@ class X402StatusController extends Controller
      *             @OA\Property(property="version", type="integer"),
      *             @OA\Property(property="protocol", type="string", example="x402"),
      *             @OA\Property(property="default_network", type="string", example="eip155:8453"),
-     *             @OA\Property(property="supported_schemes", type="array", @OA\Items(type="string")),
-     *             @OA\Property(property="facilitator_url", type="string")
+     *             @OA\Property(property="supported_schemes", type="array", @OA\Items(type="string"))
      *         )
      *     )
      * )
@@ -45,11 +44,10 @@ class X402StatusController extends Controller
     {
         return response()->json([
             'enabled'           => (bool) config('x402.enabled', false),
-            'version'           => (int) config('x402.version', 1),
+            'version'           => (int) config('x402.version', 2),
             'protocol'          => 'x402',
             'default_network'   => config('x402.server.default_network', 'eip155:8453'),
             'supported_schemes' => ['exact'],
-            'facilitator_url'   => config('x402.facilitator.url'),
             'client_enabled'    => (bool) config('x402.client.enabled', false),
         ]);
     }
