@@ -37,14 +37,14 @@ return [
             'secret'  => env('PUSHER_APP_SECRET'),
             'app_id'  => env('PUSHER_APP_ID'),
             'options' => array_filter([
-                'cluster'   => env('PUSHER_APP_CLUSTER', 'eu'),
-                'useTLS'    => env('PUSHER_SCHEME', 'https') === 'https',
+                'cluster' => env('PUSHER_APP_CLUSTER', 'eu'),
+                'useTLS'  => env('PUSHER_SCHEME', 'https') === 'https',
                 // Only set host/port for self-hosted Soketi.
                 // For Pusher cloud, leave PUSHER_HOST unset so the SDK resolves via cluster.
-                'host'      => env('PUSHER_HOST') ?: null,
-                'port'      => env('PUSHER_HOST') ? (int) env('PUSHER_PORT', 6001) : null,
-                'scheme'    => env('PUSHER_SCHEME', 'https'),
-                'encrypted' => env('PUSHER_SCHEME', 'https') === 'https',
+                'host'         => env('PUSHER_HOST') ?: null,
+                'port'         => env('PUSHER_HOST') ? (int) env('PUSHER_PORT', 6001) : null,
+                'scheme'       => env('PUSHER_SCHEME', 'https'),
+                'encrypted'    => env('PUSHER_SCHEME', 'https') === 'https',
                 'curl_options' => [
                     CURLOPT_SSL_VERIFYHOST => env('PUSHER_SCHEME', 'https') === 'https' ? 2 : 0,
                     CURLOPT_SSL_VERIFYPEER => env('PUSHER_SCHEME', 'https') === 'https',
