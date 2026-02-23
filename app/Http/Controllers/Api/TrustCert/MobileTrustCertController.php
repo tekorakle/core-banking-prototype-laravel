@@ -138,15 +138,15 @@ class MobileTrustCertController extends Controller
      *     path="/api/v1/trustcert/requirements/{level}",
      *     operationId="trustCertRequirementsByLevel",
      *     summary="Get requirements for a specific trust level",
-     *     description="Returns the requirements and transaction limits for a specific trust level.",
+     *     description="Returns the requirements and transaction limits for a specific trust level. Accepts both string names (basic, verified, high, ultimate) and numeric values (0-4).",
      *     tags={"TrustCert"},
      *     security={{"sanctum": {}}},
      *     @OA\Parameter(
      *         name="level",
      *         in="path",
      *         required=true,
-     *         description="The trust level to retrieve requirements for",
-     *         @OA\Schema(type="string", enum={"unknown", "basic", "verified", "high", "ultimate"}, example="verified")
+     *         description="The trust level (string name or numeric value 0-4)",
+     *         @OA\Schema(type="string", enum={"unknown", "basic", "verified", "high", "ultimate", "0", "1", "2", "3", "4"}, example="verified")
      *     ),
      *     @OA\Response(
      *         response=200,
@@ -184,12 +184,23 @@ class MobileTrustCertController extends Controller
     {
         $trustLevel = TrustLevel::tryFrom($level);
 
+        // Support numeric level values (0=unknown, 1=basic, 2=verified, 3=high, 4=ultimate)
+        if (! $trustLevel && ctype_digit($level)) {
+            $numericMap = array_flip(array_map(
+                fn (TrustLevel $tl) => $tl->numericValue(),
+                TrustLevel::cases(),
+            ));
+            if (isset($numericMap[(int) $level])) {
+                $trustLevel = TrustLevel::cases()[$numericMap[(int) $level]];
+            }
+        }
+
         if (! $trustLevel) {
             return response()->json([
                 'success' => false,
                 'error'   => [
                     'code'    => 'INVALID_TRUST_LEVEL',
-                    'message' => 'Trust level not found.',
+                    'message' => 'Trust level not found. Use one of: unknown, basic, verified, high, ultimate (or numeric 0-4).',
                 ],
             ], 404);
         }

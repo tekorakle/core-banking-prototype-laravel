@@ -34,7 +34,7 @@ class X402PaymentController extends Controller
      *     @OA\Parameter(name="status", in="query", required=false, @OA\Schema(type="string", enum={"pending", "verified", "settled", "failed", "expired"})),
      *     @OA\Parameter(name="network", in="query", required=false, @OA\Schema(type="string")),
      *     @OA\Parameter(name="payer_address", in="query", required=false, @OA\Schema(type="string")),
-     *     @OA\Parameter(name="per_page", in="query", required=false, @OA\Schema(type="integer", default=20, maximum=100)),
+     *     @OA\Parameter(name="per_page", in="query", required=false, description="Items per page (alias: limit)", @OA\Schema(type="integer", default=20, maximum=100)),
      *     @OA\Response(
      *         response=200,
      *         description="Paginated payment records"
@@ -65,7 +65,7 @@ class X402PaymentController extends Controller
             $query->where('payer_address', $request->input('payer_address'));
         }
 
-        $perPage = min(max((int) $request->input('per_page', 20), 1), 100);
+        $perPage = min(max((int) $request->input('per_page', $request->input('limit', 20)), 1), 100);
 
         $payments = $query->orderByDesc('created_at')
             ->paginate($perPage);
