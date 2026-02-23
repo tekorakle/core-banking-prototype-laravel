@@ -24,7 +24,7 @@ class PluginHookSingletonTest extends TestCase
 
         $this->assertFalse($hookManager->hasListeners('account.created'));
 
-        $listener = new class implements PluginHookInterface {
+        $listener = new class () implements PluginHookInterface {
             public bool $handled = false;
 
             public function getHookName(): string
