@@ -26,7 +26,7 @@ class PluginMarketplaceController extends Controller
 
     /**
      * @OA\Get(
-     *     path="/api/plugins",
+     *     path="/api/v2/plugins",
      *     operationId="pluginMarketplaceIndex",
      *     tags={"Plugin Marketplace"},
      *     summary="List all installed plugins",
@@ -64,7 +64,7 @@ class PluginMarketplaceController extends Controller
 
     /**
      * @OA\Get(
-     *     path="/api/plugins/{id}",
+     *     path="/api/v2/plugins/{id}",
      *     operationId="pluginMarketplaceShow",
      *     tags={"Plugin Marketplace"},
      *     summary="Show a specific plugin",
@@ -107,7 +107,7 @@ class PluginMarketplaceController extends Controller
 
     /**
      * @OA\Post(
-     *     path="/api/plugins/{id}/enable",
+     *     path="/api/v2/plugins/{id}/enable",
      *     operationId="pluginMarketplaceEnable",
      *     tags={"Plugin Marketplace"},
      *     summary="Enable a plugin",
@@ -130,7 +130,7 @@ class PluginMarketplaceController extends Controller
 
     /**
      * @OA\Post(
-     *     path="/api/plugins/{id}/disable",
+     *     path="/api/v2/plugins/{id}/disable",
      *     operationId="pluginMarketplaceDisable",
      *     tags={"Plugin Marketplace"},
      *     summary="Disable a plugin",
@@ -153,7 +153,7 @@ class PluginMarketplaceController extends Controller
 
     /**
      * @OA\Delete(
-     *     path="/api/plugins/{id}",
+     *     path="/api/v2/plugins/{id}",
      *     operationId="pluginMarketplaceDestroy",
      *     tags={"Plugin Marketplace"},
      *     summary="Remove a plugin",
@@ -176,7 +176,7 @@ class PluginMarketplaceController extends Controller
 
     /**
      * @OA\Post(
-     *     path="/api/plugins/{id}/scan",
+     *     path="/api/v2/plugins/{id}/scan",
      *     operationId="pluginMarketplaceScan",
      *     tags={"Plugin Marketplace"},
      *     summary="Scan a plugin for security issues",
@@ -204,7 +204,7 @@ class PluginMarketplaceController extends Controller
 
     /**
      * @OA\Post(
-     *     path="/api/plugins/discover",
+     *     path="/api/v2/plugins/discover",
      *     operationId="pluginMarketplaceDiscover",
      *     tags={"Plugin Marketplace"},
      *     summary="Discover new plugins",

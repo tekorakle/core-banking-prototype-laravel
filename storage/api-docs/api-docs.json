@@ -11,7 +11,7 @@
             "name": "Apache 2.0",
             "url": "https://www.apache.org/licenses/LICENSE-2.0.html"
         },
-        "version": "5.0.0"
+        "version": "5.1.5"
     },
     "servers": [
         {
@@ -19317,6 +19317,80 @@
                 ]
             }
         },
+        "/api/demo/ai-chat": {
+            "post": {
+                "tags": [
+                    "Demo AI Chat"
+                ],
+                "summary": "Send a message to the demo AI agent",
+                "description": "Public endpoint for demo AI chat. No authentication required. Rate limited to 60 requests/minute.",
+                "operationId": "demoAiChat",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "message"
+                                ],
+                                "properties": {
+                                    "message": {
+                                        "type": "string",
+                                        "maxLength": 500,
+                                        "example": "What is my account balance?"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "AI agent response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message_id": {
+                                            "type": "string"
+                                        },
+                                        "content": {
+                                            "type": "string"
+                                        },
+                                        "confidence": {
+                                            "type": "number"
+                                        },
+                                        "tools_used": {
+                                            "type": "array",
+                                            "items": {
+                                                "type": "string"
+                                            }
+                                        },
+                                        "agents_used": {
+                                            "type": "array",
+                                            "items": {
+                                                "type": "string"
+                                            }
+                                        },
+                                        "metadata": {
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation error"
+                    },
+                    "429": {
+                        "description": "Rate limit exceeded"
+                    }
+                }
+            }
+        },
         "/api/compliance/regulatory-reports": {
             "get": {
                 "tags": [
@@ -32171,7 +32245,7 @@
                 ]
             }
         },
-        "/api/plugins": {
+        "/api/v2/plugins": {
             "get": {
                 "tags": [
                     "Plugin Marketplace"
@@ -32194,7 +32268,7 @@
                 ]
             }
         },
-        "/api/plugins/{id}": {
+        "/api/v2/plugins/{id}": {
             "get": {
                 "tags": [
                     "Plugin Marketplace"
@@ -32258,7 +32332,7 @@
                 ]
             }
         },
-        "/api/plugins/{id}/enable": {
+        "/api/v2/plugins/{id}/enable": {
             "post": {
                 "tags": [
                     "Plugin Marketplace"
@@ -32291,7 +32365,7 @@
                 ]
             }
         },
-        "/api/plugins/{id}/disable": {
+        "/api/v2/plugins/{id}/disable": {
             "post": {
                 "tags": [
                     "Plugin Marketplace"
@@ -32324,7 +32398,7 @@
                 ]
             }
         },
-        "/api/plugins/{id}/scan": {
+        "/api/v2/plugins/{id}/scan": {
             "post": {
                 "tags": [
                     "Plugin Marketplace"
@@ -32357,7 +32431,7 @@
                 ]
             }
         },
-        "/api/plugins/discover": {
+        "/api/v2/plugins/discover": {
             "post": {
                 "tags": [
                     "Plugin Marketplace"
@@ -43917,13 +43991,13 @@
                     "TrustCert"
                 ],
                 "summary": "Get requirements for a specific trust level",
-                "description": "Returns the requirements and transaction limits for a specific trust level.",
+                "description": "Returns the requirements and transaction limits for a specific trust level. Accepts both string names (basic, verified, high, ultimate) and numeric values (0-4).",
                 "operationId": "trustCertRequirementsByLevel",
                 "parameters": [
                     {
                         "name": "level",
                         "in": "path",
-                        "description": "The trust level to retrieve requirements for",
+                        "description": "The trust level (string name or numeric value 0-4)",
                         "required": true,
                         "schema": {
                             "type": "string",
@@ -43932,7 +44006,12 @@
                                 "basic",
                                 "verified",
                                 "high",
-                                "ultimate"
+                                "ultimate",
+                                "0",
+                                "1",
+                                "2",
+                                "3",
+                                "4"
                             ],
                             "example": "verified"
                         }
@@ -50681,6 +50760,783 @@
                 }
             }
         },
+        "/api/v1/x402/endpoints": {
+            "get": {
+                "tags": [
+                    "X402 Endpoints"
+                ],
+                "summary": "List monetized endpoints",
+                "description": "List all monetized endpoints.",
+                "operationId": "5e723d43298a3d2632fe3d3f7a9b0c85",
+                "parameters": [
+                    {
+                        "name": "active",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "boolean"
+                        }
+                    },
+                    {
+                        "name": "network",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "per_page",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "integer",
+                            "default": 20,
+                            "maximum": 100
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "List of monetized endpoints"
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            },
+            "post": {
+                "tags": [
+                    "X402 Endpoints"
+                ],
+                "summary": "Register an endpoint for x402 payment",
+                "description": "Create a monetized endpoint.",
+                "operationId": "ec8e7822c910e36d628ae43594d0ba1b",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "method",
+                                    "path",
+                                    "price"
+                                ],
+                                "properties": {
+                                    "method": {
+                                        "type": "string",
+                                        "enum": [
+                                            "GET",
+                                            "POST",
+                                            "PUT",
+                                            "PATCH",
+                                            "DELETE"
+                                        ]
+                                    },
+                                    "path": {
+                                        "type": "string",
+                                        "example": "api/v1/ai/query"
+                                    },
+                                    "price": {
+                                        "type": "string",
+                                        "example": "0.01"
+                                    },
+                                    "network": {
+                                        "type": "string",
+                                        "example": "eip155:8453"
+                                    },
+                                    "description": {
+                                        "type": "string"
+                                    },
+                                    "is_active": {
+                                        "type": "boolean",
+                                        "example": true
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Endpoint monetized"
+                    },
+                    "422": {
+                        "description": "Validation error"
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/x402/endpoints/{id}": {
+            "get": {
+                "tags": [
+                    "X402 Endpoints"
+                ],
+                "summary": "Get monetized endpoint details",
+                "description": "Get a monetized endpoint.",
+                "operationId": "545148cd3d9c2c1300181049b7c2e3a3",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "format": "uuid"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Endpoint details"
+                    },
+                    "404": {
+                        "description": "Not found"
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            },
+            "put": {
+                "tags": [
+                    "X402 Endpoints"
+                ],
+                "summary": "Update monetized endpoint pricing or status",
+                "description": "Update a monetized endpoint.",
+                "operationId": "04c0c3f38a9844fc9f896a8f808b16cb",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "format": "uuid"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "price": {
+                                        "type": "string",
+                                        "example": "0.02"
+                                    },
+                                    "network": {
+                                        "type": "string"
+                                    },
+                                    "description": {
+                                        "type": "string"
+                                    },
+                                    "is_active": {
+                                        "type": "boolean"
+                                    },
+                                    "asset": {
+                                        "type": "string",
+                                        "enum": [
+                                            "USDC"
+                                        ]
+                                    },
+                                    "scheme": {
+                                        "type": "string",
+                                        "enum": [
+                                            "exact",
+                                            "upto"
+                                        ]
+                                    },
+                                    "mime_type": {
+                                        "type": "string",
+                                        "example": "application/json"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Endpoint updated"
+                    },
+                    "404": {
+                        "description": "Not found"
+                    },
+                    "422": {
+                        "description": "Validation error"
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            },
+            "delete": {
+                "tags": [
+                    "X402 Endpoints"
+                ],
+                "summary": "Remove monetization from an endpoint",
+                "description": "Delete a monetized endpoint.",
+                "operationId": "c7df3ec5ebffa16ff011d4e822f18ff5",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "format": "uuid"
+                        }
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "Endpoint removed"
+                    },
+                    "404": {
+                        "description": "Not found"
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/x402/payments": {
+            "get": {
+                "tags": [
+                    "X402 Payments"
+                ],
+                "summary": "List x402 payment records",
+                "description": "List x402 payments.",
+                "operationId": "5a6de40f9582eb6b029941a15030a1e6",
+                "parameters": [
+                    {
+                        "name": "status",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "pending",
+                                "verified",
+                                "settled",
+                                "failed",
+                                "expired"
+                            ]
+                        }
+                    },
+                    {
+                        "name": "network",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "payer_address",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "per_page",
+                        "in": "query",
+                        "description": "Items per page (alias: limit)",
+                        "required": false,
+                        "schema": {
+                            "type": "integer",
+                            "default": 20,
+                            "maximum": 100
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Paginated payment records"
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/x402/payments/{id}": {
+            "get": {
+                "tags": [
+                    "X402 Payments"
+                ],
+                "summary": "Get x402 payment details",
+                "description": "Get a specific payment.",
+                "operationId": "08dce6376fa57f2c5511398dc31b1c59",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "format": "uuid"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Payment details"
+                    },
+                    "404": {
+                        "description": "Not found"
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/x402/payments/stats": {
+            "get": {
+                "tags": [
+                    "X402 Payments"
+                ],
+                "summary": "Get x402 payment statistics",
+                "description": "Get payment statistics.",
+                "operationId": "1c1c1efa3d40cf2cccafd3588d294626",
+                "parameters": [
+                    {
+                        "name": "period",
+                        "in": "query",
+                        "description": "Time period (aliases: 24h=day, 7d=week, 30d=month)",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "default": "day",
+                            "enum": [
+                                "day",
+                                "week",
+                                "month",
+                                "24h",
+                                "7d",
+                                "30d"
+                            ]
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Payment statistics",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "total_payments": {
+                                            "type": "integer"
+                                        },
+                                        "total_settled": {
+                                            "type": "integer"
+                                        },
+                                        "total_failed": {
+                                            "type": "integer"
+                                        },
+                                        "total_volume_atomic": {
+                                            "type": "string"
+                                        },
+                                        "total_volume_usd": {
+                                            "type": "string"
+                                        },
+                                        "unique_payers": {
+                                            "type": "integer"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/x402/spending-limits": {
+            "get": {
+                "tags": [
+                    "X402 Spending Limits"
+                ],
+                "summary": "List agent spending limits",
+                "description": "List all agent spending limits.",
+                "operationId": "7cd6dbeefaebdb990647a5498808bc9a",
+                "parameters": [
+                    {
+                        "name": "per_page",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "integer",
+                            "default": 20,
+                            "maximum": 100
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "List of spending limits"
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            },
+            "post": {
+                "tags": [
+                    "X402 Spending Limits"
+                ],
+                "summary": "Set spending limit for an agent",
+                "description": "Create or update an agent spending limit.",
+                "operationId": "b823b50341aa64cb3aae6c54d10b589d",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "agent_id",
+                                    "daily_limit"
+                                ],
+                                "properties": {
+                                    "agent_id": {
+                                        "type": "string"
+                                    },
+                                    "agent_type": {
+                                        "type": "string",
+                                        "example": "ai_agent"
+                                    },
+                                    "daily_limit": {
+                                        "type": "string",
+                                        "example": "10000000"
+                                    },
+                                    "per_transaction_limit": {
+                                        "type": "string",
+                                        "example": "1000000"
+                                    },
+                                    "auto_pay_enabled": {
+                                        "type": "boolean",
+                                        "example": true
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Spending limit created"
+                    },
+                    "200": {
+                        "description": "Spending limit updated"
+                    },
+                    "422": {
+                        "description": "Validation error"
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/x402/spending-limits/{agentId}": {
+            "get": {
+                "tags": [
+                    "X402 Spending Limits"
+                ],
+                "summary": "Get agent spending limit details",
+                "description": "Get spending limit for an agent.",
+                "operationId": "7514e448ff7d7596db890383917bf8e4",
+                "parameters": [
+                    {
+                        "name": "agentId",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Spending limit details"
+                    },
+                    "404": {
+                        "description": "Not found"
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            },
+            "put": {
+                "tags": [
+                    "X402 Spending Limits"
+                ],
+                "summary": "Update agent spending limit",
+                "description": "Update an agent spending limit.",
+                "operationId": "c05730129cb73904102e83e7f8159517",
+                "parameters": [
+                    {
+                        "name": "agentId",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "daily_limit": {
+                                        "type": "string"
+                                    },
+                                    "per_transaction_limit": {
+                                        "type": "string"
+                                    },
+                                    "auto_pay_enabled": {
+                                        "type": "boolean"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Spending limit updated"
+                    },
+                    "404": {
+                        "description": "Not found"
+                    },
+                    "422": {
+                        "description": "Validation error"
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            },
+            "delete": {
+                "tags": [
+                    "X402 Spending Limits"
+                ],
+                "summary": "Remove agent spending limit",
+                "description": "Delete an agent spending limit.",
+                "operationId": "fdf06dec923a35eb209982b19df5a13b",
+                "parameters": [
+                    {
+                        "name": "agentId",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "Spending limit removed"
+                    },
+                    "404": {
+                        "description": "Not found"
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/x402/status": {
+            "get": {
+                "tags": [
+                    "X402 Protocol"
+                ],
+                "summary": "Get x402 protocol status and configuration",
+                "description": "Get x402 protocol status.",
+                "operationId": "c1a0b406e4e6f9aec069b6ad1240caad",
+                "responses": {
+                    "200": {
+                        "description": "Protocol status",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "enabled": {
+                                            "type": "boolean"
+                                        },
+                                        "version": {
+                                            "type": "integer"
+                                        },
+                                        "protocol": {
+                                            "type": "string",
+                                            "example": "x402"
+                                        },
+                                        "default_network": {
+                                            "type": "string",
+                                            "example": "eip155:8453"
+                                        },
+                                        "supported_schemes": {
+                                            "type": "array",
+                                            "items": {
+                                                "type": "string"
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/x402/supported": {
+            "get": {
+                "tags": [
+                    "X402 Protocol"
+                ],
+                "summary": "List supported networks and payment assets",
+                "description": "Get supported networks and assets.",
+                "operationId": "def5684fd3a11c42885b0e493638b87c",
+                "responses": {
+                    "200": {
+                        "description": "Supported networks and assets",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "networks": {
+                                            "type": "array",
+                                            "items": {
+                                                "properties": {
+                                                    "id": {
+                                                        "type": "string",
+                                                        "example": "eip155:8453"
+                                                    },
+                                                    "name": {
+                                                        "type": "string",
+                                                        "example": "Base Mainnet"
+                                                    },
+                                                    "testnet": {
+                                                        "type": "boolean"
+                                                    },
+                                                    "usdc_address": {
+                                                        "type": "string"
+                                                    },
+                                                    "usdc_decimals": {
+                                                        "type": "integer",
+                                                        "example": 6
+                                                    }
+                                                },
+                                                "type": "object"
+                                            }
+                                        },
+                                        "contracts": {
+                                            "properties": {
+                                                "permit2": {
+                                                    "type": "string"
+                                                },
+                                                "exact_permit2_proxy": {
+                                                    "type": "string"
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
         "/api/v2/treasury/optimize": {
             "post": {
                 "tags": [
@@ -53708,6 +54564,10 @@
             "description": "Decentralized finance operations: DEX swaps, lending, staking, and yield optimization"
         },
         {
+            "name": "Demo AI Chat",
+            "description": "Public demo AI chat endpoint (no authentication required)"
+        },
+        {
             "name": "Accounts",
             "description": "Bank account management"
         },
@@ -53954,6 +54814,22 @@
         {
             "name": "Workflow Monitoring",
             "description": "Monitor and manage workflow executions, compensations, and saga patterns"
+        },
+        {
+            "name": "X402 Endpoints",
+            "description": "Manage monetized API endpoints"
+        },
+        {
+            "name": "X402 Payments",
+            "description": "X402 payment history and analytics"
+        },
+        {
+            "name": "X402 Spending Limits",
+            "description": "Agent spending limit management for x402 payments"
+        },
+        {
+            "name": "X402 Protocol",
+            "description": "HTTP 402 Payment Protocol - native micropayments for APIs"
         },
         {
             "name": "AI Agents",

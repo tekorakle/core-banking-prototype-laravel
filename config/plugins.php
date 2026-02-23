@@ -47,7 +47,7 @@ return [
     |
     */
     'marketplace' => [
-        'enabled'      => env('PLUGIN_MARKETPLACE_ENABLED', false),
+        'enabled'      => env('PLUGIN_MARKETPLACE_ENABLED', true),
         'registry_url' => env('PLUGIN_REGISTRY_URL', ''),
     ],
 
