@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Infrastructure\Plugins;
 
 use Illuminate\Support\ServiceProvider;
+use Spatie\EventSourcing\Facades\Projectionist;
 use Throwable;
 
 class PluginServiceProvider extends ServiceProvider
@@ -16,6 +17,9 @@ class PluginServiceProvider extends ServiceProvider
             'plugins',
         );
 
+        $this->app->singleton(PluginHookManager::class);
+        $this->app->singleton(PluginSecurityScanner::class);
+        $this->app->singleton(PluginSandbox::class);
         $this->app->singleton(PluginDependencyResolver::class);
         $this->app->singleton(PluginLoader::class);
         $this->app->singleton(PluginManager::class, function ($app) {
@@ -28,6 +32,8 @@ class PluginServiceProvider extends ServiceProvider
 
     public function boot(): void
     {
+        Projectionist::addReactor(PluginHookReactor::class);
+
         if (config('plugins.auto_discover', true) && ! $this->app->runningInConsole()) {
             try {
                 $this->app->make(PluginLoader::class)->bootActivePlugins();

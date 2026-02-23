@@ -133,6 +133,39 @@ describe('MobileTrustCertController requirementsByLevel', function (): void {
 
         expect($response->getStatusCode())->toBe(404);
     });
+
+    it('accepts numeric level values', function (): void {
+        $controller = makeTrustCertController($this);
+
+        $response = $controller->requirementsByLevel('1');
+        $data = $response->getData(true);
+
+        expect($data['success'])->toBeTrue()
+            ->and($data['data']['level'])->toBe('basic')
+            ->and($data['data']['numeric_value'])->toBe(1);
+    });
+
+    it('maps all numeric levels correctly', function (): void {
+        $controller = makeTrustCertController($this);
+
+        $expected = [['0', 'unknown'], ['1', 'basic'], ['2', 'verified'], ['3', 'high'], ['4', 'ultimate']];
+
+        foreach ($expected as [$numeric, $name]) {
+            $response = $controller->requirementsByLevel($numeric);
+            $data = $response->getData(true);
+
+            expect($data['success'])->toBeTrue()
+                ->and($data['data']['level'])->toBe($name);
+        }
+    });
+
+    it('returns 404 for out-of-range numeric level', function (): void {
+        $controller = makeTrustCertController($this);
+
+        $response = $controller->requirementsByLevel('99');
+
+        expect($response->getStatusCode())->toBe(404);
+    });
 });
 
 describe('MobileTrustCertController limits', function (): void {
