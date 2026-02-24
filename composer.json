@@ -35,6 +35,7 @@
         "http-interop/http-factory-guzzle": "^1.2.1",
         "juststeveking/laravel-data-object-tools": "dev-main",
         "kornrunner/keccak": "^1.1",
+        "kreait/laravel-firebase": "^7.0",
         "laravel-workflow/laravel-workflow": "^1.0",
         "laravel-workflow/waterline": "^1.0.14",
         "laravel/cashier": "^15.4",

@@ -20,6 +20,7 @@ git status && git branch --show-current
 ### Version Status
 | Version | Status | Key Changes |
 |---------|--------|-------------|
+| v5.3.1 | ✅ Released | Firebase FCM v1 Migration: kreait/laravel-firebase SDK, legacy HTTP API removal, service account auth, graceful null-messaging fallback |
 | v5.2.0 | ✅ Released | X402 Protocol: HTTP-native micropayments (USDC on Base), payment gate middleware, facilitator integration, AI agent payments, spending limits, GraphQL/REST APIs, MCP tool |
 | v5.1.6 | ✅ Released | Security Hardening: copyright year, accessibility improvements, CSP headers, email config defaults |
 | v5.1.5 | ✅ Released | Dependency Cleanup: l5-swagger 9→10 (swagger-php 6), PSR-4 plugin fix, `.env.production.example`, passkey test fix |
@@ -157,6 +158,7 @@ app/
 | Mobile Devices | `MobileDeviceService` (Mobile) |
 | Biometric Auth | `BiometricAuthenticationService` (Mobile) |
 | Push Notifications | `PushNotificationService` (Mobile) |
+| Firebase Messaging | `kreait/laravel-firebase` → `Kreait\Firebase\Contract\Messaging` |
 | Mobile Sessions | `MobileSessionService` (Mobile) |
 | Key Sharding | `ShamirService` (KeyManagement) |
 | ZK-KYC | `ZkKycService` (Privacy) |
