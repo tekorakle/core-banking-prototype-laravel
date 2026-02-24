@@ -143,6 +143,15 @@ return [
             'api_key'  => env('BANK_WISE_API_KEY'),
             'base_url' => env('BANK_WISE_BASE_URL', 'https://api.wise.com/v2'),
         ],
+
+        'flutterwave' => [
+            'enabled'        => env('FLUTTERWAVE_ENABLED', false),
+            'secret_key'     => env('FLUTTERWAVE_SECRET_KEY'),
+            'public_key'     => env('FLUTTERWAVE_PUBLIC_KEY'),
+            'encryption_key' => env('FLUTTERWAVE_ENCRYPTION_KEY'),
+            'environment'    => env('FLUTTERWAVE_ENVIRONMENT', 'sandbox'),
+            'webhook_secret' => env('FLUTTERWAVE_WEBHOOK_SECRET'),
+        ],
     ],
 
     /*
@@ -173,6 +182,14 @@ return [
     | For HTTP v1 API, use the project_id and credentials file instead.
     |
     */
+
+    'smileid' => [
+        'partner_id'    => env('SMILEID_PARTNER_ID'),
+        'api_key'       => env('SMILEID_API_KEY'),
+        'signature_key' => env('SMILEID_SIGNATURE_KEY'),
+        'environment'   => env('SMILEID_ENVIRONMENT', 'sandbox'),
+        'callback_url'  => env('SMILEID_CALLBACK_URL'),
+    ],
 
     'firebase' => [
         'server_key'  => env('FIREBASE_SERVER_KEY'),
