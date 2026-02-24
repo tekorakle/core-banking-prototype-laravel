@@ -76,6 +76,9 @@ class SecurityHeaders
             ]);
         }
 
+        // Filament admin panel requires unsafe-eval for Alpine.js x-data expressions
+        $needsUnsafeEval = $request->is('admin*') || $request->is('admin');
+
         // Get configured sources
         $fontSources = explode(',', config('security.csp.font_sources', ''));
         $styleSources = explode(',', config('security.csp.style_sources', ''));
@@ -84,10 +87,11 @@ class SecurityHeaders
         $apiEndpoint = config('security.csp.api_endpoint', '');
         $wsEndpoint = config('security.csp.ws_endpoint', '');
 
-        // Build production policies (no unsafe-eval)
+        // Build production policies (unsafe-eval only for admin panel / Alpine.js)
+        $evalDirective = $needsUnsafeEval ? "'unsafe-eval' " : '';
         $policies = [
             "default-src 'self'",
-            "script-src 'self' 'unsafe-inline' " . implode(' ', $scriptSources),
+            "script-src 'self' 'unsafe-inline' " . $evalDirective . implode(' ', $scriptSources),
             "style-src 'self' 'unsafe-inline' " . implode(' ', $styleSources),
             "img-src 'self' data: https:",
             "font-src 'self' " . implode(' ', $fontSources),
