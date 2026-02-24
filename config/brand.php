@@ -21,6 +21,14 @@ return [
 
     'support_email' => env('BRAND_SUPPORT_EMAIL', 'info@finaegis.org'),
 
+    'legal_email' => env('BRAND_LEGAL_EMAIL', 'legal@finaegis.org'),
+
+    'privacy_email' => env('BRAND_PRIVACY_EMAIL', 'privacy@finaegis.org'),
+
+    'legal_entity' => env('BRAND_LEGAL_ENTITY', 'FinAegis'),
+
+    'legal_jurisdiction' => env('BRAND_LEGAL_JURISDICTION', 'Vilnius, Lithuania'),
+
     'github_url' => env('BRAND_GITHUB_URL', 'https://github.com/FinAegis/core-banking-prototype-laravel'),
 
     'ga_id' => env('GOOGLE_ANALYTICS_ID', 'G-X65KH9NFMY'),
