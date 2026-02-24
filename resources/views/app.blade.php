@@ -5,14 +5,14 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
-    <title>FinAegis App — Pay with Stablecoins. Stay Private.</title>
+    <title>{{ config('brand.name') }} App — Pay with Stablecoins. Stay Private.</title>
 
     @include('partials.favicon')
 
     @include('partials.seo', [
-        'title' => 'FinAegis App — Pay with Stablecoins in Shops',
-        'description' => 'Pay at any shop with your stablecoin card. Your transactions stay private. Your identity stays yours. Get early access to the FinAegis mobile wallet.',
-        'keywords' => 'FinAegis, stablecoin wallet, USDC payments, privacy wallet, tap to pay crypto, shielded transactions, Super KYC',
+        'title' => config('brand.name') . ' App — Pay with Stablecoins in Shops',
+        'description' => 'Pay at any shop with your stablecoin card. Your transactions stay private. Your identity stays yours. Get early access to the ' . config('brand.name') . ' mobile wallet.',
+        'keywords' => config('brand.name') . ', stablecoin wallet, USDC payments, privacy wallet, tap to pay crypto, shielded transactions, Super KYC',
     ])
 
     <link rel="preconnect" href="https://fonts.bunny.net">
@@ -21,14 +21,16 @@
     {{-- Standalone Tailwind CSS — pre-compiled for this page only, no Vite dependency --}}
     <link rel="stylesheet" href="/css/app-landing.css">
 
+    @if(config('brand.ga_id'))
     <!-- Google tag (gtag.js) -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id=G-X65KH9NFMY"></script>
+    <script async src="https://www.googletagmanager.com/gtag/js?id={{ config('brand.ga_id') }}"></script>
     <script>
       window.dataLayer = window.dataLayer || [];
       function gtag(){dataLayer.push(arguments);}
       gtag('js', new Date());
-      gtag('config', 'G-X65KH9NFMY');
+      gtag('config', '{{ config('brand.ga_id') }}');
     </script>
+    @endif
 
     <style>
         :root {
@@ -268,7 +270,7 @@
                     <div class="w-9 h-9 rounded-xl bg-gradient-to-br from-blue-600 to-blue-800 flex items-center justify-center shadow-lg shadow-blue-500/20 ring-1 ring-white/10 transition-transform group-hover:scale-105">
                         <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75m-3-7.036A11.959 11.959 0 013.598 6 11.99 11.99 0 003 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285z"/></svg>
                     </div>
-                    <span class="font-bold text-lg tracking-tight text-white">FinAegis</span>
+                    <span class="font-bold text-lg tracking-tight text-white">{{ config('brand.name') }}</span>
                 </a>
 
                 {{-- Desktop Nav --}}
@@ -281,7 +283,9 @@
 
                 {{-- Right --}}
                 <div class="flex items-center gap-3">
+                    @if(config('brand.show_promo_pages'))
                     <a href="{{ route('home') }}" class="hidden sm:inline-flex text-sm text-slate-400 hover:text-white transition-colors">Core Platform</a>
+                    @endif
                     <a href="#early-access" class="px-4 py-2 rounded-lg bg-white/5 border border-white/10 text-sm font-semibold text-white hover:bg-white/10 transition-all flex items-center gap-2">
                         <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
                         Early Access
@@ -660,7 +664,7 @@
         <section class="py-20 lg:py-28 bg-[var(--bg-dark)] border-t border-white/5 relative grid-bg" id="platform">
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 <div class="text-center mb-16">
-                    <h2 class="text-3xl lg:text-4xl font-bold text-white tracking-tight">The FinAegis Core</h2>
+                    <h2 class="text-3xl lg:text-4xl font-bold text-white tracking-tight">The {{ config('brand.name') }} Core</h2>
                     <p class="text-slate-400 mt-3 max-w-lg mx-auto">
                         Built on an AI-native banking engine. Compliance in milliseconds. You stay private. The system stays compliant.
                     </p>
@@ -718,7 +722,7 @@
                 {{-- Link to platform --}}
                 <div class="text-center mt-10">
                     <a href="{{ route('platform') }}" class="inline-flex items-center gap-2 text-sm text-blue-400 hover:text-blue-300 font-medium transition-colors group">
-                        Explore the full FinAegis Core Banking Platform
+                        Explore the full {{ config('brand.name') }} Core Banking Platform
                         <svg class="w-4 h-4 group-hover:translate-x-0.5 transition-transform" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3"/></svg>
                     </a>
                 </div>
@@ -735,11 +739,11 @@
                 <div class="space-y-0 border-t border-white/5">
                     <details class="group border-b border-white/5">
                         <summary class="flex justify-between items-center cursor-pointer py-5 pr-2 font-medium text-white select-none text-sm hover:text-blue-400 transition-colors">
-                            <span>Is FinAegis a custodial wallet?</span>
+                            <span>Is {{ config('brand.name') }} a custodial wallet?</span>
                             <svg class="w-4 h-4 text-slate-500 group-open:text-blue-400 group-open:rotate-45 transition-all duration-200 flex-shrink-0 ml-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15"/></svg>
                         </summary>
                         <div class="pb-5 text-slate-400 text-sm leading-relaxed">
-                            No. FinAegis is fully non-custodial. Your private key is split using Shamir's Secret Sharing, and no single party (including FinAegis) can access your funds alone. You hold the keys.
+                            No. {{ config('brand.name') }} is fully non-custodial. Your private key is split using Shamir's Secret Sharing, and no single party (including {{ config('brand.name') }}) can access your funds alone. You hold the keys.
                         </div>
                     </details>
 
@@ -749,7 +753,7 @@
                             <svg class="w-4 h-4 text-slate-500 group-open:text-blue-400 group-open:rotate-45 transition-all duration-200 flex-shrink-0 ml-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15"/></svg>
                         </summary>
                         <div class="pb-5 text-slate-400 text-sm leading-relaxed">
-                            Mixers pool funds to hide origins. We don't. FinAegis uses zero-knowledge proofs to encrypt your transaction data so third parties can't see it &mdash; but we maintain full audit logs for regulatory authorities. Privacy for you, compliance for regulators.
+                            Mixers pool funds to hide origins. We don't. {{ config('brand.name') }} uses zero-knowledge proofs to encrypt your transaction data so third parties can't see it &mdash; but we maintain full audit logs for regulatory authorities. Privacy for you, compliance for regulators.
                         </div>
                     </details>
 
@@ -821,21 +825,24 @@
                         <div class="w-8 h-8 rounded-lg bg-gradient-to-br from-blue-600 to-blue-800 flex items-center justify-center shadow-lg shadow-blue-500/15 ring-1 ring-white/10">
                             <svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75m-3-7.036A11.959 11.959 0 013.598 6 11.99 11.99 0 003 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285z"/></svg>
                         </div>
-                        <span class="text-lg font-bold text-white tracking-tight">FinAegis</span>
+                        <span class="text-lg font-bold text-white tracking-tight">{{ config('brand.name') }}</span>
                     </a>
                     <p class="text-xs text-slate-500 leading-relaxed mb-5">
-                        Pay with stablecoins. Stay private. Prove compliance.
+                        {{ config('brand.tagline') }}
                     </p>
                     <div class="flex gap-3">
                         <a href="#" class="w-9 h-9 rounded-full bg-white/5 flex items-center justify-center text-slate-500 hover:text-white hover:bg-white/10 transition-colors" aria-label="Twitter">
                             <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
                         </a>
-                        <a href="https://github.com/FinAegis/core-banking-prototype-laravel" class="w-9 h-9 rounded-full bg-white/5 flex items-center justify-center text-slate-500 hover:text-white hover:bg-white/10 transition-colors" aria-label="GitHub">
+                        @if(config('brand.github_url'))
+                        <a href="{{ config('brand.github_url') }}" class="w-9 h-9 rounded-full bg-white/5 flex items-center justify-center text-slate-500 hover:text-white hover:bg-white/10 transition-colors" aria-label="GitHub">
                             <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/></svg>
                         </a>
+                        @endif
                     </div>
                 </div>
 
+                @if(config('brand.show_promo_pages'))
                 {{-- Product --}}
                 <div>
                     <h4 class="text-xs font-bold text-white uppercase tracking-wider mb-5">Product</h4>
@@ -853,7 +860,9 @@
                     <ul class="space-y-3">
                         <li><a href="{{ route('developers') }}" class="text-sm text-slate-500 hover:text-blue-400 transition-colors">Developer Hub</a></li>
                         <li><a href="/api/documentation" class="text-sm text-slate-500 hover:text-blue-400 transition-colors">API Reference</a></li>
-                        <li><a href="https://github.com/FinAegis/core-banking-prototype-laravel" class="text-sm text-slate-500 hover:text-blue-400 transition-colors">GitHub</a></li>
+                        @if(config('brand.github_url'))
+                        <li><a href="{{ config('brand.github_url') }}" class="text-sm text-slate-500 hover:text-blue-400 transition-colors">GitHub</a></li>
+                        @endif
                     </ul>
                 </div>
 
@@ -867,12 +876,13 @@
                         <li><a href="{{ route('blog') }}" class="text-sm text-slate-500 hover:text-blue-400 transition-colors">Blog</a></li>
                     </ul>
                 </div>
+                @endif
             </div>
 
             {{-- Bottom --}}
             <div class="pt-8 border-t border-white/5 flex flex-col md:flex-row justify-between items-center gap-4">
                 <div class="flex items-center gap-4">
-                    <p class="text-xs text-slate-600">&copy; {{ date('Y') }} FinAegis. All rights reserved.</p>
+                    <p class="text-xs text-slate-600">&copy; {{ date('Y') }} {{ config('brand.name') }}. All rights reserved.</p>
                     <div class="flex items-center gap-1.5">
                         <div class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></div>
                         <span class="text-[10px] text-slate-500">All Systems Operational</span>
@@ -888,7 +898,7 @@
             {{-- Disclaimer --}}
             <div class="mt-6">
                 <p class="text-[10px] text-slate-700 leading-relaxed text-center max-w-2xl mx-auto">
-                    FinAegis does not provide financial advice. Cryptocurrency values are volatile. Self-custody means you are responsible for the security of your wallet and private key shards. Ensure you maintain access to your recovery methods at all times.
+                    {{ config('brand.name') }} does not provide financial advice. Cryptocurrency values are volatile. Self-custody means you are responsible for the security of your wallet and private key shards. Ensure you maintain access to your recovery methods at all times.
                 </p>
             </div>
         </div>
@@ -956,8 +966,8 @@
                     }
                 } catch (error) {
                     // Fallback: mailto
-                    window.location.href = 'mailto:info@finaegis.org?subject=' +
-                        encodeURIComponent('FinAegis Early Access Request') +
+                    window.location.href = 'mailto:{{ config('brand.support_email') }}?subject=' +
+                        encodeURIComponent('{{ config('brand.name') }} Early Access Request') +
                         '&body=' + encodeURIComponent('Please add me to the early access list.\n\nEmail: ' + email);
 
                     // Show as success after mailto opens

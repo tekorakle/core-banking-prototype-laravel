@@ -320,6 +320,13 @@ class SitemapController extends Controller
         $content .= "Disallow: /profile/\n";
         $content .= "Disallow: /teams/\n";
         $content .= "Disallow: /subscriber/unsubscribe/\n";
+
+        // In production, also disallow API documentation paths
+        if (app()->environment('production')) {
+            $content .= "Disallow: /api/documentation/\n";
+            $content .= "Disallow: /docs/\n";
+        }
+
         $content .= "\n";
         $content .= 'Sitemap: ' . config('app.url') . "/sitemap.xml\n";
 
