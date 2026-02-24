@@ -196,4 +196,23 @@ return [
         'credentials' => env('FIREBASE_CREDENTIALS', storage_path('firebase-credentials.json')),
     ],
 
+    /*
+    |--------------------------------------------------------------------------
+    | Chainalysis Sanctions Screening Configuration
+    |--------------------------------------------------------------------------
+    |
+    | Chainalysis provides blockchain analytics and sanctions screening.
+    | When enabled, it replaces the internal simulated sanctions screening
+    | with real-time API checks against Chainalysis sanctions lists.
+    |
+    */
+
+    'chainalysis' => [
+        'api_key'        => env('CHAINALYSIS_API_KEY'),
+        'base_url'       => env('CHAINALYSIS_BASE_URL', 'https://api.chainalysis.com/api/sanctions/v2'),
+        'enabled'        => env('CHAINALYSIS_ENABLED', false),
+        'timeout'        => env('CHAINALYSIS_TIMEOUT', 30),
+        'retry_attempts' => env('CHAINALYSIS_RETRY_ATTEMPTS', 3),
+    ],
+
 ];
