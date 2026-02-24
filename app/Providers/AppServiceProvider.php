@@ -4,9 +4,12 @@ namespace App\Providers;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\ServiceProvider;
+use Kreait\Firebase\Contract\Messaging;
+use Kreait\Laravel\Firebase\FirebaseProjectManager;
 use OpenApi\Analysers\AttributeAnnotationFactory;
 use OpenApi\Analysers\DocBlockAnnotationFactory;
 use OpenApi\Analysers\ReflectionAnalyser;
+use Throwable;
 use URL;
 
 class AppServiceProvider extends ServiceProvider
@@ -27,6 +30,15 @@ class AppServiceProvider extends ServiceProvider
 
         // Register blockchain service provider
         $this->app->register(BlockchainServiceProvider::class);
+
+        // Override Firebase Messaging to return null when credentials are not configured
+        $this->app->singleton(Messaging::class, function ($app) {
+            try {
+                return $app->make(FirebaseProjectManager::class)->project()->messaging();
+            } catch (Throwable) {
+                return null;
+            }
+        });
     }
 
     /**

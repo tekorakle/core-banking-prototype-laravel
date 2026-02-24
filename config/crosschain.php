@@ -122,10 +122,10 @@ return [
     */
 
     'circle_cctp' => [
-        'enabled'          => env('CIRCLE_CCTP_ENABLED', false),
-        'api_url'          => env('CIRCLE_CCTP_API_URL', 'https://iris-api.circle.com'),
-        'attestation_url'  => env('CIRCLE_CCTP_ATTESTATION_URL', 'https://iris-api.circle.com/attestations'),
-        'token_messenger'  => [
+        'enabled'         => env('CIRCLE_CCTP_ENABLED', false),
+        'api_url'         => env('CIRCLE_CCTP_API_URL', 'https://iris-api.circle.com'),
+        'attestation_url' => env('CIRCLE_CCTP_ATTESTATION_URL', 'https://iris-api.circle.com/attestations'),
+        'token_messenger' => [
             'ethereum' => env('CIRCLE_CCTP_TOKEN_MESSENGER_ETH', '0xBd3fa81B58Ba92a82136038B25aDec7066af3155'),
             'polygon'  => env('CIRCLE_CCTP_TOKEN_MESSENGER_POLYGON', '0x9daF8c91AEFAE50b9c0E69629D3F6Ca40cA3B3FE'),
             'arbitrum' => env('CIRCLE_CCTP_TOKEN_MESSENGER_ARBITRUM', '0x19330d10D9Cc8751218eaf51E8885D058642E08A'),

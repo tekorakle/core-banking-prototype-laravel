@@ -2,9 +2,7 @@
 
 declare(strict_types=1);
 
-use App\Domain\Account\DataObjects\Money;
 use App\Domain\Custodian\Connectors\FlutterwaveConnector;
-use App\Domain\Custodian\ValueObjects\TransferRequest;
 
 uses(Tests\TestCase::class);
 
