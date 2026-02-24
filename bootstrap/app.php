@@ -17,7 +17,7 @@ return Application::configure(basePath: dirname(__DIR__))
             Route::group([], base_path('routes/console.php'));
 
             if ($isApiSubdomain) {
-                // For api.finaegis.org, ONLY load API routes without /api prefix
+                // For api.* subdomain, ONLY load API routes without /api prefix
                 Route::middleware('api')
                     ->group(base_path('routes/api.php'));
 
