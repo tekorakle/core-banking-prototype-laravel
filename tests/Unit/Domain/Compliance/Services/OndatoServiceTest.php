@@ -24,6 +24,7 @@ beforeEach(function () {
         'services.ondato.verifid_api_url' => 'https://verifid.ondato.com',
     ]);
 
+    Cache::forget('ondato:access_token');
     $this->service = new OndatoService();
 });
 
