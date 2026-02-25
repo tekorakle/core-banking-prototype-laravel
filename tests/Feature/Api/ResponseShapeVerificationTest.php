@@ -85,13 +85,13 @@ beforeEach(function () {
 //  1. AUTH ENDPOINTS
 // ==========================================================================
 
-describe('Auth endpoints - POST /api/login', function () {
+describe('Auth endpoints - POST /api/auth/login', function () {
     test('login returns correct auth response shape', function () {
         $user = User::factory()->create([
             'password' => bcrypt('password123'),
         ]);
 
-        $response = $this->postJson('/api/login', [
+        $response = $this->postJson('/api/auth/login', [
             'email'    => $user->email,
             'password' => 'password123',
         ]);
@@ -121,7 +121,7 @@ describe('Auth endpoints - POST /api/login', function () {
     });
 
     test('login error returns standard validation error shape', function () {
-        $response = $this->postJson('/api/login', [
+        $response = $this->postJson('/api/auth/login', [
             'email'    => 'wrong@example.com',
             'password' => 'wrongpassword',
         ]);
@@ -138,7 +138,7 @@ describe('Auth endpoints - POST /api/login', function () {
     });
 
     test('login with missing fields returns validation error', function () {
-        $response = $this->postJson('/api/login', []);
+        $response = $this->postJson('/api/auth/login', []);
 
         $response->assertUnprocessable();
 
@@ -148,14 +148,14 @@ describe('Auth endpoints - POST /api/login', function () {
     });
 });
 
-describe('Auth endpoints - POST /api/register', function () {
+describe('Auth endpoints - POST /api/auth/register', function () {
     test('register returns correct auth response shape', function () {
         // Fake HTTP to bypass HaveIBeenPwned API check in password validation
         Http::fake([
             'api.pwnedpasswords.com/*' => Http::response('', 200),
         ]);
 
-        $response = $this->postJson('/api/register', [
+        $response = $this->postJson('/api/auth/register', [
             'name'                  => 'Test User',
             'email'                 => 'newuser@example.com',
             'password'              => 'Xk9#mP2$vL7wQ!nR',
@@ -184,7 +184,7 @@ describe('Auth endpoints - POST /api/register', function () {
     test('register with duplicate email returns validation error', function () {
         $existing = User::factory()->create();
 
-        $response = $this->postJson('/api/register', [
+        $response = $this->postJson('/api/auth/register', [
             'name'                  => 'Test User',
             'email'                 => $existing->email,
             'password'              => 'password123',
