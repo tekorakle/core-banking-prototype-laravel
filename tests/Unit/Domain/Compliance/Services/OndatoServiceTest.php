@@ -6,6 +6,7 @@ use App\Domain\Compliance\Events\KycVerificationFailed;
 use App\Domain\Compliance\Events\KycVerificationStarted;
 use App\Domain\Compliance\Models\KycVerification;
 use App\Domain\Compliance\Services\OndatoService;
+use App\Domain\TrustCert\Services\CertificateAuthorityService;
 use App\Models\User;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Event;
@@ -119,6 +120,34 @@ describe('createIdentityVerification', function () {
         expect($verification->user_id)->toBe($user->id);
 
         Event::assertDispatched(KycVerificationStarted::class);
+    });
+
+    it('stores application_id and target_level when provided', function () {
+        Event::fake([KycVerificationStarted::class]);
+
+        Http::fake([
+            'verifid.ondato.com/v3/oauth/token' => Http::response([
+                'access_token' => 'test-token',
+                'expires_in'   => 3600,
+            ], 200),
+            'sandbox-kycapi.ondato.com/v1/identity-verifications' => Http::response([
+                'id' => 'idv-app-linked',
+            ], 201),
+        ]);
+
+        $user = User::factory()->create(['uuid' => 'user-app-link']);
+
+        $result = $this->service->createIdentityVerification($user, [
+            'first_name'     => 'Jane',
+            'last_name'      => 'Smith',
+            'application_id' => 'app_test_123',
+            'target_level'   => 'verified',
+        ]);
+
+        $verification = KycVerification::where('provider_reference', 'idv-app-linked')->first();
+        assert($verification !== null);
+        expect($verification->application_id)->toBe('app_test_123');
+        expect($verification->target_level)->toBe('verified');
     });
 
     it('sends external reference and registration data in the API request', function () {
@@ -525,5 +554,164 @@ describe('processWebhook', function () {
 
         $user->refresh();
         expect($user->kyc_status)->toBe('approved');
+    });
+});
+
+// ──────────────────────────────────────────────────────────────
+// TrustCert Linkage on Webhook Processing
+// ──────────────────────────────────────────────────────────────
+
+describe('TrustCert linkage', function () {
+    it('updates TrustCertApplication to approved and issues certificate on PROCESSED', function () {
+        $user = User::factory()->create([
+            'kyc_status' => 'pending',
+            'uuid'       => 'user-trustcert-uuid',
+            'name'       => 'Test User',
+            'email'      => 'test@example.com',
+        ]);
+
+        // Set up TrustCert application in cache
+        Cache::put("trustcert_application:{$user->id}", [
+            'id'     => 'app_cert_123',
+            'status' => 'pending',
+            'level'  => 2,
+        ], now()->addDays(30));
+
+        $verification = KycVerification::create([
+            'user_id'            => $user->id,
+            'type'               => KycVerification::TYPE_IDENTITY,
+            'status'             => KycVerification::STATUS_PENDING,
+            'provider'           => 'ondato',
+            'provider_reference' => 'idv-trustcert-approve',
+            'application_id'     => 'app_cert_123',
+            'target_level'       => 'verified',
+            'verification_data'  => [],
+        ]);
+
+        // Mock CertificateAuthorityService
+        $caService = Mockery::mock(CertificateAuthorityService::class);
+        $caService->shouldReceive('issueCertificate')
+            ->once()
+            ->withArgs(function ($subjectId, $subject, $validFrom, $validUntil, $parentCertId, $extensions) use ($user, $verification) {
+                return $subjectId === "user:{$user->uuid}"
+                    && $subject['name'] === 'Test User'
+                    && $subject['email'] === 'test@example.com'
+                    && $subject['level'] === 'verified'
+                    && $extensions['application_id'] === 'app_cert_123';
+            })
+            ->andReturn(new App\Domain\TrustCert\ValueObjects\Certificate(
+                certificateId: 'cert_test_123',
+                subjectId: "user:{$user->uuid}",
+                subject: ['name' => 'Test User'],
+                publicKey: 'test-public-key',
+                signature: 'test-signature',
+                validFrom: now(),
+                validUntil: now()->addYears(2),
+                status: App\Domain\TrustCert\Enums\CertificateStatus::ACTIVE,
+                extensions: [],
+            ));
+        $this->app->instance(CertificateAuthorityService::class, $caService);
+
+        $this->service->processWebhook('PROCESSED', [
+            'identityVerificationId' => 'idv-trustcert-approve',
+            'document'               => ['type' => 'Passport', 'number' => 'P123'],
+            'person'                 => ['firstName' => 'Test', 'lastName' => 'User'],
+        ]);
+
+        // Verify TrustCert application was updated in cache
+        $updatedApp = Cache::get("trustcert_application:{$user->id}");
+        expect($updatedApp['status'])->toBe('approved');
+        expect($updatedApp['kyc_verification_id'])->toBe($verification->id);
+        expect($updatedApp)->toHaveKey('approved_at');
+    });
+
+    it('updates TrustCertApplication to rejected on REJECTED', function () {
+        Event::fake([KycVerificationFailed::class]);
+
+        $user = User::factory()->create(['kyc_status' => 'pending']);
+
+        Cache::put("trustcert_application:{$user->id}", [
+            'id'     => 'app_reject_456',
+            'status' => 'pending',
+        ], now()->addDays(30));
+
+        KycVerification::create([
+            'user_id'            => $user->id,
+            'type'               => KycVerification::TYPE_IDENTITY,
+            'status'             => KycVerification::STATUS_IN_PROGRESS,
+            'provider'           => 'ondato',
+            'provider_reference' => 'idv-trustcert-reject',
+            'application_id'     => 'app_reject_456',
+            'target_level'       => 'verified',
+            'verification_data'  => [],
+        ]);
+
+        $this->service->processWebhook('REJECTED', [
+            'identityVerificationId' => 'idv-trustcert-reject',
+            'rejectReason'           => 'Document tampering detected',
+        ]);
+
+        $updatedApp = Cache::get("trustcert_application:{$user->id}");
+        expect($updatedApp['status'])->toBe('rejected');
+        expect($updatedApp['failure_reason'])->toBe('Document tampering detected');
+        expect($updatedApp)->toHaveKey('rejected_at');
+    });
+
+    it('does not update TrustCertApplication when no application_id linked', function () {
+        $user = User::factory()->create(['kyc_status' => 'pending']);
+
+        Cache::put("trustcert_application:{$user->id}", [
+            'id'     => 'app_unlinked',
+            'status' => 'pending',
+        ], now()->addDays(30));
+
+        KycVerification::create([
+            'user_id'            => $user->id,
+            'type'               => KycVerification::TYPE_IDENTITY,
+            'status'             => KycVerification::STATUS_PENDING,
+            'provider'           => 'ondato',
+            'provider_reference' => 'idv-no-link',
+            'verification_data'  => [],
+        ]);
+
+        $this->service->processWebhook('PROCESSED', [
+            'identityVerificationId' => 'idv-no-link',
+            'document'               => ['type' => 'Passport', 'number' => 'P999'],
+            'person'                 => ['firstName' => 'No', 'lastName' => 'Link'],
+        ]);
+
+        // Application should remain unchanged
+        $app = Cache::get("trustcert_application:{$user->id}");
+        expect($app['status'])->toBe('pending');
+    });
+
+    it('gracefully handles missing TrustCertApplication in cache', function () {
+        $user = User::factory()->create(['kyc_status' => 'pending']);
+
+        // No application in cache
+        Cache::forget("trustcert_application:{$user->id}");
+
+        KycVerification::create([
+            'user_id'            => $user->id,
+            'type'               => KycVerification::TYPE_IDENTITY,
+            'status'             => KycVerification::STATUS_PENDING,
+            'provider'           => 'ondato',
+            'provider_reference' => 'idv-missing-app',
+            'application_id'     => 'app_gone',
+            'target_level'       => 'verified',
+            'verification_data'  => [],
+        ]);
+
+        // Should not throw
+        $this->service->processWebhook('PROCESSED', [
+            'identityVerificationId' => 'idv-missing-app',
+            'document'               => ['type' => 'Passport', 'number' => 'P000'],
+            'person'                 => ['firstName' => 'Gone', 'lastName' => 'App'],
+        ]);
+
+        // Verification itself should still be completed
+        $verification = KycVerification::where('provider_reference', 'idv-missing-app')->first();
+        assert($verification !== null);
+        expect($verification->status)->toBe(KycVerification::STATUS_COMPLETED);
     });
 });

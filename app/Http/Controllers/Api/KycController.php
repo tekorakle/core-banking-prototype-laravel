@@ -14,6 +14,7 @@ use Exception;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Storage;
 
 /**
@@ -418,16 +419,18 @@ class KycController extends Controller
      *     operationId="startOndatoVerification",
      *     tags={"KYC"},
      *     summary="Start Ondato identity verification",
-     *     description="Creates an Ondato identity verification session for mobile SDK flow",
+     *     description="Creates an Ondato identity verification session linked to a TrustCert application",
      *     security={{"sanctum": {}}},
      *
      * @OA\RequestBody(
-     *         required=false,
+     *         required=true,
      *
      * @OA\JsonContent(
      *
-     * @OA\Property(property="first_name", type="string", example="John"),
-     * @OA\Property(property="last_name",  type="string", example="Doe")
+     * @OA\Property(property="application_id", type="string", example="app_abc123", description="TrustCertApplication ID"),
+     * @OA\Property(property="target_level",   type="integer", example=2, description="Trust level (0-3)"),
+     * @OA\Property(property="first_name",     type="string", example="John"),
+     * @OA\Property(property="last_name",      type="string", example="Doe")
      *         )
      *     ),
      *
@@ -437,15 +440,17 @@ class KycController extends Controller
      *
      * @OA\JsonContent(
      *
+     * @OA\Property(property="data", type="object",
      * @OA\Property(property="identity_verification_id", type="string", example="3fa85f64-5717-4562-b3fc-2c963f66afa6"),
      * @OA\Property(property="verification_id",          type="string", example="9c1a2b3d-4e5f-6789-abcd-ef0123456789"),
      * @OA\Property(property="status",                   type="string", example="pending")
      *         )
+     *     )
      *     ),
      *
      * @OA\Response(
      *         response=400,
-     *         description="KYC already approved",
+     *         description="KYC already approved or invalid application",
      *
      * @OA\JsonContent(
      *
@@ -469,14 +474,34 @@ class KycController extends Controller
         }
 
         $request->validate([
-            'first_name' => 'sometimes|string|max:255',
-            'last_name'  => 'sometimes|string|max:255',
+            'application_id' => 'required|string',
+            'target_level'   => 'required|integer|between:0,3',
+            'first_name'     => 'sometimes|string|max:255',
+            'last_name'      => 'sometimes|string|max:255',
         ]);
 
-        try {
-            $result = $ondatoService->createIdentityVerification($user, $request->only(['first_name', 'last_name']));
+        // Verify the TrustCert application exists and is valid
+        $application = Cache::get("trustcert_application:{$user->id}");
+        if (! $application || ($application['id'] ?? null) !== $request->input('application_id')) {
+            return response()->json(['error' => 'TrustCert application not found'], 400);
+        }
 
-            return response()->json($result);
+        if (in_array($application['status'] ?? '', ['approved', 'cancelled'], true)) {
+            return response()->json(['error' => 'TrustCert application is already ' . $application['status']], 400);
+        }
+
+        // Map integer target_level to string enum
+        $targetLevelMap = [0 => 'unknown', 1 => 'basic', 2 => 'verified', 3 => 'high'];
+        $targetLevelString = $targetLevelMap[(int) $request->input('target_level')] ?? 'unknown';
+
+        try {
+            $data = $request->only(['first_name', 'last_name']);
+            $data['application_id'] = $request->input('application_id');
+            $data['target_level'] = $targetLevelString;
+
+            $result = $ondatoService->createIdentityVerification($user, $data);
+
+            return response()->json(['data' => $result]);
         } catch (Exception $e) {
             AuditLog::log(
                 'kyc.ondato_start_failed',
@@ -517,13 +542,14 @@ class KycController extends Controller
      *
      * @OA\JsonContent(
      *
+     * @OA\Property(property="data", type="object",
      * @OA\Property(property="verification_id",   type="string"),
      * @OA\Property(property="status",            type="string", enum={"pending", "in_progress", "completed", "failed", "expired"}),
-     * @OA\Property(property="provider",          type="string", example="ondato"),
-     * @OA\Property(property="confidence_score",  type="number", format="float", nullable=true),
+     * @OA\Property(property="completed_at",      type="string", format="date-time", nullable=true),
      * @OA\Property(property="failure_reason",    type="string", nullable=true),
-     * @OA\Property(property="completed_at",      type="string", format="date-time", nullable=true)
+     * @OA\Property(property="trust_cert_level",  type="integer", nullable=true, description="Trust level (1-3) when completed")
      *         )
+     *     )
      *     ),
      *
      * @OA\Response(
@@ -542,13 +568,19 @@ class KycController extends Controller
             ->where('provider', 'ondato')
             ->firstOrFail();
 
-        return response()->json([
+        // Map target_level string to integer for the response
+        $trustCertLevel = null;
+        if ($verification->status === KycVerification::STATUS_COMPLETED && $verification->target_level) {
+            $levelMap = ['basic' => 1, 'verified' => 2, 'high' => 3];
+            $trustCertLevel = $levelMap[$verification->target_level] ?? null;
+        }
+
+        return response()->json(['data' => [
             'verification_id'  => $verification->id,
             'status'           => $verification->status,
-            'provider'         => $verification->provider,
-            'confidence_score' => $verification->confidence_score,
-            'failure_reason'   => $verification->failure_reason,
             'completed_at'     => $verification->completed_at?->toIso8601String(),
-        ]);
+            'failure_reason'   => $verification->failure_reason,
+            'trust_cert_level' => $trustCertLevel,
+        ]]);
     }
 }

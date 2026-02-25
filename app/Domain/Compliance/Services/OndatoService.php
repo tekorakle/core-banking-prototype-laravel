@@ -7,11 +7,13 @@ namespace App\Domain\Compliance\Services;
 use App\Domain\Compliance\Events\KycVerificationFailed;
 use App\Domain\Compliance\Events\KycVerificationStarted;
 use App\Domain\Compliance\Models\KycVerification;
+use App\Domain\TrustCert\Services\CertificateAuthorityService;
 use App\Models\User;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 use RuntimeException;
+use Throwable;
 
 class OndatoService
 {
@@ -87,8 +89,8 @@ class OndatoService
     /**
      * Create an identity verification session via the Ondato KYC API.
      *
-     * @param  array<string, mixed>  $data  Optional user data (first_name, last_name)
-     * @return array<string, mixed>  Contains identity_verification_id, verification (KycVerification), status
+     * @param  array<string, mixed>  $data  Optional user data (first_name, last_name, application_id, target_level)
+     * @return array<string, mixed>  Contains identity_verification_id, verification_id, status
      */
     public function createIdentityVerification(User $user, array $data = []): array
     {
@@ -130,13 +132,15 @@ class OndatoService
         $responseData = $response->json();
         $idvId = $responseData['id'] ?? '';
 
-        // Store a KycVerification record
+        // Store a KycVerification record with optional TrustCert application linkage
         $verification = KycVerification::create([
             'user_id'            => $user->id,
             'type'               => KycVerification::TYPE_IDENTITY,
             'status'             => KycVerification::STATUS_PENDING,
             'provider'           => 'ondato',
             'provider_reference' => $idvId,
+            'application_id'     => $data['application_id'] ?? null,
+            'target_level'       => $data['target_level'] ?? null,
             'verification_data'  => [
                 'setup_id'   => $this->setupId,
                 'sandbox'    => $this->sandbox,
@@ -287,6 +291,11 @@ class OndatoService
             ]);
         }
 
+        // If linked to a TrustCertApplication, update it and issue certificate
+        if ($verification->application_id) {
+            $this->updateTrustCertApplicationApproved($verification);
+        }
+
         Log::info('Ondato verification approved', [
             'verification_id' => $verification->id,
             'user_id'         => $verification->user_id,
@@ -322,6 +331,11 @@ class OndatoService
         $user = $verification->user;
         if ($user) {
             $user->update(['kyc_status' => 'rejected']);
+        }
+
+        // If linked to a TrustCertApplication, update it
+        if ($verification->application_id) {
+            $this->updateTrustCertApplicationRejected($verification, $reason);
         }
 
         event(new KycVerificationFailed($verification, $reason));
@@ -402,6 +416,78 @@ class OndatoService
         Log::info('Ondato consent accepted', [
             'verification_id' => $verification->id,
         ]);
+    }
+
+    /**
+     * Update TrustCertApplication to approved and issue a certificate.
+     */
+    private function updateTrustCertApplicationApproved(KycVerification $verification): void
+    {
+        $application = Cache::get("trustcert_application:{$verification->user_id}");
+        if (! $application || ($application['id'] ?? null) !== $verification->application_id) {
+            Log::warning('TrustCert application not found for approved verification', [
+                'verification_id' => $verification->id,
+                'application_id'  => $verification->application_id,
+            ]);
+
+            return;
+        }
+
+        $application['status'] = 'approved';
+        $application['kyc_verification_id'] = $verification->id;
+        $application['approved_at'] = now()->toIso8601String();
+        Cache::put("trustcert_application:{$verification->user_id}", $application, now()->addDays(30));
+
+        // Issue a TrustCert via CertificateAuthorityService
+        /** @var User|null $user */
+        $user = $verification->user;
+        if ($user) {
+            try {
+                /** @var CertificateAuthorityService $caService */
+                $caService = app(CertificateAuthorityService::class);
+                $caService->issueCertificate(
+                    subjectId: "user:{$user->uuid}",
+                    subject: [
+                        'name'  => $user->name,
+                        'email' => $user->email,
+                        'level' => $verification->target_level,
+                    ],
+                    validFrom: now(),
+                    validUntil: now()->addYears(2),
+                    extensions: [
+                        'kyc_verification_id' => $verification->id,
+                        'application_id'      => $verification->application_id,
+                    ],
+                );
+
+                Log::info('TrustCert issued for approved KYC verification', [
+                    'verification_id' => $verification->id,
+                    'application_id'  => $verification->application_id,
+                    'user_uuid'       => $user->uuid,
+                ]);
+            } catch (Throwable $e) {
+                Log::error('Failed to issue TrustCert for approved verification', [
+                    'verification_id' => $verification->id,
+                    'error'           => $e->getMessage(),
+                ]);
+            }
+        }
+    }
+
+    /**
+     * Update TrustCertApplication to rejected with failure reason.
+     */
+    private function updateTrustCertApplicationRejected(KycVerification $verification, string $reason): void
+    {
+        $application = Cache::get("trustcert_application:{$verification->user_id}");
+        if (! $application || ($application['id'] ?? null) !== $verification->application_id) {
+            return;
+        }
+
+        $application['status'] = 'rejected';
+        $application['failure_reason'] = $reason;
+        $application['rejected_at'] = now()->toIso8601String();
+        Cache::put("trustcert_application:{$verification->user_id}", $application, now()->addDays(30));
     }
 
     /**
