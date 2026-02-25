@@ -49,7 +49,7 @@ describe('NetworkAvailabilityService', function (): void {
         $method = $reflection->getMethod('getAverageFeeUsd');
         $method->setAccessible(true);
 
-        expect($method->invoke($service, PaymentNetwork::TRON))->toBe('0.50');
+        expect($method->invoke($service, PaymentNetwork::TRON))->toBe('0.500');
     });
 
     it('returns correct average confirmation time for Solana', function (): void {

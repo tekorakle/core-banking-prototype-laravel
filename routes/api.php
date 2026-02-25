@@ -70,10 +70,6 @@ Route::prefix('websocket')->name('api.websocket.')
         Route::get('/channels', [App\Http\Controllers\Api\WebSocketController::class, 'channels'])->name('channels');
     });
 
-// Legacy authentication routes for backward compatibility
-Route::post('/login', [LoginController::class, 'login'])->middleware('api.rate_limit:auth');
-Route::post('/register', [RegisterController::class, 'register'])->middleware('api.rate_limit:auth');
-
 // Authentication endpoints (public)
 Route::prefix('auth')->middleware('api.rate_limit:auth')->group(function () {
     Route::post('/register', [RegisterController::class, 'register']);
@@ -135,10 +131,6 @@ Route::prefix('auth')->middleware('api.rate_limit:auth')->group(function () {
         Route::post('/authenticate', [PasskeyController::class, 'authenticate']);
     });
 });
-
-Route::get('/user', function (Request $request) {
-    return $request->user();
-})->middleware('auth:sanctum', 'check.token.expiration');
 
 // Legacy profile route for backward compatibility
 Route::get('/profile', function (Request $request) {

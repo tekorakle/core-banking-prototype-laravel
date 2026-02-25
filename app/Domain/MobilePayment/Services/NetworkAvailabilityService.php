@@ -103,17 +103,18 @@ class NetworkAvailabilityService
 
     private function getAverageFeeUsd(PaymentNetwork $network): string
     {
-        return match ($network) {
-            PaymentNetwork::SOLANA => '0.001',
-            PaymentNetwork::TRON   => '0.50',
-        };
+        return number_format($network->averageGasCostUsd(), 3);
     }
 
     private function getAvgConfirmationSeconds(PaymentNetwork $network): int
     {
         return match ($network) {
-            PaymentNetwork::SOLANA => 5,
-            PaymentNetwork::TRON   => 3,
+            PaymentNetwork::SOLANA   => 5,
+            PaymentNetwork::TRON     => 3,
+            PaymentNetwork::POLYGON  => 6,
+            PaymentNetwork::BASE     => 2,
+            PaymentNetwork::ARBITRUM => 3,
+            PaymentNetwork::ETHEREUM => 15,
         };
     }
 

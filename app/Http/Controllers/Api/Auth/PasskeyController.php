@@ -5,11 +5,12 @@ declare(strict_types=1);
 namespace App\Http\Controllers\Api\Auth;
 
 use App\Domain\Mobile\Exceptions\BiometricBlockedException;
+use App\Domain\Mobile\Models\MobileDevice;
 use App\Domain\Mobile\Services\MobileDeviceService;
 use App\Domain\Mobile\Services\PasskeyAuthenticationService;
 use App\Http\Controllers\Controller;
-use App\Http\Requests\Mobile\DeviceIdRequest;
 use App\Http\Requests\Mobile\PasskeyAuthenticateRequest;
+use App\Models\User;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
@@ -24,35 +25,75 @@ class PasskeyController extends Controller
     /**
      * Generate a WebAuthn challenge for passkey authentication.
      *
+     * Accepts either `device_id` (legacy) or `email` (standard WebAuthn flow).
+     * When `email` is provided, returns allowCredentials for all passkey-enabled
+     * devices registered to that user.
+     *
      * POST /v1/auth/passkey/challenge
      *
      * @OA\Post(
      *     path="/api/v1/auth/passkey/challenge",
      *     operationId="passkeyChallenge",
      *     summary="Generate WebAuthn challenge",
-     *     description="Generates a WebAuthn challenge for passkey authentication. This is a public endpoint that does not require authentication.",
+     *     description="Generates a WebAuthn challenge for passkey authentication. Accepts device_id or email as identifier. This is a public endpoint.",
      *     tags={"WebAuthn"},
      *     @OA\RequestBody(required=true, @OA\JsonContent(
-     *         required={"device_id"},
-     *         @OA\Property(property="device_id", type="string", description="Unique device identifier")
+     *         @OA\Property(property="device_id", type="string", description="Unique device identifier (optional if email provided)"),
+     *         @OA\Property(property="email", type="string", format="email", description="User email (optional if device_id provided)")
      *     )),
      *     @OA\Response(response=200, description="Challenge generated", @OA\JsonContent(
      *         @OA\Property(property="success", type="boolean", example=true),
      *         @OA\Property(property="data", type="object",
      *             @OA\Property(property="challenge", type="string"),
-     *             @OA\Property(property="credential_id", type="string"),
      *             @OA\Property(property="rp_id", type="string"),
      *             @OA\Property(property="timeout", type="integer", example=60000),
-     *             @OA\Property(property="expires_at", type="string", format="date-time")
+     *             @OA\Property(property="expires_at", type="string", format="date-time"),
+     *             @OA\Property(property="allow_credentials", type="array", @OA\Items(type="object",
+     *                 @OA\Property(property="id", type="string"),
+     *                 @OA\Property(property="type", type="string", example="public-key")
+     *             ))
      *         )
      *     )),
-     *     @OA\Response(response=400, description="Passkey not enabled for device"),
-     *     @OA\Response(response=404, description="Device not found")
+     *     @OA\Response(response=400, description="No passkeys available"),
+     *     @OA\Response(response=404, description="User or device not found"),
+     *     @OA\Response(response=422, description="Validation error — provide device_id or email")
      * )
      */
-    public function challenge(DeviceIdRequest $request): JsonResponse
+    public function challenge(Request $request): JsonResponse
     {
-        $device = $this->deviceService->findByDeviceId($request->device_id);
+        $request->validate([
+            'device_id' => ['nullable', 'string'],
+            'email'     => ['nullable', 'string', 'email'],
+        ]);
+
+        $deviceId = $request->input('device_id');
+        $email = $request->input('email');
+
+        if (! $deviceId && ! $email) {
+            return response()->json([
+                'success' => false,
+                'error'   => [
+                    'code'    => 'VALIDATION_ERROR',
+                    'message' => 'Either device_id or email is required.',
+                ],
+            ], 422);
+        }
+
+        // Legacy flow: look up by device_id directly
+        if ($deviceId) {
+            return $this->challengeByDevice($request, $deviceId);
+        }
+
+        // Standard WebAuthn flow: look up by email, return allowCredentials
+        return $this->challengeByEmail($request, $email);
+    }
+
+    /**
+     * Legacy challenge flow: single device lookup by device_id.
+     */
+    private function challengeByDevice(Request $request, string $deviceId): JsonResponse
+    {
+        $device = $this->deviceService->findByDeviceId($deviceId);
 
         if (! $device) {
             return response()->json([
@@ -79,11 +120,69 @@ class PasskeyController extends Controller
         return response()->json([
             'success' => true,
             'data'    => [
-                'challenge'     => $challenge->challenge,
-                'credential_id' => $device->passkey_credential_id,
-                'rp_id'         => config('app.url'),
-                'timeout'       => 60000,
-                'expires_at'    => $challenge->expires_at->toIso8601String(),
+                'challenge'         => $challenge->challenge,
+                'rp_id'             => config('app.url'),
+                'timeout'           => 60000,
+                'expires_at'        => $challenge->expires_at->toIso8601String(),
+                'allow_credentials' => [
+                    [
+                        'id'   => $device->passkey_credential_id,
+                        'type' => 'public-key',
+                    ],
+                ],
+            ],
+        ]);
+    }
+
+    /**
+     * Standard WebAuthn challenge flow: look up user by email, return all registered credentials.
+     */
+    private function challengeByEmail(Request $request, string $email): JsonResponse
+    {
+        $user = User::where('email', $email)->first();
+
+        if (! $user) {
+            // Return generic error to avoid user enumeration
+            return response()->json([
+                'success' => false,
+                'error'   => [
+                    'code'    => 'PASSKEY_NOT_AVAILABLE',
+                    'message' => 'No passkeys available for this account.',
+                ],
+            ], 400);
+        }
+
+        $devices = MobileDevice::where('user_id', $user->id)
+            ->where('passkey_enabled', true)
+            ->whereNotNull('passkey_credential_id')
+            ->get();
+
+        if ($devices->isEmpty()) {
+            return response()->json([
+                'success' => false,
+                'error'   => [
+                    'code'    => 'PASSKEY_NOT_AVAILABLE',
+                    'message' => 'No passkeys available for this account.',
+                ],
+            ], 400);
+        }
+
+        // Generate challenge using the first device (challenge is user-scoped, not device-scoped)
+        $challenge = $this->passkeyService->generateChallenge($devices->first(), $request->ip());
+
+        $allowCredentials = $devices->map(fn (MobileDevice $d) => [
+            'id'   => $d->passkey_credential_id,
+            'type' => 'public-key',
+        ])->values()->all();
+
+        return response()->json([
+            'success' => true,
+            'data'    => [
+                'challenge'         => $challenge->challenge,
+                'rp_id'             => config('app.url'),
+                'timeout'           => 60000,
+                'expires_at'        => $challenge->expires_at->toIso8601String(),
+                'allow_credentials' => $allowCredentials,
             ],
         ]);
     }
