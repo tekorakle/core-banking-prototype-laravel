@@ -47,6 +47,10 @@ Route::middleware('auth:sanctum', 'check.token.expiration')->prefix('compliance'
         Route::post('/submit', [KycController::class, 'submit']);
         Route::post('/documents', [KycController::class, 'upload']);
         Route::get('/documents/{documentId}/download', [KycController::class, 'downloadDocument']);
+
+        // Ondato KYC verification (mobile SDK flow)
+        Route::post('/ondato/start', [KycController::class, 'startOndatoVerification']);
+        Route::get('/ondato/status/{verificationId}', [KycController::class, 'getOndatoVerificationStatus']);
     });
 
     // Compliance Certification (SOC 2, PCI DSS)
