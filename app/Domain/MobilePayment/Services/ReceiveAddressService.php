@@ -18,7 +18,7 @@ class ReceiveAddressService
     /**
      * Get a receive address for the given user, network, and asset.
      *
-     * @return array{address: string, qrPayload: string, network: string, asset: string, warning: string, minimumAmount: string}
+     * @return array{address: string, qr_payload: string, network: string, asset: string, warning: string, minimum_amount: string}
      */
     public function getReceiveAddress(int $userId, PaymentNetwork $network, PaymentAsset $asset): array
     {
@@ -31,12 +31,12 @@ class ReceiveAddressService
         $address = $addressData->address;
 
         return [
-            'address'       => $address,
-            'qrPayload'     => $this->buildQrValue($address, $network, $asset),
-            'network'       => $network->value,
-            'asset'         => $asset->value,
-            'warning'       => "Only send {$asset->value} on {$network->label()} to this address. Using other tokens or networks may result in loss.",
-            'minimumAmount' => '0.01',
+            'address'        => $address,
+            'qr_payload'     => $this->buildQrValue($address, $network, $asset),
+            'network'        => $network->value,
+            'asset'          => $asset->value,
+            'warning'        => "Only send {$asset->value} on {$network->label()} to this address. Using other tokens or networks may result in loss.",
+            'minimum_amount' => '0.01',
         ];
     }
 
