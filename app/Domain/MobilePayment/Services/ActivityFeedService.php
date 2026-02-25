@@ -55,9 +55,9 @@ class ActivityFeedService
         $nextCursor = $hasMore && $lastItem ? $this->encodeCursor($lastItem) : null;
 
         return [
-            'items'      => $items->map(fn (ActivityFeedItem $item) => $item->toApiResponse())->values()->all(),
-            'nextCursor' => $nextCursor,
-            'hasMore'    => $hasMore,
+            'items'       => $items->map(fn (ActivityFeedItem $item) => $item->toApiResponse())->values()->all(),
+            'next_cursor' => $nextCursor,
+            'has_more'    => $hasMore,
         ];
     }
 

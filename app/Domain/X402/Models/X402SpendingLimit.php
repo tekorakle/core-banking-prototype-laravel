@@ -30,6 +30,16 @@ class X402SpendingLimit extends Model
 
     protected $table = 'x402_spending_limits';
 
+    /**
+     * Default attribute values (mirrors DB column defaults).
+     *
+     * @var array<string, mixed>
+     */
+    protected $attributes = [
+        'spent_today'      => '0',
+        'auto_pay_enabled' => false,
+    ];
+
     protected $fillable = [
         'agent_id',
         'agent_type',
