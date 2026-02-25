@@ -190,13 +190,6 @@ class WalletTransferService
      */
     private function estimateTransferTime(PaymentNetwork $network): int
     {
-        return match ($network) {
-            PaymentNetwork::SOLANA   => 5,
-            PaymentNetwork::TRON     => 30,
-            PaymentNetwork::POLYGON  => 6,
-            PaymentNetwork::BASE     => 2,
-            PaymentNetwork::ARBITRUM => 3,
-            PaymentNetwork::ETHEREUM => 15,
-        };
+        return $network->avgConfirmationSeconds();
     }
 }

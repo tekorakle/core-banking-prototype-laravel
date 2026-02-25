@@ -10,7 +10,6 @@ use App\Domain\Mobile\Services\MobileDeviceService;
 use App\Domain\Mobile\Services\PasskeyAuthenticationService;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Mobile\PasskeyAuthenticateRequest;
-use App\Models\User;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
@@ -139,25 +138,10 @@ class PasskeyController extends Controller
      */
     private function challengeByEmail(Request $request, string $email): JsonResponse
     {
-        $user = User::where('email', $email)->first();
-
-        if (! $user) {
-            // Return generic error to avoid user enumeration
-            return response()->json([
-                'success' => false,
-                'error'   => [
-                    'code'    => 'PASSKEY_NOT_AVAILABLE',
-                    'message' => 'No passkeys available for this account.',
-                ],
-            ], 400);
-        }
-
-        $devices = MobileDevice::where('user_id', $user->id)
-            ->where('passkey_enabled', true)
-            ->whereNotNull('passkey_credential_id')
-            ->get();
+        $devices = $this->deviceService->findPasskeyDevicesByEmail($email);
 
         if ($devices->isEmpty()) {
+            // Generic error to avoid user enumeration
             return response()->json([
                 'success' => false,
                 'error'   => [
