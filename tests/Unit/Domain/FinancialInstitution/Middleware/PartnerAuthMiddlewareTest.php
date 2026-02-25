@@ -14,7 +14,6 @@ use Tests\TestCase;
 
 class PartnerAuthMiddlewareTest extends TestCase
 {
-
     private PartnerAuthMiddleware $middleware;
 
     private string $clientSecret = 'test_secret_abc123';

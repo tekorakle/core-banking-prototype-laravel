@@ -13,7 +13,6 @@ use Tests\TestCase;
 
 class PromptTemplateServiceTest extends TestCase
 {
-
     private PromptTemplateService $service;
 
     protected function setUp(): void

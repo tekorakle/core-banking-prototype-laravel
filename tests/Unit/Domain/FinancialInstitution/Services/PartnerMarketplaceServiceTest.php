@@ -11,7 +11,6 @@ use Tests\TestCase;
 
 class PartnerMarketplaceServiceTest extends TestCase
 {
-
     private PartnerMarketplaceService $service;
 
     protected function setUp(): void

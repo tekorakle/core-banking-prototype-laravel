@@ -13,7 +13,6 @@ use Tests\TestCase;
 
 class X402GraphQLTest extends TestCase
 {
-
     protected User $user;
 
     protected int $teamId;

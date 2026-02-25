@@ -11,7 +11,6 @@ use Tests\TestCase;
 
 class PartnerWidgetControllerTest extends TestCase
 {
-
     private FinancialInstitutionPartner $partner;
 
     private string $clientSecret = 'test_secret_123';

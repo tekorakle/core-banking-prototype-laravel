@@ -21,7 +21,6 @@ use Tests\TestCase;
  */
 class BaaSWorkflowTest extends TestCase
 {
-
     private string $clientSecret = 'test_secret_123';
 
     private function createPartnerApplication(): FinancialInstitutionApplication

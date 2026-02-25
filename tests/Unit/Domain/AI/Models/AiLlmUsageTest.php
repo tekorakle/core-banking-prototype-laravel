@@ -11,7 +11,6 @@ use Tests\TestCase;
 
 class AiLlmUsageTest extends TestCase
 {
-
     #[Test]
     public function it_creates_an_llm_usage_record(): void
     {

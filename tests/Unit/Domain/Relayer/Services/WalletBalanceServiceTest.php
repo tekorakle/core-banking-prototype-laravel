@@ -11,7 +11,6 @@ use Tests\TestCase;
 
 class WalletBalanceServiceTest extends TestCase
 {
-
     private DemoWalletBalanceService $service;
 
     protected function setUp(): void

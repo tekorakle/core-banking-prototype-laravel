@@ -13,7 +13,6 @@ use Tests\TestCase;
 
 class RegulatoryCalendarServiceTest extends TestCase
 {
-
     private RegulatoryCalendarService $service;
 
     protected function setUp(): void

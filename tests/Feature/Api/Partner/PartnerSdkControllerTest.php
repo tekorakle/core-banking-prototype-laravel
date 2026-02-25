@@ -11,7 +11,6 @@ use Tests\TestCase;
 
 class PartnerSdkControllerTest extends TestCase
 {
-
     private FinancialInstitutionPartner $partner;
 
     private string $clientSecret = 'test_secret_123';

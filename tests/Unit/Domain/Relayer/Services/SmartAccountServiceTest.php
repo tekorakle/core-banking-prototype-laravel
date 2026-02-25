@@ -15,7 +15,6 @@ use Tests\TestCase;
 
 class SmartAccountServiceTest extends TestCase
 {
-
     private SmartAccountService $service;
 
     private SmartAccountFactoryInterface&MockInterface $factory;

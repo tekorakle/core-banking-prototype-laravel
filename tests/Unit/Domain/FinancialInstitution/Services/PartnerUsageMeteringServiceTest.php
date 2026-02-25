@@ -14,7 +14,6 @@ use Tests\TestCase;
 
 class PartnerUsageMeteringServiceTest extends TestCase
 {
-
     private PartnerUsageMeteringService $service;
 
     private PartnerTierService $tierService;

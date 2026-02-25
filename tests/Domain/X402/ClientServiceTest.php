@@ -17,7 +17,6 @@ use Tests\TestCase;
 
 class ClientServiceTest extends TestCase
 {
-
     private X402ClientService $service;
 
     private X402HeaderCodecService $codec;

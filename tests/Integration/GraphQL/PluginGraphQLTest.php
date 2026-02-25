@@ -13,7 +13,6 @@ use Tests\TestCase;
 
 class PluginGraphQLTest extends TestCase
 {
-
     protected User $user;
 
     protected function setUp(): void

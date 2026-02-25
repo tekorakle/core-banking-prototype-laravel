@@ -14,7 +14,6 @@ use Tests\TestCase;
  */
 class MerkleTreeWebSocketTest extends TestCase
 {
-
     public function test_sync_tree_dispatches_merkle_root_updated_event(): void
     {
         Event::fake([MerkleRootUpdated::class]);

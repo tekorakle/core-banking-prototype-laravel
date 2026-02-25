@@ -14,7 +14,6 @@ use Tests\TestCase;
 
 class BiometricJWTServiceTest extends TestCase
 {
-
     private BiometricJWTService $service;
 
     protected User $user;

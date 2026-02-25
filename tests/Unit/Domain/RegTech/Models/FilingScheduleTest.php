@@ -10,7 +10,6 @@ use Tests\TestCase;
 
 class FilingScheduleTest extends TestCase
 {
-
     protected function setUp(): void
     {
         parent::setUp();

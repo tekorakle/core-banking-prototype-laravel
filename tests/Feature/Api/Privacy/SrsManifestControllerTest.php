@@ -13,7 +13,6 @@ use Tests\TestCase;
  */
 class SrsManifestControllerTest extends TestCase
 {
-
     protected function setUp(): void
     {
         parent::setUp();

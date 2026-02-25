@@ -10,7 +10,6 @@ use Tests\TestCase;
 
 class AiPromptTemplateTest extends TestCase
 {
-
     #[Test]
     public function it_creates_a_prompt_template(): void
     {

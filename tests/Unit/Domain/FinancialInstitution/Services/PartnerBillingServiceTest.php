@@ -15,7 +15,6 @@ use Tests\TestCase;
 
 class PartnerBillingServiceTest extends TestCase
 {
-
     private PartnerBillingService $service;
 
     protected function setUp(): void

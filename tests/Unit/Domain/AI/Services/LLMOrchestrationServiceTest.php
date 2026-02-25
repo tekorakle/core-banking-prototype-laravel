@@ -15,7 +15,6 @@ use Tests\TestCase;
 
 class LLMOrchestrationServiceTest extends TestCase
 {
-
     private LLMOrchestrationService $service;
 
     protected function setUp(): void

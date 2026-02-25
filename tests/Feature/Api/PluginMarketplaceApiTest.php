@@ -12,7 +12,6 @@ use Tests\TestCase;
 
 class PluginMarketplaceApiTest extends TestCase
 {
-
     protected User $user;
 
     protected function setUp(): void

@@ -25,7 +25,6 @@ use Tests\TestCase;
 
 class SettlementServiceTest extends TestCase
 {
-
     /** @var FacilitatorClientInterface&MockInterface */
     private FacilitatorClientInterface $facilitator;
 

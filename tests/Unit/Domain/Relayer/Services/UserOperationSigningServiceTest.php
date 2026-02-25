@@ -15,7 +15,6 @@ use Tests\TestCase;
 
 class UserOperationSigningServiceTest extends TestCase
 {
-
     private UserOperationSigningService $service;
 
     protected function setUp(): void

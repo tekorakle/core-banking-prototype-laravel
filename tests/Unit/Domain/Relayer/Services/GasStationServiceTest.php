@@ -16,7 +16,6 @@ use Tests\TestCase;
 
 class GasStationServiceTest extends TestCase
 {
-
     private GasStationService $service;
 
     private PaymasterInterface&MockInterface $paymaster;

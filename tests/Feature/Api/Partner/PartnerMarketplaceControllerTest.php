@@ -12,7 +12,6 @@ use Tests\TestCase;
 
 class PartnerMarketplaceControllerTest extends TestCase
 {
-
     private FinancialInstitutionPartner $partner;
 
     private string $clientSecret = 'test_secret_123';

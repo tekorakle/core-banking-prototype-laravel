@@ -18,7 +18,6 @@ use Tests\TestCase;
 
 class RegTechOrchestrationServiceTest extends TestCase
 {
-
     private RegTechOrchestrationService $service;
 
     private JurisdictionConfigurationService $jurisdictionService;
