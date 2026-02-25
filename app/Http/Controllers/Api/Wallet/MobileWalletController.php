@@ -280,9 +280,27 @@ class MobileWalletController extends Controller
             $addresses[] = [
                 'address'    => $account->account_address,
                 'network'    => $account->network ?? 'polygon',
+                'type'       => 'smart_account',
                 'deployed'   => $account->is_deployed ?? false,
                 'created_at' => $account->created_at?->toIso8601String(),
             ];
+        }
+
+        // If no smart accounts exist yet, return deterministic placeholder addresses
+        // so the mobile Receive screen can display a QR code before onboarding completes.
+        if (empty($addresses)) {
+            $supportedNetworks = $this->smartAccountService->getSupportedNetworks();
+            $seed = hash('sha256', "wallet:{$user->id}:" . config('app.key'));
+
+            foreach ($supportedNetworks as $network) {
+                $addresses[] = [
+                    'address'    => '0x' . substr(hash('sha256', "{$seed}:{$network}"), 0, 40),
+                    'network'    => $network,
+                    'type'       => 'pending',
+                    'deployed'   => false,
+                    'created_at' => null,
+                ];
+            }
         }
 
         return response()->json([
