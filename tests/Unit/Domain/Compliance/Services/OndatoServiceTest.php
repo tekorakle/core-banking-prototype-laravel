@@ -503,7 +503,9 @@ describe('processWebhook', function () {
 
         $verification = KycVerification::where('provider_reference', 'idv-doctype-555')->first();
         assert($verification !== null);
-        expect($verification->extracted_data['document_type'])->toBe('driving_license');
+        $extractedData = $verification->extracted_data;
+        assert(is_array($extractedData));
+        expect($extractedData['document_type'])->toBe('driving_license');
     });
 
     it('does not change user status on EXPIRED if not pending', function () {

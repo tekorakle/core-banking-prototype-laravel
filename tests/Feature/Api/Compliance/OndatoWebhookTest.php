@@ -8,18 +8,22 @@ use App\Domain\Compliance\Services\OndatoService;
 use App\Jobs\ProcessOndatoWebhook;
 use Illuminate\Support\Facades\Queue;
 use Mockery;
+use Mockery\MockInterface;
 use PHPUnit\Framework\Attributes\Test;
 use Tests\ControllerTestCase;
 
 class OndatoWebhookTest extends ControllerTestCase
 {
-    protected OndatoService|Mockery\MockInterface $ondatoService;
+    /** @var OndatoService&MockInterface */
+    protected MockInterface $ondatoService;
 
     protected function setUp(): void
     {
         parent::setUp();
 
-        $this->ondatoService = Mockery::mock(OndatoService::class);
+        /** @var OndatoService&MockInterface $ondatoService */
+        $ondatoService = Mockery::mock(OndatoService::class);
+        $this->ondatoService = $ondatoService;
         $this->app->instance(OndatoService::class, $this->ondatoService);
     }
 

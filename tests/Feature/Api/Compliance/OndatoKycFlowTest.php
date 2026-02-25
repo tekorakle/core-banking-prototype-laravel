@@ -9,6 +9,7 @@ use App\Domain\Compliance\Services\OndatoService;
 use App\Models\User;
 use Laravel\Sanctum\Sanctum;
 use Mockery;
+use Mockery\MockInterface;
 use PHPUnit\Framework\Attributes\Test;
 use RuntimeException;
 use Tests\ControllerTestCase;
@@ -17,7 +18,8 @@ class OndatoKycFlowTest extends ControllerTestCase
 {
     protected User $user;
 
-    protected OndatoService|Mockery\MockInterface $ondatoService;
+    /** @var OndatoService&MockInterface */
+    protected MockInterface $ondatoService;
 
     protected function setUp(): void
     {
@@ -28,7 +30,9 @@ class OndatoKycFlowTest extends ControllerTestCase
             'kyc_level'  => 'basic',
         ]);
 
-        $this->ondatoService = Mockery::mock(OndatoService::class);
+        /** @var OndatoService&MockInterface $ondatoService */
+        $ondatoService = Mockery::mock(OndatoService::class);
+        $this->ondatoService = $ondatoService;
         $this->app->instance(OndatoService::class, $this->ondatoService);
     }
 
