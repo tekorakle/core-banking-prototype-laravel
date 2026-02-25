@@ -6,7 +6,6 @@ namespace Tests\Feature\Domain\Privacy;
 
 use App\Domain\Privacy\Events\Broadcast\MerkleRootUpdated;
 use App\Domain\Privacy\Services\DemoMerkleTreeService;
-use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Event;
 use Tests\TestCase;
 
@@ -15,7 +14,6 @@ use Tests\TestCase;
  */
 class MerkleTreeWebSocketTest extends TestCase
 {
-    use RefreshDatabase;
 
     public function test_sync_tree_dispatches_merkle_root_updated_event(): void
     {
