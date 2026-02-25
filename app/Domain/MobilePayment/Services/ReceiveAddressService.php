@@ -60,14 +60,10 @@ class ReceiveAddressService
     {
         $hash = hash('sha256', "demo:{$userId}:{$network->value}");
 
-        if ($network->isEvm()) {
-            return '0x' . substr($hash, 0, 40);
-        }
-
         return match ($network) {
             PaymentNetwork::SOLANA => $this->toBase58Like($hash),
             PaymentNetwork::TRON   => 'T' . substr(strtoupper($hash), 0, 33),
-            default                => '0x' . substr($hash, 0, 40),
+            PaymentNetwork::POLYGON, PaymentNetwork::BASE, PaymentNetwork::ARBITRUM, PaymentNetwork::ETHEREUM => '0x' . substr($hash, 0, 40),
         };
     }
 
@@ -76,14 +72,10 @@ class ReceiveAddressService
      */
     private function buildQrValue(string $address, PaymentNetwork $network, PaymentAsset $asset): string
     {
-        if ($network->isEvm()) {
-            return "ethereum:{$address}";
-        }
-
         return match ($network) {
             PaymentNetwork::SOLANA => "solana:{$address}?spl-token=USDC",
             PaymentNetwork::TRON   => $address,
-            default                => $address,
+            PaymentNetwork::POLYGON, PaymentNetwork::BASE, PaymentNetwork::ARBITRUM, PaymentNetwork::ETHEREUM => "ethereum:{$address}",
         };
     }
 

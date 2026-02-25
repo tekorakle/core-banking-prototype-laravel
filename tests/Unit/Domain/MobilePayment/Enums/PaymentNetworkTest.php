@@ -88,4 +88,13 @@ describe('PaymentNetwork Enum', function (): void {
         expect((bool) preg_match($pattern, 'invalid'))->toBeFalse();
         expect((bool) preg_match($pattern, '0xshort'))->toBeFalse();
     });
+
+    it('returns avg confirmation seconds for all networks', function (): void {
+        expect(PaymentNetwork::SOLANA->avgConfirmationSeconds())->toBe(5);
+        expect(PaymentNetwork::TRON->avgConfirmationSeconds())->toBe(30);
+        expect(PaymentNetwork::POLYGON->avgConfirmationSeconds())->toBe(6);
+        expect(PaymentNetwork::BASE->avgConfirmationSeconds())->toBe(2);
+        expect(PaymentNetwork::ARBITRUM->avgConfirmationSeconds())->toBe(3);
+        expect(PaymentNetwork::ETHEREUM->avgConfirmationSeconds())->toBe(15);
+    });
 });

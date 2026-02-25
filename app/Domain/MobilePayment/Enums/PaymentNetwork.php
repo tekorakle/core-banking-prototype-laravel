@@ -97,6 +97,21 @@ enum PaymentNetwork: string
     }
 
     /**
+     * Average time in seconds for a transfer to reach required confirmations.
+     */
+    public function avgConfirmationSeconds(): int
+    {
+        return match ($this) {
+            self::SOLANA   => 5,
+            self::TRON     => 30,
+            self::POLYGON  => 6,
+            self::BASE     => 2,
+            self::ARBITRUM => 3,
+            self::ETHEREUM => 15,
+        };
+    }
+
+    /**
      * @return array<string>
      */
     public static function values(): array
