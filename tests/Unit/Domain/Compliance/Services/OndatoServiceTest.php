@@ -597,7 +597,8 @@ describe('TrustCert linkage', function () {
                     && $subject['name'] === 'Test User'
                     && $subject['email'] === 'test@example.com'
                     && $subject['level'] === 'verified'
-                    && $extensions['application_id'] === 'app_cert_123';
+                    && $extensions['application_id'] === 'app_cert_123'
+                    && $extensions['kyc_verification_id'] === $verification->id;
             })
             ->andReturn(new App\Domain\TrustCert\ValueObjects\Certificate(
                 certificateId: 'cert_test_123',
