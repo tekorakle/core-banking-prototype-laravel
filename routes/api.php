@@ -169,6 +169,12 @@ Route::prefix('webhooks')->middleware(['api.rate_limit:webhook'])->group(functio
         ->middleware('webhook.signature:coinbase');
 });
 
+// Ondato KYC webhook endpoints
+Route::prefix('webhooks/ondato')->middleware(['api.rate_limit:webhook'])->group(function () {
+    Route::post('/identity-verification', [App\Http\Controllers\Api\OndatoWebhookController::class, 'identityVerification']);
+    Route::post('/identification', [App\Http\Controllers\Api\OndatoWebhookController::class, 'identification']);
+});
+
 // Extended monitoring endpoints with authentication
 Route::prefix('monitoring')->middleware(['auth:sanctum', 'check.token.expiration'])->group(function () {
     Route::get('/metrics-json', [App\Http\Controllers\Api\MonitoringController::class, 'metrics']);

@@ -5,7 +5,9 @@ declare(strict_types=1);
 namespace App\Http\Controllers\Api;
 
 use App\Domain\Compliance\Models\AuditLog;
+use App\Domain\Compliance\Models\KycVerification;
 use App\Domain\Compliance\Services\KycService;
+use App\Domain\Compliance\Services\OndatoService;
 use App\Http\Controllers\Controller;
 use App\Models\User;
 use Exception;
@@ -406,5 +408,147 @@ class KycController extends Controller
                 500
             );
         }
+    }
+
+    /**
+     * Start Ondato KYC verification for the authenticated user.
+     *
+     * @OA\Post(
+     *     path="/api/compliance/kyc/ondato/start",
+     *     operationId="startOndatoVerification",
+     *     tags={"KYC"},
+     *     summary="Start Ondato identity verification",
+     *     description="Creates an Ondato identity verification session for mobile SDK flow",
+     *     security={{"sanctum": {}}},
+     *
+     * @OA\RequestBody(
+     *         required=false,
+     *
+     * @OA\JsonContent(
+     *
+     * @OA\Property(property="first_name", type="string", example="John"),
+     * @OA\Property(property="last_name",  type="string", example="Doe")
+     *         )
+     *     ),
+     *
+     * @OA\Response(
+     *         response=200,
+     *         description="Verification session created",
+     *
+     * @OA\JsonContent(
+     *
+     * @OA\Property(property="identity_verification_id", type="string", example="3fa85f64-5717-4562-b3fc-2c963f66afa6"),
+     * @OA\Property(property="verification_id",          type="string", example="9c1a2b3d-4e5f-6789-abcd-ef0123456789"),
+     * @OA\Property(property="status",                   type="string", example="pending")
+     *         )
+     *     ),
+     *
+     * @OA\Response(
+     *         response=400,
+     *         description="KYC already approved",
+     *
+     * @OA\JsonContent(
+     *
+     * @OA\Property(property="error", type="string", example="KYC already approved")
+     *         )
+     *     ),
+     *
+     * @OA\Response(
+     *         response=500,
+     *         description="Failed to start verification"
+     *     )
+     * )
+     */
+    public function startOndatoVerification(Request $request, OndatoService $ondatoService): JsonResponse
+    {
+        /** @var User $user */
+        $user = Auth::user();
+
+        if ($user->kyc_status === 'approved') {
+            return response()->json(['error' => 'KYC already approved'], 400);
+        }
+
+        $request->validate([
+            'first_name' => 'sometimes|string|max:255',
+            'last_name'  => 'sometimes|string|max:255',
+        ]);
+
+        try {
+            $result = $ondatoService->createIdentityVerification($user, $request->only(['first_name', 'last_name']));
+
+            return response()->json($result);
+        } catch (Exception $e) {
+            AuditLog::log(
+                'kyc.ondato_start_failed',
+                null,
+                null,
+                null,
+                ['error' => $e->getMessage(), 'user_uuid' => $user->uuid],
+                'kyc,ondato,error'
+            );
+
+            return response()->json(['error' => 'Failed to start Ondato verification'], 500);
+        }
+    }
+
+    /**
+     * Get Ondato verification status for the authenticated user.
+     *
+     * @OA\Get(
+     *     path="/api/compliance/kyc/ondato/status/{verificationId}",
+     *     operationId="getOndatoVerificationStatus",
+     *     tags={"KYC"},
+     *     summary="Get Ondato verification status",
+     *     description="Retrieve the status of a specific Ondato KYC verification",
+     *     security={{"sanctum": {}}},
+     *
+     * @OA\Parameter(
+     *         name="verificationId",
+     *         in="path",
+     *         required=true,
+     *         description="The KycVerification ID",
+     *
+     * @OA\Schema(type="string")
+     *     ),
+     *
+     * @OA\Response(
+     *         response=200,
+     *         description="Verification status",
+     *
+     * @OA\JsonContent(
+     *
+     * @OA\Property(property="verification_id",   type="string"),
+     * @OA\Property(property="status",            type="string", enum={"pending", "in_progress", "completed", "failed", "expired"}),
+     * @OA\Property(property="provider",          type="string", example="ondato"),
+     * @OA\Property(property="confidence_score",  type="number", format="float", nullable=true),
+     * @OA\Property(property="failure_reason",    type="string", nullable=true),
+     * @OA\Property(property="completed_at",      type="string", format="date-time", nullable=true)
+     *         )
+     *     ),
+     *
+     * @OA\Response(
+     *         response=404,
+     *         description="Verification not found"
+     *     )
+     * )
+     */
+    public function getOndatoVerificationStatus(string $verificationId): JsonResponse
+    {
+        /** @var User $user */
+        $user = Auth::user();
+
+        $verification = KycVerification::where('id', $verificationId)
+            ->where('user_id', $user->id)
+            ->where('provider', 'ondato')
+            ->firstOrFail();
+
+        return response()->json([
+            'verification_id'  => $verification->id,
+            'status'           => $verification->status,
+            'provider'         => $verification->provider,
+            'confidence_score' => $verification->confidence_score,
+            'failure_reason'   => $verification->failure_reason,
+            'completed_at'     => $verification->completed_at?->toIso8601String(),
+        ]);
     }
 }
