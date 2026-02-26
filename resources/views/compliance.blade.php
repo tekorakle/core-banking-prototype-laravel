@@ -20,7 +20,7 @@
                         Compliance-Ready Architecture
                     </h1>
                     <p class="mt-6 text-xl text-blue-100 max-w-3xl mx-auto">
-                        Built with regulatory compliance in mind, our platform is designed to meet EU standards and integrate with licensed financial institutions.
+                        Built for EU regulatory compliance from day one. PSD2, EMD2, MiCA, KYC/AML, GDPR, and MiFID II adapters with jurisdiction-aware routing.
                     </p>
                 </div>
             </div>

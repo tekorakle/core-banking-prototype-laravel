@@ -26,7 +26,7 @@
                     Continuous Growth Offering
                 </h1>
                 <p class="text-xl md:text-2xl mb-8 text-purple-100 max-w-3xl mx-auto">
-                    A conceptual funding model explored in this prototype. This is <strong>not</strong> an active investment opportunity.
+                    A conceptual funding model for open-source financial platforms. This is <strong>not</strong> an active investment opportunity.
                 </p>
 
                 <!-- Important Notice -->

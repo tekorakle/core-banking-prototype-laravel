@@ -52,7 +52,7 @@
                     </p>
                     <div class="inline-flex items-center px-4 py-2 bg-white/20 rounded-full backdrop-blur-sm">
                         <div class="w-3 h-3 bg-green-400 rounded-full status-badge mr-3"></div>
-                        <span class="text-sm font-medium">Alpha Support Available</span>
+                        <span class="text-sm font-medium">Community Support Available</span>
                     </div>
                 </div>
             </div>
