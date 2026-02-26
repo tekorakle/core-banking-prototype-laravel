@@ -9,7 +9,7 @@
                     <span class="text-2xl font-bold text-purple-400">Aegis</span>
                 </div>
                 <p class="text-gray-400 text-sm">
-                    The future of democratic banking with Global Currency Unit.
+                    Open-source core banking infrastructure for the next generation of financial services.
                 </p>
                 <div class="flex space-x-4 mt-4">
                     <a href="#" class="text-gray-400 hover:text-white">
@@ -77,7 +77,7 @@
         <div class="border-t border-gray-800 mt-8 pt-8">
             <div class="flex flex-col md:flex-row justify-between items-center">
                 <div class="text-gray-400 text-sm mb-4 md:mb-0">
-                    © 2025 FinAegis. All rights reserved.
+                    © 2026 FinAegis. All rights reserved.
                 </div>
                 <div class="flex space-x-6">
                     <a href="{{ route('legal.terms') }}" class="text-gray-400 hover:text-white text-sm">Terms of Service</a>
