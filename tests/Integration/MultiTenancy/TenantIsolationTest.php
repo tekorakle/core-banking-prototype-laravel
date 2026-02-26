@@ -116,8 +116,7 @@ class TenantIsolationTest extends BaseTestCase
         // Without tenancy context, the query should not return tenant data
         // (UsesTenantConnection returns null in testing, but in MySQL
         // it routes to the tenant connection which requires initialization)
-        $model = new class () extends \Illuminate\Database\Eloquent\Model
-        {
+        $model = new class () extends \Illuminate\Database\Eloquent\Model {
             use UsesTenantConnection;
 
             protected $table = 'accounts';
@@ -210,8 +209,7 @@ class TenantIsolationTest extends BaseTestCase
     public function test_uses_tenant_connection_trait_behavior(): void
     {
         // Validate the trait returns correct connection based on environment
-        $model = new class () extends \Illuminate\Database\Eloquent\Model
-        {
+        $model = new class () extends \Illuminate\Database\Eloquent\Model {
             use UsesTenantConnection;
 
             protected $table = 'test_models';
