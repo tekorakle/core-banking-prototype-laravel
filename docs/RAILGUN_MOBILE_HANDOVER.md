@@ -2,7 +2,7 @@
 
 ## Key Message
 
-**The mobile app needs zero code changes.** The same 26 privacy REST endpoints return real data now instead of demo/static responses. The API contract is identical — only the backend implementation changed.
+The same 26 privacy REST endpoints return real data now instead of demo/static responses. The API contract is identical — only the backend implementation changed. **However, the mobile app needs minor type and UI updates** because supported networks changed (removed Base, added Ethereum + BSC).
 
 ---
 
@@ -191,6 +191,60 @@ Each user gets one RAILGUN wallet per network, identified by a `0zk...` address.
 | 500 | Bridge connection error or internal error |
 
 The mobile app should handle 503 gracefully (retry after a few seconds — the engine may still be starting).
+
+---
+
+## Mobile App Code Changes
+
+### Required (4 files, ~8 lines)
+
+**1. `src/services/api/types.ts` line 152** — Add `'bsc'` to ChainId:
+```diff
+-export type ChainId = 'polygon' | 'base' | 'arbitrum' | 'ethereum';
++export type ChainId = 'polygon' | 'base' | 'arbitrum' | 'ethereum' | 'bsc';
+```
+
+**2. `src/services/api/types.ts` lines 319-322** — Add `'bsc'` to privacy types:
+```diff
+-export type PrivacyChainId = 'polygon' | 'arbitrum' | 'ethereum';
+-export const PRIVACY_SUPPORTED_CHAINS: PrivacyChainId[] = ['polygon', 'arbitrum', 'ethereum'];
++export type PrivacyChainId = 'polygon' | 'arbitrum' | 'ethereum' | 'bsc';
++export const PRIVACY_SUPPORTED_CHAINS: PrivacyChainId[] = ['polygon', 'arbitrum', 'ethereum', 'bsc'];
+```
+
+**3. `src/stores/walletStore.ts` line 5** — Add new networks to store type:
+```diff
+-export type Network = 'polygon' | 'base' | 'arbitrum';
++export type Network = 'polygon' | 'base' | 'arbitrum' | 'ethereum' | 'bsc';
+```
+
+**4. `src/hooks/usePreferences.ts` line 17** — Accept new networks in validation:
+```diff
+-const VALID_NETWORKS = new Set(['polygon', 'base', 'arbitrum']);
++const VALID_NETWORKS = new Set(['polygon', 'base', 'arbitrum', 'ethereum', 'bsc']);
+```
+
+### Recommended UI Updates (8 files)
+
+These screens hardcode network lists. They won't crash, but will show outdated options:
+
+| File | What to change |
+|------|---------------|
+| `app/flows/receive/network-select.tsx:17-22` | Add bsc entry, enable ethereum (`available: true`) |
+| `app/flows/receive/index.tsx:12,102` | Add `'ethereum' \| 'bsc'` to Network type and render list |
+| `app/flows/receive/request.tsx:14-19,242` | Add `bsc: 'BNB Chain'` to CHAIN_NAMES and render list |
+| `app/(tabs)/wallet.tsx:16-20` | Add ethereum/bsc to NETWORKS filter pills |
+| `app/flows/settings/network.tsx:21-55` | Enable ethereum, add bsc entry (`color: '#F0B90B'`) |
+| `app/flows/pay/confirm.tsx:48` | Add `'bsc'` to VALID_CHAIN_IDS |
+| `app/flows/pay/pending.tsx:18,177` | Add `'bscscan.com'` to allowed hosts, `bsc: 'BNB Chain'` to names |
+| `src/services/mock/data.ts` | Add bsc entries to mock wallet addresses and relayer status |
+
+### What Already Works (No Changes Needed)
+
+- `usePrivacyNetworks()` hook fetches dynamically from backend
+- Privacy shield/unshield screens use `PRIVACY_SUPPORTED_CHAINS` with fallback
+- Privacy API service correctly calls all endpoints
+- X402 protocol references are separate and unaffected
 
 ---
 
