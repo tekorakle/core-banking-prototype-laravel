@@ -20,6 +20,7 @@ git status && git branch --show-current
 ### Version Status
 | Version | Status | Key Changes |
 |---------|--------|-------------|
+| v5.4.1 | ✅ Released | Platform Hardening: Dependabot triage (PRs #642-#659), IdempotencyMiddleware, E2E tests, multi-tenancy isolation tests, CI reliability, docs refresh |
 | v5.4.0 | ✅ Released | Ondato KYC, Sanctions Screening & Card Issuing: Ondato identity verification with TrustCert linkage, Chainalysis sanctions adapter, Marqeta card issuing adapter, Firebase FCM v1 migration, X402/mobile test hardening, CVE patches |
 | v5.2.0 | ✅ Released | X402 Protocol: HTTP-native micropayments (USDC on Base), payment gate middleware, facilitator integration, AI agent payments, spending limits, GraphQL/REST APIs, MCP tool |
 | v5.1.6 | ✅ Released | Security Hardening: copyright year, accessibility improvements, CSP headers, email config defaults |
