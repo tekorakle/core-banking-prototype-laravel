@@ -20,6 +20,7 @@ git status && git branch --show-current
 ### Version Status
 | Version | Status | Key Changes |
 |---------|--------|-------------|
+| v5.5.0 | ✅ Released | Production Relayer & Card Webhooks: ERC-4337 Pimlico v2 integration (bundler, paymaster, smart account factory), Marqeta webhook Basic Auth + HMAC verification, .env.zelta.example sync, platform hardening (IdempotencyMiddleware, E2E tests, Dependabot triage) |
 | v5.4.1 | ✅ Released | Platform Hardening: Dependabot triage (PRs #642-#659), IdempotencyMiddleware, E2E tests, multi-tenancy isolation tests, CI reliability, docs refresh |
 | v5.4.0 | ✅ Released | Ondato KYC, Sanctions Screening & Card Issuing: Ondato identity verification with TrustCert linkage, Chainalysis sanctions adapter, Marqeta card issuing adapter, Firebase FCM v1 migration, X402/mobile test hardening, CVE patches |
 | v5.2.0 | ✅ Released | X402 Protocol: HTTP-native micropayments (USDC on Base), payment gate middleware, facilitator integration, AI agent payments, spending limits, GraphQL/REST APIs, MCP tool |
