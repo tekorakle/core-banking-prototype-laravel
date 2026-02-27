@@ -20,6 +20,7 @@ git status && git branch --show-current
 ### Version Status
 | Version | Status | Key Changes |
 |---------|--------|-------------|
+| v5.6.0 | ✅ Released | RAILGUN Privacy Protocol: Node.js bridge service (@railgun-community/wallet SDK), RailgunBridgeClient HTTP client, RailgunMerkleTreeService/ZkProverService, RailgunPrivacyService orchestrator (shield/unshield/transfer), RailgunWallet/ShieldedBalance models, PrivacyController integration, 57 tests, chains: Ethereum/Polygon/Arbitrum/BSC |
 | v5.5.0 | ✅ Released | Production Relayer & Card Webhooks: ERC-4337 Pimlico v2 integration (bundler, paymaster, smart account factory), Marqeta webhook Basic Auth + HMAC verification, .env.zelta.example sync, platform hardening (IdempotencyMiddleware, E2E tests, Dependabot triage) |
 | v5.4.1 | ✅ Released | Platform Hardening: Dependabot triage (PRs #642-#659), IdempotencyMiddleware, E2E tests, multi-tenancy isolation tests, CI reliability, docs refresh |
 | v5.4.0 | ✅ Released | Ondato KYC, Sanctions Screening & Card Issuing: Ondato identity verification with TrustCert linkage, Chainalysis sanctions adapter, Marqeta card issuing adapter, Firebase FCM v1 migration, X402/mobile test hardening, CVE patches |
