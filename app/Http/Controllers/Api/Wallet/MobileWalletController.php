@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers\Api\Wallet;
 
+use App\Domain\MobilePayment\Enums\PaymentIntentStatus;
 use App\Domain\MobilePayment\Models\PaymentIntent;
 use App\Domain\MobilePayment\Services\ActivityFeedService;
 use App\Domain\MobilePayment\Services\PaymentIntentService;
@@ -550,7 +551,7 @@ class MobileWalletController extends Controller
         $limit = min((int) $request->query('limit', '10'), 50);
 
         $recipients = PaymentIntent::where('user_id', $user->id)
-            ->whereIn('status', ['confirmed', 'pending'])
+            ->whereIn('status', [PaymentIntentStatus::CONFIRMED, PaymentIntentStatus::PENDING])
             ->whereNotNull('metadata->recipient_address')
             ->orderByDesc('created_at')
             ->limit(200)

@@ -51,12 +51,10 @@ class MobileV11CompatibilityTest extends TestCase
 
     // ---------------------------------------------------------------
     // 1. WebAuthn Registration Challenge
-    //    POST /api/v1/auth/passkey/challenge with type=registration
+    //    POST /api/v1/auth/passkey/register-challenge with type=registration
     //
-    //    The v1/auth/passkey/challenge route is public (no auth:sanctum
-    //    middleware), but the registrationChallenge handler checks
-    //    $request->user() internally. We use Sanctum::actingAs() to
-    //    set up the authenticated user context for these tests.
+    //    The v1/auth/passkey/register-challenge route requires auth:sanctum
+    //    middleware (separate from the public assertion challenge route).
     // ---------------------------------------------------------------
 
     public function test_registration_challenge_returns_creation_options(): void
@@ -64,7 +62,7 @@ class MobileV11CompatibilityTest extends TestCase
         Sanctum::actingAs($this->testUser, ['read', 'write']);
         $device = $this->createDeviceForUser($this->testUser);
 
-        $response = $this->postJson('/api/v1/auth/passkey/challenge', [
+        $response = $this->postJson('/api/v1/auth/passkey/register-challenge', [
             'type'      => 'registration',
             'device_id' => $device->device_id,
         ]);
@@ -103,7 +101,7 @@ class MobileV11CompatibilityTest extends TestCase
         $device = $this->createDeviceForUser($this->testUser);
 
         // No auth context -- $request->user() returns null, handler returns 401
-        $response = $this->postJson('/api/v1/auth/passkey/challenge', [
+        $response = $this->postJson('/api/v1/auth/passkey/register-challenge', [
             'type'      => 'registration',
             'device_id' => $device->device_id,
         ]);
@@ -115,7 +113,7 @@ class MobileV11CompatibilityTest extends TestCase
     {
         Sanctum::actingAs($this->testUser, ['read', 'write']);
 
-        $response = $this->postJson('/api/v1/auth/passkey/challenge', [
+        $response = $this->postJson('/api/v1/auth/passkey/register-challenge', [
             'type' => 'registration',
         ]);
 
@@ -127,7 +125,7 @@ class MobileV11CompatibilityTest extends TestCase
     {
         Sanctum::actingAs($this->testUser, ['read', 'write']);
 
-        $response = $this->postJson('/api/v1/auth/passkey/challenge', [
+        $response = $this->postJson('/api/v1/auth/passkey/register-challenge', [
             'type'      => 'registration',
             'device_id' => 'nonexistent-device-' . Str::random(8),
         ]);
@@ -144,7 +142,7 @@ class MobileV11CompatibilityTest extends TestCase
         $otherUser = User::factory()->create();
         $device = $this->createDeviceForUser($otherUser);
 
-        $response = $this->postJson('/api/v1/auth/passkey/challenge', [
+        $response = $this->postJson('/api/v1/auth/passkey/register-challenge', [
             'type'      => 'registration',
             'device_id' => $device->device_id,
         ]);
@@ -250,7 +248,7 @@ class MobileV11CompatibilityTest extends TestCase
         // GET /api/v1/relayer/estimate-fee is an alias for estimateGas.
         // It requires auth and valid network/to params but the route itself
         // should not return 404/405.
-        $response = $this->withToken($this->token)->getJson('/api/v1/relayer/estimate-fee');
+        $response = $this->withToken($this->token)->postJson('/api/v1/relayer/estimate-fee');
 
         // Expect 422 (validation error for missing params) which proves the
         // route exists and reaches the correct controller action.
@@ -293,7 +291,7 @@ class MobileV11CompatibilityTest extends TestCase
 
     public function test_estimate_fee_alias_requires_authentication(): void
     {
-        $response = $this->getJson('/api/v1/relayer/estimate-fee');
+        $response = $this->postJson('/api/v1/relayer/estimate-fee');
 
         $response->assertStatus(401);
     }

@@ -142,6 +142,6 @@ Route::prefix('v1/wallet')->name('mobile.wallet.')
 
         // Alias: mobile expects POST /api/v1/wallet/create-account
         Route::post('/create-account', [App\Http\Controllers\Api\Relayer\SmartAccountController::class, 'createAccount'])
-            ->middleware('transaction.rate_limit:relayer')
+            ->middleware(['transaction.rate_limit:relayer', 'idempotency'])
             ->name('create-account');
     });

@@ -75,7 +75,9 @@ Route::prefix('mobile')->name('api.mobile.')->group(function () {
 Route::prefix('v1/notifications')->name('api.notifications.')
     ->middleware(['auth:sanctum', 'check.token.expiration'])
     ->group(function () {
-        Route::get('/unread-count', [MobileController::class, 'getUnreadNotificationCount'])->name('unread-count');
+        Route::get('/unread-count', [MobileController::class, 'getUnreadNotificationCount'])
+            ->middleware('api.rate_limit:query')
+            ->name('unread-count');
     });
 
 // User preferences (v3.3.4) + data export alias (v5.6.0)
@@ -86,5 +88,7 @@ Route::prefix('v1/user')->name('api.user.')
         Route::patch('/preferences', [UserPreferencesController::class, 'update'])->name('preferences.update');
 
         // Alias for GDPR data export (mobile expects POST /api/v1/user/data-export)
-        Route::post('/data-export', [App\Http\Controllers\Api\GdprController::class, 'requestDataExport'])->name('data-export');
+        Route::post('/data-export', [App\Http\Controllers\Api\GdprController::class, 'requestDataExport'])
+            ->middleware('api.rate_limit:mutation')
+            ->name('data-export');
     });

@@ -129,10 +129,16 @@ class RewardsController extends Controller
                 'data'    => $result,
             ]);
         } catch (RuntimeException $e) {
+            $code = match (true) {
+                str_contains($e->getMessage(), 'not found')         => 'QUEST_NOT_FOUND',
+                str_contains($e->getMessage(), 'already completed') => 'QUEST_ALREADY_COMPLETED',
+                default                                             => 'QUEST_ERROR',
+            };
+
             return response()->json([
                 'success' => false,
                 'error'   => [
-                    'code'    => 'QUEST_ERROR',
+                    'code'    => $code,
                     'message' => $e->getMessage(),
                 ],
             ], 422);
@@ -205,10 +211,17 @@ class RewardsController extends Controller
                 'data'    => $result,
             ]);
         } catch (RuntimeException $e) {
+            $code = match (true) {
+                str_contains($e->getMessage(), 'not found')    => 'ITEM_NOT_FOUND',
+                str_contains($e->getMessage(), 'out of stock') => 'ITEM_OUT_OF_STOCK',
+                str_contains($e->getMessage(), 'Insufficient') => 'INSUFFICIENT_POINTS',
+                default                                        => 'REDEMPTION_ERROR',
+            };
+
             return response()->json([
                 'success' => false,
                 'error'   => [
-                    'code'    => 'REDEMPTION_ERROR',
+                    'code'    => $code,
                     'message' => $e->getMessage(),
                 ],
             ], 422);

@@ -12,6 +12,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Mobile\PasskeyAuthenticateRequest;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 use RuntimeException;
 
 class PasskeyController extends Controller
@@ -122,7 +123,7 @@ class PasskeyController extends Controller
             'success' => true,
             'data'    => [
                 'challenge'         => $challenge->challenge,
-                'rp_id'             => config('app.url'),
+                'rp_id'             => config('mobile.webauthn.rp_id', config('app.url')),
                 'timeout'           => 60000,
                 'expires_at'        => $challenge->expires_at->toIso8601String(),
                 'allow_credentials' => [
@@ -165,7 +166,7 @@ class PasskeyController extends Controller
             'success' => true,
             'data'    => [
                 'challenge'         => $challenge->challenge,
-                'rp_id'             => config('app.url'),
+                'rp_id'             => config('mobile.webauthn.rp_id', config('app.url')),
                 'timeout'           => 60000,
                 'expires_at'        => $challenge->expires_at->toIso8601String(),
                 'allow_credentials' => $allowCredentials,
@@ -418,11 +419,16 @@ class PasskeyController extends Controller
                 );
             }
         } catch (RuntimeException $e) {
+            Log::warning('Passkey registration failed', [
+                'device_id' => $device->device_id,
+                'error'     => $e->getMessage(),
+            ]);
+
             return response()->json([
                 'success' => false,
                 'error'   => [
                     'code'    => 'ATTESTATION_FAILED',
-                    'message' => $e->getMessage(),
+                    'message' => 'Passkey registration failed.',
                 ],
             ], 422);
         }

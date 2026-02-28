@@ -81,6 +81,7 @@ return new class () extends Migration {
             $table->timestamps();
 
             $table->index('reward_profile_id');
+            $table->index('shop_item_id');
         });
     }
 
