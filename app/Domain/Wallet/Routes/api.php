@@ -6,6 +6,7 @@ use App\Http\Controllers\Api\BlockchainWalletController;
 use App\Http\Controllers\Api\HardwareWalletController;
 use App\Http\Controllers\Api\MultiSigWalletController;
 use App\Http\Controllers\Api\Wallet\MobileWalletController;
+use App\Http\Controllers\Api\Wallet\RecoveryShardController;
 use Illuminate\Support\Facades\Route;
 
 // Blockchain wallet endpoints
@@ -144,4 +145,12 @@ Route::prefix('v1/wallet')->name('mobile.wallet.')
         Route::post('/create-account', [App\Http\Controllers\Api\Relayer\SmartAccountController::class, 'createAccount'])
             ->middleware(['transaction.rate_limit:relayer', 'idempotency'])
             ->name('create-account');
+
+        // Recovery shard cloud backup (v5.8.0)
+        Route::post('/recovery-shard-backup', [RecoveryShardController::class, 'store'])
+            ->name('recovery-shard-backup.store');
+        Route::get('/recovery-shard-backup', [RecoveryShardController::class, 'show'])
+            ->name('recovery-shard-backup.show');
+        Route::delete('/recovery-shard-backup', [RecoveryShardController::class, 'destroy'])
+            ->name('recovery-shard-backup.destroy');
     });
