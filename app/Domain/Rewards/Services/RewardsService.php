@@ -17,6 +17,8 @@ use RuntimeException;
 
 class RewardsService
 {
+    private const MAX_LEVEL = 999;
+
     /**
      * Get or create the user's rewards profile.
      */
@@ -37,20 +39,22 @@ class RewardsService
     /**
      * Get the profile as API response data.
      *
+     * Streak is computed for display only — not persisted on read.
+     *
      * @return array<string, mixed>
      */
     public function getProfileData(User $user): array
     {
         $profile = $this->getProfile($user);
-        $this->updateStreak($profile);
+        $displayStreak = $this->computeDisplayStreak($profile);
 
         return [
             'xp'               => $profile->xp,
             'level'            => $profile->level,
             'xp_for_next'      => $profile->xpForNextLevel(),
             'xp_progress'      => round($profile->xpProgress(), 2),
-            'current_streak'   => $profile->current_streak,
-            'longest_streak'   => $profile->longest_streak,
+            'current_streak'   => $displayStreak['current'],
+            'longest_streak'   => $displayStreak['longest'],
             'points_balance'   => $profile->points_balance,
             'quests_completed' => $profile->questCompletions()->count(),
         ];
@@ -88,6 +92,9 @@ class RewardsService
     /**
      * Complete a quest for the user.
      *
+     * All checks and mutations happen inside a serialized transaction
+     * with pessimistic locking to prevent race conditions.
+     *
      * @return array<string, mixed>
      */
     public function completeQuest(User $user, string $questId): array
@@ -100,20 +107,31 @@ class RewardsService
             throw new RuntimeException('Quest not found or inactive.');
         }
 
-        $profile = $this->getProfile($user);
+        return DB::transaction(function () use ($user, $quest) {
+            // Lock the profile row to serialize concurrent completions
+            $profile = RewardProfile::where('user_id', $user->id)
+                ->lockForUpdate()
+                ->first();
 
-        // Check if already completed (for non-repeatable quests)
-        if (! $quest->is_repeatable) {
-            $alreadyCompleted = RewardQuestCompletion::where('reward_profile_id', $profile->id)
-                ->where('quest_id', $quest->id)
-                ->exists();
-
-            if ($alreadyCompleted) {
-                throw new RuntimeException('Quest already completed.');
+            if (! $profile) {
+                $profile = $this->getProfile($user);
+                // Re-acquire with lock
+                $profile = RewardProfile::where('id', $profile->id)
+                    ->lockForUpdate()
+                    ->firstOrFail();
             }
-        }
 
-        return DB::transaction(function () use ($profile, $quest) {
+            // Duplicate check INSIDE the transaction, after acquiring lock
+            if (! $quest->is_repeatable) {
+                $alreadyCompleted = RewardQuestCompletion::where('reward_profile_id', $profile->id)
+                    ->where('quest_id', $quest->id)
+                    ->exists();
+
+                if ($alreadyCompleted) {
+                    throw new RuntimeException('Quest already completed.');
+                }
+            }
+
             $completion = RewardQuestCompletion::create([
                 'reward_profile_id' => $profile->id,
                 'quest_id'          => $quest->id,
@@ -125,13 +143,13 @@ class RewardsService
             $profile->xp += $quest->xp_reward;
             $profile->points_balance += $quest->points_reward;
 
-            // Level up check
-            while ($profile->xp >= $profile->xpForNextLevel()) {
+            // Level up check with cap
+            while ($profile->xp >= $profile->xpForNextLevel() && $profile->level < self::MAX_LEVEL) {
                 $profile->xp -= $profile->xpForNextLevel();
                 $profile->level++;
             }
 
-            // Update streak
+            // Update streak (persisted since this is a real activity)
             $this->updateStreak($profile);
 
             $profile->save();
@@ -175,29 +193,44 @@ class RewardsService
     /**
      * Redeem a shop item.
      *
+     * All checks (balance, stock, availability) happen inside a serialized
+     * transaction with pessimistic locking to prevent double-spend.
+     *
      * @return array<string, mixed>
      */
     public function redeemItem(User $user, string $itemId): array
     {
-        $item = RewardShopItem::where('id', $itemId)
-            ->where('is_active', true)
-            ->first();
+        return DB::transaction(function () use ($user, $itemId) {
+            // Lock profile to prevent concurrent balance mutations
+            $profile = RewardProfile::where('user_id', $user->id)
+                ->lockForUpdate()
+                ->first();
 
-        if (! $item) {
-            throw new RuntimeException('Shop item not found or unavailable.');
-        }
+            if (! $profile) {
+                $profile = $this->getProfile($user);
+                $profile = RewardProfile::where('id', $profile->id)
+                    ->lockForUpdate()
+                    ->firstOrFail();
+            }
 
-        if (! $item->isAvailable()) {
-            throw new RuntimeException('Shop item is out of stock.');
-        }
+            // Lock shop item to prevent stock race condition
+            $item = RewardShopItem::where('id', $itemId)
+                ->where('is_active', true)
+                ->lockForUpdate()
+                ->first();
 
-        $profile = $this->getProfile($user);
+            if (! $item) {
+                throw new RuntimeException('Shop item not found or unavailable.');
+            }
 
-        if ($profile->points_balance < $item->points_cost) {
-            throw new RuntimeException('Insufficient points balance.');
-        }
+            if (! $item->isAvailable()) {
+                throw new RuntimeException('Shop item is out of stock.');
+            }
 
-        return DB::transaction(function () use ($profile, $item) {
+            if ($profile->points_balance < $item->points_cost) {
+                throw new RuntimeException('Insufficient points balance.');
+            }
+
             $profile->points_balance -= $item->points_cost;
             $profile->save();
 
@@ -225,7 +258,37 @@ class RewardsService
     }
 
     /**
-     * Update the streak based on last activity date.
+     * Compute display streak without persisting.
+     *
+     * Used by getProfileData to show current streak state without
+     * mutating on read.
+     *
+     * @return array{current: int, longest: int}
+     */
+    private function computeDisplayStreak(RewardProfile $profile): array
+    {
+        $current = $profile->current_streak;
+        $longest = $profile->longest_streak;
+        $lastActivity = $profile->last_activity_date;
+
+        if ($lastActivity === null) {
+            return ['current' => $current, 'longest' => $longest];
+        }
+
+        $daysSince = (int) $lastActivity->diffInDays(Carbon::today());
+
+        if ($daysSince > 1) {
+            // Streak is broken but don't persist the reset on a read
+            $current = 0;
+        }
+
+        return ['current' => $current, 'longest' => $longest];
+    }
+
+    /**
+     * Update and persist the streak based on last activity date.
+     *
+     * Only called during actual activity (quest completion), never on reads.
      */
     private function updateStreak(RewardProfile $profile): void
     {
@@ -233,10 +296,15 @@ class RewardsService
         $lastActivity = $profile->last_activity_date;
 
         if ($lastActivity === null) {
+            // First activity ever — start the streak
+            $profile->current_streak = 1;
+            $profile->longest_streak = max($profile->longest_streak, 1);
+            $profile->last_activity_date = $today;
+
             return;
         }
 
-        $daysSince = $lastActivity->diffInDays($today);
+        $daysSince = (int) $lastActivity->diffInDays($today);
 
         if ($daysSince === 0) {
             // Same day — streak unchanged
@@ -250,8 +318,8 @@ class RewardsService
                 $profile->longest_streak = $profile->current_streak;
             }
         } else {
-            // Streak broken
-            $profile->current_streak = 0;
+            // Streak broken, restart at 1 (since this IS an activity)
+            $profile->current_streak = 1;
         }
 
         $profile->last_activity_date = $today;

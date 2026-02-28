@@ -125,8 +125,7 @@ Route::prefix('auth')->middleware('api.rate_limit:auth')->group(function () {
 
     // Passkey aliases (public — authentication endpoints)
     Route::prefix('passkey')->middleware('throttle:5,1')->group(function () {
-        Route::get('/challenge', [PasskeyController::class, 'challenge'])->name('api.auth.passkey.challenge.get');
-        Route::post('/challenge', [PasskeyController::class, 'challenge']);
+        Route::post('/challenge', [PasskeyController::class, 'challenge'])->name('api.auth.passkey.challenge');
         Route::post('/verify', [PasskeyController::class, 'authenticate'])->name('api.auth.passkey.verify');
         Route::post('/authenticate', [PasskeyController::class, 'authenticate']);
     });
@@ -211,7 +210,7 @@ Route::prefix('admin')->middleware(['auth:sanctum', 'check.token.expiration', 'r
     });
 });
 
-// Passkey/WebAuthn Authentication (v2.7.0) - public
+// Passkey/WebAuthn Authentication (v2.7.0) - public assertion flow
 Route::prefix('v1/auth/passkey')
     ->middleware('throttle:5,1')
     ->name('mobile.auth.passkey.')
@@ -225,8 +224,7 @@ Route::prefix('v1/auth/passkey')
     ->middleware(['auth:sanctum', 'check.token.expiration', 'throttle:5,1'])
     ->name('mobile.auth.passkey.authed.')
     ->group(function () {
-        // Registration challenge (type=registration) and register endpoint
-        Route::post('/challenge', [PasskeyController::class, 'challenge'])->name('challenge');
+        Route::post('/register-challenge', [PasskeyController::class, 'challenge'])->name('register-challenge');
         Route::post('/register', [PasskeyController::class, 'register'])->name('register');
     });
 

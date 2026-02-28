@@ -162,7 +162,7 @@ class RewardsControllerTest extends TestCase
 
         $response = $this->postJson("/api/v1/rewards/quests/{$quest->id}/complete");
         $response->assertStatus(422)
-            ->assertJsonPath('error.code', 'QUEST_ERROR');
+            ->assertJsonPath('error.code', 'QUEST_ALREADY_COMPLETED');
     }
 
     public function test_can_complete_repeatable_quest_multiple_times(): void
@@ -186,12 +186,13 @@ class RewardsControllerTest extends TestCase
         ]);
     }
 
-    public function test_complete_nonexistent_quest_returns_422(): void
+    public function test_complete_nonexistent_quest_returns_not_found(): void
     {
-        $response = $this->postJson('/api/v1/rewards/quests/nonexistent-id/complete');
+        $fakeUuid = '00000000-0000-0000-0000-000000000099';
+        $response = $this->postJson("/api/v1/rewards/quests/{$fakeUuid}/complete");
 
         $response->assertStatus(422)
-            ->assertJsonPath('error.code', 'QUEST_ERROR');
+            ->assertJsonPath('error.code', 'QUEST_NOT_FOUND');
     }
 
     public function test_get_shop_items(): void
@@ -263,7 +264,7 @@ class RewardsControllerTest extends TestCase
         $response = $this->postJson("/api/v1/rewards/shop/{$item->id}/redeem");
 
         $response->assertStatus(422)
-            ->assertJsonPath('error.code', 'REDEMPTION_ERROR');
+            ->assertJsonPath('error.code', 'INSUFFICIENT_POINTS');
     }
 
     public function test_redeem_out_of_stock_item(): void
@@ -290,10 +291,59 @@ class RewardsControllerTest extends TestCase
 
     public function test_profile_requires_auth(): void
     {
-        // Reset auth
-        app('auth')->forgetGuards();
+        // Use a fresh HTTP client without authentication
+        $this->app['auth']->forgetGuards();
 
         $response = $this->getJson('/api/v1/rewards/profile');
         $response->assertUnauthorized();
+    }
+
+    public function test_complete_inactive_quest_returns_422(): void
+    {
+        $quest = RewardQuest::create([
+            'slug'          => 'inactive-quest',
+            'title'         => 'Inactive Quest',
+            'description'   => 'Should not be completable',
+            'xp_reward'     => 10,
+            'points_reward' => 10,
+            'is_active'     => false,
+        ]);
+
+        $response = $this->postJson("/api/v1/rewards/quests/{$quest->id}/complete");
+        $response->assertStatus(422)
+            ->assertJsonPath('error.code', 'QUEST_NOT_FOUND');
+    }
+
+    public function test_redeem_inactive_item_returns_422(): void
+    {
+        RewardProfile::create([
+            'user_id'        => $this->user->id,
+            'points_balance' => 1000,
+        ]);
+
+        $item = RewardShopItem::create([
+            'slug'        => 'inactive-item',
+            'title'       => 'Inactive Item',
+            'description' => 'Should not be redeemable',
+            'points_cost' => 100,
+            'is_active'   => false,
+        ]);
+
+        $response = $this->postJson("/api/v1/rewards/shop/{$item->id}/redeem");
+        $response->assertStatus(422)
+            ->assertJsonPath('error.code', 'ITEM_NOT_FOUND');
+    }
+
+    public function test_redeem_nonexistent_item_returns_422(): void
+    {
+        RewardProfile::create([
+            'user_id'        => $this->user->id,
+            'points_balance' => 1000,
+        ]);
+
+        $fakeUuid = '00000000-0000-0000-0000-000000000099';
+        $response = $this->postJson("/api/v1/rewards/shop/{$fakeUuid}/redeem");
+        $response->assertStatus(422)
+            ->assertJsonPath('error.code', 'ITEM_NOT_FOUND');
     }
 }

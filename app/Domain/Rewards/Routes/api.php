@@ -17,7 +17,8 @@ Route::prefix('v1/rewards')->name('api.rewards.')
             ->name('quests');
 
         Route::post('/quests/{id}/complete', [RewardsController::class, 'completeQuest'])
-            ->middleware('api.rate_limit:query')
+            ->middleware('api.rate_limit:mutation')
+            ->whereUuid('id')
             ->name('quests.complete');
 
         Route::get('/shop', [RewardsController::class, 'shop'])
@@ -25,6 +26,7 @@ Route::prefix('v1/rewards')->name('api.rewards.')
             ->name('shop');
 
         Route::post('/shop/{id}/redeem', [RewardsController::class, 'redeemItem'])
-            ->middleware('api.rate_limit:query')
+            ->middleware('api.rate_limit:mutation')
+            ->whereUuid('id')
             ->name('shop.redeem');
     });

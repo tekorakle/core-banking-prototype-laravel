@@ -391,7 +391,28 @@ class PasskeyAuthenticationService
         }
 
         // rpIdHash (32) + flags (1) + signCount (4) = 37 bytes minimum
+
+        // Validate rpIdHash (WebAuthn §7.1 step 12)
+        $rpId = (string) config('mobile.webauthn.rp_id', 'finaegis.com');
+        $expectedRpIdHash = hash('sha256', $rpId, true);
+        $actualRpIdHash = substr($authData, 0, 32);
+        if (! hash_equals($expectedRpIdHash, $actualRpIdHash)) {
+            throw new RuntimeException('rpIdHash mismatch.');
+        }
+
         $flags = ord($authData[32]);
+
+        // Validate User Presence (UP) flag (bit 0, §7.1 step 13)
+        if (($flags & 0x01) === 0) {
+            throw new RuntimeException('User presence flag not set.');
+        }
+
+        // Validate User Verification (UV) flag (bit 2, §7.1 step 15)
+        // We require UV because authenticatorSelection.userVerification = 'required'
+        if (($flags & 0x04) === 0) {
+            throw new RuntimeException('User verification flag not set.');
+        }
+
         $hasAttestedCredentialData = ($flags & 0x40) !== 0;
 
         if (! $hasAttestedCredentialData) {
@@ -658,6 +679,8 @@ class PasskeyAuthenticationService
         }
 
         $kty = null;
+        $alg = null;
+        $crv = null;
         $xCoord = null;
         $yCoord = null;
 
@@ -685,6 +708,20 @@ class PasskeyAuthenticationService
                     }
                     [$kty, $pos] = $valResult;
                     break;
+                case 3: // alg
+                    $valResult = $this->cborReadSignedInt($coseKeyBytes, $pos);
+                    if ($valResult === null) {
+                        throw new RuntimeException('Failed to parse COSE alg.');
+                    }
+                    [$alg, $pos] = $valResult;
+                    break;
+                case -1: // crv (for EC2 keys)
+                    $valResult = $this->cborReadSignedInt($coseKeyBytes, $pos);
+                    if ($valResult === null) {
+                        throw new RuntimeException('Failed to parse COSE crv.');
+                    }
+                    [$crv, $pos] = $valResult;
+                    break;
                 case -2: // x coordinate (EC2)
                     $valResult = $this->cborReadByteString($coseKeyBytes, $pos);
                     if ($valResult === null) {
@@ -708,13 +745,31 @@ class PasskeyAuthenticationService
             }
         }
 
-        // EC2 key (kty=2): convert uncompressed point to PEM
-        if ($kty === 2 && $xCoord !== null && $yCoord !== null) {
-            return $this->ec2KeyToPem($xCoord, $yCoord);
+        // Validate key type: must be EC2 (kty=2)
+        if ($kty !== 2) {
+            throw new RuntimeException('Unsupported COSE key type: ' . ($kty ?? 'null') . '. Only EC2 (kty=2) is supported.');
         }
 
-        // For RSA or unknown key types, store as base64 for openssl_pkey_get_public
-        throw new RuntimeException('Unsupported COSE key type: ' . ($kty ?? 'null') . '. Only ES256 (EC2/P-256) is supported.');
+        // Validate algorithm: must be ES256 (alg=-7)
+        if ($alg !== null && $alg !== -7) {
+            throw new RuntimeException('Unsupported COSE algorithm: ' . $alg . '. Only ES256 (alg=-7) is supported.');
+        }
+
+        // Validate curve: must be P-256 (crv=1)
+        if ($crv !== null && $crv !== 1) {
+            throw new RuntimeException('Unsupported COSE curve: ' . $crv . '. Only P-256 (crv=1) is supported.');
+        }
+
+        if ($xCoord === null || $yCoord === null) {
+            throw new RuntimeException('Missing x or y coordinate in COSE EC2 key.');
+        }
+
+        // Validate coordinate lengths for P-256 (must be exactly 32 bytes each)
+        if (strlen($xCoord) !== 32 || strlen($yCoord) !== 32) {
+            throw new RuntimeException('Invalid P-256 coordinate length. Expected 32 bytes each.');
+        }
+
+        return $this->ec2KeyToPem($xCoord, $yCoord);
     }
 
     /**
@@ -809,6 +864,18 @@ class PasskeyAuthenticationService
 
         // WebAuthn spec: type must be "webauthn.get" for assertion
         if (($clientData['type'] ?? '') !== 'webauthn.get') {
+            return false;
+        }
+
+        // Validate origin (WebAuthn §7.2 step 10)
+        $expectedOrigin = (string) config('mobile.webauthn.origin', 'https://finaegis.com');
+        $clientOrigin = $clientData['origin'] ?? '';
+        if ($clientOrigin !== $expectedOrigin && ! app()->environment('local', 'testing')) {
+            Log::warning('Passkey assertion: origin mismatch', [
+                'expected' => $expectedOrigin,
+                'actual'   => $clientOrigin,
+            ]);
+
             return false;
         }
 
