@@ -61,38 +61,36 @@ class MobileWalletController extends Controller
      *     @OA\Response(response=401, description="Unauthorized")
      * )
      */
-    public function tokens(): JsonResponse
+    public function tokens(Request $request): JsonResponse
     {
-        $tokens = [
-            [
-                'symbol'   => 'USDC',
-                'name'     => 'USD Coin',
-                'decimals' => 6,
-                'networks' => ['polygon', 'base', 'arbitrum', 'optimism', 'ethereum'],
-                'icon'     => 'usdc',
-            ],
-            [
-                'symbol'   => 'USDT',
-                'name'     => 'Tether USD',
-                'decimals' => 6,
-                'networks' => ['polygon', 'arbitrum', 'optimism', 'ethereum'],
-                'icon'     => 'usdt',
-            ],
-            [
-                'symbol'   => 'WETH',
-                'name'     => 'Wrapped Ether',
-                'decimals' => 18,
-                'networks' => ['polygon', 'base', 'arbitrum', 'optimism'],
-                'icon'     => 'weth',
-            ],
-            [
-                'symbol'   => 'WBTC',
-                'name'     => 'Wrapped Bitcoin',
-                'decimals' => 8,
-                'networks' => ['polygon', 'arbitrum', 'ethereum'],
-                'icon'     => 'wbtc',
-            ],
-        ];
+        /** @var array<string, array{name: string, decimals: int, icon: string, networks: array<string, string>}> $registry */
+        $registry = config('supported_tokens', []);
+        $chainFilter = $request->query('chain_id');
+
+        $tokens = [];
+        foreach ($registry as $symbol => $meta) {
+            $networks = $meta['networks'] ?? [];
+
+            if ($chainFilter !== null) {
+                $networks = array_filter(
+                    $networks,
+                    fn (string $network) => $network === $chainFilter,
+                    ARRAY_FILTER_USE_KEY,
+                );
+                if (empty($networks)) {
+                    continue;
+                }
+            }
+
+            $tokens[] = [
+                'symbol'    => $symbol,
+                'name'      => $meta['name'],
+                'decimals'  => $meta['decimals'],
+                'networks'  => array_keys($networks),
+                'icon'      => $meta['icon'],
+                'addresses' => $networks,
+            ];
+        }
 
         return response()->json([
             'success' => true,
