@@ -146,11 +146,29 @@ class CardController extends Controller
      */
     public function index(Request $request): JsonResponse
     {
-        // Demo implementation - return empty list
-        // In production, query from database
+        $user = $request->user();
+        if ($user === null) {
+            return response()->json([
+                'success' => false,
+                'error'   => [
+                    'code'    => 'ERR_AUTH_001',
+                    'message' => 'Authentication required',
+                ],
+            ], 401);
+        }
+
+        $cards = $this->provisioningService->listUserCards((string) $user->id);
+
         return response()->json([
             'success' => true,
-            'data'    => [],
+            'data'    => array_map(fn ($card) => [
+                'card_token' => $card->cardToken,
+                'last4'      => $card->last4,
+                'network'    => $card->network->value,
+                'status'     => $card->status->value,
+                'label'      => $card->label,
+                'expires_at' => $card->expiresAt->format('Y-m-d'),
+            ], $cards),
         ]);
     }
 
