@@ -17,7 +17,7 @@ Transform FinAegis into the **premier open source core banking platform** that:
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────┐
-│                     FINAEGIS CORE BANKING PLATFORM (v5.4.1)              │
+│                     FINAEGIS CORE BANKING PLATFORM (v5.7.0)              │
 ├─────────────────────────────────────────────────────────────────────────┤
 │  CORE BANKING                                                            │
 │  ┌────────────┐  ┌────────────┐  ┌────────────┐  ┌────────────┐        │
@@ -68,23 +68,23 @@ Transform FinAegis into the **premier open source core banking platform** that:
 | **Digital Assets** | Stablecoin, Wallet (HW+Multi-Sig), Governance | Production Ready |
 | **Cross-Chain & DeFi** | CrossChain (Wormhole/LayerZero/Axelar), DeFi (Uniswap/Aave/Curve/Lido) | Production Ready |
 | **Privacy & Identity** | Privacy (ZK-KYC/Merkle), KeyManagement (Shamir/HSM), Commerce (SBT), TrustCert (W3C VC) | Production Ready |
-| **Mobile & Payments** | Mobile, MobilePayment, Relayer (ERC-4337), Payment, X402 (HTTP 402) | Production Ready |
+| **Mobile & Payments** | Mobile, MobilePayment, Relayer (ERC-4337), Payment, X402 (HTTP 402), Rewards | Production Ready |
 | **Financial Services** | Treasury, Lending, Custodian, CardIssuance | Mature |
 | **Platform & AI** | AI (MCP/NLP/ML), AgentProtocol, Monitoring, Performance, Security | Mature |
 | **BaaS** | FinancialInstitution (Partner APIs, SDKs, Widgets, Billing, Marketplace) | Mature |
 | **Supporting** | User, Contact, Newsletter, Webhook, Activity, Batch, Cgo, Shared | Complete |
 
-### Key Metrics (as of v5.4.1)
+### Key Metrics (as of v5.7.0)
 
 | Metric | Value |
 |--------|-------|
-| Bounded Contexts | 42 |
-| Services | 330+ |
-| Controllers | 174 |
-| API Routes | 1,150+ |
+| Bounded Contexts | 43 |
+| Services | 340+ |
+| Controllers | 176 |
+| API Routes | 1,200+ |
 | PHPStan Level | **8** |
-| Test Files | 775+ |
-| GraphQL Domains | 33 |
+| Test Files | 850+ |
+| GraphQL Domains | 34 |
 | GraphQL Schema Files | 36 |
 
 ---

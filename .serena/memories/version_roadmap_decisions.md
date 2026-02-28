@@ -241,24 +241,33 @@ Key deliverables:
 - Multi-Tenancy: 5 isolation tests (auto-skip on SQLite, MySQL-only)
 - Documentation: "prototype" references updated to "platform" across 11 doc files
 
+v5.5.0 — Production Relayer & Card Webhooks (COMPLETED)
+Status: Released (2026-02-21)
+Key deliverables:
+- ERC-4337 Pimlico v2 production integration (bundler, paymaster, smart account factory)
+- Marqeta webhook Basic Auth + HMAC signature verification
+- .env.zelta.example synced with all production environment variables
+- Platform hardening: IdempotencyMiddleware, E2E banking tests, multi-tenancy isolation
+
+v5.6.0 — RAILGUN Privacy Protocol (COMPLETED)
+Status: Released (2026-02-28)
+Key deliverables:
+- Node.js bridge service for @railgun-community/wallet SDK
+- RailgunBridgeClient, RailgunMerkleTreeService, RailgunZkProverService
+- RailgunPrivacyService orchestrator (shield/unshield/transfer flows)
+- RailgunWallet + ShieldedBalance models
+- 4-chain support: Ethereum, Polygon, Arbitrum, BSC (NOT Base)
+- 57 tests with Http::fake() bridge mocking
+
+v5.7.0 — Mobile Rewards & Security Hardening (COMPLETED)
+Status: Released (2026-02-28)
+Key deliverables:
+- Rewards/gamification domain: quests, XP/levels, points shop, streaks
+- Race-safe operations: DB::transaction() + lockForUpdate() for all mutations
+- WebAuthn FIDO2 hardening: rpIdHash, UV/UP flags, COSE alg/curve validation, origin check
+- Recent recipients, notification unread count, mobile route aliases
+- 44 feature tests covering edge cases and race conditions
+- Breaking: registration challenge path changed to /register-challenge
+
 Future roadmap:
 - OpenAPI Attribute Migration (10,385 @OA\ docblocks → PHP 8 #[OA\] attributes, drop doctrine/annotations), Laravel 13 upgrade when available, PHP 8.5 features
-
----
-
-## Architecture Principles (for decision-making)
-
-1. **Interface First**: Extract contracts before implementations
-2. **Event Sourcing Everywhere**: All state changes through events
-3. **Demo Mode Parity**: Every feature works in demo
-4. **Test Coverage**: Minimum 50%, 80%+ for financial logic
-5. **PHPStan Level 8**: No regressions allowed
-6. **Backward Compatibility**: Until major versions
-
----
-
-## Key Files for Roadmap
-- `docs/VERSION_ROADMAP.md` - Full roadmap document
-- `docs/ARCHITECTURAL_ROADMAP.md` - Architecture vision
-- `CHANGELOG.md` - Version history
-- This memory - Decision rationale
