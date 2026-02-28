@@ -13,9 +13,9 @@ All 13 items are **confirmed accurate**. No rejections. Here's the implementatio
 
 | Priority | Items | Target |
 |----------|-------|--------|
-| **P0** | #2 broadcasting auth (one-line), #1 recovery shard backup, #3 privacy calldata | v5.7.1 (#2), v5.8.0 (#1, #3) |
-| **P1** | #4 recipient name field | v5.7.1 |
-| **P2** | #5 tokens, #6 cards, #7 card txns, #8 relayer submit, #9 userop status, #10 merchants | v5.8.0 |
+| **P0** | #2 broadcasting auth, #1 recovery shard backup, #3 privacy calldata | **#2 shipped in v5.7.1 (PR #671)**, #1/#3 → v5.8.0 |
+| **P1** | #4 recipient name field | **Shipped in v5.7.1 (PR #671)** |
+| **P2** | #5 tokens, #6 cards, #7 card txns, #8 relayer submit, #9 userop status, #10 merchants | **#7 interim fix shipped in v5.7.1**, rest → v5.8.0 |
 | **P3** | #11 SSL pins, #12 env vars, #13 sanctions | Pre-launch checklist |
 
 ---
@@ -48,11 +48,12 @@ All 13 items are **confirmed accurate**. No rejections. Here's the implementatio
 
 #### #2 `POST /broadcasting/auth` — CONFIRMED MISSING
 
-**Verdict**: Accurate. `bootstrap/app.php` is missing the `withBroadcasting()` call. `routes/channels.php` already exists and defines all 4 private channels correctly:
-- `private-privacy.{userId}`
-- `private-commerce.{merchantId}`
-- `private-trustcert.{userId}`
-- `private-user.{userId}`
+**Verdict**: Accurate. `bootstrap/app.php` was missing the `withBroadcasting()` call. `routes/channels.php` already exists and defines channels including:
+- `App.Models.User.{id}` — user-specific
+- `tenant.{tenantId}` — tenant notifications
+- `tenant.{tenantId}.transactions` — transaction feed
+- `privacy.merkle.{network}` — privacy pool updates
+- `payments.{userId}` — payment status updates
 
 **Fix**: One-line addition to `bootstrap/app.php`:
 ```php
@@ -61,7 +62,7 @@ All 13 items are **confirmed accurate**. No rejections. Here's the implementatio
 
 **Effort**: 15 minutes (code change + test verification)
 
-**Target**: v5.7.1 hotfix — will ship immediately.
+**Status**: **SHIPPED** in v5.7.1 (PR #671). Also installed `pusher/pusher-php-server` package.
 
 ---
 
@@ -100,7 +101,7 @@ All 13 items are **confirmed accurate**. No rejections. Here's the implementatio
 
 **Effort**: ~1 hour
 
-**Target**: v5.7.1
+**Status**: **SHIPPED** in v5.7.1 (PR #671). Cross-references `blockchain_addresses` → `users` table. Returns `null` for unknown addresses.
 
 **Mobile impact if skipped**: Users see "Unknown" for all recipients. Functional but poor UX — agreed.
 
@@ -144,7 +145,7 @@ All 13 items are **confirmed accurate**. No rejections. Here's the implementatio
 
 **Effort**: Short-term ~30 min; Long-term ~8 hours (Marqeta webhook transaction persistence)
 
-**Recommendation**: Ship `[]` immediately, real data when Marqeta integration matures.
+**Status**: **Short-term fix SHIPPED** in v5.7.1 (PR #671) — returns `[]`. Full Marqeta integration in v5.9.0.
 
 ---
 
@@ -242,15 +243,13 @@ openssl s_client -connect api.zelta.app:443 | \
 
 ## Implementation Roadmap
 
-### v5.7.1 Hotfix (immediate, this week)
+### v5.7.1 Hotfix — SHIPPED (PR #671)
 
-| Item | Work | Effort |
+| Item | Work | Status |
 |------|------|--------|
-| #2 Broadcasting auth | Add `withBroadcasting()` to `bootstrap/app.php` | 15 min |
-| #4 Recipient name | Add name lookup to `recentRecipients()` | 1 hr |
-| #7 Card transactions | Return `[]` instead of fake data (interim fix) | 30 min |
-
-**Total**: ~2 hours
+| #2 Broadcasting auth | Added `withBroadcasting()` + installed `pusher/pusher-php-server` | Done |
+| #4 Recipient name | Added name lookup via `blockchain_addresses` → `users` | Done |
+| #7 Card transactions | Returns `[]` instead of fake data (interim fix) | Done |
 
 ### v5.8.0 (next sprint)
 
@@ -281,11 +280,11 @@ openssl s_client -connect api.zelta.app:443 | \
 
 ## What Mobile Can Do Now
 
-1. **Broadcasting (#2)**: Once v5.7.1 ships, test WebSocket channel subscriptions. Expect `POST /broadcasting/auth` to return 200 with Pusher auth signature.
+1. **Broadcasting (#2)**: **Already shipped.** Test WebSocket channel subscriptions now. `POST /broadcasting/auth` returns 200 with Pusher auth signature for authenticated users.
 
-2. **Recent recipients (#4)**: After v5.7.1, `name` field will be present (nullable). No mobile code changes needed if you already handle `null` → "Unknown".
+2. **Recent recipients (#4)**: **Already shipped.** `name` field is now present (nullable). No mobile code changes needed if you already handle `null` → "Unknown".
 
-3. **Card transactions (#7)**: After v5.7.1, will return `[]` instead of fake data. Mobile should show "No transactions yet" empty state.
+3. **Card transactions (#7)**: **Already shipped.** Now returns `[]` instead of fake data. Mobile should show "No transactions yet" empty state.
 
 4. **Recovery shard (#1)**: Targeted for v5.8.0. Mobile can keep the `setTimeout` mock until then. API contract matches your expected request/response format exactly.
 
@@ -309,4 +308,4 @@ openssl s_client -connect api.zelta.app:443 | \
 
 ---
 
-*Backend will create a tracking issue for v5.7.1 and v5.8.0 items. Expect v5.7.1 within 48 hours.*
+*v5.7.1 shipped (PR #671). Backend will create a tracking issue for v5.8.0 items.*
