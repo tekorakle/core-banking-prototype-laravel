@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers\Api\Wallet;
 
+use App\Domain\Account\Models\BlockchainAddress;
 use App\Domain\MobilePayment\Enums\PaymentIntentStatus;
 use App\Domain\MobilePayment\Models\PaymentIntent;
 use App\Domain\MobilePayment\Services\ActivityFeedService;
@@ -535,6 +536,7 @@ class MobileWalletController extends Controller
      *             @OA\Property(property="success", type="boolean", example=true),
      *             @OA\Property(property="data", type="array", @OA\Items(type="object",
      *                 @OA\Property(property="address", type="string", example="0x1234...abcd"),
+     *                 @OA\Property(property="name", type="string", nullable=true, example="Alice Johnson"),
      *                 @OA\Property(property="network", type="string", example="polygon"),
      *                 @OA\Property(property="token", type="string", example="USDC"),
      *                 @OA\Property(property="last_sent_at", type="string", format="date-time")
@@ -566,6 +568,19 @@ class MobileWalletController extends Controller
             ->unique('address')
             ->take($limit)
             ->values();
+
+        // Resolve recipient names from blockchain_addresses → users
+        $addresses = $recipients->pluck('address')->all();
+        $nameMap = BlockchainAddress::whereIn('address', $addresses)
+            ->with('user:uuid,name')
+            ->get()
+            ->keyBy('address')
+            ->map(fn (BlockchainAddress $ba) => $ba->user?->name);
+
+        $recipients = $recipients->map(fn (array $r) => array_merge(
+            ['address' => $r['address'], 'name' => $nameMap[$r['address']] ?? null],
+            ['network' => $r['network'], 'token' => $r['token'], 'last_sent_at' => $r['last_sent_at']],
+        ));
 
         return response()->json([
             'success' => true,

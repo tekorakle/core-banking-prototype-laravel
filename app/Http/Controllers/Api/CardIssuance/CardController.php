@@ -329,35 +329,14 @@ class CardController extends Controller
      */
     public function transactions(Request $request, string $cardId): JsonResponse
     {
-        $limit = min((int) $request->query('limit', '20'), 100);
-        $cursor = $request->query('cursor');
-
-        // Generate deterministic demo transactions seeded by cardId
-        $allTransactions = $this->generateDemoTransactions($cardId);
-
-        // Apply cursor-based pagination
-        $offset = 0;
-        if ($cursor !== null) {
-            foreach ($allTransactions as $index => $tx) {
-                if ($tx['id'] === $cursor) {
-                    $offset = $index + 1;
-
-                    break;
-                }
-            }
-        }
-
-        $page = array_slice($allTransactions, $offset, $limit);
-        $hasMore = ($offset + $limit) < count($allTransactions);
-        $nextCursor = $hasMore && count($page) > 0 ? $page[count($page) - 1]['id'] : null;
-
+        // TODO: Replace with real Marqeta transaction history when integration matures
         return response()->json([
             'success'    => true,
-            'data'       => $page,
+            'data'       => [],
             'pagination' => [
-                'next_cursor' => $nextCursor,
-                'has_more'    => $hasMore,
-                'total'       => count($allTransactions),
+                'next_cursor' => null,
+                'has_more'    => false,
+                'total'       => 0,
             ],
         ]);
     }
@@ -536,57 +515,5 @@ class CardController extends Controller
         $expectedToken = hash_hmac('sha256', 'demo_biometric:' . $user->id, (string) config('app.key'));
 
         return hash_equals($expectedToken, $biometricToken);
-    }
-
-    /**
-     * Generate deterministic demo transactions for a card.
-     *
-     * @return array<int, array<string, mixed>>
-     */
-    private function generateDemoTransactions(string $cardId): array
-    {
-        $seed = crc32($cardId);
-        mt_srand($seed);
-
-        $merchants = [
-            ['name' => 'Amazon', 'category' => 'shopping'],
-            ['name' => 'Uber', 'category' => 'transport'],
-            ['name' => 'Starbucks', 'category' => 'food_and_drink'],
-            ['name' => 'Netflix', 'category' => 'entertainment'],
-            ['name' => 'Shell Gas Station', 'category' => 'fuel'],
-            ['name' => 'Whole Foods', 'category' => 'groceries'],
-            ['name' => 'Apple Store', 'category' => 'electronics'],
-            ['name' => 'Hilton Hotels', 'category' => 'travel'],
-        ];
-
-        $statuses = ['completed', 'completed', 'completed', 'pending', 'completed'];
-
-        $transactions = [];
-        $count = mt_rand(7, 10);
-        $baseTime = time();
-
-        for ($i = 0; $i < $count; $i++) {
-            $merchant = $merchants[mt_rand(0, count($merchants) - 1)];
-            $amount = mt_rand(199, 25000) / 100;
-            $hoursAgo = mt_rand(1, 720); // up to 30 days
-
-            $transactions[] = [
-                'id'        => sprintf('txn_%s_%d', substr(md5($cardId . $i), 0, 12), $i),
-                'amount'    => round($amount, 2),
-                'currency'  => 'USD',
-                'merchant'  => $merchant['name'],
-                'category'  => $merchant['category'],
-                'status'    => $statuses[mt_rand(0, count($statuses) - 1)],
-                'timestamp' => date('c', $baseTime - ($hoursAgo * 3600)),
-            ];
-        }
-
-        // Sort by timestamp DESC
-        usort($transactions, fn (array $a, array $b): int => strcmp($b['timestamp'], $a['timestamp']));
-
-        // Reset random seed
-        mt_srand();
-
-        return $transactions;
     }
 }
