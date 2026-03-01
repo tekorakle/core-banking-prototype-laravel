@@ -1982,6 +1982,33 @@ The `/app` landing page rendered correctly locally but broke in production becau
 
 ---
 
-*Document Version: 5.8.0*
+## v5.9.0 — OpenAPI Migration & Security Hardening ✅ COMPLETED
+
+**Released**: March 1, 2026
+
+### Delivered
+
+| Feature | Status | Description |
+|---------|--------|-------------|
+| Token Expiration Enforcement | ✅ | Global `CheckTokenExpiration` middleware in api group |
+| Scope-Based Authorization | ✅ | `EnforceMethodScope` middleware: GET→read, POST/PUT/PATCH→write, DELETE→delete |
+| OpenBanking Cleanup | ✅ | 501 stubs replaced with 503 Service Unavailable |
+| OpenAPI PHP 8 Migration | ✅ | 173 files migrated from `@OA\` docblocks to `#[OA\]` attributes |
+| Doctrine Annotations Removed | ✅ | `doctrine/annotations` dependency removed from composer.json |
+| WebAuthn COSE Hardening | ✅ | Fixed null bypass in algorithm/curve validation, removed unsupported RS256 |
+| SSL Pinning Endpoint | ✅ | `GET /api/v1/mobile/ssl-pins` for certificate pinning |
+| GDPR Async Export | ✅ | 202 Accepted + `ProcessGdprDataExport` job + status polling |
+| Notification WebSocket | ✅ | `NotificationCountUpdated` broadcast on `user.{userId}` channel |
+
+### Key Details
+- PRs #679-#683 (5 PRs: 3 security + 1 migration + 1 mobile feedback)
+- Phase 1: Security Hardening — global token expiration, method-based scope enforcement, OpenBanking stub cleanup
+- Phase 2: OpenAPI Migration — custom `bin/migrate-openapi-v2.php` script, batch conversion, `doctrine/annotations` removed
+- Phase 3: Mobile Feedback — WebAuthn COSE fixes, SSL pinning, GDPR async, notification real-time count
+- Mobile developer feedback triaged: 4 items fixed, 4 already resolved in v5.8.0, 4 not actionable
+
+---
+
+*Document Version: 5.9.0*
 *Created: January 11, 2026*
-*Updated: March 1, 2026 (v5.8.0 Mobile Go-Live released)*
+*Updated: March 1, 2026 (v5.9.0 OpenAPI Migration & Security Hardening released)*

@@ -20,6 +20,7 @@ git status && git branch --show-current
 ### Version Status
 | Version | Status | Key Changes |
 |---------|--------|-------------|
+| v5.9.0 | ✅ Released | OpenAPI Migration & Security Hardening: Full PHP 8 attributes migration (173 files, doctrine/annotations removed), global token expiration enforcement, scope-based authorization (EnforceMethodScope), OpenBanking 501→503 cleanup, WebAuthn COSE hardening, SSL pinning endpoint, GDPR async export, notification WebSocket broadcast, 5 PRs (#679-#683) |
 | v5.8.0 | ✅ Released | Mobile Go-Live: Rewards GraphQL (35th domain) + Filament admin, Pimlico bundler production submission, Marqeta card transactions, DB merchants, Chainalysis sanctions, recovery shard backup CRUD, WebSocket mobile channels (privacy/commerce/trustcert/user), privacy calldata persistence with encrypted storage, OpenAPI PHP 8 attributes migration, 7 PRs (#670-#676) |
 | v5.7.0 | ✅ Released | Mobile Rewards & Security Hardening: Rewards/gamification domain (quests, XP/levels, points shop, streaks with race-safe locking), WebAuthn FIDO2 hardening (rpIdHash, UV/UP flags, COSE validation, origin check), recent recipients, notification unread count, route aliases, 44 feature tests |
 | v5.6.0 | ✅ Released | RAILGUN Privacy Protocol: Node.js bridge service (@railgun-community/wallet SDK), RailgunBridgeClient HTTP client, RailgunMerkleTreeService/ZkProverService, RailgunPrivacyService orchestrator (shield/unshield/transfer), RailgunWallet/ShieldedBalance models, PrivacyController integration, 57 tests, chains: Ethereum/Polygon/Arbitrum/BSC |
