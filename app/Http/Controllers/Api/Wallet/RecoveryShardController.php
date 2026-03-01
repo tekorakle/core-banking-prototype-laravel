@@ -8,35 +8,40 @@ use App\Domain\KeyManagement\Models\RecoveryShardCloudBackup;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use OpenApi\Attributes as OA;
 
-/**
- * @OA\Tag(name="Recovery Shard Backup", description="Cloud backup metadata for encrypted recovery shards")
- */
+#[OA\Tag(
+    name: 'Recovery Shard Backup',
+    description: 'Cloud backup metadata for encrypted recovery shards'
+)]
 class RecoveryShardController extends Controller
 {
-    /**
-     * @OA\Post(
-     *     path="/api/v1/wallet/recovery-shard-backup",
-     *     operationId="storeRecoveryShardBackup",
-     *     summary="Register or update a recovery shard cloud backup",
-     *     tags={"Recovery Shard Backup"},
-     *     security={{"sanctum": {}}},
-     *     @OA\RequestBody(
-     *         required=true,
-     *         @OA\JsonContent(
-     *             required={"device_id", "backup_provider", "encrypted_shard_hash", "shard_version"},
-     *             @OA\Property(property="device_id", type="string", example="device_abc123"),
-     *             @OA\Property(property="backup_provider", type="string", enum={"icloud", "google_drive", "manual"}, example="icloud"),
-     *             @OA\Property(property="encrypted_shard_hash", type="string", example="sha256hash..."),
-     *             @OA\Property(property="shard_version", type="string", example="v1"),
-     *             @OA\Property(property="metadata", type="object", nullable=true)
-     *         )
-     *     ),
-     *     @OA\Response(response=201, description="Backup registered"),
-     *     @OA\Response(response=401, description="Unauthorized"),
-     *     @OA\Response(response=422, description="Validation error")
-     * )
-     */
+        #[OA\Post(
+            path: '/api/v1/wallet/recovery-shard-backup',
+            operationId: 'storeRecoveryShardBackup',
+            summary: 'Register or update a recovery shard cloud backup',
+            tags: ['Recovery Shard Backup'],
+            security: [['sanctum' => []]],
+            requestBody: new OA\RequestBody(required: true, content: new OA\JsonContent(required: ['device_id', 'backup_provider', 'encrypted_shard_hash', 'shard_version'], properties: [
+        new OA\Property(property: 'device_id', type: 'string', example: 'device_abc123'),
+        new OA\Property(property: 'backup_provider', type: 'string', enum: ['icloud', 'google_drive', 'manual'], example: 'icloud'),
+        new OA\Property(property: 'encrypted_shard_hash', type: 'string', example: 'sha256hash...'),
+        new OA\Property(property: 'shard_version', type: 'string', example: 'v1'),
+        new OA\Property(property: 'metadata', type: 'object', nullable: true),
+        ]))
+        )]
+    #[OA\Response(
+        response: 201,
+        description: 'Backup registered'
+    )]
+    #[OA\Response(
+        response: 401,
+        description: 'Unauthorized'
+    )]
+    #[OA\Response(
+        response: 422,
+        description: 'Validation error'
+    )]
     public function store(Request $request): JsonResponse
     {
         /** @var \App\Models\User $user */
@@ -78,19 +83,25 @@ class RecoveryShardController extends Controller
         ], 201);
     }
 
-    /**
-     * @OA\Get(
-     *     path="/api/v1/wallet/recovery-shard-backup",
-     *     operationId="listRecoveryShardBackups",
-     *     summary="List recovery shard cloud backups for the authenticated user",
-     *     tags={"Recovery Shard Backup"},
-     *     security={{"sanctum": {}}},
-     *     @OA\Parameter(name="device_id", in="query", required=false, @OA\Schema(type="string")),
-     *     @OA\Parameter(name="backup_provider", in="query", required=false, @OA\Schema(type="string", enum={"icloud", "google_drive", "manual"})),
-     *     @OA\Response(response=200, description="List of backups"),
-     *     @OA\Response(response=401, description="Unauthorized")
-     * )
-     */
+        #[OA\Get(
+            path: '/api/v1/wallet/recovery-shard-backup',
+            operationId: 'listRecoveryShardBackups',
+            summary: 'List recovery shard cloud backups for the authenticated user',
+            tags: ['Recovery Shard Backup'],
+            security: [['sanctum' => []]],
+            parameters: [
+        new OA\Parameter(name: 'device_id', in: 'query', required: false, schema: new OA\Schema(type: 'string')),
+        new OA\Parameter(name: 'backup_provider', in: 'query', required: false, schema: new OA\Schema(type: 'string', enum: ['icloud', 'google_drive', 'manual'])),
+        ]
+        )]
+    #[OA\Response(
+        response: 200,
+        description: 'List of backups'
+    )]
+    #[OA\Response(
+        response: 401,
+        description: 'Unauthorized'
+    )]
     public function show(Request $request): JsonResponse
     {
         /** @var \App\Models\User $user */
@@ -123,26 +134,29 @@ class RecoveryShardController extends Controller
         ]);
     }
 
-    /**
-     * @OA\Delete(
-     *     path="/api/v1/wallet/recovery-shard-backup",
-     *     operationId="deleteRecoveryShardBackup",
-     *     summary="Delete a recovery shard cloud backup",
-     *     tags={"Recovery Shard Backup"},
-     *     security={{"sanctum": {}}},
-     *     @OA\RequestBody(
-     *         required=true,
-     *         @OA\JsonContent(
-     *             required={"device_id", "backup_provider"},
-     *             @OA\Property(property="device_id", type="string", example="device_abc123"),
-     *             @OA\Property(property="backup_provider", type="string", enum={"icloud", "google_drive", "manual"}, example="icloud")
-     *         )
-     *     ),
-     *     @OA\Response(response=200, description="Backup deleted"),
-     *     @OA\Response(response=401, description="Unauthorized"),
-     *     @OA\Response(response=404, description="Backup not found")
-     * )
-     */
+        #[OA\Delete(
+            path: '/api/v1/wallet/recovery-shard-backup',
+            operationId: 'deleteRecoveryShardBackup',
+            summary: 'Delete a recovery shard cloud backup',
+            tags: ['Recovery Shard Backup'],
+            security: [['sanctum' => []]],
+            requestBody: new OA\RequestBody(required: true, content: new OA\JsonContent(required: ['device_id', 'backup_provider'], properties: [
+        new OA\Property(property: 'device_id', type: 'string', example: 'device_abc123'),
+        new OA\Property(property: 'backup_provider', type: 'string', enum: ['icloud', 'google_drive', 'manual'], example: 'icloud'),
+        ]))
+        )]
+    #[OA\Response(
+        response: 200,
+        description: 'Backup deleted'
+    )]
+    #[OA\Response(
+        response: 401,
+        description: 'Unauthorized'
+    )]
+    #[OA\Response(
+        response: 404,
+        description: 'Backup not found'
+    )]
     public function destroy(Request $request): JsonResponse
     {
         /** @var \App\Models\User $user */

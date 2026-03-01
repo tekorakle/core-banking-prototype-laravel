@@ -10,13 +10,12 @@ use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
+use OpenApi\Attributes as OA;
 
-/**
- * @OA\Tag(
- *     name="Open Banking Deposits",
- *     description="Open banking deposit initiation and callbacks"
- * )
- */
+#[OA\Tag(
+    name: 'Open Banking Deposits',
+    description: 'Open banking deposit initiation and callbacks'
+)]
 class OpenBankingDepositController extends Controller
 {
     protected PaymentGatewayService $paymentGateway;
@@ -31,19 +30,22 @@ class OpenBankingDepositController extends Controller
         $this->paymentService = $paymentService;
     }
 
-    /**
-     * @OA\Post(
-     *     path="/open-banking/deposits/initiate",
-     *     operationId="openBankingDepositsInitiate",
-     *     tags={"Open Banking Deposits"},
-     *     summary="Initiate open banking deposit",
-     *     description="Initiates a deposit via open banking",
-     *     security={{"sanctum":{}}},
-     *
-     *     @OA\Response(response=201, description="Successful operation"),
-     *     @OA\Response(response=500, description="Server error")
-     * )
-     */
+        #[OA\Post(
+            path: '/open-banking/deposits/initiate',
+            operationId: 'openBankingDepositsInitiate',
+            tags: ['Open Banking Deposits'],
+            summary: 'Initiate open banking deposit',
+            description: 'Initiates a deposit via open banking',
+            security: [['sanctum' => []]]
+        )]
+    #[OA\Response(
+        response: 201,
+        description: 'Successful operation'
+    )]
+    #[OA\Response(
+        response: 500,
+        description: 'Server error'
+    )]
     public function initiate(Request $request)
     {
         $request->validate([
@@ -89,19 +91,22 @@ class OpenBankingDepositController extends Controller
         ], 503);
     }
 
-    /**
-     * @OA\Get(
-     *     path="/open-banking/deposits/callback",
-     *     operationId="openBankingDepositsCallback",
-     *     tags={"Open Banking Deposits"},
-     *     summary="Open banking callback",
-     *     description="Handles the open banking payment callback",
-     *     security={{"sanctum":{}}},
-     *
-     *     @OA\Response(response=200, description="Successful operation"),
-     *     @OA\Response(response=500, description="Server error")
-     * )
-     */
+        #[OA\Get(
+            path: '/open-banking/deposits/callback',
+            operationId: 'openBankingDepositsCallback',
+            tags: ['Open Banking Deposits'],
+            summary: 'Open banking callback',
+            description: 'Handles the open banking payment callback',
+            security: [['sanctum' => []]]
+        )]
+    #[OA\Response(
+        response: 200,
+        description: 'Successful operation'
+    )]
+    #[OA\Response(
+        response: 500,
+        description: 'Server error'
+    )]
     public function callback(Request $request)
     {
         // In demo environment or sandbox mode, process the simulated deposit
