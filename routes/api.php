@@ -65,7 +65,7 @@ Route::prefix('websocket')->name('api.websocket.')->group(function () {
 
 // WebSocket authenticated endpoints
 Route::prefix('websocket')->name('api.websocket.')
-    ->middleware(['auth:sanctum', 'check.token.expiration'])
+    ->middleware(['auth:sanctum'])
     ->group(function () {
         Route::get('/channels', [App\Http\Controllers\Api\WebSocketController::class, 'channels'])->name('channels');
     });
@@ -92,7 +92,7 @@ Route::prefix('auth')->middleware('api.rate_limit:auth')->group(function () {
     Route::post('/social/{provider}/callback', [SocialAuthController::class, 'callback']);
 
     // Protected auth endpoints
-    Route::middleware(['auth:sanctum', 'check.token.expiration'])->group(function () {
+    Route::middleware(['auth:sanctum'])->group(function () {
         Route::post('/logout', [LoginController::class, 'logout']);
         Route::post('/logout-all', [LoginController::class, 'logoutAll']);
         Route::get('/user', [LoginController::class, 'user']);
@@ -148,10 +148,10 @@ Route::get('/profile', function (Request $request) {
             'updated_at' => $user->updated_at,
         ],
     ]);
-})->middleware(['auth:sanctum', 'check.token.expiration']);
+})->middleware(['auth:sanctum']);
 
 // Legacy KYC documents endpoint for backward compatibility
-Route::middleware(['auth:sanctum', 'check.token.expiration'])->post('/kyc/documents', [KycController::class, 'upload']);
+Route::middleware(['auth:sanctum'])->post('/kyc/documents', [KycController::class, 'upload']);
 
 // Custodian webhook endpoints (signature verification + webhook rate limiting)
 Route::prefix('webhooks/custodian')->middleware(['api.rate_limit:webhook'])->group(function () {
@@ -175,7 +175,7 @@ Route::prefix('webhooks/ondato')->middleware(['api.rate_limit:webhook'])->group(
 });
 
 // Extended monitoring endpoints with authentication
-Route::prefix('monitoring')->middleware(['auth:sanctum', 'check.token.expiration'])->group(function () {
+Route::prefix('monitoring')->middleware(['auth:sanctum'])->group(function () {
     Route::get('/metrics-json', [App\Http\Controllers\Api\MonitoringController::class, 'metrics']);
     Route::get('/traces', [App\Http\Controllers\Api\MonitoringController::class, 'traces']);
     Route::get('/trace/{traceId}', [App\Http\Controllers\Api\MonitoringController::class, 'trace']);
@@ -192,7 +192,7 @@ Route::prefix('monitoring')->middleware(['auth:sanctum', 'check.token.expiration
 });
 
 // v5.0.0 — Live Dashboard
-Route::prefix('v1/monitoring/live-dashboard')->middleware(['auth:sanctum', 'check.token.expiration'])->group(function () {
+Route::prefix('v1/monitoring/live-dashboard')->middleware(['auth:sanctum'])->group(function () {
     Route::get('/', [App\Http\Controllers\Api\V1\LiveDashboardController::class, 'index']);
     Route::get('/domain-health', [App\Http\Controllers\Api\V1\LiveDashboardController::class, 'domainHealth']);
     Route::get('/event-throughput', [App\Http\Controllers\Api\V1\LiveDashboardController::class, 'eventThroughput']);
@@ -201,7 +201,7 @@ Route::prefix('v1/monitoring/live-dashboard')->middleware(['auth:sanctum', 'chec
 });
 
 // Admin dashboard endpoint (with 2FA requirement)
-Route::prefix('admin')->middleware(['auth:sanctum', 'check.token.expiration', 'require.2fa.admin'])->group(function () {
+Route::prefix('admin')->middleware(['auth:sanctum', 'require.2fa.admin'])->group(function () {
     Route::get('/dashboard', function () {
         return response()->json([
             'message' => 'Admin dashboard',
@@ -221,7 +221,7 @@ Route::prefix('v1/auth/passkey')
 
 // Passkey registration (requires auth) - v1 path
 Route::prefix('v1/auth/passkey')
-    ->middleware(['auth:sanctum', 'check.token.expiration', 'throttle:5,1'])
+    ->middleware(['auth:sanctum', 'throttle:5,1'])
     ->name('mobile.auth.passkey.authed.')
     ->group(function () {
         Route::post('/register-challenge', [PasskeyController::class, 'challenge'])->name('register-challenge');

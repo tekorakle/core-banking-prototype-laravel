@@ -26,7 +26,7 @@ Route::prefix('mobile')->name('api.mobile.')->group(function () {
         });
 
     // Protected endpoints (require authentication)
-    Route::middleware(['auth:sanctum', 'check.token.expiration'])->group(function () {
+    Route::middleware(['auth:sanctum'])->group(function () {
         // Device management
         Route::prefix('devices')->name('devices.')->group(function () {
             Route::get('/', [MobileController::class, 'listDevices'])->name('index');
@@ -73,7 +73,7 @@ Route::prefix('mobile')->name('api.mobile.')->group(function () {
 
 // Notification endpoints (v5.6.0)
 Route::prefix('v1/notifications')->name('api.notifications.')
-    ->middleware(['auth:sanctum', 'check.token.expiration'])
+    ->middleware(['auth:sanctum'])
     ->group(function () {
         Route::get('/unread-count', [MobileController::class, 'getUnreadNotificationCount'])
             ->middleware('api.rate_limit:query')
@@ -82,7 +82,7 @@ Route::prefix('v1/notifications')->name('api.notifications.')
 
 // User preferences (v3.3.4) + data export alias (v5.6.0)
 Route::prefix('v1/user')->name('api.user.')
-    ->middleware(['auth:sanctum', 'check.token.expiration'])
+    ->middleware(['auth:sanctum'])
     ->group(function () {
         Route::get('/preferences', [UserPreferencesController::class, 'show'])->name('preferences.show');
         Route::patch('/preferences', [UserPreferencesController::class, 'update'])->name('preferences.update');

@@ -98,6 +98,7 @@ return Application::configure(basePath: dirname(__DIR__))
             Illuminate\Routing\Middleware\SubstituteBindings::class,
             App\Http\Middleware\SecurityHeaders::class,
             App\Http\Middleware\ApiVersionMiddleware::class,
+            App\Http\Middleware\CheckTokenExpiration::class,
         ]);
 
         // Apply security headers to web routes
