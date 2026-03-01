@@ -94,6 +94,7 @@ Route::middleware('auth:sanctum')->prefix('compliance')->group(function () {
         Route::get('/consent', [GdprController::class, 'consentStatus']);
         Route::post('/consent', [GdprController::class, 'updateConsent']);
         Route::post('/export', [GdprController::class, 'requestDataExport']);
+        Route::get('/export/{exportId}', [GdprController::class, 'getExportStatus']);
         Route::post('/delete', [GdprController::class, 'requestDeletion']);
         Route::get('/retention-policy', [GdprController::class, 'retentionPolicy']);
     });

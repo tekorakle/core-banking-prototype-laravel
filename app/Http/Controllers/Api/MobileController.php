@@ -1110,6 +1110,50 @@ class MobileController extends Controller
     }
 
     /**
+     * Get SSL certificate pins for mobile certificate pinning.
+     */
+    #[OA\Get(
+        path: '/api/v1/mobile/ssl-pins',
+        operationId: 'getSslPins',
+        tags: ['Mobile'],
+        summary: 'Get SSL certificate pins for client-side certificate pinning'
+    )]
+    #[OA\Response(
+        response: 200,
+        description: 'SSL certificate pins',
+        content: new OA\JsonContent(properties: [
+        new OA\Property(property: 'success', type: 'boolean', example: true),
+        new OA\Property(property: 'data', type: 'object', properties: [
+        new OA\Property(property: 'pins', type: 'array', items: new OA\Items(properties: [
+        new OA\Property(property: 'algorithm', type: 'string', example: 'sha256'),
+        new OA\Property(property: 'hash', type: 'string', example: 'AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA='),
+        ])),
+        new OA\Property(property: 'max_age', type: 'integer', example: 86400),
+        new OA\Property(property: 'include_subdomains', type: 'boolean', example: true),
+        ]),
+        ])
+    )]
+    public function getSslPins(): JsonResponse
+    {
+        /** @var array<int, string> $configuredPins */
+        $configuredPins = (array) config('mobile.ssl_pins', []);
+
+        $pins = collect($configuredPins)->map(fn (string $hash) => [
+            'algorithm' => 'sha256',
+            'hash'      => $hash,
+        ])->values()->all();
+
+        return response()->json([
+            'success' => true,
+            'data'    => [
+                'pins'               => $pins,
+                'max_age'            => (int) config('mobile.ssl_pin_max_age', 86400),
+                'include_subdomains' => (bool) config('mobile.ssl_pin_include_subdomains', true),
+            ],
+        ]);
+    }
+
+    /**
      * Bulk remove all devices for the authenticated user.
      */
     #[OA\Delete(

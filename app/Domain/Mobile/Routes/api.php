@@ -11,6 +11,10 @@ Route::prefix('v1/app')->name('api.app.')->group(function () {
     Route::get('/status', [MobileController::class, 'getAppStatus'])->name('status');
 });
 
+Route::prefix('v1/mobile')->name('api.mobile.v1.')->group(function () {
+    Route::get('/ssl-pins', [MobileController::class, 'getSslPins'])->name('ssl-pins');
+});
+
 Route::prefix('mobile')->name('api.mobile.')->group(function () {
     // Public endpoints (no auth required)
     Route::get('/config', [MobileController::class, 'getConfig'])->name('config');
