@@ -128,18 +128,16 @@ class GdprController extends Controller
             operationId: 'requestGdprDataExport',
             tags: ['GDPR'],
             summary: 'Request data export (GDPR Article 20)',
-            description: 'Request a complete export of all personal data in a machine-readable format',
+            description: 'Request a complete export of all personal data in a machine-readable format. Returns 202 and processes asynchronously.',
             security: [['sanctum' => []]]
         )]
     #[OA\Response(
-        response: 200,
-        description: 'Export request successful',
+        response: 202,
+        description: 'Export request accepted for processing',
         content: new OA\JsonContent(properties: [
-        new OA\Property(property: 'message', type: 'string', example: 'Data export requested. You will receive an email with your data shortly.'),
-        new OA\Property(property: 'preview', type: 'object', properties: [
-        new OA\Property(property: 'sections', type: 'array', example: ['personal_info', 'accounts', 'transactions', 'documents'], items: new OA\Items(type: 'string')),
-        new OA\Property(property: 'generated_at', type: 'string', format: 'date-time'),
-        ]),
+        new OA\Property(property: 'message', type: 'string', example: 'Data export request accepted. Check status at the provided URL.'),
+        new OA\Property(property: 'export_id', type: 'string', format: 'uuid', example: '550e8400-e29b-41d4-a716-446655440000'),
+        new OA\Property(property: 'status_url', type: 'string', example: '/api/gdpr/export/550e8400-e29b-41d4-a716-446655440000'),
         ])
     )]
     #[OA\Response(
@@ -154,18 +152,17 @@ class GdprController extends Controller
         $user = Auth::user();
         /** @var User $user */
         try {
-            $data = $this->gdprService->exportUserData($user);
+            $exportId = (string) \Illuminate\Support\Str::uuid();
 
-            // In a real application, this would queue a job to generate
-            // and email the export to the user
+            \App\Jobs\ProcessGdprDataExport::dispatch($user->id, $exportId);
+
             return response()->json(
                 [
-                    'message' => 'Data export requested. You will receive an email with your data shortly.',
-                    'preview' => [
-                        'sections'     => array_keys($data),
-                        'generated_at' => now(),
-                    ],
-                ]
+                    'message'    => 'Data export request accepted. Check status at the provided URL.',
+                    'export_id'  => $exportId,
+                    'status_url' => "/api/gdpr/export/{$exportId}",
+                ],
+                202
             );
         } catch (Exception $e) {
             return response()->json(
@@ -175,6 +172,46 @@ class GdprController extends Controller
                 500
             );
         }
+    }
+
+    #[OA\Get(
+        path: '/api/gdpr/export/{exportId}',
+        operationId: 'getGdprExportStatus',
+        tags: ['GDPR'],
+        summary: 'Check data export status',
+        description: 'Poll the status of a previously requested data export',
+        security: [['sanctum' => []]],
+        parameters: [
+        new OA\Parameter(name: 'exportId', in: 'path', required: true, description: 'Export request ID', schema: new OA\Schema(type: 'string', format: 'uuid')),
+        ]
+    )]
+    #[OA\Response(
+        response: 200,
+        description: 'Export status',
+        content: new OA\JsonContent(properties: [
+        new OA\Property(property: 'export_id', type: 'string', format: 'uuid'),
+        new OA\Property(property: 'status', type: 'string', enum: ['pending', 'processing', 'completed', 'failed']),
+        ])
+    )]
+    #[OA\Response(
+        response: 404,
+        description: 'Export request not found'
+    )]
+    public function getExportStatus(string $exportId): JsonResponse
+    {
+        $cacheKey = "gdpr_export:{$exportId}";
+        $status = \Illuminate\Support\Facades\Cache::get($cacheKey);
+
+        if ($status === null) {
+            return response()->json([
+                'error' => 'Export request not found or expired',
+            ], 404);
+        }
+
+        return response()->json(array_merge(
+            ['export_id' => $exportId],
+            (array) $status,
+        ));
     }
 
         #[OA\Post(
