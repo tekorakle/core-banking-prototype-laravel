@@ -99,6 +99,7 @@ return Application::configure(basePath: dirname(__DIR__))
             App\Http\Middleware\SecurityHeaders::class,
             App\Http\Middleware\ApiVersionMiddleware::class,
             App\Http\Middleware\CheckTokenExpiration::class,
+            App\Http\Middleware\EnforceMethodScope::class,
         ]);
 
         // Apply security headers to web routes
