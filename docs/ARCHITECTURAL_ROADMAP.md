@@ -17,7 +17,7 @@ Transform FinAegis into the **premier open source core banking platform** that:
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────┐
-│                     FINAEGIS CORE BANKING PLATFORM (v5.8.0)              │
+│                     FINAEGIS CORE BANKING PLATFORM (v5.9.0)              │
 ├─────────────────────────────────────────────────────────────────────────┤
 │  CORE BANKING                                                            │
 │  ┌────────────┐  ┌────────────┐  ┌────────────┐  ┌────────────┐        │
@@ -277,6 +277,6 @@ The FinAegis platform has evolved from a core banking prototype to a comprehensi
 
 ---
 
-*Document Version: 5.8.0*
+*Document Version: 5.9.0*
 *Last Updated: March 1, 2026*
 *Author: Architecture Review*
