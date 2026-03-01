@@ -13,7 +13,7 @@ use Illuminate\Support\Facades\Route;
 
 // Mobile sanctions check endpoint (v5.8.0)
 Route::prefix('v1/compliance')->name('api.compliance.mobile.')
-    ->middleware(['auth:sanctum', 'check.token.expiration'])
+    ->middleware(['auth:sanctum'])
     ->group(function () {
         Route::get('/check-address', SanctionsCheckController::class)
             ->middleware('throttle:30,1')
@@ -21,7 +21,7 @@ Route::prefix('v1/compliance')->name('api.compliance.mobile.')
     });
 
 // Compliance and KYC endpoints
-Route::middleware('auth:sanctum', 'check.token.expiration')->prefix('compliance')->group(function () {
+Route::middleware('auth:sanctum')->prefix('compliance')->group(function () {
     // Compliance alerts
     Route::prefix('alerts')->group(function () {
         Route::get('/', [ComplianceAlertController::class, 'index']);
