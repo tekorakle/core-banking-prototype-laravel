@@ -82,11 +82,11 @@ class OpenBankingDepositController extends Controller
                 ->with('demo_mode', true);
         }
 
-        // In production, would redirect to actual bank OAuth
+        // OpenBanking integration not enabled
         return response()->json([
-            'message'   => 'Production OpenBanking integration requires bank API setup',
-            'demo_hint' => 'Enable DEMO_MODE to test this feature',
-        ], 501);
+            'message' => 'Open Banking deposits are not available at this time',
+            'error'   => 'SERVICE_UNAVAILABLE',
+        ], 503);
     }
 
     /**
@@ -154,10 +154,10 @@ class OpenBankingDepositController extends Controller
             }
         }
 
-        // In production, would handle actual bank OAuth callback
+        // OpenBanking integration not enabled
         return response()->json([
-            'message'   => 'Production OpenBanking callback requires bank API setup',
-            'demo_hint' => 'Enable DEMO_MODE to test this feature',
-        ], 501);
+            'message' => 'Open Banking deposits are not available at this time',
+            'error'   => 'SERVICE_UNAVAILABLE',
+        ], 503);
     }
 }
