@@ -6,7 +6,9 @@
 # Run from the project root: ./bin/verify-production.sh
 # =============================================================================
 
-set -euo pipefail
+set -uo pipefail
+# Trap errors to show which line failed
+trap 'echo -e "\n${RED}ERROR: Script failed at line $LINENO (exit code $?)${NC}" >&2' ERR
 
 # Colors
 RED='\033[0;31m'
