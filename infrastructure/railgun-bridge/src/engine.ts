@@ -76,7 +76,7 @@ function buildFallbackProviderConfig(rpcUrl: string): FallbackProviderJsonConfig
       {
         provider: rpcUrl,
         priority: 1,
-        weight: 1,
+        weight: 2,
         maxLogsPerBatch: 1,
         stallTimeout: 2500,
       },
