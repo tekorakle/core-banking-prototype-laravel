@@ -128,6 +128,8 @@ export async function initializeEngine(): Promise<void> {
     ),
     false, // useNativeArtifacts — false for Node.js (true for mobile)
     false, // skipMerkletreeScans — false to enable balance scanning
+    // POI aggregator node URLs — required for Ethereum mainnet
+    [process.env.RAILGUN_POI_NODE_URL || 'https://ppoi-agg.horsewithsixlegs.xyz'],
   );
 
   logger.info('RAILGUN Engine started');
