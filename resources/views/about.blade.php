@@ -5,7 +5,7 @@
 @section('seo')
     @include('partials.seo', [
         'title' => 'About FinAegis - Open Source Core Banking Infrastructure',
-        'description' => 'FinAegis is an open-source core banking platform with 42 DDD domains, event sourcing, CQRS, and the Global Currency Unit. Built with Laravel for fintech developers.',
+        'description' => 'FinAegis is an open-source core banking platform with 43 DDD domains, event sourcing, CQRS, and the Global Currency Unit. Built with Laravel for fintech developers.',
         'keywords' => 'FinAegis about, open source banking, core banking platform, GCU, event sourcing, CQRS, Laravel banking, DDD, fintech infrastructure',
     ])
 
@@ -74,7 +74,7 @@
                 <div>
                     <h2 class="text-4xl font-bold text-gray-900 mb-6">What Is FinAegis?</h2>
                     <p class="text-lg text-gray-600 mb-4">
-                        FinAegis is a core banking platform built with Laravel, implementing event sourcing, CQRS, domain-driven design, and AI agent integration across 42 bounded contexts.
+                        FinAegis is a core banking platform built with Laravel, implementing event sourcing, CQRS, domain-driven design, and AI agent integration across 43 bounded contexts.
                     </p>
                     <p class="text-lg text-gray-600 mb-4">
                         At its heart is the <strong>Global Currency Unit (GCU)</strong>—a democratically governed basket currency where users vote on composition from six global reserve assets.
