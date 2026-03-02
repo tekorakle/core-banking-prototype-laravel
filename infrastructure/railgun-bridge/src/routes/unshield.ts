@@ -5,7 +5,6 @@ import {
   gasEstimateForUnshield,
 } from '@railgun-community/wallet';
 import { NetworkName, RailgunERC20Amount } from '@railgun-community/shared-models';
-import { ethers } from 'ethers';
 import { isEngineReady, resolveNetworkName, resolveChainId, logger } from '../engine';
 import { walletRegistry } from './wallet';
 import { EngineNotReadyError, ValidationError, errorResponse } from '../utils/errors';
@@ -43,7 +42,7 @@ router.post('/unshield', async (req: Request, res: Response) => {
 
     const erc20Amount: RailgunERC20Amount = {
       tokenAddress,
-      amount: ethers.BigNumber.from(amount),
+      amount: BigInt(amount),
     };
 
     // Generate the unshield proof (this is computationally expensive)

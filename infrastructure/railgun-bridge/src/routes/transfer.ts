@@ -4,7 +4,6 @@ import {
   generateTransferProof,
 } from '@railgun-community/wallet';
 import { NetworkName, RailgunERC20Amount } from '@railgun-community/shared-models';
-import { ethers } from 'ethers';
 import { isEngineReady, resolveNetworkName, resolveChainId, logger } from '../engine';
 import { walletRegistry } from './wallet';
 import { EngineNotReadyError, ValidationError, errorResponse } from '../utils/errors';
@@ -42,7 +41,7 @@ router.post('/transfer', async (req: Request, res: Response) => {
 
     const erc20Amount: RailgunERC20Amount = {
       tokenAddress,
-      amount: ethers.BigNumber.from(amount),
+      amount: BigInt(amount),
     };
 
     // Generate the transfer proof

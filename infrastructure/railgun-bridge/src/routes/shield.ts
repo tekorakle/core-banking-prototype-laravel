@@ -4,7 +4,6 @@ import {
   gasEstimateForShield,
 } from '@railgun-community/wallet';
 import { NetworkName, RailgunERC20Amount } from '@railgun-community/shared-models';
-import { ethers } from 'ethers';
 import { isEngineReady, resolveNetworkName, resolveChainId, logger } from '../engine';
 import { walletRegistry } from './wallet';
 import { EngineNotReadyError, ValidationError, errorResponse } from '../utils/errors';
@@ -41,7 +40,7 @@ router.post('/shield', async (req: Request, res: Response) => {
     // Build ERC20 amount
     const shieldAmount: RailgunERC20Amount = {
       tokenAddress,
-      amount: ethers.BigNumber.from(amount),
+      amount: BigInt(amount),
     };
 
     // Populate shield transaction
