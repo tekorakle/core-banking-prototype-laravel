@@ -6,12 +6,37 @@
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
+use Illuminate\Foundation\Events\DiagnosingHealth;
+use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\View;
 
 return Application::configure(basePath: dirname(__DIR__))
     ->withRouting(
         using: function () {
             $isApiSubdomain = str_starts_with(request()->getHost(), 'api.');
+
+            // Health check route — must be registered inside `using` callback
+            // because Laravel skips buildRoutingCallback when `using` is provided
+            Route::get('/up', function () {
+                $exception = null;
+
+                try {
+                    Event::dispatch(new DiagnosingHealth);
+                } catch (\Throwable $e) {
+                    if (app()->hasDebugModeEnabled()) {
+                        throw $e;
+                    }
+
+                    report($e);
+                    $exception = $e->getMessage();
+                }
+
+                return response(View::file(
+                    base_path('vendor/laravel/framework/src/Illuminate/Foundation/resources/health-up.blade.php'),
+                    ['exception' => $exception],
+                ), status: $exception ? 500 : 200);
+            });
 
             // Always load console routes
             Route::group([], base_path('routes/console.php'));
@@ -46,7 +71,6 @@ return Application::configure(basePath: dirname(__DIR__))
             }
         },
         commands: __DIR__ . '/../routes/console.php',
-        health: '/up',
     )
     ->withBroadcasting(base_path('routes/channels.php'), [
         'middleware' => ['api', 'auth:sanctum'],
