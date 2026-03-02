@@ -61,7 +61,7 @@
                         <h2 class="text-3xl font-bold text-gray-900 mb-8">Getting Started</h2>
                         
                         <div class="prose prose-lg max-w-none">
-                            <p>The FinAegis API provides programmatic access to our multi-asset banking platform spanning 42 DDD domains with over 1,200 routes. Our API is organized around REST principles with predictable, resource-oriented URLs. Domains include core banking, CrossChain bridging, DeFi protocols, RegTech compliance, Mobile Payment, Partner BaaS, and AI-powered queries.</p>
+                            <p>The FinAegis API provides programmatic access to our multi-asset banking platform spanning 43 DDD domains with over 1,250 routes. Our API is organized around REST principles with predictable, resource-oriented URLs. Domains include core banking, CrossChain bridging, DeFi protocols, RegTech compliance, Mobile Payment, Partner BaaS, and AI-powered queries.</p>
                             
                             <h3>Base URL</h3>
                             <x-code-block language="plaintext">

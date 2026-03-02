@@ -38,7 +38,7 @@
     <section class="pt-16 bg-gray-50">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
             <div class="text-center">
-                <h1 class="text-5xl font-bold text-gray-900 mb-6">42 Domain Modules. One Platform.</h1>
+                <h1 class="text-5xl font-bold text-gray-900 mb-6">43 Domain Modules. One Platform.</h1>
                 <p class="text-xl text-gray-600 max-w-3xl mx-auto">
                     Every building block a modern fintech needs—from democratic currency governance to AI agent commerce, cross-chain DeFi, and privacy-preserving identity.
                 </p>

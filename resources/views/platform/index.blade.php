@@ -5,7 +5,7 @@
 @section('seo')
     @include('partials.seo', [
         'title' => 'FinAegis Platform - Open Banking for Developers',
-        'description' => 'FinAegis Platform - Open-source core banking infrastructure with 42 DDD domains, event sourcing, REST + GraphQL APIs, and cross-chain DeFi. MIT licensed.',
+        'description' => 'FinAegis Platform - Open-source core banking infrastructure with 43 DDD domains, event sourcing, REST + GraphQL APIs, and cross-chain DeFi. MIT licensed.',
         'keywords' => 'FinAegis platform, banking infrastructure, open source banking, developer API, MIT license, core banking API, fintech development, DDD, event sourcing',
     ])
 
@@ -180,7 +180,7 @@
                                 <div class="text-sm text-gray-500">License</div>
                             </div>
                             <div>
-                                <div class="text-2xl font-bold text-blue-400 code-font">42</div>
+                                <div class="text-2xl font-bold text-blue-400 code-font">43</div>
                                 <div class="text-sm text-gray-500">Domains</div>
                             </div>
                             <div>
