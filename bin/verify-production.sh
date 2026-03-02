@@ -127,7 +127,7 @@ else
     fail "Database not configured in .env"
 fi
 
-MIGRATE_STATUS=$(timeout 15 php artisan migrate:status 2>/dev/null | grep -c "Pending" || echo "0")
+MIGRATE_STATUS=$(timeout 15 php artisan migrate:status 2>/dev/null | grep -c "Pending" | tr -d '[:space:]' || echo "0")
 if [[ "$MIGRATE_STATUS" == "0" ]]; then
     pass "All migrations applied"
 else
@@ -422,7 +422,7 @@ ARTISAN_HEALTH=$(timeout 15 php artisan system:health-check 2>&1 || echo "COMMAN
 if [[ "$ARTISAN_HEALTH" == *"COMMAND_FAILED"* ]]; then
     warn "system:health-check command not available or failed"
 else
-    ARTISAN_FAIL=$(echo "$ARTISAN_HEALTH" | grep -ci "fail\|error\|unhealthy" || echo "0")
+    ARTISAN_FAIL=$(echo "$ARTISAN_HEALTH" | grep -ci "fail\|error\|unhealthy" | tr -d '[:space:]' || echo "0")
     if [[ "$ARTISAN_FAIL" -gt 0 ]]; then
         fail "Artisan health check: $ARTISAN_FAIL issues"
         echo "$ARTISAN_HEALTH" | grep -i "fail\|error\|unhealthy" | head -5 | sed 's/^/    /'
