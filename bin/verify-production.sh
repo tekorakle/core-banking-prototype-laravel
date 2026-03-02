@@ -42,7 +42,7 @@ fi
 env_get() {
     local key="$1"
     local val
-    val=$(grep -E "^${key}=" "$ENV_FILE" | tail -1 | sed "s/^${key}=//" | sed 's/^["'\'']//' | sed 's/["'\''"]$//' | sed 's/^[[:space:]]*//' | sed 's/[[:space:]]*$//')
+    val=$(grep -E "^${key}=" "$ENV_FILE" 2>/dev/null | tail -1 | sed "s/^${key}=//" | sed 's/^["'\'']//' | sed 's/["'\''"]$//' | sed 's/^[[:space:]]*//' | sed 's/[[:space:]]*$//' || true)
     echo "$val"
 }
 
