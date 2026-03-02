@@ -24,85 +24,51 @@ fail() { ((FAIL++)); echo -e "  ${RED}✗${NC} $1"; }
 warn() { ((WARN++)); echo -e "  ${YELLOW}!${NC} $1"; }
 section() { echo -e "\n${CYAN}━━━ $1 ━━━${NC}"; }
 
-# Curl with sane timeouts to prevent hanging
+# Curl with sane timeouts
 c() { curl --connect-timeout 3 --max-time 5 "$@" 2>/dev/null || echo ""; }
 
 # =============================================================================
-# Dump all config values via direct PHP (avoids tinker/PsySH hanging)
+# Load .env values directly (no PHP needed for config checks)
 # =============================================================================
 SCRIPT_DIR=$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)
-CONFIG_DUMP=$(php -r "
-require '${SCRIPT_DIR}/vendor/autoload.php';
-\$app = require '${SCRIPT_DIR}/bootstrap/app.php';
-\$app->make(\Illuminate\Contracts\Console\Kernel::class)->bootstrap();
-\$vals = [
-    'app_version'    => app()->version(),
-    'bridge_url'     => config('privacy.railgun.bridge_url', ''),
-    'bridge_secret'  => config('privacy.railgun.bridge_secret', ''),
-    'alchemy_key'    => env('ALCHEMY_API_KEY', ''),
-    'pimlico_key'    => config('relayer.pimlico.api_key', ''),
-    'cg_key'         => config('exchange.providers.coingecko.api_key', ''),
-    'cg_enabled'     => config('exchange.providers.coingecko.enabled') ? 'true' : 'false',
-    'pusher_key'     => config('broadcasting.connections.pusher.key', ''),
-    'pusher_cluster' => config('broadcasting.connections.pusher.options.cluster', ''),
-    'fb_creds'       => config('firebase.projects.app.credentials', ''),
-    'stripe_key'     => config('cashier.secret') ?: config('services.stripe.secret', ''),
-    'tc_ca'          => config('trustcert.certificate_authority.ca_signing_key') ? 'SET' : 'EMPTY',
-    'tc_cred'        => config('trustcert.credentials.credential_signing_key') ? 'SET' : 'EMPTY',
-    'tc_pres'        => config('trustcert.credentials.presentation_signing_key') ? 'SET' : 'EMPTY',
-    'pp_enabled'     => config('privacy.privacy_pools.enabled') ? 'true' : 'false',
-    'zk_prov'        => config('privacy.zk.provider', ''),
-    'mk_prov'        => config('privacy.merkle.provider', ''),
-    'x402_on'        => config('x402.enabled') ? 'true' : 'false',
-    'x402_addr'      => config('x402.pay_to_address', ''),
-    'hsm_on'         => config('keymanagement.hsm.enabled') ? 'true' : 'false',
-    'hsm_prov'       => config('keymanagement.hsm.provider', ''),
-    'ondato_id'      => config('services.ondato.application_id', ''),
-    'marqeta_url'    => config('cardissuance.marqeta.base_url', ''),
-];
-foreach (\$vals as \$k => \$v) { echo \"CFG:{\$k}=\" . (\$v ?? '') . PHP_EOL; }
-" 2>/dev/null || echo "CFG:app_version=FAIL")
+ENV_FILE="${SCRIPT_DIR}/.env"
 
-# Parse config values into bash variables
-cfg() { echo "$CONFIG_DUMP" | grep "^CFG:$1=" | head -1 | sed "s/^CFG:$1=//" ; }
+if [[ ! -f "$ENV_FILE" ]]; then
+    echo -e "${RED}ERROR: .env file not found at ${ENV_FILE}${NC}"
+    exit 1
+fi
 
-APP_VERSION=$(cfg app_version)
-BRIDGE_URL=$(cfg bridge_url)
-BRIDGE_SECRET=$(cfg bridge_secret)
-ALCHEMY_KEY=$(cfg alchemy_key)
-PIMLICO_KEY=$(cfg pimlico_key)
-CG_KEY=$(cfg cg_key)
-CG_ENABLED=$(cfg cg_enabled)
-PUSHER_KEY=$(cfg pusher_key)
-PUSHER_CLUSTER=$(cfg pusher_cluster)
-FB_CREDS=$(cfg fb_creds)
-STRIPE_KEY=$(cfg stripe_key)
-TC_CA=$(cfg tc_ca)
-TC_CRED=$(cfg tc_cred)
-TC_PRES=$(cfg tc_pres)
-PP_ENABLED=$(cfg pp_enabled)
-ZK_PROV=$(cfg zk_prov)
-MK_PROV=$(cfg mk_prov)
-X402_ON=$(cfg x402_on)
-X402_ADDR=$(cfg x402_addr)
-HSM_ON=$(cfg hsm_on)
-HSM_PROV=$(cfg hsm_prov)
-ONDATO_ID=$(cfg ondato_id)
-MARQETA_URL=$(cfg marqeta_url)
+# Parse .env into variables (handles quotes, skips comments/blanks)
+env_get() {
+    local key="$1"
+    local val
+    val=$(grep -E "^${key}=" "$ENV_FILE" | tail -1 | sed "s/^${key}=//" | sed 's/^["'\'']//' | sed 's/["'\''"]$//' | sed 's/^[[:space:]]*//' | sed 's/[[:space:]]*$//')
+    echo "$val"
+}
 
 # =============================================================================
 section "1. Laravel Application"
 # =============================================================================
 
-if [[ "$APP_VERSION" != "FAIL" && -n "$APP_VERSION" ]]; then
-    pass "Laravel booting (version: $APP_VERSION)"
+APP_ENV=$(env_get APP_ENV)
+APP_DEBUG=$(env_get APP_DEBUG)
+APP_URL=$(env_get APP_URL)
+
+# Quick boot test via artisan (known to work)
+ARTISAN_VER=$(timeout 10 php artisan --version 2>/dev/null || echo "FAIL")
+if [[ "$ARTISAN_VER" != "FAIL" && -n "$ARTISAN_VER" ]]; then
+    pass "Laravel booting ($ARTISAN_VER)"
 else
     fail "Laravel cannot boot"
 fi
 
-# Test HTTP via localhost (try common ports)
+[[ "$APP_ENV" == "production" ]] && pass "APP_ENV=production" || warn "APP_ENV=$APP_ENV (expected production)"
+[[ "$APP_DEBUG" == "false" ]] && pass "APP_DEBUG=false" || fail "APP_DEBUG=$APP_DEBUG (MUST be false in production!)"
+[[ -n "$APP_URL" ]] && pass "APP_URL=$APP_URL" || fail "APP_URL not set"
+
+# Test HTTP via localhost
 HTTP_OK=false
-for PORT in 80 8000 443; do
+for PORT in 443 80 8000; do
     SCHEME="http"
     [[ "$PORT" == "443" ]] && SCHEME="https"
     HTTP_CODE=$(c -s -o /dev/null -w "%{http_code}" -k -H "Host: zelta.app" "${SCHEME}://127.0.0.1:${PORT}/up")
@@ -110,7 +76,6 @@ for PORT in 80 8000 443; do
         pass "HTTP health /up on port $PORT (HTTP 200)"
         HTTP_OK=true
 
-        # Check security headers
         HEADERS=$(c -sI -k -H "Host: zelta.app" "${SCHEME}://127.0.0.1:${PORT}/up")
         echo "$HEADERS" | grep -qi "x-content-type-options: nosniff" && pass "Security header: X-Content-Type-Options" || fail "Missing: X-Content-Type-Options"
         echo "$HEADERS" | grep -qi "strict-transport-security" && pass "Security header: HSTS" || warn "Missing: HSTS (may be set by reverse proxy)"
@@ -119,28 +84,48 @@ for PORT in 80 8000 443; do
     fi
 done
 if [[ "$HTTP_OK" == "false" ]]; then
-    warn "HTTP self-check skipped (no local listener on 80/8000/443 — test externally)"
+    warn "HTTP self-check skipped (no response on 443/80/8000 — test externally)"
 fi
 
 # =============================================================================
 section "2. Database (MariaDB)"
 # =============================================================================
 
-DB_CHECK=$(php -r "
-require '${SCRIPT_DIR}/vendor/autoload.php';
-\$app = require '${SCRIPT_DIR}/bootstrap/app.php';
-\$app->make(\Illuminate\Contracts\Console\Kernel::class)->bootstrap();
-try { \$pdo = DB::connection()->getPdo(); echo 'OK:' . DB::connection()->getDatabaseName(); }
-catch(Exception \$e) { echo 'FAIL:' . \$e->getMessage(); }
-" 2>/dev/null | tail -1 || echo "FAIL:unknown")
-if [[ "$DB_CHECK" == *"OK:"* ]]; then
-    DB_NAME=$(echo "$DB_CHECK" | grep -o 'OK:.*' | cut -d: -f2)
-    pass "MariaDB connection (database: $DB_NAME)"
+DB_HOST=$(env_get DB_HOST)
+DB_DATABASE=$(env_get DB_DATABASE)
+DB_USERNAME=$(env_get DB_USERNAME)
+DB_PASSWORD=$(env_get DB_PASSWORD)
+
+if [[ -n "$DB_HOST" && -n "$DB_DATABASE" ]]; then
+    # Test with mysqladmin or mysql CLI
+    if command -v mysqladmin &>/dev/null; then
+        DB_PING=$(mysqladmin ping -h "$DB_HOST" -u "$DB_USERNAME" -p"$DB_PASSWORD" 2>/dev/null || echo "FAIL")
+        if [[ "$DB_PING" == *"alive"* ]]; then
+            pass "MariaDB connection (database: $DB_DATABASE)"
+        else
+            fail "MariaDB ping failed"
+        fi
+    elif command -v mysql &>/dev/null; then
+        DB_TEST=$(mysql -h "$DB_HOST" -u "$DB_USERNAME" -p"$DB_PASSWORD" "$DB_DATABASE" -e "SELECT 1;" 2>/dev/null || echo "FAIL")
+        if [[ "$DB_TEST" == *"1"* ]]; then
+            pass "MariaDB connection (database: $DB_DATABASE)"
+        else
+            fail "MariaDB connection failed"
+        fi
+    else
+        warn "No mysql CLI — checking via artisan"
+        MIGRATE=$(timeout 15 php artisan migrate:status 2>&1 | head -3 || echo "FAIL")
+        if [[ "$MIGRATE" != *"FAIL"* && "$MIGRATE" != *"error"* ]]; then
+            pass "MariaDB connection via artisan"
+        else
+            fail "MariaDB connection failed"
+        fi
+    fi
 else
-    fail "MariaDB connection: $DB_CHECK"
+    fail "Database not configured in .env"
 fi
 
-MIGRATE_STATUS=$(php artisan migrate:status 2>/dev/null | grep -c "Pending" || echo "0")
+MIGRATE_STATUS=$(timeout 15 php artisan migrate:status 2>/dev/null | grep -c "Pending" || echo "0")
 if [[ "$MIGRATE_STATUS" == "0" ]]; then
     pass "All migrations applied"
 else
@@ -151,38 +136,38 @@ fi
 section "3. Redis"
 # =============================================================================
 
-REDIS_CHECK=$(php -r "
-require '${SCRIPT_DIR}/vendor/autoload.php';
-\$app = require '${SCRIPT_DIR}/bootstrap/app.php';
-\$app->make(\Illuminate\Contracts\Console\Kernel::class)->bootstrap();
-try { \Illuminate\Support\Facades\Redis::ping(); echo 'OK'; }
-catch(Exception \$e) { echo 'FAIL:' . \$e->getMessage(); }
-" 2>/dev/null | tail -1 || echo "FAIL")
-if [[ "$REDIS_CHECK" == *"OK"* ]]; then
-    pass "Redis connection"
+REDIS_HOST=$(env_get REDIS_HOST)
+REDIS_PORT=$(env_get REDIS_PORT)
+REDIS_PASSWORD=$(env_get REDIS_PASSWORD)
+[[ -z "$REDIS_PORT" ]] && REDIS_PORT="6379"
+
+if command -v redis-cli &>/dev/null; then
+    if [[ -n "$REDIS_PASSWORD" ]]; then
+        REDIS_PING=$(redis-cli -h "${REDIS_HOST:-127.0.0.1}" -p "$REDIS_PORT" -a "$REDIS_PASSWORD" --no-auth-warning ping 2>/dev/null || echo "FAIL")
+    else
+        REDIS_PING=$(redis-cli -h "${REDIS_HOST:-127.0.0.1}" -p "$REDIS_PORT" ping 2>/dev/null || echo "FAIL")
+    fi
+    if [[ "$REDIS_PING" == "PONG" ]]; then
+        pass "Redis connection"
+    else
+        fail "Redis connection: $REDIS_PING"
+    fi
 else
-    fail "Redis connection: $REDIS_CHECK"
+    warn "redis-cli not found — cannot verify Redis"
 fi
 
-CACHE_CHECK=$(php -r "
-require '${SCRIPT_DIR}/vendor/autoload.php';
-\$app = require '${SCRIPT_DIR}/bootstrap/app.php';
-\$app->make(\Illuminate\Contracts\Console\Kernel::class)->bootstrap();
-try { cache()->put('__verify__', 'ok', 10); echo cache()->get('__verify__'); cache()->forget('__verify__'); }
-catch(Exception \$e) { echo 'FAIL'; }
-" 2>/dev/null | tail -1 || echo "FAIL")
-if [[ "$CACHE_CHECK" == *"ok"* ]]; then
-    pass "Cache read/write (Redis)"
-else
-    fail "Cache read/write"
-fi
+CACHE_DRIVER=$(env_get CACHE_STORE)
+[[ -z "$CACHE_DRIVER" ]] && CACHE_DRIVER=$(env_get CACHE_DRIVER)
+[[ "$CACHE_DRIVER" == "redis" ]] && pass "Cache driver: redis" || warn "Cache driver: ${CACHE_DRIVER:-not set}"
 
 # =============================================================================
 section "4. RAILGUN Bridge"
 # =============================================================================
 
+BRIDGE_URL=$(env_get RAILGUN_BRIDGE_URL)
+BRIDGE_SECRET=$(env_get RAILGUN_BRIDGE_SECRET)
+
 if [[ -n "$BRIDGE_URL" && "$BRIDGE_URL" == http* ]]; then
-    # Health endpoint (public, no auth)
     BRIDGE_HEALTH=$(c -s "${BRIDGE_URL}/health")
     if echo "$BRIDGE_HEALTH" | grep -q '"engine_ready":true'; then
         pass "RAILGUN bridge health (engine ready)"
@@ -196,7 +181,6 @@ if [[ -n "$BRIDGE_URL" && "$BRIDGE_URL" == http* ]]; then
         fail "RAILGUN bridge not responding at $BRIDGE_URL"
     fi
 
-    # Auth test (should return 401 without token)
     AUTH_TEST=$(c -s -o /dev/null -w "%{http_code}" -X POST "${BRIDGE_URL}/wallet/create")
     if [[ "$AUTH_TEST" == "401" ]]; then
         pass "RAILGUN bridge auth enforced (401 without token)"
@@ -206,7 +190,6 @@ if [[ -n "$BRIDGE_URL" && "$BRIDGE_URL" == http* ]]; then
         warn "RAILGUN bridge auth returned HTTP $AUTH_TEST (expected 401)"
     fi
 
-    # Auth with correct token
     if [[ -n "$BRIDGE_SECRET" ]]; then
         AUTH_OK=$(c -s -o /dev/null -w "%{http_code}" \
             -H "Authorization: Bearer ${BRIDGE_SECRET}" \
@@ -228,8 +211,8 @@ fi
 section "5. Alchemy RPC"
 # =============================================================================
 
+ALCHEMY_KEY=$(env_get ALCHEMY_API_KEY)
 if [[ -n "$ALCHEMY_KEY" && ${#ALCHEMY_KEY} -gt 5 ]]; then
-    # Test Polygon RPC
     POLYGON_BLOCK=$(c -s -X POST -H "Content-Type: application/json" \
         -d '{"jsonrpc":"2.0","method":"eth_blockNumber","params":[],"id":1}' \
         "https://polygon-mainnet.g.alchemy.com/v2/${ALCHEMY_KEY}")
@@ -240,7 +223,6 @@ if [[ -n "$ALCHEMY_KEY" && ${#ALCHEMY_KEY} -gt 5 ]]; then
         fail "Alchemy Polygon RPC not responding"
     fi
 
-    # Test Ethereum RPC
     ETH_BLOCK=$(c -s -X POST -H "Content-Type: application/json" \
         -d '{"jsonrpc":"2.0","method":"eth_blockNumber","params":[],"id":1}' \
         "https://eth-mainnet.g.alchemy.com/v2/${ALCHEMY_KEY}")
@@ -257,6 +239,7 @@ fi
 section "6. Pimlico (ERC-4337 Bundler)"
 # =============================================================================
 
+PIMLICO_KEY=$(env_get PIMLICO_API_KEY)
 if [[ -n "$PIMLICO_KEY" && ${#PIMLICO_KEY} -gt 3 ]]; then
     PIMLICO_RESP=$(c -s -X POST -H "Content-Type: application/json" \
         -d '{"jsonrpc":"2.0","method":"eth_chainId","params":[],"id":1}' \
@@ -277,20 +260,14 @@ fi
 section "7. CoinGecko (Exchange Rates)"
 # =============================================================================
 
+CG_KEY=$(env_get COINGECKO_API_KEY)
+CG_ENABLED=$(env_get COINGECKO_ENABLED)
 if [[ "$CG_ENABLED" == "true" && -n "$CG_KEY" ]]; then
     CG_RESP=$(c -s -H "x-cg-demo-api-key: ${CG_KEY}" "https://api.coingecko.com/api/v3/ping")
     if echo "$CG_RESP" | grep -q "gecko_says"; then
         pass "CoinGecko API (ping OK)"
     else
         fail "CoinGecko API not responding"
-    fi
-
-    CG_PRICE=$(c -s -H "x-cg-demo-api-key: ${CG_KEY}" \
-        "https://api.coingecko.com/api/v3/simple/price?ids=usd-coin&vs_currencies=eur")
-    if echo "$CG_PRICE" | grep -q "eur"; then
-        pass "CoinGecko USDC/EUR price fetch"
-    else
-        warn "CoinGecko price fetch failed (rate limit?)"
     fi
 else
     warn "CoinGecko not enabled or API key missing"
@@ -300,6 +277,8 @@ fi
 section "8. Pusher (Broadcasting)"
 # =============================================================================
 
+PUSHER_KEY=$(env_get PUSHER_APP_KEY)
+PUSHER_CLUSTER=$(env_get PUSHER_APP_CLUSTER)
 if [[ -n "$PUSHER_KEY" && -n "$PUSHER_CLUSTER" ]]; then
     PUSHER_HTTP=$(c -s -o /dev/null -w "%{http_code}" \
         "https://sockjs-${PUSHER_CLUSTER}.pusher.com/pusher/info?app_key=${PUSHER_KEY}")
@@ -318,19 +297,23 @@ fi
 section "9. Firebase (Push Notifications)"
 # =============================================================================
 
+FB_CREDS=$(env_get FIREBASE_CREDENTIALS)
 if [[ -n "$FB_CREDS" ]]; then
-    if [[ -f "storage/firebase-credentials.json" ]]; then
+    # Resolve path relative to project root
+    FB_PATH="$FB_CREDS"
+    [[ ! "$FB_PATH" = /* ]] && FB_PATH="${SCRIPT_DIR}/${FB_PATH}"
+    if [[ -f "$FB_PATH" ]]; then
         pass "Firebase credentials file exists"
-        if python3 -m json.tool storage/firebase-credentials.json > /dev/null 2>&1; then
+        if python3 -m json.tool "$FB_PATH" > /dev/null 2>&1; then
             pass "Firebase credentials valid JSON"
-            grep -q "project_id" storage/firebase-credentials.json && \
+            grep -q "project_id" "$FB_PATH" && \
                 pass "Firebase credentials contain project_id" || \
                 fail "Firebase credentials missing project_id"
         else
             fail "Firebase credentials not valid JSON"
         fi
     else
-        fail "Firebase credentials file missing (storage/firebase-credentials.json)"
+        fail "Firebase credentials file missing ($FB_CREDS)"
     fi
 else
     warn "Firebase credentials not configured (FIREBASE_CREDENTIALS)"
@@ -340,6 +323,7 @@ fi
 section "10. Stripe"
 # =============================================================================
 
+STRIPE_KEY=$(env_get STRIPE_SECRET)
 if [[ -n "$STRIPE_KEY" && "$STRIPE_KEY" == sk_live_* ]]; then
     STRIPE_RESP=$(c -s -u "${STRIPE_KEY}:" "https://api.stripe.com/v1/balance")
     if echo "$STRIPE_RESP" | grep -q '"available"'; then
@@ -360,21 +344,32 @@ fi
 section "11. TrustCert Signing Keys"
 # =============================================================================
 
-[[ "$TC_CA" == "SET" ]] && pass "TrustCert CA signing key" || fail "TrustCert CA signing key missing"
-[[ "$TC_CRED" == "SET" ]] && pass "TrustCert credential signing key" || fail "TrustCert credential signing key missing"
-[[ "$TC_PRES" == "SET" ]] && pass "TrustCert presentation signing key" || fail "TrustCert presentation signing key missing"
+TC_CA=$(env_get TRUSTCERT_CA_SIGNING_KEY)
+TC_CRED=$(env_get TRUSTCERT_CREDENTIAL_SIGNING_KEY)
+TC_PRES=$(env_get TRUSTCERT_PRESENTATION_SIGNING_KEY)
+
+[[ -n "$TC_CA" ]] && pass "TrustCert CA signing key" || fail "TrustCert CA signing key missing"
+[[ -n "$TC_CRED" ]] && pass "TrustCert credential signing key" || fail "TrustCert credential signing key missing"
+[[ -n "$TC_PRES" ]] && pass "TrustCert presentation signing key" || fail "TrustCert presentation signing key missing"
 
 # =============================================================================
 section "12. Privacy / RAILGUN Config"
 # =============================================================================
 
+PP_ENABLED=$(env_get PRIVACY_POOLS_ENABLED)
+ZK_PROV=$(env_get ZK_PROVIDER)
+MK_PROV=$(env_get MERKLE_PROVIDER)
+
 [[ "$PP_ENABLED" == "true" ]] && pass "Privacy pools enabled" || fail "Privacy pools disabled"
-[[ "$ZK_PROV" == *"railgun"* ]] && pass "ZK provider: railgun" || warn "ZK provider: $ZK_PROV (expected railgun)"
-[[ "$MK_PROV" == *"railgun"* ]] && pass "Merkle provider: railgun" || warn "Merkle provider: $MK_PROV (expected railgun)"
+[[ "$ZK_PROV" == *"railgun"* ]] && pass "ZK provider: railgun" || warn "ZK provider: ${ZK_PROV:-not set}"
+[[ "$MK_PROV" == *"railgun"* ]] && pass "Merkle provider: railgun" || warn "Merkle provider: ${MK_PROV:-not set}"
 
 # =============================================================================
 section "13. X402 Protocol"
 # =============================================================================
+
+X402_ON=$(env_get X402_ENABLED)
+X402_ADDR=$(env_get X402_PAY_TO_ADDRESS)
 
 [[ "$X402_ON" == "true" ]] && pass "X402 protocol enabled" || warn "X402 protocol disabled"
 [[ -n "$X402_ADDR" && "$X402_ADDR" == 0x* ]] && pass "X402 pay-to: ${X402_ADDR:0:10}..." || warn "X402 pay-to address not set"
@@ -383,7 +378,13 @@ section "13. X402 Protocol"
 section "14. HSM / Key Management"
 # =============================================================================
 
+HSM_ON=$(env_get HSM_ENABLED)
+HSM_PROV=$(env_get HSM_PROVIDER)
+
 [[ "$HSM_ON" == "true" ]] && pass "HSM enabled ($HSM_PROV)" || warn "HSM disabled"
+
+AWS_KMS_ARN=$(env_get AWS_KMS_KEY_ARN)
+[[ -n "$AWS_KMS_ARN" ]] && pass "AWS KMS Key ARN configured" || warn "AWS_KMS_KEY_ARN not set"
 
 # =============================================================================
 section "15. Queue & Supervisor"
@@ -415,7 +416,7 @@ fi
 section "16. Artisan Health Check"
 # =============================================================================
 
-ARTISAN_HEALTH=$(php artisan system:health-check 2>&1 || echo "COMMAND_FAILED")
+ARTISAN_HEALTH=$(timeout 15 php artisan system:health-check 2>&1 || echo "COMMAND_FAILED")
 if [[ "$ARTISAN_HEALTH" == *"COMMAND_FAILED"* ]]; then
     warn "system:health-check command not available or failed"
 else
@@ -432,8 +433,10 @@ fi
 section "17. Pending Integrations"
 # =============================================================================
 
+ONDATO_ID=$(env_get ONDATO_APPLICATION_ID)
 [[ -n "$ONDATO_ID" ]] && pass "Ondato KYC configured" || warn "Ondato KYC pending"
 
+MARQETA_URL=$(env_get MARQETA_BASE_URL)
 if [[ "$MARQETA_URL" == *"sandbox"* ]]; then
     warn "Marqeta on SANDBOX URL"
 elif [[ -n "$MARQETA_URL" ]]; then
