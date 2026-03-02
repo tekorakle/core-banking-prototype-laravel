@@ -34,9 +34,15 @@ class CertificateAuthorityService implements CertificateAuthorityInterface
     private array $subjectIndex = [];
 
     public function __construct(
-        private readonly string $caId = 'finaegis-root-ca',
-        private readonly string $signingKey = '',
+        private string $caId = '',
+        private string $signingKey = '',
     ) {
+        if (empty($this->caId)) {
+            $this->caId = (string) config('trustcert.certificate_authority.ca_id', 'finaegis-root-ca');
+        }
+        if (empty($this->signingKey)) {
+            $this->signingKey = (string) config('trustcert.certificate_authority.ca_signing_key', '');
+        }
         if (app()->environment('production') && empty($this->signingKey)) {
             throw new RuntimeException('CA signing key must be configured in production');
         }
