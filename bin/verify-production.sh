@@ -28,13 +28,70 @@ section() { echo -e "\n${CYAN}━━━ $1 ━━━${NC}"; }
 c() { curl --connect-timeout 3 --max-time 5 "$@" 2>/dev/null || echo ""; }
 
 # =============================================================================
+# Dump all config values in a single PHP call (avoids 25+ tinker invocations)
+# =============================================================================
+CONFIG_DUMP=$(php artisan tinker --no-interaction --execute='
+$vals = [
+    "app_version"      => app()->version(),
+    "bridge_url"       => config("privacy.railgun.bridge_url", ""),
+    "bridge_secret"    => config("privacy.railgun.bridge_secret", ""),
+    "alchemy_key"      => env("ALCHEMY_API_KEY", ""),
+    "pimlico_key"      => config("relayer.pimlico.api_key", ""),
+    "cg_key"           => config("exchange.providers.coingecko.api_key", ""),
+    "cg_enabled"       => config("exchange.providers.coingecko.enabled") ? "true" : "false",
+    "pusher_key"       => config("broadcasting.connections.pusher.key", ""),
+    "pusher_cluster"   => config("broadcasting.connections.pusher.options.cluster", ""),
+    "fb_creds"         => config("firebase.projects.app.credentials", ""),
+    "stripe_key"       => config("cashier.secret") ?: config("services.stripe.secret", ""),
+    "tc_ca"            => config("trustcert.certificate_authority.ca_signing_key") ? "SET" : "EMPTY",
+    "tc_cred"          => config("trustcert.credentials.credential_signing_key") ? "SET" : "EMPTY",
+    "tc_pres"          => config("trustcert.credentials.presentation_signing_key") ? "SET" : "EMPTY",
+    "pp_enabled"       => config("privacy.privacy_pools.enabled") ? "true" : "false",
+    "zk_prov"          => config("privacy.zk.provider", ""),
+    "mk_prov"          => config("privacy.merkle.provider", ""),
+    "x402_on"          => config("x402.enabled") ? "true" : "false",
+    "x402_addr"        => config("x402.pay_to_address", ""),
+    "hsm_on"           => config("keymanagement.hsm.enabled") ? "true" : "false",
+    "hsm_prov"         => config("keymanagement.hsm.provider", ""),
+    "ondato_id"        => config("services.ondato.application_id", ""),
+    "marqeta_url"      => config("cardissuance.marqeta.base_url", ""),
+];
+foreach ($vals as $k => $v) { echo "CFG:{$k}=" . ($v ?? "") . "\n"; }
+' 2>/dev/null || echo "CFG:app_version=FAIL")
+
+# Parse config values into bash variables
+cfg() { echo "$CONFIG_DUMP" | grep "^CFG:$1=" | head -1 | sed "s/^CFG:$1=//" ; }
+
+APP_VERSION=$(cfg app_version)
+BRIDGE_URL=$(cfg bridge_url)
+BRIDGE_SECRET=$(cfg bridge_secret)
+ALCHEMY_KEY=$(cfg alchemy_key)
+PIMLICO_KEY=$(cfg pimlico_key)
+CG_KEY=$(cfg cg_key)
+CG_ENABLED=$(cfg cg_enabled)
+PUSHER_KEY=$(cfg pusher_key)
+PUSHER_CLUSTER=$(cfg pusher_cluster)
+FB_CREDS=$(cfg fb_creds)
+STRIPE_KEY=$(cfg stripe_key)
+TC_CA=$(cfg tc_ca)
+TC_CRED=$(cfg tc_cred)
+TC_PRES=$(cfg tc_pres)
+PP_ENABLED=$(cfg pp_enabled)
+ZK_PROV=$(cfg zk_prov)
+MK_PROV=$(cfg mk_prov)
+X402_ON=$(cfg x402_on)
+X402_ADDR=$(cfg x402_addr)
+HSM_ON=$(cfg hsm_on)
+HSM_PROV=$(cfg hsm_prov)
+ONDATO_ID=$(cfg ondato_id)
+MARQETA_URL=$(cfg marqeta_url)
+
+# =============================================================================
 section "1. Laravel Application"
 # =============================================================================
 
-# Test via artisan (avoids self-request DNS/SSL issues)
-APP_CHECK=$(php artisan tinker --execute="echo app()->version();" 2>/dev/null || echo "FAIL")
-if [[ "$APP_CHECK" != "FAIL" && -n "$APP_CHECK" ]]; then
-    pass "Laravel booting (version: $(echo "$APP_CHECK" | tail -1))"
+if [[ "$APP_VERSION" != "FAIL" && -n "$APP_VERSION" ]]; then
+    pass "Laravel booting (version: $APP_VERSION)"
 else
     fail "Laravel cannot boot"
 fi
@@ -65,7 +122,7 @@ fi
 section "2. Database (MariaDB)"
 # =============================================================================
 
-DB_CHECK=$(php artisan tinker --execute="try { \$pdo = DB::connection()->getPdo(); echo 'OK:' . DB::connection()->getDatabaseName(); } catch(Exception \$e) { echo 'FAIL:' . \$e->getMessage(); }" 2>/dev/null || echo "FAIL:unknown")
+DB_CHECK=$(php artisan tinker --no-interaction --execute="try { \$pdo = DB::connection()->getPdo(); echo 'OK:' . DB::connection()->getDatabaseName(); } catch(Exception \$e) { echo 'FAIL:' . \$e->getMessage(); }" 2>/dev/null | tail -1 || echo "FAIL:unknown")
 if [[ "$DB_CHECK" == *"OK:"* ]]; then
     DB_NAME=$(echo "$DB_CHECK" | grep -o 'OK:.*' | cut -d: -f2)
     pass "MariaDB connection (database: $DB_NAME)"
@@ -84,14 +141,14 @@ fi
 section "3. Redis"
 # =============================================================================
 
-REDIS_CHECK=$(php artisan tinker --execute="try { \Illuminate\Support\Facades\Redis::ping(); echo 'OK'; } catch(Exception \$e) { echo 'FAIL:' . \$e->getMessage(); }" 2>/dev/null || echo "FAIL")
+REDIS_CHECK=$(php artisan tinker --no-interaction --execute="try { \Illuminate\Support\Facades\Redis::ping(); echo 'OK'; } catch(Exception \$e) { echo 'FAIL:' . \$e->getMessage(); }" 2>/dev/null | tail -1 || echo "FAIL")
 if [[ "$REDIS_CHECK" == *"OK"* ]]; then
     pass "Redis connection"
 else
     fail "Redis connection: $REDIS_CHECK"
 fi
 
-CACHE_CHECK=$(php artisan tinker --execute="try { cache()->put('__verify__', 'ok', 10); echo cache()->get('__verify__'); cache()->forget('__verify__'); } catch(Exception \$e) { echo 'FAIL'; }" 2>/dev/null || echo "FAIL")
+CACHE_CHECK=$(php artisan tinker --no-interaction --execute="try { cache()->put('__verify__', 'ok', 10); echo cache()->get('__verify__'); cache()->forget('__verify__'); } catch(Exception \$e) { echo 'FAIL'; }" 2>/dev/null | tail -1 || echo "FAIL")
 if [[ "$CACHE_CHECK" == *"ok"* ]]; then
     pass "Cache read/write (Redis)"
 else
@@ -101,9 +158,6 @@ fi
 # =============================================================================
 section "4. RAILGUN Bridge"
 # =============================================================================
-
-BRIDGE_URL=$(php artisan tinker --execute="echo config('privacy.railgun.bridge_url');" 2>/dev/null | tail -1 || echo "")
-BRIDGE_SECRET=$(php artisan tinker --execute="echo config('privacy.railgun.bridge_secret');" 2>/dev/null | tail -1 || echo "")
 
 if [[ -n "$BRIDGE_URL" && "$BRIDGE_URL" == http* ]]; then
     # Health endpoint (public, no auth)
@@ -152,7 +206,6 @@ fi
 section "5. Alchemy RPC"
 # =============================================================================
 
-ALCHEMY_KEY=$(php artisan tinker --execute="echo env('ALCHEMY_API_KEY');" 2>/dev/null | tail -1 || echo "")
 if [[ -n "$ALCHEMY_KEY" && ${#ALCHEMY_KEY} -gt 5 ]]; then
     # Test Polygon RPC
     POLYGON_BLOCK=$(c -s -X POST -H "Content-Type: application/json" \
@@ -182,7 +235,6 @@ fi
 section "6. Pimlico (ERC-4337 Bundler)"
 # =============================================================================
 
-PIMLICO_KEY=$(php artisan tinker --execute="echo config('relayer.pimlico.api_key');" 2>/dev/null | tail -1 || echo "")
 if [[ -n "$PIMLICO_KEY" && ${#PIMLICO_KEY} -gt 3 ]]; then
     PIMLICO_RESP=$(c -s -X POST -H "Content-Type: application/json" \
         -d '{"jsonrpc":"2.0","method":"eth_chainId","params":[],"id":1}' \
@@ -203,9 +255,7 @@ fi
 section "7. CoinGecko (Exchange Rates)"
 # =============================================================================
 
-CG_KEY=$(php artisan tinker --execute="echo config('exchange.providers.coingecko.api_key');" 2>/dev/null | tail -1 || echo "")
-CG_ENABLED=$(php artisan tinker --execute="echo config('exchange.providers.coingecko.enabled') ? 'true' : 'false';" 2>/dev/null | tail -1 || echo "false")
-if [[ "$CG_ENABLED" == *"true"* && -n "$CG_KEY" ]]; then
+if [[ "$CG_ENABLED" == "true" && -n "$CG_KEY" ]]; then
     CG_RESP=$(c -s -H "x-cg-demo-api-key: ${CG_KEY}" "https://api.coingecko.com/api/v3/ping")
     if echo "$CG_RESP" | grep -q "gecko_says"; then
         pass "CoinGecko API (ping OK)"
@@ -228,8 +278,6 @@ fi
 section "8. Pusher (Broadcasting)"
 # =============================================================================
 
-PUSHER_KEY=$(php artisan tinker --execute="echo config('broadcasting.connections.pusher.key');" 2>/dev/null | tail -1 || echo "")
-PUSHER_CLUSTER=$(php artisan tinker --execute="echo config('broadcasting.connections.pusher.options.cluster');" 2>/dev/null | tail -1 || echo "")
 if [[ -n "$PUSHER_KEY" && -n "$PUSHER_CLUSTER" ]]; then
     PUSHER_HTTP=$(c -s -o /dev/null -w "%{http_code}" \
         "https://sockjs-${PUSHER_CLUSTER}.pusher.com/pusher/info?app_key=${PUSHER_KEY}")
@@ -248,7 +296,6 @@ fi
 section "9. Firebase (Push Notifications)"
 # =============================================================================
 
-FB_CREDS=$(php artisan tinker --execute="echo config('firebase.projects.app.credentials');" 2>/dev/null | tail -1 || echo "")
 if [[ -n "$FB_CREDS" ]]; then
     if [[ -f "storage/firebase-credentials.json" ]]; then
         pass "Firebase credentials file exists"
@@ -271,7 +318,6 @@ fi
 section "10. Stripe"
 # =============================================================================
 
-STRIPE_KEY=$(php artisan tinker --execute="echo config('cashier.secret') ?: config('services.stripe.secret');" 2>/dev/null | tail -1 || echo "")
 if [[ -n "$STRIPE_KEY" && "$STRIPE_KEY" == sk_live_* ]]; then
     STRIPE_RESP=$(c -s -u "${STRIPE_KEY}:" "https://api.stripe.com/v1/balance")
     if echo "$STRIPE_RESP" | grep -q '"available"'; then
@@ -292,23 +338,15 @@ fi
 section "11. TrustCert Signing Keys"
 # =============================================================================
 
-TC_CA=$(php artisan tinker --execute="echo config('trustcert.ca.ca_signing_key') ? 'SET' : 'EMPTY';" 2>/dev/null | tail -1 || echo "EMPTY")
-TC_CRED=$(php artisan tinker --execute="echo config('trustcert.signing.credential_signing_key') ? 'SET' : 'EMPTY';" 2>/dev/null | tail -1 || echo "EMPTY")
-TC_PRES=$(php artisan tinker --execute="echo config('trustcert.signing.presentation_signing_key') ? 'SET' : 'EMPTY';" 2>/dev/null | tail -1 || echo "EMPTY")
-
-[[ "$TC_CA" == *"SET"* ]] && pass "TrustCert CA signing key" || fail "TrustCert CA signing key missing"
-[[ "$TC_CRED" == *"SET"* ]] && pass "TrustCert credential signing key" || fail "TrustCert credential signing key missing"
-[[ "$TC_PRES" == *"SET"* ]] && pass "TrustCert presentation signing key" || fail "TrustCert presentation signing key missing"
+[[ "$TC_CA" == "SET" ]] && pass "TrustCert CA signing key" || fail "TrustCert CA signing key missing"
+[[ "$TC_CRED" == "SET" ]] && pass "TrustCert credential signing key" || fail "TrustCert credential signing key missing"
+[[ "$TC_PRES" == "SET" ]] && pass "TrustCert presentation signing key" || fail "TrustCert presentation signing key missing"
 
 # =============================================================================
 section "12. Privacy / RAILGUN Config"
 # =============================================================================
 
-PP_ENABLED=$(php artisan tinker --execute="echo config('privacy.privacy_pools.enabled') ? 'true' : 'false';" 2>/dev/null | tail -1 || echo "false")
-ZK_PROV=$(php artisan tinker --execute="echo config('privacy.zk.provider');" 2>/dev/null | tail -1 || echo "")
-MK_PROV=$(php artisan tinker --execute="echo config('privacy.merkle.provider');" 2>/dev/null | tail -1 || echo "")
-
-[[ "$PP_ENABLED" == *"true"* ]] && pass "Privacy pools enabled" || fail "Privacy pools disabled"
+[[ "$PP_ENABLED" == "true" ]] && pass "Privacy pools enabled" || fail "Privacy pools disabled"
 [[ "$ZK_PROV" == *"railgun"* ]] && pass "ZK provider: railgun" || warn "ZK provider: $ZK_PROV (expected railgun)"
 [[ "$MK_PROV" == *"railgun"* ]] && pass "Merkle provider: railgun" || warn "Merkle provider: $MK_PROV (expected railgun)"
 
@@ -316,20 +354,14 @@ MK_PROV=$(php artisan tinker --execute="echo config('privacy.merkle.provider');"
 section "13. X402 Protocol"
 # =============================================================================
 
-X402_ON=$(php artisan tinker --execute="echo config('x402.enabled') ? 'true' : 'false';" 2>/dev/null | tail -1 || echo "false")
-X402_ADDR=$(php artisan tinker --execute="echo config('x402.pay_to_address');" 2>/dev/null | tail -1 || echo "")
-
-[[ "$X402_ON" == *"true"* ]] && pass "X402 protocol enabled" || warn "X402 protocol disabled"
+[[ "$X402_ON" == "true" ]] && pass "X402 protocol enabled" || warn "X402 protocol disabled"
 [[ -n "$X402_ADDR" && "$X402_ADDR" == 0x* ]] && pass "X402 pay-to: ${X402_ADDR:0:10}..." || warn "X402 pay-to address not set"
 
 # =============================================================================
 section "14. HSM / Key Management"
 # =============================================================================
 
-HSM_ON=$(php artisan tinker --execute="echo config('keymanagement.hsm.enabled') ? 'true' : 'false';" 2>/dev/null | tail -1 || echo "false")
-HSM_PROV=$(php artisan tinker --execute="echo config('keymanagement.hsm.provider');" 2>/dev/null | tail -1 || echo "")
-
-[[ "$HSM_ON" == *"true"* ]] && pass "HSM enabled ($HSM_PROV)" || warn "HSM disabled"
+[[ "$HSM_ON" == "true" ]] && pass "HSM enabled ($HSM_PROV)" || warn "HSM disabled"
 
 # =============================================================================
 section "15. Queue & Supervisor"
@@ -378,10 +410,8 @@ fi
 section "17. Pending Integrations"
 # =============================================================================
 
-ONDATO_ID=$(php artisan tinker --execute="echo config('services.ondato.application_id') ?: 'EMPTY';" 2>/dev/null | tail -1 || echo "EMPTY")
-[[ "$ONDATO_ID" != *"EMPTY"* && -n "$ONDATO_ID" ]] && pass "Ondato KYC configured" || warn "Ondato KYC pending"
+[[ -n "$ONDATO_ID" ]] && pass "Ondato KYC configured" || warn "Ondato KYC pending"
 
-MARQETA_URL=$(php artisan tinker --execute="echo config('cardissuance.marqeta.base_url');" 2>/dev/null | tail -1 || echo "")
 if [[ "$MARQETA_URL" == *"sandbox"* ]]; then
     warn "Marqeta on SANDBOX URL"
 elif [[ -n "$MARQETA_URL" ]]; then
