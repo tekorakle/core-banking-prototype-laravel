@@ -109,8 +109,10 @@ class RampController extends Controller
         ]);
 
         try {
+            /** @var \App\Models\User $user */
+            $user = $request->user();
             $session = $this->rampService->createSession(
-                $request->user(),
+                $user,
                 $request->input('type'),
                 strtoupper($request->input('fiat_currency')),
                 (float) $request->input('fiat_amount'),
@@ -142,8 +144,10 @@ class RampController extends Controller
     #[OA\Response(response: 404, description: 'Not found')]
     public function getSession(Request $request, string $id): JsonResponse
     {
+        /** @var \App\Models\User $user */
+        $user = $request->user();
         $session = RampSession::where('id', $id)
-            ->where('user_id', $request->user()->id)
+            ->where('user_id', $user->id)
             ->first();
 
         if (! $session) {
@@ -169,10 +173,50 @@ class RampController extends Controller
     #[OA\Response(response: 200, description: 'Session list')]
     public function listSessions(Request $request): JsonResponse
     {
-        $sessions = $this->rampService->getUserSessions($request->user());
+        /** @var \App\Models\User $user */
+        $user = $request->user();
+        $sessions = $this->rampService->getUserSessions($user);
 
         return response()->json([
             'data' => RampSessionResource::collection($sessions),
+        ]);
+    }
+
+    #[OA\Get(
+        path: '/api/v1/ramp/supported',
+        operationId: 'v1RampSupported',
+        tags: ['Ramp'],
+        summary: 'Get supported currencies and provider info',
+        security: [['sanctum' => []]]
+    )]
+    #[OA\Response(
+        response: 200,
+        description: 'Supported currencies',
+        content: new OA\JsonContent(
+            properties: [
+                new OA\Property(property: 'data', type: 'object', properties: [
+                    new OA\Property(property: 'provider', type: 'string', example: 'onramper'),
+                    new OA\Property(property: 'fiat_currencies', type: 'array', items: new OA\Items(type: 'string'), example: '["USD","EUR","GBP"]'),
+                    new OA\Property(property: 'crypto_currencies', type: 'array', items: new OA\Items(type: 'string'), example: '["USDC","USDT","ETH","BTC"]'),
+                    new OA\Property(property: 'modes', type: 'array', items: new OA\Items(type: 'string'), example: '["buy","sell"]'),
+                ]),
+            ]
+        )
+    )]
+    public function supported(): JsonResponse
+    {
+        return response()->json([
+            'data' => [
+                'provider'          => config('ramp.default_provider'),
+                'fiat_currencies'   => config('ramp.supported_fiat'),
+                'crypto_currencies' => config('ramp.supported_crypto'),
+                'modes'             => ['buy', 'sell'],
+                'limits'            => [
+                    'min_amount'  => config('ramp.limits.min_fiat_amount'),
+                    'max_amount'  => config('ramp.limits.max_fiat_amount'),
+                    'daily_limit' => config('ramp.limits.daily_limit'),
+                ],
+            ],
         ]);
     }
 }
