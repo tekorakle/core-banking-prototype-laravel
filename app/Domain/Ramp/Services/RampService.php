@@ -107,11 +107,11 @@ class RampService
     {
         $validator = $this->provider->getWebhookValidator();
 
-        if (! $validator(json_encode($payload), $signature)) {
+        if (! $validator((string) json_encode($payload), $signature)) {
             throw new RuntimeException('Invalid webhook signature');
         }
 
-        $sessionId = $payload['session_id'] ?? $payload['id'] ?? null;
+        $sessionId = $payload['session_id'] ?? $payload['partnerContext'] ?? $payload['id'] ?? null;
         if (! $sessionId) {
             Log::warning('Ramp webhook missing session_id', ['provider' => $provider]);
 
