@@ -1,42 +1,24 @@
 <x-foodo.layouts.app :title="'Dish Analysis'" :active-page="'dish'">
-    {{-- Header --}}
-    <header class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 bg-foodo-surface-dark text-white p-6 rounded-2xl shadow-xl mb-6">
-        <div>
-            <div class="flex items-center gap-2 mb-1 opacity-70">
-                <span class="material-symbols-outlined text-sm foodo-icon-thin">calendar_month</span>
-                <p class="text-[11px] font-bold uppercase tracking-wider">{{ now()->format('l, F d, Y') }}</p>
-            </div>
-            <h1 class="text-2xl font-black flex items-center gap-3">
-                <span class="material-symbols-outlined text-foodo-primary-vibrant foodo-icon">restaurant</span>
-                Dish Analysis
-                <span class="text-stone-400 font-medium ml-2 text-base">/ {{ $dishName ?? 'Siciliečių' }}</span>
-            </h1>
-        </div>
-        <div class="flex items-center gap-3">
-            <div class="bg-white/10 backdrop-blur px-4 py-2 rounded-lg border border-white/10 flex items-center gap-3 cursor-pointer hover:bg-white/20 transition-all">
-                <span class="text-xs font-black uppercase tracking-wider">Kitchen 1</span>
-                <span class="material-symbols-outlined text-sm">expand_more</span>
-            </div>
-            <a href="{{ route('foodo.chat') }}" class="bg-foodo-primary-vibrant hover:bg-foodo-primary-dark text-white px-5 py-2 rounded-lg text-xs font-black uppercase tracking-widest flex items-center gap-2 shadow-lg transition-all">
-                <span class="material-symbols-outlined text-lg foodo-icon">auto_awesome</span> AI Advisor
-            </a>
-        </div>
-    </header>
+    <x-foodo.page-header
+        title="Dish Analysis"
+        :subtitle="($dishName ?? 'Siciliečių Pizza') . ' — Quality assessment and improvement recommendations'"
+        context-label="Kitchen 1"
+    />
 
     {{-- Main Analysis Card --}}
-    <div class="flex justify-center w-full">
-        <div class="w-full max-w-4xl bg-white rounded-2xl shadow-xl overflow-hidden border border-stone-200" x-data="{ expanded: false }">
+    <div class="flex justify-center w-full pb-10">
+        <div class="w-full max-w-4xl bg-white rounded-2xl shadow-sm overflow-hidden border border-stone-200" x-data="{ expanded: false }">
 
             {{-- Orange Gradient Header --}}
-            <div class="bg-gradient-to-r from-orange-400 to-orange-500 p-8 text-white flex justify-between items-center relative overflow-hidden">
+            <div class="bg-gradient-to-r from-orange-400 to-orange-500 p-6 lg:p-8 text-white flex flex-col sm:flex-row justify-between items-start sm:items-center gap-6 relative overflow-hidden">
                 <div class="absolute top-0 right-0 w-64 h-64 bg-white opacity-10 rounded-full translate-x-1/3 -translate-y-1/3"></div>
-                <div class="relative z-10 flex items-center gap-6">
-                    <div class="w-16 h-16 rounded-full bg-white/20 flex items-center justify-center backdrop-blur-sm border border-white/30">
-                        <span class="material-symbols-outlined text-4xl foodo-icon">warning</span>
+                <div class="relative z-10 flex items-center gap-4 lg:gap-6">
+                    <div class="w-14 h-14 lg:w-16 lg:h-16 rounded-full bg-white/20 flex items-center justify-center backdrop-blur-sm border border-white/30">
+                        <span class="material-symbols-outlined text-3xl lg:text-4xl foodo-icon">warning</span>
                     </div>
                     <div>
-                        <h2 class="text-3xl font-black mb-1">Almost There</h2>
-                        <p class="text-white/80 font-medium text-lg">{{ $dishName ?? 'Siciliečių Pizza' }}</p>
+                        <h2 class="text-2xl lg:text-3xl font-black mb-1">Almost There</h2>
+                        <p class="text-white/80 font-medium text-base lg:text-lg">{{ $dishName ?? 'Siciliečių Pizza' }}</p>
                     </div>
                 </div>
                 <div class="relative z-10 flex flex-col items-center">
@@ -55,16 +37,16 @@
             </div>
 
             {{-- Content --}}
-            <div class="p-6 md:p-8 space-y-8">
+            <div class="p-4 md:p-6 lg:p-8 space-y-8">
 
                 {{-- Priority Improvement --}}
-                <div class="bg-orange-50 border border-orange-100 rounded-xl p-5 flex flex-col md:flex-row gap-5 items-start">
+                <div class="bg-orange-50 border border-orange-100 rounded-xl p-4 lg:p-5 flex flex-col md:flex-row gap-4 lg:gap-5 items-start">
                     <div class="flex-shrink-0">
                         <span class="bg-orange-400 text-white w-10 h-10 rounded-lg flex items-center justify-center font-black text-lg shadow-sm">#1</span>
                     </div>
                     <div class="flex-grow">
                         <p class="text-[10px] font-black text-orange-400 uppercase tracking-widest mb-1">Focus on this first</p>
-                        <h3 class="text-lg font-bold text-stone-800 mb-2">9-12 o'clock: 2 chicken chunks visible (ref has 3)</h3>
+                        <h3 class="text-base lg:text-lg font-bold text-stone-800 mb-2">9-12 o'clock: 2 chicken chunks visible (ref has 3)</h3>
                         <div class="flex gap-2 items-start text-stone-600 text-sm">
                             <span class="material-symbols-outlined text-orange-500 text-base mt-0.5 foodo-icon">arrow_forward</span>
                             <p><strong class="text-orange-700">BEFORE BAKING:</strong> Add 1 chicken chunk at the 10 o'clock position, closer to the outer ring.</p>
@@ -75,15 +57,20 @@
                 {{-- Score Breakdown --}}
                 <div class="flex flex-wrap gap-4 items-center justify-between border-b border-stone-100 pb-6">
                     <div class="flex gap-4">
-                        @foreach ([['Plating', 68, 'orange'], ['Portion', 75, 'emerald'], ['Quality', 70, 'orange']] as [$label, $score, $color])
-                            <div class="flex items-center gap-2">
-                                <span class="text-xs font-bold text-stone-500 uppercase">{{ $label }}</span>
-                                <span class="bg-{{ $color }}-100 text-{{ $color }}-700 px-2 py-0.5 rounded text-sm font-black">{{ $score }}</span>
-                            </div>
-                            @if(!$loop->last)
-                                <div class="w-px h-6 bg-stone-200"></div>
-                            @endif
-                        @endforeach
+                        <div class="flex items-center gap-2">
+                            <span class="text-xs font-bold text-stone-500 uppercase">Plating</span>
+                            <span class="bg-orange-100 text-orange-700 px-2 py-0.5 rounded text-sm font-black">68</span>
+                        </div>
+                        <div class="w-px h-6 bg-stone-200"></div>
+                        <div class="flex items-center gap-2">
+                            <span class="text-xs font-bold text-stone-500 uppercase">Portion</span>
+                            <span class="bg-emerald-100 text-emerald-700 px-2 py-0.5 rounded text-sm font-black">75</span>
+                        </div>
+                        <div class="w-px h-6 bg-stone-200"></div>
+                        <div class="flex items-center gap-2">
+                            <span class="text-xs font-bold text-stone-500 uppercase">Quality</span>
+                            <span class="bg-orange-100 text-orange-700 px-2 py-0.5 rounded text-sm font-black">70</span>
+                        </div>
                     </div>
                     <span class="bg-amber-100 text-amber-800 px-3 py-1 rounded-full font-bold text-xs flex items-center gap-1">
                         <span class="material-symbols-outlined text-sm foodo-icon">trending_up</span> 4.0 pts to PASS
@@ -96,7 +83,7 @@
                         <button class="bg-foodo-surface-dark text-white px-4 py-1.5 rounded-full text-xs font-bold uppercase tracking-wider shadow-md">Side by Side</button>
                         <button class="bg-stone-100 text-stone-500 hover:bg-stone-200 px-4 py-1.5 rounded-full text-xs font-bold uppercase tracking-wider transition-colors">Slider</button>
                     </div>
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 lg:gap-6">
                         <div class="space-y-2">
                             <div class="text-center text-[10px] font-black text-stone-400 uppercase tracking-widest">Submitted</div>
                             <div class="aspect-square bg-stone-100 rounded-xl overflow-hidden border border-stone-200 shadow-inner relative">
@@ -122,7 +109,7 @@
                 {{-- Tips --}}
                 <div class="grid gap-4">
                     <div class="bg-stone-50 rounded-xl p-4 flex gap-4 border border-stone-100">
-                        <div class="w-10 h-10 rounded-full bg-white border border-stone-200 flex items-center justify-center shadow-sm text-amber-500">
+                        <div class="w-10 h-10 rounded-full bg-white border border-stone-200 flex items-center justify-center shadow-sm text-amber-500 shrink-0">
                             <span class="material-symbols-outlined foodo-icon">chef_hat</span>
                         </div>
                         <div>
@@ -131,13 +118,13 @@
                         </div>
                     </div>
                     <div class="bg-blue-50/50 rounded-xl p-4 flex gap-4 border border-blue-100/50">
-                        <div class="w-10 h-10 rounded-full bg-blue-100 flex items-center justify-center shadow-sm text-blue-600">
+                        <div class="w-10 h-10 rounded-full bg-blue-100 flex items-center justify-center shadow-sm text-blue-600 shrink-0">
                             <span class="material-symbols-outlined foodo-icon">photo_camera</span>
                         </div>
                         <div>
                             <h4 class="text-[10px] font-black text-blue-400 uppercase tracking-widest mb-1">Photo Tips</h4>
                             <p class="text-sm font-medium text-stone-700 mb-1">For better AI analysis next time:</p>
-                            <p class="text-xs text-stone-500 leading-relaxed">Shadow at 6 o'clock darkens near edge — Move light to 11-12 o'clock. Shoot from overhead (90°) to show topping distribution.</p>
+                            <p class="text-xs text-stone-500 leading-relaxed">Shadow at 6 o'clock darkens near edge — Move light to 11-12 o'clock. Shoot from overhead (90&deg;) to show topping distribution.</p>
                         </div>
                     </div>
                 </div>
@@ -160,16 +147,16 @@
                 </div>
 
                 {{-- Chef Verification --}}
-                <div class="bg-stone-50 rounded-2xl p-6 flex flex-col sm:flex-row justify-between items-center gap-4">
+                <div class="bg-stone-50 rounded-2xl p-4 lg:p-6 flex flex-col sm:flex-row justify-between items-center gap-4">
                     <div>
                         <h4 class="font-bold text-sm text-stone-800">Chef Verification</h4>
                         <p class="text-xs text-stone-500">Is this AI assessment correct?</p>
                     </div>
                     <div class="flex gap-3">
-                        <button class="flex items-center gap-2 px-6 py-2.5 rounded-lg bg-emerald-100 text-emerald-700 hover:bg-emerald-200 transition-colors text-sm font-black shadow-sm">
+                        <button class="flex items-center gap-2 px-5 lg:px-6 py-2.5 rounded-lg bg-emerald-100 text-emerald-700 hover:bg-emerald-200 transition-colors text-sm font-black shadow-sm">
                             <span class="material-symbols-outlined text-lg foodo-icon">check</span> Correct
                         </button>
-                        <button class="flex items-center gap-2 px-6 py-2.5 rounded-lg bg-orange-100 text-orange-700 hover:bg-orange-200 transition-colors text-sm font-black shadow-sm">
+                        <button class="flex items-center gap-2 px-5 lg:px-6 py-2.5 rounded-lg bg-orange-100 text-orange-700 hover:bg-orange-200 transition-colors text-sm font-black shadow-sm">
                             <span class="material-symbols-outlined text-lg foodo-icon">close</span> Incorrect
                         </button>
                     </div>
@@ -177,16 +164,11 @@
 
                 {{-- CTA --}}
                 <div class="flex justify-center pt-4">
-                    <button class="bg-foodo-surface-dark hover:bg-stone-800 text-white px-8 py-3 rounded-lg font-bold flex items-center gap-2 shadow-xl transition-transform hover:-translate-y-0.5">
+                    <a href="{{ route('foodo.dish.demo') }}" class="bg-foodo-surface-dark hover:bg-stone-800 text-white px-8 py-3 rounded-lg font-bold flex items-center gap-2 shadow-xl transition-transform hover:-translate-y-0.5">
                         <span class="material-symbols-outlined foodo-icon">photo_camera</span> Analyze Another Dish
-                    </button>
+                    </a>
                 </div>
             </div>
         </div>
     </div>
-
-    {{-- Footer --}}
-    <footer class="pt-8 pb-12 text-center text-[10px] font-black text-stone-400 tracking-[0.4em] uppercase">
-        Foodo Insights © 2025-2026 — Dish Analysis Command Center
-    </footer>
 </x-foodo.layouts.app>

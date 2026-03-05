@@ -1,9 +1,10 @@
 @props(['active' => 'dashboard'])
 
-<aside class="w-64 bg-white border-r border-stone-200 flex flex-col fixed h-full z-50">
+<aside class="w-64 bg-white border-r border-stone-200 flex flex-col fixed h-full z-50 transition-transform duration-300 lg:translate-x-0"
+       :class="sidebarOpen ? 'translate-x-0' : '-translate-x-full'" @click.away="sidebarOpen = false">
     {{-- Logo --}}
     <div class="h-20 flex items-center px-6 border-b border-stone-100">
-        <div class="flex items-center gap-3">
+        <a href="{{ route('foodo.dashboard') }}" class="flex items-center gap-3">
             <div class="h-10 w-10 bg-foodo-primary rounded-xl flex items-center justify-center text-white shadow-lg shadow-orange-500/30">
                 <span class="font-black text-xl">F</span>
             </div>
@@ -11,7 +12,7 @@
                 <span class="font-black text-lg leading-none tracking-tight">Foodo</span>
                 <span class="text-[10px] font-bold text-stone-400 uppercase tracking-widest mt-0.5">Insights</span>
             </div>
-        </div>
+        </a>
     </div>
 
     {{-- Navigation --}}
@@ -29,6 +30,7 @@
 
         @foreach ($links as $link)
             <a href="{{ $link['route'] ? route($link['route']) : '#' }}"
+               @if($link['route']) @click="sidebarOpen = false" @endif
                class="flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-bold transition-all duration-200
                       {{ $active === $link['id']
                           ? 'bg-foodo-primary-dark text-white shadow-lg shadow-orange-900/20'

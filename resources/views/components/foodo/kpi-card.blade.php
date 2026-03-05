@@ -4,10 +4,20 @@
     'trend' => null,
     'trendDirection' => 'up',
     'chipLabel' => 'Actual',
-    'borderColor' => 'foodo-primary',
+    'borderColor' => 'orange',
 ])
 
-<div class="bg-white rounded-2xl border border-stone-200 shadow-sm p-4 border-t-4 border-t-{{ $borderColor }}">
+@php
+    $borderClasses = [
+        'orange' => 'border-t-foodo-primary',
+        'dark'   => 'border-t-stone-800',
+        'green'  => 'border-t-emerald-500',
+        'red'    => 'border-t-rose-500',
+    ];
+    $borderClass = $borderClasses[$borderColor] ?? 'border-t-foodo-primary';
+@endphp
+
+<div class="bg-white rounded-2xl border border-stone-200 shadow-sm p-4 border-t-4 {{ $borderClass }}">
     <div class="flex justify-between items-center mb-3">
         <span class="text-[10px] font-black text-stone-400 uppercase tracking-widest">{{ $label }}</span>
         <span class="px-2.5 py-1 rounded-md text-[10px] font-black uppercase tracking-wider leading-none
