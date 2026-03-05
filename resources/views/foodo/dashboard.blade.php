@@ -23,7 +23,7 @@
                     <div class="absolute right-0 top-0 h-full w-48 bg-gradient-to-l from-purple-500/20 to-transparent"></div>
                 </div>
 
-                <div class="p-6 space-y-4 bg-stone-50/50">
+                <div class="p-4 lg:p-6 space-y-4 bg-stone-50/50">
                     <x-foodo.insight-card
                         severity="rose"
                         icon="warning"
@@ -41,7 +41,7 @@
                         chip-label="Strategic"
                         recommendation="Focus resources on maximizing sales during weeks showing upward trends."
                     >
-                        Sales range from €122k to €427k. Opportunity to exploit high-demand weeks.
+                        Sales range from &euro;122k to &euro;427k. Opportunity to exploit high-demand weeks.
                     </x-foodo.insight-card>
 
                     <x-foodo.insight-card
@@ -61,14 +61,14 @@
             </section>
 
             {{-- Sales & Profitability Chart --}}
-            <section class="bg-white rounded-2xl border border-stone-200 shadow-sm p-6">
-                <div class="flex justify-between items-end mb-6">
+            <section class="bg-white rounded-2xl border border-stone-200 shadow-sm p-4 lg:p-6">
+                <div class="flex flex-col sm:flex-row justify-between items-start sm:items-end gap-4 mb-6">
                     <div>
                         <h3 class="text-lg font-black text-foodo-text flex items-center gap-2">
                             <span class="material-symbols-outlined text-foodo-primary foodo-icon">monitoring</span>
                             Sales & Profitability
                         </h3>
-                        <p class="text-[11px] font-bold text-stone-400 uppercase tracking-wider mt-1">Real-time Performance · Last 12 Weeks</p>
+                        <p class="text-[11px] font-bold text-stone-400 uppercase tracking-wider mt-1">Real-time Performance &middot; Last 12 Weeks</p>
                     </div>
                     <div class="flex gap-2">
                         <div class="bg-stone-100 p-1 rounded-lg flex gap-1">
@@ -89,22 +89,22 @@
             <div class="grid grid-cols-2 gap-4">
                 <x-foodo.kpi-card
                     label="Wk Sales"
-                    value="€377,309"
+                    value="&euro;377,309"
                     trend="-10.0% vs prev"
                     trend-direction="down"
-                    border-color="foodo-primary"
+                    border-color="orange"
                 />
                 <x-foodo.kpi-card
                     label="Feb Total"
-                    value="€1.6M"
+                    value="&euro;1.6M"
                     trend="On Track"
                     trend-direction="up"
                     chip-label="Month"
-                    border-color="stone-800"
+                    border-color="dark"
                 />
 
                 {{-- Top Performer Card --}}
-                <div class="bg-white rounded-2xl border border-stone-200 shadow-sm p-4 col-span-2 bg-foodo-primary-dark text-white border-none relative overflow-hidden">
+                <div class="bg-foodo-primary-dark text-white rounded-2xl shadow-sm p-4 col-span-2 relative overflow-hidden">
                     <div class="absolute right-0 top-0 opacity-10 pointer-events-none">
                         <span class="material-symbols-outlined text-9xl foodo-icon">emoji_events</span>
                     </div>
@@ -115,7 +115,7 @@
                             <p class="text-[10px] text-white/60">Category: Alkoholis</p>
                         </div>
                         <div class="text-right">
-                            <p class="text-2xl font-black text-white">€70k</p>
+                            <p class="text-2xl font-black text-white">&euro;70k</p>
                             <p class="text-[10px] font-bold text-orange-200">THIS WEEK</p>
                         </div>
                     </div>
@@ -136,7 +136,7 @@
             </div>
 
             {{-- Quick Actions --}}
-            <section class="bg-white rounded-2xl border border-stone-200 shadow-sm flex-1 flex flex-col bg-stone-50">
+            <section class="bg-stone-50 rounded-2xl border border-stone-200 shadow-sm flex-1 flex flex-col">
                 <div class="p-4 border-b border-stone-200 bg-white rounded-t-2xl flex justify-between items-center">
                     <h3 class="font-bold text-sm text-foodo-text flex items-center gap-2">
                         <span class="material-symbols-outlined text-stone-400 foodo-icon-thin">checklist</span>
