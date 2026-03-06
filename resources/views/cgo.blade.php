@@ -212,7 +212,7 @@
     <section class="py-20 bg-white">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="text-center mb-12">
-                <h2 class="text-3xl font-bold text-slate-900 mb-4">Want to Support FinAegis?</h2>
+                <h2 class="font-display text-3xl font-bold text-slate-900 mb-4">Want to Support FinAegis?</h2>
                 <p class="text-xl text-slate-500">Here's how you can actually contribute to this open-source project</p>
             </div>
 
@@ -254,7 +254,7 @@
     <section class="py-20 bg-slate-50">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="text-center mb-12">
-                <h2 class="text-3xl font-bold text-slate-900 mb-4">Learn More About FinAegis</h2>
+                <h2 class="font-display text-3xl font-bold text-slate-900 mb-4">Learn More About FinAegis</h2>
                 <p class="text-xl text-slate-500">Explore the concepts and technology behind the platform</p>
             </div>
 
@@ -278,17 +278,18 @@
     </section>
 
     <!-- CTA Section -->
-    <section class="py-20 bg-indigo-600">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-            <h2 class="text-4xl font-bold text-white mb-6">Explore the Demo</h2>
-            <p class="text-xl text-indigo-100 mb-8 max-w-3xl mx-auto">
+    <section class="bg-fa-navy relative overflow-hidden">
+        <div class="absolute inset-0 bg-dot-pattern"></div>
+        <div class="relative max-w-4xl mx-auto text-center px-4 sm:px-6 lg:px-8 py-20">
+            <h2 class="font-display text-4xl font-bold text-white mb-6">Explore the Demo</h2>
+            <p class="text-lg mb-10 text-slate-400 max-w-3xl mx-auto">
                 See the GCU, governance, and all banking features in action. Create a demo account to explore everything—all simulated, all safe.
             </p>
             <div class="flex flex-col sm:flex-row gap-4 justify-center">
-                <a href="{{ route('register') }}" class="inline-flex items-center justify-center px-8 py-3 border border-transparent text-base font-medium rounded-md text-indigo-600 bg-white hover:bg-indigo-50">
+                <a href="{{ route('register') }}" class="btn-primary !py-4 !px-10 !text-base !rounded-lg">
                     Explore the Platform
                 </a>
-                <a href="https://github.com/FinAegis/core-banking-prototype-laravel" target="_blank" class="inline-flex items-center justify-center px-8 py-3 border border-white text-base font-medium rounded-md text-white hover:bg-indigo-700">
+                <a href="https://github.com/FinAegis/core-banking-prototype-laravel" target="_blank" class="btn-outline !py-4 !px-10 !text-base !rounded-lg">
                     View on GitHub
                 </a>
             </div>
