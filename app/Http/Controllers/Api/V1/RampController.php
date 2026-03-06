@@ -207,7 +207,10 @@ class RampController extends Controller
                     new OA\Property(property: 'provider', type: 'string', example: 'onramper'),
                     new OA\Property(property: 'fiat_currencies', type: 'array', items: new OA\Items(type: 'string'), example: '["USD","EUR","GBP"]'),
                     new OA\Property(property: 'crypto_currencies', type: 'array', items: new OA\Items(type: 'string'), example: '["USDC","USDT","ETH","BTC"]'),
-                    new OA\Property(property: 'modes', type: 'array', items: new OA\Items(type: 'string'), example: '["buy","sell"]'),
+                    new OA\Property(property: 'modes', type: 'array', items: new OA\Items(type: 'object', properties: [
+                        new OA\Property(property: 'type', type: 'string', example: 'on'),
+                        new OA\Property(property: 'label', type: 'string', example: 'Buy Crypto'),
+                    ])),
                 ]),
             ]
         )
@@ -219,8 +222,11 @@ class RampController extends Controller
                 'provider'          => config('ramp.default_provider'),
                 'fiat_currencies'   => config('ramp.supported_fiat'),
                 'crypto_currencies' => config('ramp.supported_crypto'),
-                'modes'             => ['buy', 'sell'],
-                'limits'            => [
+                'modes'             => [
+                    ['type' => 'on', 'label' => 'Buy Crypto'],
+                    ['type' => 'off', 'label' => 'Sell Crypto'],
+                ],
+                'limits' => [
                     'min_amount'  => config('ramp.limits.min_fiat_amount'),
                     'max_amount'  => config('ramp.limits.max_fiat_amount'),
                     'daily_limit' => config('ramp.limits.daily_limit'),

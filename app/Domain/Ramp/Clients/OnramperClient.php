@@ -79,7 +79,7 @@ class OnramperClient
             );
         }
 
-        return $response->json();
+        return $response->json() ?? [];
     }
 
     /**
@@ -98,7 +98,7 @@ class OnramperClient
             );
         }
 
-        return $response->json();
+        return $response->json() ?? [];
     }
 
     /**
