@@ -6,6 +6,7 @@ namespace App\Domain\Ramp\Providers;
 
 use App\Domain\Ramp\Clients\OnramperClient;
 use App\Domain\Ramp\Contracts\RampProviderInterface;
+use App\Models\RampSession;
 use RuntimeException;
 
 class OnramperProvider implements RampProviderInterface
@@ -69,7 +70,7 @@ class OnramperProvider implements RampProviderInterface
             ];
         } catch (RuntimeException) {
             return [
-                'status'        => 'pending',
+                'status'        => RampSession::STATUS_PENDING,
                 'fiat_amount'   => null,
                 'crypto_amount' => null,
                 'metadata'      => ['provider' => 'onramper'],
@@ -149,10 +150,10 @@ class OnramperProvider implements RampProviderInterface
     private function mapOnramperStatus(string $status): string
     {
         return match (strtolower($status)) {
-            'completed', 'success', 'done' => 'completed',
-            'failed', 'error', 'cancelled', 'expired' => 'failed',
-            'pending', 'new', 'created' => 'pending',
-            default => 'processing',
+            'completed', 'success', 'done' => RampSession::STATUS_COMPLETED,
+            'failed', 'error', 'cancelled', 'expired' => RampSession::STATUS_FAILED,
+            'pending', 'new', 'created' => RampSession::STATUS_PENDING,
+            default => RampSession::STATUS_PROCESSING,
         };
     }
 }
