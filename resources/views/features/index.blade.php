@@ -48,33 +48,22 @@
 
 
     <!-- Development Notice -->
-    <section class="py-8 bg-amber-50">
+    <section class="py-6 bg-white border-b border-slate-100">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="bg-white rounded-lg shadow p-6 border-l-4 border-amber-400">
-                <div class="flex items-start">
-                    <div class="flex-shrink-0">
-                        <svg class="w-6 h-6 text-amber-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path>
-                        </svg>
-                    </div>
-                    <div class="ml-3">
-                        <h3 class="text-lg font-semibold text-slate-900">Feature Status Guide</h3>
-                        <p class="mt-2 text-slate-500">
-                            FinAegis is under active development with new modules shipping regularly.
-                            Features are marked with status badges below. The demo environment lets you
-                            explore every feature without external dependencies.
-                        </p>
-                        <div class="mt-3 flex gap-4">
-                            <span class="inline-flex items-center px-2 py-1 bg-green-100 text-green-700 text-xs rounded-full">
-                                ✅ Available - Fully implemented
-                            </span>
-                            <span class="inline-flex items-center px-2 py-1 bg-blue-100 text-blue-700 text-xs rounded-full">
-                                🎭 Demo Mode - Available for testing
-                            </span>
-                            <span class="inline-flex items-center px-2 py-1 bg-yellow-100 text-yellow-700 text-xs rounded-full">
-                                🚧 In Progress - Under development
-                            </span>
-                        </div>
+            <div class="card-stat flex items-start gap-3 border-l-4 border-amber-400 bg-amber-50/50">
+                <svg class="w-5 h-5 text-amber-600 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                </svg>
+                <div>
+                    <h3 class="font-display text-sm font-semibold text-slate-900">Feature Status Guide</h3>
+                    <p class="text-sm text-slate-600 mt-1">
+                        FinAegis is under active development with new modules shipping regularly.
+                        The demo environment lets you explore every feature without external dependencies.
+                    </p>
+                    <div class="mt-3 flex flex-wrap gap-2">
+                        <span class="badge badge-success">Available</span>
+                        <span class="badge badge-info">Demo Mode</span>
+                        <span class="badge badge-warning">In Progress</span>
                     </div>
                 </div>
             </div>
