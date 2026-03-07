@@ -26,7 +26,8 @@
                 <div class="inline-flex items-center justify-center w-16 h-16 bg-white/[0.04] border border-white/[0.08] rounded-2xl mb-6">
                     <svg class="w-8 h-8 text-teal-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
                 </div>
-                <h1 class="font-display text-5xl lg:text-6xl font-extrabold text-white tracking-tight mb-6">Compliance-Ready <span class="text-gradient">Architecture</span></h1>
+                @include('partials.breadcrumb', ['items' => [['name' => 'Compliance', 'url' => url('/compliance')]]])
+                <h1 class="font-display text-4xl md:text-5xl lg:text-6xl font-extrabold text-white tracking-tight mb-6">Compliance-Ready <span class="text-gradient">Architecture</span></h1>
                 <p class="text-lg text-slate-400 max-w-2xl mx-auto">
                     Built for EU regulatory compliance from day one. PSD2, EMD2, MiCA, KYC/AML, GDPR, and MiFID II adapters with jurisdiction-aware routing.
                 </p>

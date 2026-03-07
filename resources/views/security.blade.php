@@ -33,7 +33,8 @@
                         <path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4z"/>
                     </svg>
                 </div>
-                <h1 class="font-display text-5xl lg:text-6xl font-extrabold text-white tracking-tight mb-6">Security <span class="text-gradient">Architecture</span></h1>
+                @include('partials.breadcrumb', ['items' => [['name' => 'Security', 'url' => url('/security')]]])
+                <h1 class="font-display text-4xl md:text-5xl lg:text-6xl font-extrabold text-white tracking-tight mb-6">Security <span class="text-gradient">Architecture</span></h1>
                 <p class="text-lg text-slate-400 max-w-2xl mx-auto">
                     Multi-layered security with HMAC integrity verification, HSM key management, Shamir secret sharing, and comprehensive audit trails.
                 </p>

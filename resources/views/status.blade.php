@@ -20,6 +20,7 @@
     <section class="bg-fa-navy relative overflow-hidden">
         <div class="absolute inset-0 bg-grid-pattern"></div>
         <div class="relative max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-16 lg:py-20">
+            @include('partials.breadcrumb', ['items' => [['name' => 'System Status', 'url' => url('/status')]]])
             <div class="flex flex-col sm:flex-row items-center justify-between gap-6">
                 <div class="flex items-center gap-4">
                     @if($status['overall'] === 'operational')

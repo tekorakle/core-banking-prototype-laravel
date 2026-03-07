@@ -25,7 +25,8 @@
             <div class="absolute top-1/3 left-1/4 w-80 h-80 bg-blue-500/8 rounded-full blur-[100px]"></div>
             <div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 lg:py-24">
                 <div class="text-center">
-                    <h1 class="font-display text-5xl md:text-6xl font-extrabold text-white tracking-tight mb-6">
+                    @include('partials.breadcrumb', ['items' => [['name' => 'Pricing', 'url' => url('/pricing')]]])
+                    <h1 class="font-display text-4xl md:text-5xl lg:text-6xl font-extrabold text-white tracking-tight mb-6">
                         Open Source & <span class="text-gradient">Enterprise Ready</span>
                     </h1>
                     <p class="text-lg md:text-xl text-slate-400 max-w-2xl mx-auto">
@@ -143,12 +144,14 @@
                     @endphp
 
                     @foreach($faqs as $i => $faq)
-                    <details class="card-feature group animate-on-scroll stagger-{{ $i + 1 }}" {{ $i === 0 ? 'open' : '' }}>
-                        <summary class="flex items-center justify-between cursor-pointer list-none font-display font-semibold text-slate-900">
+                    <details class="card-feature accordion group animate-on-scroll stagger-{{ $i + 1 }}" {{ $i === 0 ? 'open' : '' }}>
+                        <summary class="flex items-center justify-between font-display font-semibold text-slate-900">
                             {{ $faq['q'] }}
                             <svg class="w-5 h-5 text-slate-400 group-open:rotate-180 transition-transform flex-shrink-0 ml-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
                         </summary>
-                        <p class="mt-4 text-slate-600 text-sm leading-relaxed">{{ $faq['a'] }}</p>
+                        <div class="accordion-content">
+                            <p class="text-slate-600 text-sm leading-relaxed">{{ $faq['a'] }}</p>
+                        </div>
                     </details>
                     @endforeach
                 </div>
