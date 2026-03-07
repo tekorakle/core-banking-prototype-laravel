@@ -24,7 +24,8 @@
                     </svg>
                     Conceptual Model Only
                 </div>
-                <h1 class="font-display text-5xl md:text-6xl font-extrabold text-white tracking-tight mb-6">
+                @include('partials.breadcrumb', ['items' => [['name' => 'CGO', 'url' => url('/cgo')]]])
+                <h1 class="font-display text-4xl md:text-5xl lg:text-6xl font-extrabold text-white tracking-tight mb-6">
                     Continuous Growth <span class="text-gradient-gold">Offering</span>
                 </h1>
                 <p class="text-lg md:text-xl text-slate-400 max-w-2xl mx-auto mb-10">
@@ -110,11 +111,11 @@
                 </p>
             </div>
 
-            <div class="grid md:grid-cols-3 gap-8 opacity-75">
+            <div class="grid md:grid-cols-3 gap-8">
                 <!-- Bronze Tier -->
-                <div class="card-feature">
+                <div class="card-feature relative animate-on-scroll stagger-1">
                     <div class="absolute -top-4 left-1/2 transform -translate-x-1/2">
-                        <span class="bg-slate-400 text-white px-4 py-1 rounded-full text-sm font-semibold">CONCEPTUAL</span>
+                        <span class="badge badge-warning">Conceptual</span>
                     </div>
                     <div class="text-center mb-6">
                         <h3 class="text-2xl font-bold text-slate-900 mb-2">Supporter</h3>
@@ -144,9 +145,9 @@
                 </div>
 
                 <!-- Silver Tier -->
-                <div class="card-feature">
+                <div class="card-feature animate-on-scroll stagger-2">
                     <div class="text-center mb-6">
-                        <h3 class="text-2xl font-bold text-slate-900 mb-2">Contributor</h3>
+                        <h3 class="font-display text-2xl font-bold text-slate-900 mb-2">Contributor</h3>
                         <p class="text-4xl font-bold text-slate-400">Medium</p>
                         <p class="text-sm text-slate-400">Contributions</p>
                     </div>
@@ -173,9 +174,9 @@
                 </div>
 
                 <!-- Gold Tier -->
-                <div class="card-feature">
+                <div class="card-feature animate-on-scroll stagger-3">
                     <div class="text-center mb-6">
-                        <h3 class="text-2xl font-bold text-slate-900 mb-2">Sponsor</h3>
+                        <h3 class="font-display text-2xl font-bold text-slate-900 mb-2">Sponsor</h3>
                         <p class="text-4xl font-bold text-slate-400">Large</p>
                         <p class="text-sm text-slate-400">Contributions</p>
                     </div>

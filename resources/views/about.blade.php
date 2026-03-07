@@ -30,7 +30,8 @@
                     </svg>
                     Open Source Project
                 </div>
-                <h1 class="font-display text-5xl lg:text-6xl font-extrabold text-white tracking-tight mb-6">About <span class="text-gradient">FinAegis</span></h1>
+                @include('partials.breadcrumb', ['items' => [['name' => 'About', 'url' => url('/about')]]])
+                <h1 class="font-display text-4xl md:text-5xl lg:text-6xl font-extrabold text-white tracking-tight mb-6">About <span class="text-gradient">FinAegis</span></h1>
                 <p class="text-lg text-slate-400 max-w-2xl mx-auto">
                     Open-source core banking infrastructure built with Laravel — 43 domain modules covering everything from democratic currency governance to AI agent commerce.
                 </p>
