@@ -15,14 +15,45 @@
         'keywords' => config('brand.name') . ', stablecoin wallet, USDC payments, privacy wallet, tap to pay crypto, shielded transactions, Super KYC',
     ])
 
+    {{-- Fonts: Space Grotesk, JetBrains Mono, DM Sans --}}
     <link rel="preconnect" href="https://fonts.bunny.net">
-    <link href="https://fonts.bunny.net/css?family=inter:300,400,500,600,700,800&display=swap" rel="stylesheet" />
+    <link href="https://fonts.bunny.net/css?family=space-grotesk:300,400,500,600,700&dm-sans:400,500,600,700&jetbrains-mono:400,500,700&display=swap" rel="stylesheet" />
 
-    {{-- Standalone Tailwind CSS — pre-compiled for this page only, no Vite dependency --}}
-    <link rel="stylesheet" href="/css/app-landing.css">
+    {{-- Tailwind CDN --}}
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+    tailwind.config = {
+        theme: {
+            extend: {
+                fontFamily: {
+                    heading: ['"Space Grotesk"', 'system-ui', 'sans-serif'],
+                    body: ['"DM Sans"', 'system-ui', 'sans-serif'],
+                    mono: ['"JetBrains Mono"', 'monospace'],
+                },
+                colors: {
+                    obsidian: '#0a0a0a',
+                    acid: '#ccff00',
+                    'acid-dark': '#a3cc00',
+                    mint: '#a8f0c4',
+                    'mint-mid': '#c0f5d6',
+                    lavender: '#c8a8f0',
+                    'z-blue': '#a8c8f0',
+                    'z-purple': '#7000ff',
+                    'z-green': '#10b981',
+                    'z-gold': '#f59e0b',
+                    'z-pink': '#f9a8d4',
+                    'z-red': '#ef4444',
+                    'text-sec': '#444444',
+                    'text-muted': '#888888',
+                    'bg-tertiary': '#f0f0f0',
+                    'border-subtle': '#d1d5db',
+                },
+            }
+        }
+    }
+    </script>
 
     @if(config('brand.ga_id'))
-    <!-- Google tag (gtag.js) -->
     <script async src="https://www.googletagmanager.com/gtag/js?id={{ config('brand.ga_id') }}"></script>
     <script>
       window.dataLayer = window.dataLayer || [];
@@ -33,973 +64,810 @@
     @endif
 
     <style>
-        :root {
-            --bg-dark: #060810;
-            --bg-card: #0d1017;
-            --accent-blue: #3b82f6;
-            --accent-green: #10b981;
-            --accent-purple: #8b5cf6;
-            --text-main: #f1f5f9;
-            --text-muted: #94a3b8;
-            --border-subtle: rgba(255, 255, 255, 0.06);
-        }
-
+        /* ── Base ── */
+        html { scroll-behavior: smooth; }
         body {
-            font-family: 'Inter', ui-sans-serif, system-ui, sans-serif;
-            background-color: var(--bg-dark);
-            color: var(--text-main);
+            background: #ffffff;
+            color: #0a0a0a;
+            font-family: 'Space Grotesk', system-ui, sans-serif;
             overflow-x: hidden;
         }
+        ::selection { background: #ccff00; color: #000; }
 
-        /* Grid background */
-        .grid-bg {
-            background-image:
-                linear-gradient(rgba(255,255,255,0.02) 1px, transparent 1px),
-                linear-gradient(90deg, rgba(255,255,255,0.02) 1px, transparent 1px);
-            background-size: 48px 48px;
-        }
+        /* ── Hard shadow utility ── */
+        .hs-4 { box-shadow: 4px 4px 0px #0a0a0a; }
+        .hs-6 { box-shadow: 6px 6px 0px #0a0a0a; }
+        .hs-8 { box-shadow: 8px 8px 0px #0a0a0a; }
 
-        /* Gradient overlays */
-        .hero-glow {
-            background:
-                radial-gradient(ellipse 60% 50% at 25% 20%, rgba(59,130,246,0.10) 0%, transparent 70%),
-                radial-gradient(ellipse 40% 40% at 80% 60%, rgba(16,185,129,0.06) 0%, transparent 70%);
-        }
+        /* ── Font shorthands ── */
+        .font-hf { font-family: 'Space Grotesk', system-ui, sans-serif; letter-spacing: -0.04em; }
+        .font-mono-z { font-family: 'JetBrains Mono', monospace; }
+        .font-body-z { font-family: 'DM Sans', system-ui, sans-serif; }
 
-        /* Glass card */
-        .glass-card {
-            background: rgba(13, 16, 23, 0.80);
-            backdrop-filter: blur(16px);
-            -webkit-backdrop-filter: blur(16px);
-            border: 1px solid var(--border-subtle);
+        /* ── Animations ── */
+        @keyframes fade-in-up {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
         }
-
-        /* Glow border button */
-        .glow-btn {
-            position: relative;
-            box-shadow: 0 0 20px rgba(59,130,246,0.20), inset 0 1px 0 rgba(255,255,255,0.05);
-            border: 1px solid rgba(59,130,246,0.40);
-            transition: all 0.3s ease;
+        @keyframes fade-in-left {
+            from { opacity: 0; transform: translateX(-40px); }
+            to { opacity: 1; transform: translateX(0); }
         }
-        .glow-btn:hover {
-            box-shadow: 0 0 30px rgba(59,130,246,0.35), inset 0 1px 0 rgba(255,255,255,0.08);
-            border-color: rgba(59,130,246,0.60);
+        @keyframes fade-in-right {
+            from { opacity: 0; transform: translateY(30px) rotate(0deg); }
+            to { opacity: 1; transform: translateY(0) rotate(3deg); }
         }
-
-        /* Shimmer on CTA */
-        .shimmer {
-            position: relative;
-            overflow: hidden;
+        @keyframes pop-in {
+            from { opacity: 0; transform: scale(0); }
+            to { opacity: 1; transform: scale(1); }
         }
-        .shimmer::after {
-            content: '';
-            position: absolute;
-            top: 0; left: -100%; width: 200%; height: 100%;
-            background: linear-gradient(to right, transparent 0%, rgba(255,255,255,0.12) 50%, transparent 100%);
-            animation: shimmer 4s ease-in-out infinite;
+        @keyframes z-marquee {
+            0% { transform: translateX(0); }
+            100% { transform: translateX(-50%); }
         }
-        @keyframes shimmer {
-            0%, 100% { left: -100%; }
-            30% { left: 100%; }
-        }
-
-        /* Holographic card effect */
-        .holo-card {
-            position: relative;
-            overflow: hidden;
-        }
-        .holo-card::before {
-            content: '';
-            position: absolute;
-            top: -50%; left: -50%; width: 200%; height: 200%;
-            background: linear-gradient(
-                45deg,
-                transparent 40%,
-                rgba(255,255,255,0.06) 45%,
-                rgba(255,255,255,0.12) 50%,
-                rgba(255,255,255,0.06) 55%,
-                transparent 60%
-            );
-            transform: rotate(30deg);
-            pointer-events: none;
-            animation: holo-pan 8s ease-in-out infinite;
-        }
-        @keyframes holo-pan {
-            0%, 100% { transform: translateY(0) rotate(30deg); }
-            50% { transform: translateY(-15px) rotate(30deg); }
-        }
-
-        /* Phone reflection */
-        .phone-reflection {
-            position: absolute;
-            top: 0; left: 0; right: 0; bottom: 0;
-            background: linear-gradient(120deg, rgba(255,255,255,0.06) 0%, transparent 35%, transparent 65%, rgba(255,255,255,0.03) 100%);
-            pointer-events: none;
-            z-index: 15;
-            border-radius: 2.5rem;
-        }
-
-        /* Dynamic island */
-        .dynamic-island {
-            width: 80px; height: 22px;
-            background: #000;
-            border-radius: 16px;
-            position: absolute;
-            top: 8px; left: 50%;
-            transform: translateX(-50%);
-            z-index: 20;
-        }
-
-        /* Gold gradient text (for KYC badge) */
-        .gold-text {
-            background: linear-gradient(to bottom, #FDE68A, #D97706);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-
-        /* Data stream animation */
-        .data-stream {
-            position: relative;
-            overflow: hidden;
-        }
-        .data-stream::after {
-            content: '';
-            position: absolute;
-            top: -100%; left: 0; width: 100%; height: 100%;
-            background: linear-gradient(to bottom, transparent, var(--accent-blue), var(--accent-green), transparent);
-            animation: stream-flow 2.5s ease-in-out infinite;
-        }
-        @keyframes stream-flow {
-            0% { top: -100%; opacity: 0; }
-            30% { opacity: 1; }
-            70% { opacity: 1; }
-            100% { top: 100%; opacity: 0; }
-        }
-        .data-stream-delayed::after {
-            animation-delay: 1s;
-        }
-
-        /* Feature card hover */
-        .feature-card {
-            transition: all 0.3s ease;
-        }
-        .feature-card:hover {
-            border-color: rgba(59,130,246,0.25);
-            transform: translateY(-2px);
-        }
-        .feature-card:hover .feature-icon {
-            transform: translateY(-3px);
-        }
-        .feature-icon {
-            transition: transform 0.3s ease;
-        }
-
-        /* Floating animation */
         @keyframes float {
             0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-8px); }
+            50% { transform: translateY(-20px); }
         }
 
-        /* Subtle noise overlay */
-        .noise::before {
-            content: '';
-            position: absolute;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");
-            pointer-events: none;
-            mix-blend-mode: overlay;
-        }
+        .anim-fade-in-left { animation: fade-in-left 0.7s ease-out both; }
+        .anim-fade-in-right { animation: fade-in-right 0.8s ease-out 0.2s both; }
+        .anim-fade-in-up { animation: fade-in-up 0.6s ease-out both; }
 
-        /* FAQ styling */
-        details > summary { list-style: none; }
-        details > summary::-webkit-details-marker { display: none; }
+        /* ── Scrollbar ── */
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: #f5f5f5; }
+        ::-webkit-scrollbar-thumb { background: rgba(0,0,0,0.15); border-radius: 3px; }
+        ::-webkit-scrollbar-thumb:hover { background: rgba(0,0,0,0.25); }
 
-        /* Success animation */
-        @keyframes check-in {
-            0% { transform: scale(0); opacity: 0; }
-            50% { transform: scale(1.15); }
-            100% { transform: scale(1); opacity: 1; }
+        /* ── Skip to content ── */
+        .skip-to-content {
+            position: absolute; top: -100%; left: 50%;
+            transform: translateX(-50%);
+            padding: 8px 16px; background: #ccff00; color: #000;
+            font-weight: 600; border-radius: 0 0 8px 8px; z-index: 100;
+            transition: top 0.2s;
         }
-        .success-check { animation: check-in 0.4s ease-out; }
+        .skip-to-content:focus { top: 0; }
 
-        /* Shard connector lines */
-        .shard-line {
-            stroke-dasharray: 6 4;
-            animation: dash-flow 1.5s linear infinite;
-        }
-        @keyframes dash-flow {
-            to { stroke-dashoffset: -20; }
-        }
+        /* ── Feature tabs ── */
+        .feature-panel { display: none; }
+        .feature-panel.active { display: block; animation: fade-in-up 0.3s ease-out; }
 
-        /* Smooth scroll */
-        html { scroll-behavior: smooth; }
+        /* ── FAQ accordion ── */
+        .faq-answer { max-height: 0; overflow: hidden; transition: max-height 0.3s ease, opacity 0.3s ease; opacity: 0; }
+        .faq-answer.open { max-height: 300px; opacity: 1; }
+        .faq-toggle { transition: transform 0.25s ease; }
+        .faq-toggle.open { transform: rotate(45deg); }
 
-        /* App store badge styling */
-        .store-badge {
-            opacity: 0.35;
-            filter: grayscale(1);
-            transition: all 0.3s ease;
-            cursor: not-allowed;
-        }
-        .store-badge.active {
-            opacity: 1;
-            filter: none;
-            cursor: pointer;
-        }
+        /* ── Button hover ── */
+        .btn-hover { transition: transform 0.15s ease; }
+        .btn-hover:hover { transform: scale(1.06); }
+        .btn-hover:active { transform: scale(0.95); }
 
-        /* Accessibility: respect reduced motion preferences */
+        /* ── Mobile menu ── */
+        .mobile-menu { display: none; animation: fade-in-up 0.2s ease-out; }
+        .mobile-menu.open { display: flex; }
+
+        /* ── Phone scrollbar hide ── */
+        .phone-scroll::-webkit-scrollbar { display: none; }
+        .phone-scroll { scrollbar-width: none; }
+
+        /* ── Sticker animations ── */
+        .sticker { animation: pop-in 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) both; }
+        .sticker-1 { animation-delay: 0.4s; }
+        .sticker-2 { animation-delay: 0.6s; }
+        .sticker-3 { animation-delay: 0.5s; }
+        .sticker-4 { animation-delay: 0.7s; }
+
+        /* ── Reduced motion ── */
         @media (prefers-reduced-motion: reduce) {
             *, *::before, *::after {
                 animation-duration: 0.01ms !important;
                 animation-iteration-count: 1 !important;
                 transition-duration: 0.01ms !important;
             }
+            html { scroll-behavior: auto; }
         }
     </style>
 </head>
-<body class="antialiased min-h-screen flex flex-col">
+<body class="antialiased">
+
+    <a href="#main-content" class="skip-to-content">Skip to content</a>
 
     {{-- ═══════════════════════════════════════════════════════════════
          NAVIGATION
     ═══════════════════════════════════════════════════════════════ --}}
-    <header class="fixed w-full top-0 z-50 glass-card border-b border-white/5">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="flex justify-between items-center h-16 lg:h-20">
-                {{-- Logo --}}
-                <a href="{{ route('home') }}" class="flex items-center gap-2.5 group">
-                    <div class="w-9 h-9 rounded-xl bg-gradient-to-br from-blue-600 to-blue-800 flex items-center justify-center shadow-lg shadow-blue-500/20 ring-1 ring-white/10 transition-transform group-hover:scale-105">
-                        <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75m-3-7.036A11.959 11.959 0 013.598 6 11.99 11.99 0 003 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285z"/></svg>
-                    </div>
-                    <span class="font-bold text-lg tracking-tight text-white">{{ config('brand.name') }}</span>
+    <nav class="fixed top-4 left-1/2 z-50 w-[95%] max-w-5xl -translate-x-1/2">
+        <div class="flex items-center justify-between rounded-full px-4 py-2.5 md:px-6"
+             style="background: rgba(255,255,255,0.92); border: 3px solid #0a0a0a; box-shadow: 4px 4px 0px #0a0a0a; backdrop-filter: blur(12px);">
+
+            {{-- Logo --}}
+            <div class="flex items-center gap-2">
+                <div class="flex h-9 w-9 items-center justify-center rounded-lg text-lg font-black font-hf"
+                     style="background: #a8f0c4; border: 3px solid #0a0a0a;">
+                    Z
+                </div>
+                <span class="text-xl font-bold hidden sm:inline font-hf">{{ config('brand.name') }}</span>
+            </div>
+
+            {{-- Desktop links --}}
+            <div class="hidden md:flex items-center gap-6">
+                <a href="#features" class="text-sm font-medium text-text-sec hover:underline decoration-2 underline-offset-4">Features</a>
+                <a href="#security" class="text-sm font-medium text-text-sec hover:underline decoration-2 underline-offset-4">Security</a>
+                <a href="#faq" class="text-sm font-medium text-text-sec hover:underline decoration-2 underline-offset-4">FAQ</a>
+            </div>
+
+            {{-- Right CTA --}}
+            <div class="flex items-center gap-3">
+                <a href="#cta" class="btn-hover rounded-full px-5 py-2 text-sm font-bold"
+                   style="background: #ccff00; border: 3px solid #0a0a0a; color: #0a0a0a;">
+                    Early Access
                 </a>
 
-                {{-- Desktop Nav --}}
-                <nav class="hidden md:flex items-center gap-8 absolute left-1/2 transform -translate-x-1/2">
-                    <a href="#features" class="text-sm font-medium text-slate-400 hover:text-white transition-colors">Features</a>
-                    <a href="#security" class="text-sm font-medium text-slate-400 hover:text-white transition-colors">Security</a>
-                    <a href="#platform" class="text-sm font-medium text-slate-400 hover:text-white transition-colors">Platform</a>
-                    <a href="#faq" class="text-sm font-medium text-slate-400 hover:text-white transition-colors">FAQ</a>
-                </nav>
-
-                {{-- Right --}}
-                <div class="flex items-center gap-3">
-                    @if(config('brand.show_promo_pages'))
-                    <a href="{{ route('home') }}" class="hidden sm:inline-flex text-sm text-slate-400 hover:text-white transition-colors">Core Platform</a>
-                    @endif
-                    <a href="#early-access" class="px-4 py-2 rounded-lg bg-white/5 border border-white/10 text-sm font-semibold text-white hover:bg-white/10 transition-all flex items-center gap-2">
-                        <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
-                        Early Access
-                    </a>
-                    <button id="mobile-nav-toggle" class="md:hidden p-2 text-slate-400 hover:text-white transition-colors">
-                        <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5"/></svg>
-                    </button>
-                </div>
+                {{-- Hamburger (mobile) --}}
+                <button id="mobile-toggle" class="md:hidden flex flex-col gap-1.5 p-1" aria-label="toggle menu">
+                    <span class="block h-0.5 w-5 rounded-full bg-obsidian transition-all"></span>
+                    <span class="block h-0.5 w-5 rounded-full bg-obsidian transition-all"></span>
+                    <span class="block h-0.5 w-5 rounded-full bg-obsidian transition-all"></span>
+                </button>
             </div>
         </div>
 
-        {{-- Mobile Nav --}}
-        <div id="mobile-nav" class="hidden md:hidden border-t border-white/5 bg-[#0d1017]/95 backdrop-blur-xl">
-            <div class="px-4 py-4 space-y-1">
-                <a href="#features" class="block px-3 py-2 text-sm text-slate-300 hover:text-white hover:bg-white/5 rounded-lg transition-colors">Features</a>
-                <a href="#security" class="block px-3 py-2 text-sm text-slate-300 hover:text-white hover:bg-white/5 rounded-lg transition-colors">Security</a>
-                <a href="#platform" class="block px-3 py-2 text-sm text-slate-300 hover:text-white hover:bg-white/5 rounded-lg transition-colors">Platform</a>
-                <a href="#faq" class="block px-3 py-2 text-sm text-slate-300 hover:text-white hover:bg-white/5 rounded-lg transition-colors">FAQ</a>
-                <div class="border-t border-white/5 pt-2 mt-2">
-                    <a href="{{ route('home') }}" class="block px-3 py-2 text-sm text-blue-400 hover:text-blue-300 rounded-lg transition-colors">Back to Core Platform</a>
-                </div>
-            </div>
+        {{-- Mobile dropdown --}}
+        <div id="mobile-menu" class="mobile-menu mt-2 flex-col gap-2 rounded-3xl p-5 md:hidden"
+             style="background: rgba(255,255,255,0.95); border: 3px solid #0a0a0a; box-shadow: 4px 4px 0px #0a0a0a; backdrop-filter: blur(12px);">
+            <a href="#features" class="text-base font-medium py-1 mobile-link">Features</a>
+            <a href="#security" class="text-base font-medium py-1 mobile-link">Security</a>
+            <a href="#faq" class="text-base font-medium py-1 mobile-link">FAQ</a>
         </div>
-    </header>
+    </nav>
+
+
+    <main id="main-content">
 
     {{-- ═══════════════════════════════════════════════════════════════
          HERO
     ═══════════════════════════════════════════════════════════════ --}}
-    <main class="flex-grow">
-        <section class="relative pt-28 lg:pt-36 pb-16 lg:pb-24 hero-glow grid-bg noise overflow-hidden" id="early-access">
-            {{-- Decorative orbs --}}
-            <div class="absolute top-20 left-[10%] w-[500px] h-[500px] bg-blue-500/[0.04] rounded-full blur-[120px] pointer-events-none"></div>
-            <div class="absolute bottom-0 right-[5%] w-[400px] h-[400px] bg-emerald-500/[0.03] rounded-full blur-[100px] pointer-events-none"></div>
+    <section class="relative pt-28 pb-16 md:pt-36 md:pb-24 px-5"
+             style="background: linear-gradient(150deg, #a8f0c4 0%, #c0f5d6 40%, #c8a8f0 100%);">
+        <div class="mx-auto max-w-7xl grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
 
-            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-                <div class="grid lg:grid-cols-2 gap-12 lg:gap-16 items-center">
-                    {{-- Left: Copy --}}
-                    <div class="space-y-8 text-center lg:text-left">
-                        <div class="space-y-5">
-                            <h1 class="text-4xl sm:text-5xl lg:text-6xl xl:text-[4.25rem] font-extrabold leading-[1.08] tracking-tight text-white">
-                                Spend Stablecoins.<br>
-                                <span class="bg-gradient-to-r from-blue-400 to-blue-500 bg-clip-text text-transparent">Shield Your History.</span><br>
-                                Unlock the Exclusive.
-                            </h1>
-                            <p class="text-lg lg:text-xl text-slate-400 max-w-xl mx-auto lg:mx-0 leading-relaxed font-light">
-                                Pay at any shop with your stablecoin card. Your transactions stay private. Your identity stays yours.
-                            </p>
-                        </div>
+            {{-- Left text --}}
+            <div class="anim-fade-in-left">
+                <h1 class="text-5xl sm:text-6xl lg:text-7xl font-black leading-[0.95] font-hf">
+                    Secure Stablecoin <span class="text-z-purple">Payments</span>
+                </h1>
 
-                        {{-- Email Signup --}}
-                        <div class="max-w-md mx-auto lg:mx-0" id="signup-container">
-                            <form id="early-access-form" class="flex flex-col sm:flex-row gap-3">
-                                <input
-                                    id="early-access-email"
-                                    type="email"
-                                    required
-                                    placeholder="Enter your email for early access"
-                                    class="flex-1 bg-white/5 border border-white/10 rounded-xl px-4 py-3.5 text-white placeholder-slate-500 focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500/50 outline-none transition-all text-sm"
-                                >
-                                <button type="submit" id="signup-btn" class="glow-btn shimmer bg-[#111827] hover:bg-[#1a2332] text-white px-6 py-3.5 rounded-xl font-semibold transition-all whitespace-nowrap flex items-center justify-center gap-2 text-sm">
-                                    <svg class="w-4 h-4 text-blue-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3"/></svg>
-                                    Get Early Access
-                                </button>
-                            </form>
-                            {{-- Success state (hidden by default) --}}
-                            <div id="signup-success" class="hidden">
-                                <div class="flex items-center gap-3 bg-emerald-500/10 border border-emerald-500/20 rounded-xl px-5 py-4">
-                                    <div class="w-8 h-8 rounded-full bg-emerald-500/20 flex items-center justify-center flex-shrink-0 success-check">
-                                        <svg class="w-5 h-5 text-emerald-400" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5"/></svg>
-                                    </div>
-                                    <div>
-                                        <p class="text-sm font-medium text-emerald-300">You're on the list.</p>
-                                        <p class="text-xs text-slate-400 mt-0.5">We'll notify you when the app is ready.</p>
-                                    </div>
-                                </div>
-                            </div>
-                            {{-- Error state (hidden by default) --}}
-                            <div id="signup-error" class="hidden mt-2">
-                                <p class="text-xs text-red-400" id="signup-error-msg"></p>
+                <p class="mt-6 text-lg md:text-xl max-w-lg font-medium font-body-z text-text-sec">
+                    The stablecoin wallet that shields your on-chain tracks, ships virtual cards on demand,
+                    and never asks you to trust a third party with your keys.
+                </p>
+
+                <div class="mt-8 flex flex-wrap gap-4">
+                    <a href="#cta"
+                       class="btn-hover rounded-full px-8 py-3.5 text-base font-bold hs-6"
+                       style="background: #ccff00; border: 3px solid #0a0a0a; color: #0a0a0a;">
+                        Get Early Access
+                    </a>
+                    <a href="#features"
+                       class="btn-hover rounded-full px-8 py-3.5 text-base font-bold hs-6"
+                       style="background: #ffffff; border: 3px solid #0a0a0a; color: #0a0a0a;">
+                        How It Works
+                    </a>
+                </div>
+
+                {{-- App store badges --}}
+                <div class="mt-8">
+                    <p class="mb-3 text-[10px] uppercase tracking-[0.3em] font-mono-z text-text-muted">Coming Soon to Mobile</p>
+                    <div class="flex gap-3">
+                        @foreach([['label' => 'App Store', 'sub' => 'Download on the'], ['label' => 'Google Play', 'sub' => 'Get it on']] as $store)
+                        <div class="flex h-10 items-center gap-2 rounded-lg px-4 cursor-not-allowed opacity-50"
+                             style="border: 2px solid rgba(10,10,10,0.12); background: rgba(255,255,255,0.5);">
+                            <div>
+                                <p class="text-[8px] text-text-muted">{{ $store['sub'] }}</p>
+                                <p class="text-xs font-semibold text-text-sec">{{ $store['label'] }}</p>
                             </div>
                         </div>
-
-                        {{-- App Store Badges --}}
-                        <div class="pt-1 border-t border-white/5">
-                            <p class="text-[11px] uppercase tracking-widest text-slate-600 font-semibold mb-4">Available on mobile</p>
-                            <div class="flex gap-3 justify-center lg:justify-start" id="store-badges">
-                                <div class="store-badge">
-                                    <div class="bg-[#111827] border border-white/5 rounded-xl py-2 px-4 flex items-center gap-3 h-12">
-                                        <svg class="w-6 h-6 text-white" viewBox="0 0 24 24" fill="currentColor"><path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.8-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z"/></svg>
-                                        <div class="text-left leading-none">
-                                            <div class="text-[8px] uppercase text-slate-500">Download on the</div>
-                                            <div class="text-sm font-semibold text-white">App Store</div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="store-badge">
-                                    <div class="bg-[#111827] border border-white/5 rounded-xl py-2 px-4 flex items-center gap-3 h-12">
-                                        <svg class="w-5 h-5 text-white" viewBox="0 0 24 24" fill="currentColor"><path d="M3 20.5V3.5c0-.59.34-1.11.84-1.35L13.69 12l-9.85 9.85c-.5-.24-.84-.76-.84-1.35zm13.81-5.38L6.05 21.34l8.49-8.49 2.27 2.27zm3.35-4.31c.34.27.59.69.59 1.19 0 .5-.25.92-.59 1.19l-2.27 1.31-2.5-2.5 2.5-2.5 2.27 1.31zM6.05 2.66l10.76 6.22-2.27 2.27-8.49-8.49z"/></svg>
-                                        <div class="text-left leading-none">
-                                            <div class="text-[8px] uppercase text-slate-500">Get it on</div>
-                                            <div class="text-sm font-semibold text-white">Google Play</div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
+                        @endforeach
                     </div>
+                </div>
+            </div>
 
-                    {{-- Right: Phone Mockup --}}
-                    <div class="relative flex items-center justify-center lg:justify-end">
-                        {{-- Glow behind phone --}}
-                        <div class="absolute inset-0 flex items-center justify-center pointer-events-none">
-                            <div class="w-[320px] h-[500px] bg-blue-500/[0.08] rounded-full blur-[80px]"></div>
+            {{-- Right — phone mockup --}}
+            <div class="relative flex justify-center anim-fade-in-right">
+                {{-- Floating stickers (desktop only) --}}
+                <div class="absolute z-10 hidden md:block sticker sticker-1" style="top: -2%; left: -2%; transform: rotate(-12deg);">
+                    <div class="rounded-2xl overflow-hidden hs-6" style="width: 64px; height: 64px; border: 3px solid #0a0a0a;">
+                        <img src="/icons/lock.svg" alt="" class="h-full w-full">
+                    </div>
+                </div>
+                <div class="absolute z-10 hidden md:block sticker sticker-2" style="top: 5%; right: -5%; transform: rotate(8deg);">
+                    <div class="rounded-2xl overflow-hidden hs-6" style="width: 64px; height: 64px; border: 3px solid #0a0a0a;">
+                        <img src="/icons/credit-card.svg" alt="" class="h-full w-full">
+                    </div>
+                </div>
+                <div class="absolute z-10 hidden md:block sticker sticker-3" style="bottom: 18%; left: -5%; transform: rotate(-6deg);">
+                    <div class="rounded-2xl overflow-hidden hs-6" style="width: 64px; height: 64px; border: 3px solid #0a0a0a;">
+                        <img src="/icons/shield.svg" alt="" class="h-full w-full">
+                    </div>
+                </div>
+                <div class="absolute z-10 hidden md:block sticker sticker-4" style="bottom: 2%; right: -2%; transform: rotate(15deg);">
+                    <div class="rounded-2xl overflow-hidden hs-6" style="width: 64px; height: 64px; border: 3px solid #0a0a0a;">
+                        <img src="/icons/checkmark.svg" alt="" class="h-full w-full">
+                    </div>
+                </div>
+
+                {{-- Phone frame --}}
+                <div class="relative w-[280px] md:w-[375px] overflow-hidden"
+                     style="border: 6px solid #0a0a0a; border-radius: 2.5rem; box-shadow: 8px 8px 0px #0a0a0a; background: linear-gradient(180deg, #a8f0c4 0%, #c0f5d6 40%, #c8a8f0 100%); aspect-ratio: 9 / 19.5;">
+                    <div class="flex h-full flex-col">
+
+                        {{-- Dynamic island --}}
+                        <div class="flex justify-center pt-3">
+                            <div class="h-[24px] w-[90px] rounded-full bg-black"></div>
                         </div>
 
-                        <div class="relative w-[300px] sm:w-[320px] mx-auto" style="animation: float 6s ease-in-out infinite;">
-                            {{-- Phone frame --}}
-                            <div class="bg-[#0a0d12] rounded-[2.5rem] border-[5px] border-[#1e2330] shadow-2xl shadow-black/50 overflow-hidden relative">
-                                <div class="dynamic-island"></div>
-                                <div class="phone-reflection"></div>
+                        {{-- Status bar --}}
+                        <div class="flex items-center justify-between px-6 py-1.5">
+                            <span class="text-[11px] font-medium font-mono-z">9:41</span>
+                            <div class="flex items-center gap-1.5">
+                                <div class="flex items-end gap-[2px]">
+                                    @foreach([6, 8, 10, 12] as $h)
+                                    <div style="width: 3px; height: {{ $h }}px; border-radius: 1px; background: #0a0a0a; opacity: 0.4;"></div>
+                                    @endforeach
+                                </div>
+                                <div style="width: 22px; height: 10px; border-radius: 3px; border: 1.5px solid rgba(0,0,0,0.4); position: relative; margin-left: 2px;">
+                                    <div style="position: absolute; top: 2px; left: 2px; width: 14px; height: 4px; border-radius: 1px; background: rgba(0,0,0,0.4);"></div>
+                                    <div style="position: absolute; right: -3px; top: 2.5px; width: 2px; height: 4px; border-radius: 0 1px 1px 0; background: rgba(0,0,0,0.4);"></div>
+                                </div>
+                            </div>
+                        </div>
 
-                                {{-- Status bar --}}
-                                <div class="px-7 pt-3 flex justify-between items-center text-[10px] font-medium text-white/80 relative z-10">
-                                    <span>9:41</span>
-                                    <div class="flex gap-1">
-                                        <svg class="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 24 24"><path d="M1 9l2 2c4.97-4.97 13.03-4.97 18 0l2-2C16.93 2.93 7.08 2.93 1 9zm8 8l3 3 3-3c-1.65-1.66-4.34-1.66-6 0zm-4-4l2 2c2.76-2.76 7.24-2.76 10 0l2-2C15.14 9.14 8.87 9.14 5 13z"/></svg>
-                                        <svg class="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 24 24"><path d="M15.67 4H14V2h-4v2H8.33C7.6 4 7 4.6 7 5.33v15.33C7 21.4 7.6 22 8.33 22h7.33c.74 0 1.34-.6 1.34-1.33V5.33C17 4.6 16.4 4 15.67 4z"/></svg>
+                        {{-- Scrollable app content --}}
+                        <div class="flex-1 overflow-y-auto phone-scroll">
+                            <div class="px-5 pb-4 flex flex-col gap-4">
+
+                                {{-- Header bar --}}
+                                <div class="flex items-center justify-between pt-1">
+                                    <div class="flex items-center gap-1.5 rounded-full" style="padding: 6px 12px; background: #fff; border: 3px solid #0a0a0a;">
+                                        <div class="rounded-full" style="width: 8px; height: 8px; background: #10b981;"></div>
+                                        <span class="font-mono-z" style="font-size: 14px; font-weight: 600;">Mainnet</span>
+                                    </div>
+
+                                    <div class="flex items-center" style="gap: 12px;">
+                                        {{-- Streak --}}
+                                        <div class="flex items-center" style="gap: 6px; padding: 6px 12px; background: rgba(245,158,11,0.12); border-radius: 9999px; border: 3px solid rgba(245,158,11,0.5);">
+                                            <img src="/icons/flame.svg" alt="" style="width: 22px; height: 22px;">
+                                            <span class="font-mono-z" style="font-size: 15px; font-weight: 700;">7</span>
+                                        </div>
+
+                                        {{-- Bell --}}
+                                        <div style="position: relative;">
+                                            <div class="flex items-center justify-center rounded-full" style="width: 48px; height: 48px; background: #fff; border: 3px solid #0a0a0a;">
+                                                <img src="/icons/bell.svg" alt="" style="width: 30px; height: 30px;">
+                                            </div>
+                                            <div class="flex items-center justify-center rounded-full" style="position: absolute; top: -2px; right: -4px; width: 18px; height: 18px; background: #ef4444;">
+                                                <span style="font-size: 10px; font-weight: 700; color: #fff;">7</span>
+                                            </div>
+                                        </div>
+
+                                        {{-- Avatar --}}
+                                        <div class="flex items-center justify-center rounded-full"
+                                             style="width: 48px; height: 48px; background: linear-gradient(135deg, #a8f0c4, #c8a8f0); border: 3px solid #0a0a0a; box-shadow: 3px 3px 0px #0a0a0a;">
+                                            <span class="font-hf" style="font-size: 18px; font-weight: 700; color: #fff;">A</span>
+                                        </div>
                                     </div>
                                 </div>
 
-                                {{-- App header --}}
-                                <div class="px-5 py-3 flex justify-between items-center border-b border-white/5 bg-white/[0.03] relative z-10">
-                                    <span class="text-[11px] font-bold text-white tracking-widest uppercase">Virtual Card</span>
-                                    <div class="flex items-center gap-1 bg-black/30 border border-yellow-500/25 px-2 py-0.5 rounded-full">
-                                        <svg class="w-2.5 h-2.5 text-yellow-500" fill="currentColor" viewBox="0 0 24 24"><path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm-2 16l-4-4 1.41-1.41L10 14.17l6.59-6.59L18 9l-8 8z"/></svg>
-                                        <span class="text-[9px] font-bold gold-text uppercase">Verified</span>
+                                {{-- Balance card --}}
+                                <div class="rounded-[20px]" style="padding: 20px; background: linear-gradient(135deg, #a8f0c4, #a8c8f0); border: 3px solid #0a0a0a; box-shadow: 6px 6px 0px #0a0a0a;">
+                                    <div class="flex items-start justify-between">
+                                        <div class="flex flex-col gap-1">
+                                            <div class="flex items-center" style="gap: 8px;">
+                                                <span class="font-body-z" style="font-size: 14px; font-weight: 500; color: #444;">Total Balance</span>
+                                                <div class="flex items-center rounded-full" style="gap: 4px; padding: 3px 8px; background: #a8f0c4; border: 3px solid #0a0a0a;">
+                                                    <svg width="11" height="11" viewBox="0 0 24 24" fill="#0a0a0a" xmlns="http://www.w3.org/2000/svg"><path d="M12 2L3 7v5c0 5.5 3.8 10.7 9 12 5.2-1.3 9-6.5 9-12V7l-9-5Z"/></svg>
+                                                    <span class="font-mono-z" style="font-size: 11px; font-weight: 700;">PROTECTED</span>
+                                                </div>
+                                            </div>
+                                            <div class="flex items-baseline" style="gap: 4px;">
+                                                <span style="font-size: 36px; font-weight: 700; font-variant-numeric: tabular-nums; letter-spacing: -0.02em;">$1,248.35</span>
+                                                <span class="font-mono-z" style="font-size: 14px; font-weight: 700; color: #444;">USDC</span>
+                                            </div>
+                                            <span class="font-mono-z" style="font-size: 14px; color: #888;">USDC on Solana</span>
+                                        </div>
+                                        <div class="flex items-center justify-center" style="width: 44px; height: 44px; background: #f0f0f0; border-radius: 10px; border: 1px solid #d1d5db;">
+                                            <img src="/icons/qr-code.svg" alt="" style="width: 28px; height: 28px;">
+                                        </div>
+                                    </div>
+                                    <div class="flex items-center" style="gap: 8px; margin-top: 16px;">
+                                        <span class="font-mono-z" style="font-size: 11px; color: #888;">WALLET ID</span>
+                                        <span class="font-mono-z" style="font-size: 14px; color: #444;">8xR9k&hellip;4f2Z</span>
+                                        <div style="flex: 1;"></div>
+                                        <span class="font-mono-z" style="font-size: 11px; color: #7000ff; font-weight: 500;">Copy</span>
                                     </div>
                                 </div>
 
-                                {{-- App content --}}
-                                <div class="p-5 space-y-5 relative z-10 bg-gradient-to-b from-[#0a0d12] to-[#050608]">
-                                    {{-- Balance --}}
-                                    <div>
-                                        <div class="text-[10px] text-slate-500 font-mono tracking-wider uppercase mb-1">USDC Balance</div>
-                                        <div class="text-3xl font-extrabold text-white tracking-tight flex items-start gap-1">
-                                            <span class="text-lg pt-0.5 text-slate-500">$</span>4,291<span class="text-slate-400">.50</span>
+                                {{-- Quick actions --}}
+                                <div class="flex justify-center" style="gap: 16px;">
+                                    @foreach([['svg' => '/icons/qr-code.svg', 'label' => 'Pay'], ['svg' => '/icons/arrow-down-left.svg', 'label' => 'Receive'], ['svg' => '/icons/arrow-up-right.svg', 'label' => 'Send']] as $action)
+                                    <div class="flex flex-col items-center" style="gap: 8px;">
+                                        <div class="flex items-center justify-center rounded-full overflow-hidden" style="width: 56px; height: 56px; border: 3px solid #0a0a0a; box-shadow: 3px 3px 0px #0a0a0a;">
+                                            <img src="{{ $action['svg'] }}" alt="" style="width: 100%; height: 100%;">
                                         </div>
+                                        <span class="font-body-z" style="font-size: 14px; font-weight: 500; color: #444;">{{ $action['label'] }}</span>
                                     </div>
+                                    @endforeach
+                                </div>
 
-                                    {{-- Card --}}
-                                    <div class="h-40 rounded-2xl bg-gradient-to-br from-blue-900 to-indigo-950 border border-white/10 p-4 relative overflow-hidden shadow-xl holo-card">
-                                        {{-- Chip --}}
-                                        <div class="w-9 h-6 bg-gradient-to-br from-yellow-200 to-yellow-500 rounded-md border border-yellow-600/40 mb-10 relative">
-                                            <div class="absolute inset-0 border border-black/10 rounded-md"></div>
-                                            <div class="absolute top-1/2 left-0 w-full h-px bg-black/15"></div>
-                                            <div class="absolute left-1/2 top-0 h-full w-px bg-black/15"></div>
-                                        </div>
-                                        {{-- Card details --}}
-                                        <div class="flex justify-between items-end absolute bottom-4 left-4 right-4">
+                                {{-- Security status --}}
+                                <div class="flex flex-col" style="gap: 12px;">
+                                    <span class="font-hf" style="font-size: 20px; font-weight: 700;">Security Status</span>
+                                    <div class="flex" style="gap: 12px;">
+                                        @foreach([['icon' => '/icons/shield.svg', 'title' => 'Shielded', 'sub' => 'Privacy Active'], ['icon' => '/icons/shield-check.svg', 'title' => 'Verified', 'sub' => 'On-chain Identity']] as $card)
+                                        <div class="flex items-center flex-1" style="gap: 12px; padding: 14px; background: #fff; border: 3px solid #0a0a0a; border-radius: 14px; box-shadow: 6px 6px 0px #0a0a0a;">
+                                            <div class="overflow-hidden" style="width: 44px; height: 44px; border-radius: 10px; border: 3px solid #0a0a0a; flex-shrink: 0;">
+                                                <img src="{{ $card['icon'] }}" alt="" style="width: 100%; height: 100%;">
+                                            </div>
                                             <div>
-                                                <div class="text-[13px] font-mono text-gray-200 tracking-widest">---- 8842</div>
-                                                <div class="text-[9px] text-slate-400 mt-0.5 font-medium">VIRTUAL</div>
-                                            </div>
-                                            <div class="text-right">
-                                                <div class="text-[7px] text-slate-400 uppercase tracking-wider">Valid Thru</div>
-                                                <div class="text-[11px] text-white font-mono font-bold">12/28</div>
+                                                <p class="font-body-z" style="font-size: 14px; font-weight: 700;">{{ $card['title'] }}</p>
+                                                <p class="font-body-z" style="font-size: 13px; color: #888;">{{ $card['sub'] }}</p>
                                             </div>
                                         </div>
-                                        {{-- Mastercard circles --}}
-                                        <div class="absolute top-4 right-4 flex -space-x-2.5 opacity-70">
-                                            <div class="w-7 h-7 rounded-full bg-white/15"></div>
-                                            <div class="w-7 h-7 rounded-full bg-white/15"></div>
-                                        </div>
-                                    </div>
-
-                                    {{-- Transaction --}}
-                                    <div class="bg-[#0d1017] rounded-xl p-3.5 flex items-center justify-between border border-white/5">
-                                        <div class="flex items-center gap-3">
-                                            <div class="w-9 h-9 rounded-full bg-white/5 flex items-center justify-center">
-                                                <svg class="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M13.5 21v-7.5a.75.75 0 01.75-.75h3a.75.75 0 01.75.75V21m-4.5 0H2.36m11.14 0H18m0 0h3.64m-1.39 0V9.349m-16.5 11.65V9.35m0 0a3.001 3.001 0 003.75-.615A2.993 2.993 0 009.75 9.75c.896 0 1.7-.393 2.25-1.016a2.993 2.993 0 002.25 1.016c.896 0 1.7-.393 2.25-1.016a3.001 3.001 0 003.75.614m-16.5 0a3.004 3.004 0 01-.621-4.72L4.318 3.44A1.5 1.5 0 015.378 3h13.243a1.5 1.5 0 011.06.44l1.19 1.189a3 3 0 01-.621 4.72m-13.5 8.65h3.75a.75.75 0 00.75-.75V13.5a.75.75 0 00-.75-.75H6.75a.75.75 0 00-.75.75v3.15c0 .415.336.75.75.75z"/></svg>
-                                            </div>
-                                            <div>
-                                                <div class="text-sm font-medium text-white">Starbucks</div>
-                                                <div class="text-[10px] text-slate-500">Tap to Pay</div>
-                                            </div>
-                                        </div>
-                                        <span class="text-sm font-semibold text-white">-$5.50</span>
-                                    </div>
-
-                                    {{-- Quick actions --}}
-                                    <div class="grid grid-cols-4 gap-2 pt-1">
-                                        <button class="flex flex-col items-center gap-1.5 bg-blue-600/90 rounded-xl py-3 text-white">
-                                            <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4.5 19.5l15-15m0 0H8.25m11.25 0v11.25"/></svg>
-                                            <span class="text-[10px] font-medium">Send</span>
-                                        </button>
-                                        <button class="flex flex-col items-center gap-1.5 bg-white/5 rounded-xl py-3 text-white">
-                                            <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M19.5 4.5l-15 15m0 0h11.25m-11.25 0V8.25"/></svg>
-                                            <span class="text-[10px] font-medium">Receive</span>
-                                        </button>
-                                        <button class="flex flex-col items-center gap-1.5 bg-white/5 rounded-xl py-3 text-white">
-                                            <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M7.5 21L3 16.5m0 0L7.5 12M3 16.5h13.5m0-13.5L21 7.5m0 0L16.5 12M21 7.5H7.5"/></svg>
-                                            <span class="text-[10px] font-medium">Swap</span>
-                                        </button>
-                                        <button class="flex flex-col items-center gap-1.5 bg-white/5 rounded-xl py-3 text-white">
-                                            <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75m-3-7.036A11.959 11.959 0 013.598 6 11.99 11.99 0 003 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285z"/></svg>
-                                            <span class="text-[10px] font-medium">Shield</span>
-                                        </button>
+                                        @endforeach
                                     </div>
                                 </div>
 
-                                {{-- Home indicator --}}
-                                <div class="flex justify-center pb-2 relative z-10">
-                                    <div class="w-28 h-1 rounded-full bg-white/20"></div>
+                                {{-- Recent activity --}}
+                                <div class="flex flex-col" style="gap: 16px;">
+                                    <div class="flex items-center justify-between">
+                                        <span class="font-hf" style="font-size: 20px; font-weight: 700;">Recent Activity</span>
+                                        <span class="font-body-z" style="font-size: 14px; font-weight: 500; color: #7000ff;">See All</span>
+                                    </div>
+
+                                    <div class="overflow-hidden" style="background: #fff; border: 3px solid #0a0a0a; border-radius: 16px; box-shadow: 6px 6px 0px #0a0a0a;">
+                                        @php
+                                        $transactions = [
+                                            ['svg' => '/icons/credit-card.svg', 'name' => 'Merchant Payment', 'date' => 'Today 3:41 PM', 'amount' => '-$42.50', 'pos' => false, 'shielded' => true],
+                                            ['svg' => '/icons/arrow-up-right.svg', 'name' => 'Transfer to Wallet', 'date' => 'Yesterday 2:15 PM', 'amount' => '-$14.99', 'pos' => false, 'shielded' => false],
+                                            ['svg' => '/icons/arrow-down-left.svg', 'name' => 'USDC Received', 'date' => 'Yesterday 11:30 AM', 'amount' => '+$500.00', 'pos' => true, 'shielded' => false],
+                                            ['svg' => '/icons/credit-card.svg', 'name' => 'Starbolt Coffee', 'date' => 'Mar 5 9:20 AM', 'amount' => '-$12.00', 'pos' => false, 'shielded' => true],
+                                        ];
+                                        @endphp
+                                        @foreach($transactions as $i => $tx)
+                                        <div>
+                                            <div class="flex items-center" style="padding: 12px 16px; gap: 14px;">
+                                                <div class="rounded-full overflow-hidden" style="width: 44px; height: 44px; border: 1px solid #d1d5db; flex-shrink: 0;">
+                                                    <img src="{{ $tx['svg'] }}" alt="" style="width: 100%; height: 100%;">
+                                                </div>
+                                                <div style="flex: 1; min-width: 0;">
+                                                    <p class="font-body-z" style="font-size: 15px; font-weight: 500; margin: 0; line-height: 1.3;">{{ $tx['name'] }}</p>
+                                                    <div class="flex items-center" style="gap: 6px; margin-top: 2px;">
+                                                        <span class="font-body-z" style="font-size: 13px; color: #888;">{{ $tx['date'] }}</span>
+                                                        <div class="rounded-full" style="width: 5px; height: 5px; background: #10b981;"></div>
+                                                        <span class="font-body-z" style="font-size: 11px; color: #10b981;">Confirmed</span>
+                                                    </div>
+                                                </div>
+                                                <div class="flex flex-col items-end flex-shrink-0" style="gap: 2px;">
+                                                    <span style="font-size: 14px; font-weight: 600; font-variant-numeric: tabular-nums; color: {{ $tx['pos'] ? '#10b981' : '#0a0a0a' }};">{{ $tx['amount'] }}</span>
+                                                    @if($tx['shielded'])
+                                                    <div class="flex items-center" style="gap: 3px;">
+                                                        <svg width="10" height="10" viewBox="0 0 24 24" fill="#10b981" xmlns="http://www.w3.org/2000/svg"><path d="M12 2L3 7v5c0 5.5 3.8 10.7 9 12 5.2-1.3 9-6.5 9-12V7l-9-5Z"/></svg>
+                                                        <span class="font-mono-z" style="font-size: 10px; color: #10b981;">Protected</span>
+                                                    </div>
+                                                    @endif
+                                                </div>
+                                            </div>
+                                            @if($i < count($transactions) - 1)
+                                            <div style="height: 1px; background: #d1d5db; margin-left: 16px; margin-right: 16px;"></div>
+                                            @endif
+                                        </div>
+                                        @endforeach
+                                    </div>
                                 </div>
+
+                            </div>
+                        </div>
+
+                        {{-- Bottom tab bar --}}
+                        <div class="flex items-center justify-around" style="padding: 8px; border-top: 3px solid #0a0a0a; background: #fff;">
+                            @php
+                            $tabs = [
+                                ['svg' => '/icons/home.svg', 'label' => 'Home', 'active' => true],
+                                ['svg' => '/icons/clock.svg', 'label' => 'Activity', 'active' => false],
+                                ['svg' => null, 'label' => 'Pay', 'active' => false],
+                                ['svg' => '/icons/star.svg', 'label' => 'Rewards', 'active' => false],
+                                ['svg' => '/icons/gear.svg', 'label' => 'Settings', 'active' => false],
+                            ];
+                            @endphp
+                            @foreach($tabs as $tab)
+                                @if($tab['svg'])
+                                <div class="flex flex-col items-center" style="gap: 4px; padding: 4px 0; flex: 1;">
+                                    <img src="{{ $tab['svg'] }}" alt="" style="width: 26px; height: 26px; opacity: {{ $tab['active'] ? '1' : '0.4' }};">
+                                    <span class="font-mono-z" style="font-size: 11px; color: {{ $tab['active'] ? '#0a0a0a' : '#888' }};">{{ $tab['label'] }}</span>
+                                </div>
+                                @else
+                                <div class="flex items-center justify-center rounded-full"
+                                     style="width: 56px; height: 56px; background: #ccff00; border: 3px solid #0a0a0a; box-shadow: 4px 4px 0px #0a0a0a; margin-top: -16px;">
+                                    <img src="/icons/qr-code.svg" alt="" style="width: 36px; height: 36px;">
+                                </div>
+                                @endif
+                            @endforeach
+                        </div>
+
+                        {{-- Home indicator --}}
+                        <div class="flex justify-center" style="padding: 6px 0; background: #fff;">
+                            <div class="rounded-full" style="height: 4px; width: 96px; background: #f0f0f0;"></div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        {{-- Bottom border --}}
+        <div class="absolute bottom-0 left-0 right-0 h-1 bg-obsidian"></div>
+    </section>
+
+
+    {{-- ═══════════════════════════════════════════════════════════════
+         MARQUEE
+    ═══════════════════════════════════════════════════════════════ --}}
+    <section class="relative py-4 overflow-hidden bg-obsidian"
+             style="border-top: 4px solid #fff; border-bottom: 4px solid #fff; transform: rotate(-1.5deg) scale(1.02);">
+        <div class="flex whitespace-nowrap" style="animation: z-marquee 20s linear infinite;">
+            @for($dup = 0; $dup < 2; $dup++)
+            <span class="text-white text-xl md:text-2xl font-black uppercase tracking-wider font-hf pr-8">
+                SECURE STABLECOINS <span class="text-acid">&#9670;</span> SHIELD PRIVACY
+                <span class="text-acid">&#9670;</span> VIRTUAL CARDS
+                <span class="text-acid">&#9670;</span> SPLIT KEY SECURITY
+                <span class="text-acid">&#9670;</span> ZERO TRACE
+                <span class="text-acid">&#9670;</span> SECURE STABLECOINS
+                <span class="text-acid">&#9670;</span> SHIELD PRIVACY
+                <span class="text-acid">&#9670;</span> VIRTUAL CARDS
+                <span class="text-acid">&#9670;</span> SPLIT KEY SECURITY
+                <span class="text-acid">&#9670;</span> ZERO TRACE
+                <span class="text-acid">&#9670;</span>
+            </span>
+            @endfor
+        </div>
+    </section>
+
+
+    {{-- ═══════════════════════════════════════════════════════════════
+         FEATURES
+    ═══════════════════════════════════════════════════════════════ --}}
+    <section id="features" class="px-5 py-20 md:py-28">
+        <div class="mx-auto max-w-6xl">
+            <h2 class="text-4xl md:text-5xl font-black mb-4 font-hf anim-fade-in-up">Built Different.</h2>
+            <p class="text-lg mb-10 max-w-xl text-text-sec">
+                Everything you need for secure stablecoin payments — nothing you don&apos;t.
+            </p>
+
+            {{-- Tab bar --}}
+            <div class="flex gap-2 mb-8 flex-wrap" id="feature-tabs">
+                @foreach(['Pay', 'Core', 'Security', 'Shield'] as $tab)
+                <button onclick="switchTab('{{ strtolower($tab) }}')"
+                        class="feature-tab rounded-full px-5 py-2 text-sm font-bold transition-all duration-200"
+                        data-tab="{{ strtolower($tab) }}"
+                        style="background: {{ $tab === 'Core' ? '#ccff00' : '#f0f0f0' }}; border: 3px solid {{ $tab === 'Core' ? '#0a0a0a' : '#f0f0f0' }}; color: #0a0a0a;">
+                    {{ $tab }}
+                </button>
+                @endforeach
+            </div>
+
+            {{-- Core panel --}}
+            <div class="feature-panel active p-8 md:p-10 mb-6" id="panel-core"
+                 style="background: #a8c8f0; border: 3px solid #0a0a0a; border-radius: 2rem; box-shadow: 6px 6px 0px #0a0a0a;">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
+                    <div>
+                        <h3 class="text-2xl md:text-3xl font-black mb-2 font-hf">Your Keys, Split Three Ways</h3>
+                        <p class="text-base text-text-sec">
+                            Your private key is split into 3 encrypted shards. No single device or server ever holds the full key.
+                        </p>
+                    </div>
+                    <div class="flex items-center justify-center gap-3 md:gap-4 flex-wrap">
+                        @foreach([['icon' => '/icons/smartphone.svg', 'label' => 'Device'], ['icon' => '/icons/lock.svg', 'label' => 'Enclave'], ['icon' => '/icons/server.svg', 'label' => 'Server'], ['icon' => '/icons/checkmark.svg', 'label' => 'Signed']] as $i => $node)
+                        <div class="flex items-center gap-3 md:gap-4">
+                            <div class="flex flex-col items-center">
+                                <div class="w-[64px] h-[64px] md:w-[80px] md:h-[80px] rounded-full overflow-hidden" style="border: 3px solid #0a0a0a; box-shadow: 3px 3px 0px #0a0a0a;">
+                                    <img src="{{ $node['icon'] }}" alt="" class="h-full w-full">
+                                </div>
+                                <span class="text-[10px] md:text-xs font-bold mt-1.5 font-mono-z text-text-sec">{{ $node['label'] }}</span>
+                            </div>
+                            @if($i < 3)
+                            <span class="text-lg font-bold" style="color: #0a0a0a; margin-top: -1.2rem;">&rarr;</span>
+                            @endif
+                        </div>
+                        @endforeach
+                    </div>
+                </div>
+            </div>
+
+            {{-- Pay panel --}}
+            <div class="feature-panel p-8 md:p-10 mb-6" id="panel-pay"
+                 style="background: #f9a8d4; border: 3px solid #0a0a0a; border-radius: 2rem; box-shadow: 6px 6px 0px #0a0a0a;">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
+                    <div>
+                        <h3 class="text-2xl md:text-3xl font-black mb-2 font-hf">Pay with Your Card</h3>
+                        <p class="text-base text-text-sec">
+                            Spin up virtual Visa cards instantly. Spend stablecoins at any merchant worldwide — they see a normal card payment, not a crypto wallet.
+                        </p>
+                    </div>
+                    <div class="flex justify-center">
+                        <div class="p-5 w-full max-w-[280px]" style="background: #0a0a0a; border-radius: 1.5rem; border: 3px solid #0a0a0a; transform: rotate(-2deg);">
+                            <p class="text-white/50 text-xs uppercase tracking-wider">{{ config('brand.name') }} Virtual</p>
+                            <p class="text-white text-lg font-bold mt-1 tracking-widest font-mono-z">&bull;&bull;&bull;&bull; &bull;&bull;&bull;&bull; &bull;&bull;&bull;&bull; 4291</p>
+                            <div class="flex justify-between mt-4">
+                                <span class="text-white/40 text-xs">Valid thru 12/28</span>
+                                <span class="text-white/40 text-xs uppercase">Visa</span>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
-        </section>
 
-        {{-- ═══════════════════════════════════════════════════════════════
-             FEATURES
-        ═══════════════════════════════════════════════════════════════ --}}
-        <section class="py-20 lg:py-28 bg-[var(--bg-dark)] border-t border-white/5 relative grid-bg" id="features">
-            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                <div class="text-center mb-14">
-                    <h2 class="text-3xl lg:text-4xl font-bold text-white tracking-tight">What makes it different</h2>
-                    <p class="text-slate-400 mt-3 max-w-lg mx-auto">Four things no other wallet does together.</p>
-                </div>
-
-                <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-6 lg:gap-8">
-                    {{-- Feature 1: Pay with Your Card --}}
-                    <div class="feature-card glass-card p-7 lg:p-8 rounded-2xl border border-white/5 group noise relative">
-                        <div class="feature-icon w-14 h-14 rounded-2xl bg-blue-500/10 border border-blue-500/15 flex items-center justify-center mb-6">
-                            <svg class="w-7 h-7 text-blue-400" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M2.25 8.25h19.5M2.25 9h19.5m-16.5 5.25h6m-6 2.25h3m-3.75 3h15a2.25 2.25 0 002.25-2.25V6.75A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25v10.5A2.25 2.25 0 004.5 19.5z"/></svg>
-                        </div>
-                        <h3 class="text-xl font-bold text-white mb-3">Pay with Your Card</h3>
-                        <p class="text-sm text-slate-400 leading-relaxed">
-                            Tap your card at any shop. Pay with USDC &mdash; your card handles the conversion automatically. Add it to Apple Pay or Google Pay and go.
+            {{-- Security panel --}}
+            <div id="security"></div>
+            <div class="feature-panel p-8 md:p-10 mb-6" id="panel-security"
+                 style="background: #a8f0c4; border: 3px solid #0a0a0a; border-radius: 2rem; box-shadow: 6px 6px 0px #0a0a0a;">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
+                    <div>
+                        <h3 class="text-2xl md:text-3xl font-black mb-2 font-hf">Biometric Authentication</h3>
+                        <p class="text-base text-text-sec">
+                            Face ID and passkey support. Your wallet is protected by the same biometric security as your device — no passwords to remember or lose.
                         </p>
                     </div>
-
-                    {{-- Feature 2: Shield Your Transactions --}}
-                    <div class="feature-card glass-card p-7 lg:p-8 rounded-2xl border border-white/5 group noise relative">
-                        <div class="feature-icon w-14 h-14 rounded-2xl bg-emerald-500/10 border border-emerald-500/15 flex items-center justify-center mb-6">
-                            <svg class="w-7 h-7 text-emerald-400" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3.98 8.223A10.477 10.477 0 001.934 12C3.226 16.338 7.244 19.5 12 19.5c.993 0 1.953-.138 2.863-.395M6.228 6.228A10.45 10.45 0 0112 4.5c4.756 0 8.773 3.162 10.065 7.498a10.523 10.523 0 01-4.293 5.774M6.228 6.228L3 3m3.228 3.228l3.65 3.65m7.894 7.894L21 21m-3.228-3.228l-3.65-3.65m0 0a3 3 0 10-4.243-4.243m4.242 4.242L9.88 9.88"/></svg>
+                    <div class="flex gap-4 justify-center">
+                        @foreach(['/icons/fingerprint.svg', '/icons/user.svg', '/icons/shield.svg'] as $src)
+                        <div class="w-[72px] h-[72px] md:w-[88px] md:h-[88px] rounded-full overflow-hidden" style="border: 3px solid #0a0a0a; box-shadow: 4px 4px 0px #0a0a0a;">
+                            <img src="{{ $src }}" alt="" class="h-full w-full">
                         </div>
-                        <h3 class="text-xl font-bold text-white mb-3">Shield Your Transactions</h3>
-                        <p class="text-sm text-slate-400 leading-relaxed">
-                            The shop gets paid. Nobody else sees your balance or spending history. Not a mixer &mdash; a privacy layer with encrypted transaction shielding and full regulatory compliance.
-                        </p>
-                    </div>
-
-                    {{-- Feature 3: Verified Beyond Standard --}}
-                    <div class="feature-card glass-card p-7 lg:p-8 rounded-2xl border border-white/5 group noise relative">
-                        <div class="feature-icon w-14 h-14 rounded-2xl bg-purple-500/10 border border-purple-500/15 flex items-center justify-center mb-6">
-                            <svg class="w-7 h-7 text-purple-400" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75m-3-7.036A11.959 11.959 0 013.598 6 11.99 11.99 0 003 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285z"/></svg>
-                        </div>
-                        <h3 class="text-xl font-bold text-white mb-3">Verified Beyond Standard</h3>
-                        <p class="text-sm text-slate-400 leading-relaxed">
-                            Our Super KYC goes beyond checkbox compliance. We verify that companies are truly legitimate and not sanctioned. Built for businesses handling dual-use goods or regulated services.
-                        </p>
-                    </div>
-
-                    {{-- Feature 4: Earn While You Spend --}}
-                    <div class="feature-card glass-card p-7 lg:p-8 rounded-2xl border border-white/5 group noise relative">
-                        <div class="feature-icon w-14 h-14 rounded-2xl bg-amber-500/10 border border-amber-500/15 flex items-center justify-center mb-6">
-                            <svg class="w-7 h-7 text-amber-400" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M11.48 3.499a.562.562 0 011.04 0l2.125 5.111a.563.563 0 00.475.345l5.518.442c.499.04.701.663.321.988l-4.204 3.602a.563.563 0 00-.182.557l1.285 5.385a.562.562 0 01-.84.61l-4.725-2.885a.563.563 0 00-.586 0L6.982 20.54a.562.562 0 01-.84-.61l1.285-5.386a.562.562 0 00-.182-.557l-4.204-3.602a.563.563 0 01.321-.988l5.518-.442a.563.563 0 00.475-.345L11.48 3.5z"/></svg>
-                        </div>
-                        <h3 class="text-xl font-bold text-white mb-3">Earn While You Spend</h3>
-                        <p class="text-sm text-slate-400 leading-relaxed">
-                            Complete quests, build streaks, and level up. Earn points for every transaction and redeem them for fee waivers, priority processing, and exclusive badges.
-                        </p>
+                        @endforeach
                     </div>
                 </div>
             </div>
-        </section>
 
-        {{-- ═══════════════════════════════════════════════════════════════
-             SECURITY / HOW YOUR KEYS STAY SAFE
-        ═══════════════════════════════════════════════════════════════ --}}
-        <section class="py-20 lg:py-28 bg-[#080a0e] border-t border-white/5 relative overflow-hidden" id="security">
-            {{-- Background decoration --}}
-            <div class="absolute top-0 right-0 w-1/3 h-full bg-gradient-to-l from-blue-900/[0.04] to-transparent pointer-events-none"></div>
-
-            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-                <div class="grid lg:grid-cols-2 gap-12 lg:gap-20 items-center">
-                    {{-- Left: Shard Diagram --}}
-                    <div class="order-2 lg:order-1 flex justify-center">
-                        <div class="relative bg-[#0d1017] rounded-2xl border border-white/[0.06] p-10 lg:p-14 shadow-2xl w-full max-w-md">
-                            <div class="relative w-full aspect-square max-w-[280px] mx-auto">
-                                {{-- Center: Master Key --}}
-                                <div class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-28 h-28 rounded-full bg-[#080a0e] border-2 border-dashed border-slate-700/60 flex items-center justify-center z-10">
-                                    <div class="text-center">
-                                        <svg class="w-5 h-5 text-slate-500 mx-auto mb-1" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M16.5 10.5V6.75a4.5 4.5 0 10-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 002.25-2.25v-6.75a2.25 2.25 0 00-2.25-2.25H6.75a2.25 2.25 0 00-2.25 2.25v6.75a2.25 2.25 0 002.25 2.25z"/></svg>
-                                        <span class="text-[10px] text-slate-500 font-mono leading-tight block">Private Key</span>
-                                        <span class="text-[8px] text-slate-600 font-mono">(never exposed)</span>
-                                    </div>
-                                </div>
-
-                                {{-- Shard A: Device --}}
-                                <div class="absolute top-0 left-1/2 transform -translate-x-1/2 w-20 h-20 bg-[#080a0e] rounded-2xl border border-blue-500/40 shadow-[0_0_20px_rgba(59,130,246,0.12)] flex flex-col items-center justify-center z-20">
-                                    <svg class="w-5 h-5 text-blue-400 mb-0.5" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M10.5 1.5H8.25A2.25 2.25 0 006 3.75v16.5a2.25 2.25 0 002.25 2.25h7.5A2.25 2.25 0 0018 20.25V3.75a2.25 2.25 0 00-2.25-2.25H13.5m-3 0V3h3V1.5m-3 0h3m-3 18.75h3"/></svg>
-                                    <span class="text-[9px] text-slate-400 font-mono">Phone</span>
-                                </div>
-
-                                {{-- Shard B: Server --}}
-                                <div class="absolute bottom-0 left-2 w-20 h-20 bg-[#080a0e] rounded-2xl border border-emerald-500/40 shadow-[0_0_20px_rgba(16,185,129,0.12)] flex flex-col items-center justify-center z-20">
-                                    <svg class="w-5 h-5 text-emerald-400 mb-0.5" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5.25 14.25h13.5m-13.5 0a3 3 0 01-3-3m3 3a3 3 0 100 6h13.5a3 3 0 100-6m-16.5-3a3 3 0 013-3h13.5a3 3 0 013 3m-19.5 0a4.5 4.5 0 01.9-2.7L5.737 5.1a3.375 3.375 0 012.7-1.35h7.126c1.062 0 2.062.5 2.7 1.35l2.587 3.45a4.5 4.5 0 01.9 2.7m0 0a3 3 0 01-3 3m0 3h.008v.008h-.008v-.008zm0-6h.008v.008h-.008v-.008zm-3 6h.008v.008h-.008v-.008zm0-6h.008v.008h-.008v-.008z"/></svg>
-                                    <span class="text-[9px] text-slate-400 font-mono">HSM</span>
-                                </div>
-
-                                {{-- Shard C: Cloud --}}
-                                <div class="absolute bottom-0 right-2 w-20 h-20 bg-[#080a0e] rounded-2xl border border-purple-500/40 shadow-[0_0_20px_rgba(139,92,246,0.12)] flex flex-col items-center justify-center z-20">
-                                    <svg class="w-5 h-5 text-purple-400 mb-0.5" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M2.25 15a4.5 4.5 0 004.5 4.5H18a3.75 3.75 0 001.332-7.257 3 3 0 00-3.758-3.848 5.25 5.25 0 00-10.233 2.33A4.502 4.502 0 002.25 15z"/></svg>
-                                    <span class="text-[9px] text-slate-400 font-mono">Backup</span>
-                                </div>
-
-                                {{-- Connector lines --}}
-                                <svg class="absolute inset-0 w-full h-full pointer-events-none" style="z-index: 5;">
-                                    <line x1="50%" y1="48%" x2="50%" y2="18%" stroke="#3b82f6" stroke-width="1.5" opacity="0.25" class="shard-line"/>
-                                    <line x1="46%" y1="55%" x2="22%" y2="78%" stroke="#10b981" stroke-width="1.5" opacity="0.25" class="shard-line"/>
-                                    <line x1="54%" y1="55%" x2="78%" y2="78%" stroke="#8b5cf6" stroke-width="1.5" opacity="0.25" class="shard-line"/>
-                                </svg>
-                            </div>
-
-                            <div class="text-center mt-8">
-                                <p class="text-sm font-semibold text-white">2-of-3 Shards Required</p>
-                                <p class="text-xs text-slate-500 mt-1">Lose your phone? You're still fine.</p>
-                            </div>
-                        </div>
-                    </div>
-
-                    {{-- Right: Explanation --}}
-                    <div class="order-1 lg:order-2 space-y-6">
-                        <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-500/10 border border-blue-500/15 text-blue-400 text-[11px] font-semibold uppercase tracking-wider">
-                            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M16.5 10.5V6.75a4.5 4.5 0 10-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 002.25-2.25v-6.75a2.25 2.25 0 00-2.25-2.25H6.75a2.25 2.25 0 00-2.25 2.25v6.75a2.25 2.25 0 002.25 2.25z"/></svg>
-                            Threshold Cryptography
-                        </div>
-
-                        <h2 class="text-3xl lg:text-4xl font-bold text-white leading-tight">Your Keys, Split Three Ways</h2>
-
-                        <p class="text-slate-400 text-lg leading-relaxed">
-                            No seed phrase to write down. No single point of failure. Your private key is split into three encrypted shards. Any two can recover your wallet.
+            {{-- Shield panel --}}
+            <div class="feature-panel p-8 md:p-10 mb-6" id="panel-shield"
+                 style="background: #c8a8f0; border: 3px solid #0a0a0a; border-radius: 2rem; box-shadow: 6px 6px 0px #0a0a0a;">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
+                    <div>
+                        <h3 class="text-2xl md:text-3xl font-black mb-2 font-hf">Shield Your Transactions</h3>
+                        <p class="text-base text-text-sec">
+                            Your on-chain history is decoupled from your spending. Privacy relayers ensure no one traces your purchases back to your wallet.
                         </p>
-
-                        <div class="space-y-4 pt-2">
-                            <div class="flex items-start gap-4 p-4 rounded-xl border border-transparent hover:border-white/5 hover:bg-white/[0.02] transition-all">
-                                <div class="w-10 h-10 rounded-lg bg-blue-500/10 flex items-center justify-center flex-shrink-0">
-                                    <svg class="w-5 h-5 text-blue-400" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M10.5 1.5H8.25A2.25 2.25 0 006 3.75v16.5a2.25 2.25 0 002.25 2.25h7.5A2.25 2.25 0 0018 20.25V3.75a2.25 2.25 0 00-2.25-2.25H13.5m-3 0V3h3V1.5m-3 0h3m-3 18.75h3"/></svg>
-                                </div>
-                                <div>
-                                    <h4 class="text-white font-semibold text-sm">Device Shard</h4>
-                                    <p class="text-xs text-slate-500 mt-0.5">On your phone, protected by biometrics.</p>
-                                </div>
-                            </div>
-
-                            <div class="flex items-start gap-4 p-4 rounded-xl border border-transparent hover:border-white/5 hover:bg-white/[0.02] transition-all">
-                                <div class="w-10 h-10 rounded-lg bg-emerald-500/10 flex items-center justify-center flex-shrink-0">
-                                    <svg class="w-5 h-5 text-emerald-400" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5.25 14.25h13.5m-13.5 0a3 3 0 01-3-3m3 3a3 3 0 100 6h13.5a3 3 0 100-6m-16.5-3a3 3 0 013-3h13.5a3 3 0 013 3m-19.5 0a4.5 4.5 0 01.9-2.7L5.737 5.1a3.375 3.375 0 012.7-1.35h7.126c1.062 0 2.062.5 2.7 1.35l2.587 3.45a4.5 4.5 0 01.9 2.7m0 0a3 3 0 01-3 3m0 3h.008v.008h-.008v-.008zm0-6h.008v.008h-.008v-.008zm-3 6h.008v.008h-.008v-.008zm0-6h.008v.008h-.008v-.008z"/></svg>
-                                </div>
-                                <div>
-                                    <h4 class="text-white font-semibold text-sm">Server Shard</h4>
-                                    <p class="text-xs text-slate-500 mt-0.5">In our distributed HSM infrastructure.</p>
-                                </div>
-                            </div>
-
-                            <div class="flex items-start gap-4 p-4 rounded-xl border border-transparent hover:border-white/5 hover:bg-white/[0.02] transition-all">
-                                <div class="w-10 h-10 rounded-lg bg-purple-500/10 flex items-center justify-center flex-shrink-0">
-                                    <svg class="w-5 h-5 text-purple-400" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M2.25 15a4.5 4.5 0 004.5 4.5H18a3.75 3.75 0 001.332-7.257 3 3 0 00-3.758-3.848 5.25 5.25 0 00-10.233 2.33A4.502 4.502 0 002.25 15z"/></svg>
-                                </div>
-                                <div>
-                                    <h4 class="text-white font-semibold text-sm">Recovery Shard</h4>
-                                    <p class="text-xs text-slate-500 mt-0.5">Encrypted cloud backup on iCloud or Google Drive.</p>
-                                </div>
-                            </div>
+                    </div>
+                    <div class="flex gap-4 justify-center">
+                        @foreach(['/icons/ghost.svg', '/icons/incognito.svg', '/icons/globe.svg'] as $src)
+                        <div class="w-[72px] h-[72px] md:w-[88px] md:h-[88px] rounded-full overflow-hidden" style="border: 3px solid #0a0a0a; box-shadow: 4px 4px 0px #0a0a0a;">
+                            <img src="{{ $src }}" alt="" class="h-full w-full">
                         </div>
+                        @endforeach
                     </div>
                 </div>
             </div>
-        </section>
 
-        {{-- ═══════════════════════════════════════════════════════════════
-             THE FINAEGIS CORE (Architecture)
-        ═══════════════════════════════════════════════════════════════ --}}
-        <section class="py-20 lg:py-28 bg-[var(--bg-dark)] border-t border-white/5 relative grid-bg" id="platform">
-            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                <div class="text-center mb-16">
-                    <h2 class="text-3xl lg:text-4xl font-bold text-white tracking-tight">The {{ config('brand.name') }} Core</h2>
-                    <p class="text-slate-400 mt-3 max-w-lg mx-auto">
-                        Built on an AI-native banking engine. Compliance in milliseconds. You stay private. The system stays compliant.
+            {{-- 2-column sub-cards --}}
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div class="p-8" style="background: #fff; border: 3px solid #0a0a0a; border-radius: 2rem; box-shadow: 6px 6px 0px #0a0a0a;">
+                    <div class="rounded-full overflow-hidden mb-4" style="width: 56px; height: 56px; border: 3px solid #0a0a0a; box-shadow: 3px 3px 0px #0a0a0a;">
+                        <img src="/icons/credit-card.svg" alt="" class="h-full w-full">
+                    </div>
+                    <h3 class="text-xl md:text-2xl font-black mb-2 font-hf">Virtual Cards</h3>
+                    <p class="text-base text-text-sec">
+                        Generate disposable virtual Visa cards linked to your stablecoin balance. Merchants see a normal card payment.
                     </p>
                 </div>
 
-                {{-- Architecture flow --}}
-                <div class="flex flex-col items-center max-w-sm mx-auto">
-                    {{-- You --}}
-                    <div class="bg-[#0d1017] border border-blue-500/25 px-8 py-3.5 rounded-full shadow-[0_0_20px_rgba(59,130,246,0.12)] backdrop-blur-sm">
-                        <span class="text-sm font-bold text-white">You</span>
+                <div class="p-8" style="background: #fff; border: 3px solid #0a0a0a; border-radius: 2rem; box-shadow: 6px 6px 0px #0a0a0a;">
+                    <div class="rounded-full overflow-hidden mb-4" style="width: 56px; height: 56px; border: 3px solid #0a0a0a; box-shadow: 3px 3px 0px #0a0a0a;">
+                        <img src="/icons/incognito.svg" alt="" class="h-full w-full">
                     </div>
-
-                    {{-- Connector --}}
-                    <div class="w-px h-12 bg-slate-800 relative data-stream overflow-hidden"></div>
-
-                    {{-- Engine --}}
-                    <div class="bg-[#0d1017]/90 border border-emerald-500/30 px-10 py-7 rounded-2xl shadow-[0_0_40px_rgba(16,185,129,0.08)] relative overflow-hidden backdrop-blur-sm">
-                        <div class="absolute inset-0 bg-emerald-500/[0.03] animate-pulse"></div>
-                        <div class="relative z-10 text-center">
-                            <svg class="w-8 h-8 text-emerald-400 mx-auto mb-2" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9.813 15.904L9 18.75l-.813-2.846a4.5 4.5 0 00-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 003.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 003.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 00-3.09 3.09zM18.259 8.715L18 9.75l-.259-1.035a3.375 3.375 0 00-2.455-2.456L14.25 6l1.036-.259a3.375 3.375 0 002.455-2.456L18 2.25l.259 1.035a3.375 3.375 0 002.455 2.456L21.75 6l-1.036.259a3.375 3.375 0 00-2.455 2.456zM16.894 20.567L16.5 21.75l-.394-1.183a2.25 2.25 0 00-1.423-1.423L13.5 18.75l1.183-.394a2.25 2.25 0 001.423-1.423l.394-1.183.394 1.183a2.25 2.25 0 001.423 1.423l1.183.394-1.183.394a2.25 2.25 0 00-1.423 1.423z"/></svg>
-                            <div class="text-base font-bold text-white">AI-Banking Engine</div>
-                            <div class="text-[10px] text-emerald-400/80 mt-1 font-mono tracking-wider uppercase">Status: Secure</div>
-                        </div>
-                    </div>
-
-                    {{-- Connector --}}
-                    <div class="w-px h-12 bg-slate-800 relative data-stream data-stream-delayed overflow-hidden"></div>
-
-                    {{-- World --}}
-                    <div class="bg-[#0d1017] border border-white/10 px-8 py-3.5 rounded-full backdrop-blur-sm">
-                        <span class="text-sm font-bold text-slate-400">The World</span>
-                    </div>
-                </div>
-
-                {{-- Capabilities grid --}}
-                <div class="mt-16 grid grid-cols-2 md:grid-cols-4 gap-4 max-w-3xl mx-auto">
-                    <div class="text-center p-4 rounded-xl bg-white/[0.02] border border-white/5">
-                        <div class="text-2xl font-bold text-white">43</div>
-                        <div class="text-[11px] text-slate-500 mt-1">Banking Domains</div>
-                    </div>
-                    <div class="text-center p-4 rounded-xl bg-white/[0.02] border border-white/5">
-                        <div class="text-2xl font-bold text-white">1,250+</div>
-                        <div class="text-[11px] text-slate-500 mt-1">API Endpoints</div>
-                    </div>
-                    <div class="text-center p-4 rounded-xl bg-white/[0.02] border border-white/5">
-                        <div class="text-2xl font-bold text-white">ZK</div>
-                        <div class="text-[11px] text-slate-500 mt-1">Privacy Proofs</div>
-                    </div>
-                    <div class="text-center p-4 rounded-xl bg-white/[0.02] border border-white/5">
-                        <div class="text-2xl font-bold text-white">ERC-4337</div>
-                        <div class="text-[11px] text-slate-500 mt-1">Gas Abstraction</div>
-                    </div>
-                </div>
-
-                {{-- Link to platform (only shown when promo pages are available) --}}
-                @if(config('brand.show_promo_pages'))
-                <div class="text-center mt-10">
-                    <a href="{{ route('platform') }}" class="inline-flex items-center gap-2 text-sm text-blue-400 hover:text-blue-300 font-medium transition-colors group">
-                        Explore the full {{ config('brand.name') }} Core Banking Platform
-                        <svg class="w-4 h-4 group-hover:translate-x-0.5 transition-transform" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3"/></svg>
-                    </a>
-                </div>
-                @endif
-            </div>
-        </section>
-
-        {{-- ═══════════════════════════════════════════════════════════════
-             FAQ
-        ═══════════════════════════════════════════════════════════════ --}}
-        <section class="py-20 lg:py-28 bg-[#080a0e] border-t border-white/5 relative" id="faq">
-            <div class="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8">
-                <h2 class="text-3xl lg:text-4xl font-bold text-white text-center mb-12 tracking-tight">Frequently Asked Questions</h2>
-
-                <div class="space-y-0 border-t border-white/5">
-                    <details class="group border-b border-white/5">
-                        <summary class="flex justify-between items-center cursor-pointer py-5 pr-2 font-medium text-white select-none text-sm hover:text-blue-400 transition-colors">
-                            <span>Is {{ config('brand.name') }} a custodial wallet?</span>
-                            <svg class="w-4 h-4 text-slate-500 group-open:text-blue-400 group-open:rotate-45 transition-all duration-200 flex-shrink-0 ml-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15"/></svg>
-                        </summary>
-                        <div class="pb-5 text-slate-400 text-sm leading-relaxed">
-                            No. {{ config('brand.name') }} is fully non-custodial. Your private key is split using Shamir's Secret Sharing, and no single party (including {{ config('brand.name') }}) can access your funds alone. You hold the keys.
-                        </div>
-                    </details>
-
-                    <details class="group border-b border-white/5">
-                        <summary class="flex justify-between items-center cursor-pointer py-5 pr-2 font-medium text-white select-none text-sm hover:text-blue-400 transition-colors">
-                            <span>How is transaction shielding different from a mixer?</span>
-                            <svg class="w-4 h-4 text-slate-500 group-open:text-blue-400 group-open:rotate-45 transition-all duration-200 flex-shrink-0 ml-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15"/></svg>
-                        </summary>
-                        <div class="pb-5 text-slate-400 text-sm leading-relaxed">
-                            Mixers pool funds to hide origins. We don't. {{ config('brand.name') }} uses zero-knowledge proofs to encrypt your transaction data so third parties can't see it &mdash; but we maintain full audit logs for regulatory authorities. Privacy for you, compliance for regulators.
-                        </div>
-                    </details>
-
-                    <details class="group border-b border-white/5">
-                        <summary class="flex justify-between items-center cursor-pointer py-5 pr-2 font-medium text-white select-none text-sm hover:text-blue-400 transition-colors">
-                            <span>Do I need ETH for gas fees?</span>
-                            <svg class="w-4 h-4 text-slate-500 group-open:text-blue-400 group-open:rotate-45 transition-all duration-200 flex-shrink-0 ml-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15"/></svg>
-                        </summary>
-                        <div class="pb-5 text-slate-400 text-sm leading-relaxed">
-                            No. Account Abstraction (ERC-4337) lets you pay fees in USDC. You never need to hold volatile crypto just to move stablecoins.
-                        </div>
-                    </details>
-
-                    <details class="group border-b border-white/5">
-                        <summary class="flex justify-between items-center cursor-pointer py-5 pr-2 font-medium text-white select-none text-sm hover:text-blue-400 transition-colors">
-                            <span>What is a Super KYC certificate?</span>
-                            <svg class="w-4 h-4 text-slate-500 group-open:text-blue-400 group-open:rotate-45 transition-all duration-200 flex-shrink-0 ml-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15"/></svg>
-                        </summary>
-                        <div class="pb-5 text-slate-400 text-sm leading-relaxed">
-                            Standard KYC checks documents. Our Super KYC goes further: we verify the company is genuinely legitimate and not sanctioned through enhanced due diligence, open-source intelligence, and white-hat analysis. The resulting certificate is a verifiable credential that businesses can present to partners and regulators.
-                        </div>
-                    </details>
+                    <h3 class="text-xl md:text-2xl font-black mb-2 font-hf">Privacy Relayers</h3>
+                    <p class="text-base text-text-sec">
+                        Transactions routed through privacy-preserving relayers. Your blockchain address stays disconnected from purchases.
+                    </p>
                 </div>
             </div>
-        </section>
+        </div>
+    </section>
 
-        {{-- ═══════════════════════════════════════════════════════════════
-             FINAL CTA
-        ═══════════════════════════════════════════════════════════════ --}}
-        <section class="py-16 lg:py-20 bg-[var(--bg-dark)] border-t border-white/5 relative hero-glow grid-bg noise overflow-hidden">
-            <div class="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8 text-center relative z-10">
-                <h2 class="text-2xl lg:text-3xl font-bold text-white tracking-tight mb-4">
-                    Pay with stablecoins in shops.<br>Use your card.
-                </h2>
-                <p class="text-slate-400 mb-8">Be the first to know when we launch.</p>
 
-                {{-- Duplicate signup (scrolled-to version) --}}
-                <form id="early-access-form-bottom" class="flex flex-col sm:flex-row gap-3 max-w-md mx-auto">
-                    <input
-                        type="email"
-                        required
-                        placeholder="Enter your email"
-                        class="flex-1 bg-white/5 border border-white/10 rounded-xl px-4 py-3.5 text-white placeholder-slate-500 focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500/50 outline-none transition-all text-sm"
-                    >
-                    <button type="submit" class="glow-btn shimmer bg-[#111827] hover:bg-[#1a2332] text-white px-6 py-3.5 rounded-xl font-semibold transition-all whitespace-nowrap flex items-center justify-center gap-2 text-sm">
-                        <svg class="w-4 h-4 text-blue-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3"/></svg>
-                        Get Early Access
+    {{-- ═══════════════════════════════════════════════════════════════
+         FAQ
+    ═══════════════════════════════════════════════════════════════ --}}
+    <section id="faq" class="px-5 py-20 md:py-28 bg-bg-tertiary">
+        <div class="mx-auto max-w-3xl">
+            <h2 class="text-4xl md:text-5xl font-black mb-10 text-center font-hf">FAQ</h2>
+
+            <div class="flex flex-col gap-4" id="faq-list">
+                @php
+                $faqs = [
+                    ['q' => 'Is ' . config('brand.name') . ' a custodial wallet?', 'a' => 'No. ' . config('brand.name') . ' is fully non-custodial. Your keys, your coins. We never hold your funds — the wallet uses split-key architecture so only you can authorise transactions.'],
+                    ['q' => 'How does transaction shielding work?', 'a' => config('brand.name') . ' routes your stablecoin transactions through privacy-preserving relayers. Your on-chain history is decoupled from your spending identity, so merchants and observers can\'t link your wallet to your purchases.'],
+                    ['q' => 'Do I pay gas fees?', 'a' => 'Gas fees are abstracted away. You pay a flat micro-fee in the stablecoin you\'re spending — no ETH or native tokens needed. We batch and optimise under the hood.'],
+                    ['q' => 'What is Super KYC?', 'a' => 'Super KYC is our one-time premium verification. Once you pass it you unlock higher spending limits, fiat off-ramps, and the physical metal card — all while your identity stays encrypted.'],
+                ];
+                @endphp
+                @foreach($faqs as $i => $faq)
+                <div class="overflow-hidden" style="border: 3px solid #0a0a0a; border-radius: 1.5rem; box-shadow: 6px 6px 0px #0a0a0a; background: #fff;">
+                    <button onclick="toggleFaq({{ $i }})" class="w-full flex items-center justify-between px-6 py-5 text-left">
+                        <span class="text-lg md:text-xl font-bold pr-4 font-hf">{{ $faq['q'] }}</span>
+                        <span class="faq-toggle text-2xl font-black flex-shrink-0 w-10 h-10 flex items-center justify-center rounded-xl" id="faq-icon-{{ $i }}"
+                              style="background: #f0f0f0; border: 3px solid #0a0a0a;">+</span>
                     </button>
-                </form>
-                <div id="signup-success-bottom" class="hidden mt-4">
-                    <div class="inline-flex items-center gap-2 bg-emerald-500/10 border border-emerald-500/20 rounded-xl px-5 py-3">
-                        <svg class="w-5 h-5 text-emerald-400" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5"/></svg>
-                        <span class="text-sm font-medium text-emerald-300">You're on the list.</span>
+                    <div class="faq-answer" id="faq-{{ $i }}">
+                        <div class="px-6 pb-5 text-base text-text-sec" style="border-top: 2px solid #e5e5e5;">
+                            <p class="pt-4">{{ $faq['a'] }}</p>
+                        </div>
                     </div>
                 </div>
+                @endforeach
             </div>
-        </section>
+        </div>
+    </section>
+
+
+    {{-- ═══════════════════════════════════════════════════════════════
+         CTA
+    ═══════════════════════════════════════════════════════════════ --}}
+    <section id="cta" class="relative px-5 py-20 md:py-28 overflow-hidden bg-acid">
+        <div class="relative z-10 mx-auto max-w-3xl text-center">
+            <h2 class="text-4xl sm:text-5xl md:text-6xl font-black mb-6 font-hf" style="transform: rotate(-2deg);">
+                Ready to Go Off-Grid?
+            </h2>
+            <p class="text-lg md:text-xl mb-10 max-w-xl mx-auto text-text-sec">
+                Drop your email and we&apos;ll send you an invite when the beta launches. No spam, just alpha.
+            </p>
+
+            <form id="early-access-form" class="flex flex-col sm:flex-row gap-3 max-w-lg mx-auto">
+                <input type="hidden" name="_token" value="{{ csrf_token() }}">
+                <input type="email" name="email" required placeholder="your@email.com"
+                       class="flex-1 px-6 py-4 text-base outline-none placeholder:text-black/30"
+                       style="background: #fff; border: 3px solid #0a0a0a; border-radius: 9999px; box-shadow: 4px 4px 0px #0a0a0a;">
+                <button type="submit"
+                        class="btn-hover px-8 py-4 text-base font-bold rounded-full text-white"
+                        style="background: #0a0a0a; border: 3px solid #0a0a0a; box-shadow: 4px 4px 0px #0a0a0a;">
+                    Get Early Access
+                </button>
+            </form>
+
+            <div id="early-access-success" class="hidden">
+                <div class="inline-block px-8 py-5 rounded-full text-lg font-bold hs-6"
+                     style="background: #fff; border: 3px solid #0a0a0a; color: #0a0a0a;">
+                    You&apos;re on the list!
+                </div>
+            </div>
+        </div>
+    </section>
+
     </main>
 
     {{-- ═══════════════════════════════════════════════════════════════
          FOOTER
     ═══════════════════════════════════════════════════════════════ --}}
-    <footer class="bg-[#040506] border-t border-white/5 pt-14 pb-10">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10 lg:gap-8 mb-12">
-                {{-- Brand --}}
-                <div>
-                    <a href="{{ route('home') }}" class="flex items-center gap-2 mb-5">
-                        <div class="w-8 h-8 rounded-lg bg-gradient-to-br from-blue-600 to-blue-800 flex items-center justify-center shadow-lg shadow-blue-500/15 ring-1 ring-white/10">
-                            <svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75m-3-7.036A11.959 11.959 0 013.598 6 11.99 11.99 0 003 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285z"/></svg>
-                        </div>
-                        <span class="text-lg font-bold text-white tracking-tight">{{ config('brand.name') }}</span>
-                    </a>
-                    <p class="text-xs text-slate-500 leading-relaxed mb-5">
-                        {{ config('brand.tagline') }}
-                    </p>
-                    <div class="flex gap-3">
-                        <a href="#" class="w-9 h-9 rounded-full bg-white/5 flex items-center justify-center text-slate-500 hover:text-white hover:bg-white/10 transition-colors" aria-label="Twitter">
-                            <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
-                        </a>
-                        @if(config('brand.github_url'))
-                        <a href="{{ config('brand.github_url') }}" class="w-9 h-9 rounded-full bg-white/5 flex items-center justify-center text-slate-500 hover:text-white hover:bg-white/10 transition-colors" aria-label="GitHub">
-                            <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/></svg>
-                        </a>
-                        @endif
-                    </div>
-                </div>
+    <footer class="relative px-5 pt-12 pb-20 md:pt-16 md:pb-28 overflow-hidden" style="background: #fff; border-top: 8px solid #0a0a0a;">
+        {{-- Giant watermark --}}
+        <span class="absolute left-1/2 -translate-x-1/2 pointer-events-none select-none font-black font-hf"
+              style="font-size: 10vw; opacity: 0.04; line-height: 1; white-space: nowrap; bottom: 1.5rem;">
+            {{ config('brand.name') }}
+        </span>
 
-                @if(config('brand.show_promo_pages'))
-                {{-- Product --}}
-                <div>
-                    <h4 class="text-xs font-bold text-white uppercase tracking-wider mb-5">Product</h4>
-                    <ul class="space-y-3">
-                        <li><a href="{{ route('platform') }}" class="text-sm text-slate-500 hover:text-blue-400 transition-colors">Platform</a></li>
-                        <li><a href="{{ route('features') }}" class="text-sm text-slate-500 hover:text-blue-400 transition-colors">Features</a></li>
-                        <li><a href="{{ route('pricing') }}" class="text-sm text-slate-500 hover:text-blue-400 transition-colors">Pricing</a></li>
-                        <li><a href="{{ route('security') }}" class="text-sm text-slate-500 hover:text-blue-400 transition-colors">Security</a></li>
-                    </ul>
+        <div class="relative z-10 mx-auto max-w-6xl flex flex-col md:flex-row items-start md:items-center justify-between gap-8">
+            {{-- Logo --}}
+            <div class="flex items-center gap-3">
+                <div class="flex h-11 w-11 items-center justify-center rounded-xl text-xl font-black font-hf"
+                     style="background: #a8f0c4; border: 3px solid #0a0a0a; box-shadow: 4px 4px 0px #0a0a0a;">
+                    Z
                 </div>
-
-                {{-- Developers --}}
-                <div>
-                    <h4 class="text-xs font-bold text-white uppercase tracking-wider mb-5">Developers</h4>
-                    <ul class="space-y-3">
-                        <li><a href="{{ route('developers') }}" class="text-sm text-slate-500 hover:text-blue-400 transition-colors">Developer Hub</a></li>
-                        <li><a href="/api/documentation" class="text-sm text-slate-500 hover:text-blue-400 transition-colors">API Reference</a></li>
-                        @if(config('brand.github_url'))
-                        <li><a href="{{ config('brand.github_url') }}" class="text-sm text-slate-500 hover:text-blue-400 transition-colors">GitHub</a></li>
-                        @endif
-                    </ul>
-                </div>
-
-                {{-- Support --}}
-                <div>
-                    <h4 class="text-xs font-bold text-white uppercase tracking-wider mb-5">Support</h4>
-                    <ul class="space-y-3">
-                        <li><a href="{{ route('support.contact') }}" class="text-sm text-slate-500 hover:text-blue-400 transition-colors">Contact</a></li>
-                        <li><a href="{{ route('support.faq') }}" class="text-sm text-slate-500 hover:text-blue-400 transition-colors">FAQ</a></li>
-                        <li><a href="{{ route('about') }}" class="text-sm text-slate-500 hover:text-blue-400 transition-colors">About</a></li>
-                        <li><a href="{{ route('blog') }}" class="text-sm text-slate-500 hover:text-blue-400 transition-colors">Blog</a></li>
-                    </ul>
-                </div>
-                @endif
+                <span class="text-2xl font-black font-hf">{{ config('brand.name') }}</span>
             </div>
 
-            {{-- Bottom --}}
-            <div class="pt-8 border-t border-white/5 flex flex-col md:flex-row justify-between items-center gap-4">
-                <div class="flex items-center gap-4">
-                    <p class="text-xs text-slate-600">&copy; {{ date('Y') }} {{ config('brand.name') }}. All rights reserved.</p>
-                    <div class="flex items-center gap-1.5">
-                        <div class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></div>
-                        <span class="text-[10px] text-slate-500">All Systems Operational</span>
-                    </div>
-                </div>
-                <div class="flex gap-5">
-                    <a href="{{ route('legal.terms') }}" class="text-xs text-slate-500 hover:text-white transition-colors">Terms</a>
-                    <a href="{{ route('legal.privacy') }}" class="text-xs text-slate-500 hover:text-white transition-colors">Privacy</a>
-                    <a href="{{ route('legal.cookies') }}" class="text-xs text-slate-500 hover:text-white transition-colors">Cookies</a>
-                </div>
-            </div>
+            {{-- Center CTA --}}
+            <a href="#cta" class="btn-hover rounded-full px-6 py-2.5 text-sm font-bold"
+               style="background: #ccff00; border: 3px solid #0a0a0a; color: #0a0a0a;">
+                Early Access
+            </a>
 
-            {{-- Disclaimer --}}
-            <div class="mt-6">
-                <p class="text-[10px] text-slate-700 leading-relaxed text-center max-w-2xl mx-auto">
-                    {{ config('brand.name') }} does not provide financial advice. Cryptocurrency values are volatile. Self-custody means you are responsible for the security of your wallet and private key shards. Ensure you maintain access to your recovery methods at all times.
-                </p>
+            {{-- Links --}}
+            <div class="flex flex-wrap gap-x-8 gap-y-3">
+                <a href="#features" class="text-sm font-medium opacity-60 hover:opacity-100 transition-opacity">Features</a>
+                <a href="#security" class="text-sm font-medium opacity-60 hover:opacity-100 transition-opacity">Security</a>
+                <a href="#faq" class="text-sm font-medium opacity-60 hover:opacity-100 transition-opacity">FAQ</a>
+            </div>
+        </div>
+
+        <div class="relative z-10 mx-auto max-w-6xl mt-10 pt-6 flex flex-col sm:flex-row items-center justify-between gap-4"
+             style="border-top: 2px solid #e5e5e5;">
+            <p class="text-sm opacity-40">&copy; {{ date('Y') }} {{ config('brand.name') }}. All rights reserved.</p>
+            <div class="flex gap-6">
+                <a href="#" class="text-sm opacity-40 hover:opacity-100 transition-opacity">Privacy</a>
+                <a href="#" class="text-sm opacity-40 hover:opacity-100 transition-opacity">Terms</a>
             </div>
         </div>
     </footer>
 
+
     {{-- ═══════════════════════════════════════════════════════════════
-         JAVASCRIPT
+         SCRIPTS
     ═══════════════════════════════════════════════════════════════ --}}
     <script>
-        // Mobile nav toggle
-        document.getElementById('mobile-nav-toggle').addEventListener('click', function() {
-            document.getElementById('mobile-nav').classList.toggle('hidden');
-        });
-
-        // Close mobile nav on link click
-        document.querySelectorAll('#mobile-nav a[href^="#"]').forEach(link => {
-            link.addEventListener('click', () => {
-                document.getElementById('mobile-nav').classList.add('hidden');
+        // ── Mobile menu toggle ──
+        const mobileToggle = document.getElementById('mobile-toggle');
+        const mobileMenu = document.getElementById('mobile-menu');
+        if (mobileToggle && mobileMenu) {
+            mobileToggle.addEventListener('click', () => {
+                mobileMenu.classList.toggle('open');
             });
-        });
-
-        // Early access form handler
-        function handleSignup(form, successEl) {
-            form.addEventListener('submit', async function(e) {
-                e.preventDefault();
-                const emailInput = form.querySelector('input[type="email"]');
-                const email = emailInput.value.trim();
-                const btn = form.querySelector('button[type="submit"]');
-                const errorEl = document.getElementById('signup-error');
-
-                if (!email) return;
-
-                // Loading state
-                btn.disabled = true;
-                btn.innerHTML = '<svg class="w-4 h-4 animate-spin" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0l3.181 3.183a8.25 8.25 0 0013.803-3.7M4.031 9.865a8.25 8.25 0 0113.803-3.7l3.181 3.182m0-4.991v4.99"/></svg> Submitting...';
-
-                try {
-                    const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
-                    const response = await fetch('/subscriber/mobile-app', {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json',
-                            'X-CSRF-TOKEN': csrfToken,
-                            'Accept': 'application/json'
-                        },
-                        body: JSON.stringify({
-                            email: email,
-                            tags: ['mobile-app', 'early-access']
-                        })
-                    });
-
-                    const data = await response.json();
-
-                    if (data.success || response.ok) {
-                        // Success
-                        form.classList.add('hidden');
-                        successEl.classList.remove('hidden');
-                        if (errorEl) errorEl.classList.add('hidden');
-
-                        // Also update bottom form if top was used
-                        document.querySelectorAll('[id^="early-access-form"]').forEach(f => f.classList.add('hidden'));
-                        document.querySelectorAll('[id^="signup-success"]').forEach(s => s.classList.remove('hidden'));
-                    } else {
-                        throw new Error(data.message || 'Signup failed');
-                    }
-                } catch (error) {
-                    // Fallback: mailto
-                    window.location.href = 'mailto:{{ config('brand.support_email') }}?subject=' +
-                        encodeURIComponent('{{ config('brand.name') }} Early Access Request') +
-                        '&body=' + encodeURIComponent('Please add me to the early access list.\n\nEmail: ' + email);
-
-                    // Show as success after mailto opens
-                    setTimeout(function() {
-                        form.classList.add('hidden');
-                        successEl.classList.remove('hidden');
-                    }, 500);
-                }
+            document.querySelectorAll('.mobile-link').forEach(link => {
+                link.addEventListener('click', () => mobileMenu.classList.remove('open'));
             });
         }
 
-        // Attach to both forms
-        const topForm = document.getElementById('early-access-form');
-        const bottomForm = document.getElementById('early-access-form-bottom');
-        const topSuccess = document.getElementById('signup-success');
-        const bottomSuccess = document.getElementById('signup-success-bottom');
+        // ── Feature tabs ──
+        function switchTab(tabName) {
+            document.querySelectorAll('.feature-panel').forEach(p => p.classList.remove('active'));
+            document.querySelectorAll('.feature-tab').forEach(t => {
+                t.style.background = '#f0f0f0';
+                t.style.borderColor = '#f0f0f0';
+            });
 
-        if (topForm) handleSignup(topForm, topSuccess);
-        if (bottomForm) handleSignup(bottomForm, bottomSuccess);
+            const panel = document.getElementById('panel-' + tabName);
+            const tab = document.querySelector('[data-tab="' + tabName + '"]');
+            if (panel) panel.classList.add('active');
+            if (tab) {
+                tab.style.background = '#ccff00';
+                tab.style.borderColor = '#0a0a0a';
+            }
+        }
+
+        // ── FAQ accordion ──
+        function toggleFaq(index) {
+            const answer = document.getElementById('faq-' + index);
+            const icon = document.getElementById('faq-icon-' + index);
+            const isOpen = answer.classList.contains('open');
+
+            // close all
+            document.querySelectorAll('.faq-answer').forEach(a => a.classList.remove('open'));
+            document.querySelectorAll('.faq-toggle').forEach(t => {
+                t.classList.remove('open');
+                t.style.background = '#f0f0f0';
+            });
+
+            if (!isOpen) {
+                answer.classList.add('open');
+                icon.classList.add('open');
+                icon.style.background = '#ccff00';
+            }
+        }
+
+        // ── Early access form ──
+        const eaForm = document.getElementById('early-access-form');
+        const eaSuccess = document.getElementById('early-access-success');
+        if (eaForm) {
+            eaForm.addEventListener('submit', async (e) => {
+                e.preventDefault();
+                const email = eaForm.querySelector('input[name="email"]').value;
+                if (!email) return;
+                try {
+                    await fetch('/subscriber/landing', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
+                            'Accept': 'application/json',
+                        },
+                        body: JSON.stringify({ email }),
+                    });
+                } catch { /* silently ignore */ }
+                eaForm.style.display = 'none';
+                eaSuccess.classList.remove('hidden');
+            });
+        }
     </script>
+
 </body>
 </html>

@@ -1,0 +1,15 @@
+<svg viewBox="0 0 96 60" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect x="1.5" y="1.5" width="93" height="57" rx="10" fill="url(#purp-grad)" stroke="#0a0a0a" stroke-width="3"/>
+  <rect x="12" y="18" width="14" height="10" rx="2" fill="#ffd700" opacity="0.9"/>
+  <rect x="13.5" y="19.5" width="11" height="7" rx="1" fill="#ffec80" opacity="0.6"/>
+  <line x1="12" y1="23" x2="26" y2="23" stroke="#d4a800" stroke-width="0.5"/>
+  <text x="48" y="46" text-anchor="middle" font-family="Arial, sans-serif" font-weight="700" font-size="14" fill="#fff" letter-spacing="2">CARD</text>
+  <circle cx="76" cy="20" r="5" fill="#fff" opacity="0.25"/>
+  <circle cx="83" cy="20" r="5" fill="#fff" opacity="0.15"/>
+  <defs>
+    <linearGradient id="purp-grad" x1="0" y1="0" x2="96" y2="60" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#c8a8f0"/>
+      <stop offset="1" stop-color="#7000ff"/>
+    </linearGradient>
+  </defs>
+</svg>
