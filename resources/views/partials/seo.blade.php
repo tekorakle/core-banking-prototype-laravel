@@ -7,8 +7,13 @@
 <meta name="robots" content="index, follow">
 <link rel="canonical" href="{{ $canonical ?? url()->current() }}">
 
+{{-- Google Search Console Verification --}}
+@if(config('brand.google_site_verification'))
+<meta name="google-site-verification" content="{{ config('brand.google_site_verification') }}">
+@endif
+
 {{-- Open Graph / Facebook --}}
-<meta property="og:type" content="website">
+<meta property="og:type" content="{{ $ogType ?? 'website' }}">
 <meta property="og:url" content="{{ $canonical ?? url()->current() }}">
 <meta property="og:title" content="{{ $title ?? $brandName . ' — Agentic Payments' }}">
 <meta property="og:description" content="{{ $description ?? 'Get your personal card to spend anywhere. Get your agent a card to spend anywhere. Stablecoin-powered virtual cards with non-custodial security.' }}">
@@ -24,8 +29,14 @@
 <meta name="twitter:title" content="{{ $title ?? $brandName . ' — Agentic Payments' }}">
 <meta name="twitter:description" content="{{ $description ?? 'Get your personal card to spend anywhere. Get your agent a card to spend anywhere. Stablecoin-powered virtual cards with non-custodial security.' }}">
 <meta name="twitter:image" content="{{ $twitterImage ?? asset('images/og-twitter.png') }}">
+<meta name="twitter:domain" content="{{ parse_url(config('app.url'), PHP_URL_HOST) }}">
+@if(config('brand.twitter_handle'))
+<meta name="twitter:site" content="{{ config('brand.twitter_handle') }}">
+<meta name="twitter:creator" content="{{ config('brand.twitter_handle') }}">
+@endif
 
 {{-- Additional SEO Tags --}}
+<meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="{{ $brandName }}">
 <meta name="application-name" content="{{ $brandName }}">
 

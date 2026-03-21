@@ -17,4 +17,4 @@ Disallow: /profile/
 Disallow: /teams/
 Disallow: /subscriber/unsubscribe/
 
-Sitemap: https://finaegis.org/sitemap.xml
+Sitemap: http://finaegis.local/sitemap.xml

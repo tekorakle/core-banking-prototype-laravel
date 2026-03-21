@@ -19,8 +19,15 @@
         ])
     @endif
 
-    <!-- Fonts -->
+    <!-- DNS Prefetch & Preconnect -->
     <link rel="preconnect" href="https://fonts.bunny.net">
+    <link rel="dns-prefetch" href="https://fonts.bunny.net">
+    @if(config('brand.ga_id'))
+    <link rel="preconnect" href="https://www.googletagmanager.com">
+    <link rel="dns-prefetch" href="https://www.googletagmanager.com">
+    @endif
+
+    <!-- Fonts -->
     <link href="https://fonts.bunny.net/css?family=figtree:400,500,600,700,800|plus-jakarta-sans:500,600,700,800&display=swap" rel="stylesheet" />
 
     <!-- Scripts -->

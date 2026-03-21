@@ -33,6 +33,10 @@ return [
 
     'ga_id' => env('GOOGLE_ANALYTICS_ID', 'G-X65KH9NFMY'),
 
+    'google_site_verification' => env('GOOGLE_SITE_VERIFICATION', ''),
+
+    'twitter_handle' => env('BRAND_TWITTER_HANDLE', ''),
+
     /*
     |--------------------------------------------------------------------------
     | Environment-driven visibility flags
