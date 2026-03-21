@@ -8933,3 +8933,45 @@ parameters:
 			identifier: property.onlyRead
 			count: 1
 			path: tests/Unit/Testing/Support/EventWithPrivateProperties.php
+
+		-
+			message: '#^Variable \$client in PHPDoc tag @var does not exist\.$#'
+			identifier: varTag.variableNotFound
+			count: 1
+			path: tests/Unit/Domain/AI/MCP/Tools/VisaCli/VisaCliCardsToolTest.php
+
+		-
+			message: '#^Variable \$paymentService in PHPDoc tag @var does not exist\.$#'
+			identifier: varTag.variableNotFound
+			count: 1
+			path: tests/Unit/Domain/AI/MCP/Tools/VisaCli/VisaCliPaymentToolTest.php
+
+		-
+			message: '#^Variable \$client in PHPDoc tag @var does not exist\.$#'
+			identifier: varTag.variableNotFound
+			count: 1
+			path: tests/Unit/Domain/VisaCli/Services/VisaCliPaymentGatewayServiceTest.php
+
+		-
+			message: '#^Variable \$client in PHPDoc tag @var does not exist\.$#'
+			identifier: varTag.variableNotFound
+			count: 1
+			path: tests/Unit/Domain/VisaCli/Services/VisaCliPaymentServiceTest.php
+
+		-
+			message: '#^Offset 1 might not exist on array\{\}\|array\{non\-falsy\-string, non\-empty\-string\}\.$#'
+			identifier: offsetAccess.notFound
+			count: 1
+			path: tests/Feature/Api/AgentsDiscoveryControllerTest.php
+
+		-
+			message: '#^Cannot call method isCompleted\(\) on App\\Domain\\VisaCli\\Models\\VisaCliPayment\|null\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: tests/Integration/VisaCli/VisaCliInvoicePaymentTest.php
+
+		-
+			message: '#^Cannot call method isCompleted\(\) on App\\Domain\\VisaCli\\Models\\VisaCliPayment\|null\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: tests/Integration/VisaCli/VisaCliPaymentFlowTest.php
