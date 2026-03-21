@@ -59,9 +59,12 @@ class MobileTrustCertController extends Controller
             return response()->json([
                 'success' => true,
                 'data'    => [
-                    'trust_level' => TrustLevel::UNKNOWN->value,
-                    'label'       => TrustLevel::UNKNOWN->label(),
-                    'certificate' => null,
+                    'trust_level'   => TrustLevel::UNKNOWN->value,
+                    'label'         => TrustLevel::UNKNOWN->label(),
+                    'numeric_value' => TrustLevel::UNKNOWN->numericValue(),
+                    'certificate'   => null,
+                    'is_valid'      => false,
+                    'expires_at'    => null,
                 ],
             ]);
         }

@@ -526,6 +526,14 @@ class CertificateApplicationController extends Controller
             return null;
         }
 
+        // Normalize status for mobile compatibility:
+        // Backend uses 'draft'/'submitted', mobile expects 'pending'/'in_review'
+        $application['status'] = match ($application['status']) {
+            'draft'     => 'pending',
+            'submitted' => 'in_review',
+            default     => $application['status'],
+        };
+
         return $application;
     }
 
