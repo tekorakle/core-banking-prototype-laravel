@@ -90,13 +90,14 @@ class PrivacyController extends Controller
     )]
     public function getMerkleRoot(Request $request): JsonResponse
     {
-        $network = $request->query('network');
+        // Accept both ?network= and ?chain_id= for mobile compatibility
+        $network = $request->query('network') ?? $request->query('chain_id');
 
         if (empty($network) || ! is_string($network)) {
             return response()->json([
                 'error' => [
                     'code'    => 'ERR_PRIVACY_306',
-                    'message' => 'Network parameter is required',
+                    'message' => 'Network parameter is required (use ?network= or ?chain_id=)',
                 ],
             ], 400);
         }
