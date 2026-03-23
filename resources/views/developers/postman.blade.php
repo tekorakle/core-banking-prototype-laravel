@@ -43,12 +43,12 @@
                     <p class="text-lg text-gray-600 mb-8">Get started immediately with our comprehensive API collection including examples and test scripts.</p>
                     
                     <div class="flex flex-col sm:flex-row justify-center space-y-4 sm:space-y-0 sm:space-x-4">
-                        <a href="/docs/postman/{{ config('brand.name', 'Zelta') }}-API.postman_collection.json" 
+                        <a href="/postman/{{ config('brand.name', 'Zelta') }}-API.postman_collection.json" 
                            download="{{ config('brand.name', 'Zelta') }}-API.postman_collection.json"
                            class="bg-orange-600 text-white px-8 py-3 rounded-lg font-semibold hover:bg-orange-700 transition duration-200">
                             Download Collection
                         </a>
-                        <a href="/docs/postman/{{ config('brand.name', 'Zelta') }}-Environment.postman_environment.json" 
+                        <a href="/postman/{{ config('brand.name', 'Zelta') }}-Environment.postman_environment.json" 
                            download="{{ config('brand.name', 'Zelta') }}-Environment.postman_environment.json"
                            class="bg-white text-orange-600 border-2 border-orange-600 px-8 py-3 rounded-lg font-semibold hover:bg-orange-50 transition duration-200">
                             Download Environment

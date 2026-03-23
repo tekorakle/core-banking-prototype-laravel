@@ -1,10 +1,10 @@
 {
     "openapi": "3.0.0",
     "info": {
-        "title": "FinAegis Core Banking API",
-        "description": "Open Source Core Banking as a Service - A modern, scalable, and secure core banking platform built with Laravel 12, featuring 41 DDD domains, event sourcing, CQRS, cross-chain bridges, DeFi protocol integration, privacy-preserving identity, RegTech compliance, Banking-as-a-Service, and AI-powered analytics.",
+        "title": "Zelta API",
+        "description": "Agentic payments API — stablecoin-powered virtual cards, non-custodial wallet, and AI agent card issuance. Built with Laravel 12, featuring 43 DDD domains, event sourcing, CQRS, and privacy-preserving architecture.",
         "contact": {
-            "name": "FinAegis Support",
+            "name": "Zelta Support",
             "email": "support@finaegis.org"
         },
         "license": {
@@ -14,6 +14,10 @@
         "version": "5.1.5"
     },
     "servers": [
+        {
+            "url": "http://finaegis.local/api/v2",
+            "description": "API Server"
+        },
         {
             "url": "http://finaegis.local/api/v2",
             "description": "API Server"
@@ -12977,6 +12981,173 @@
                     },
                     "404": {
                         "description": "Card not found"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/webhooks/card-issuer/transaction": {
+            "post": {
+                "tags": [
+                    "Card Webhooks"
+                ],
+                "summary": "Card transaction sync webhook",
+                "description": "Handle card transaction webhook.",
+                "operationId": "98de2952623d922729b6fda2ae617e25",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "event_type": {
+                                        "type": "string",
+                                        "example": "transaction.created"
+                                    },
+                                    "data": {
+                                        "type": "object"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Webhook processed"
+                    }
+                }
+            }
+        },
+        "/api/v1/cardholders": {
+            "get": {
+                "tags": [
+                    "Card Issuance"
+                ],
+                "summary": "List cardholders",
+                "description": "List cardholders for the authenticated user.",
+                "operationId": "98e2b57cc7a02b536af970af04b92dd3",
+                "responses": {
+                    "200": {
+                        "description": "List of cardholders",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean"
+                                        },
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "type": "object"
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            },
+            "post": {
+                "tags": [
+                    "Card Issuance"
+                ],
+                "summary": "Create cardholder",
+                "description": "Create a new cardholder.",
+                "operationId": "d045dc59a95ba843685ac934b6c69a05",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "first_name",
+                                    "last_name"
+                                ],
+                                "properties": {
+                                    "first_name": {
+                                        "type": "string",
+                                        "example": "John"
+                                    },
+                                    "last_name": {
+                                        "type": "string",
+                                        "example": "Doe"
+                                    },
+                                    "email": {
+                                        "type": "string",
+                                        "example": "john@example.com"
+                                    },
+                                    "phone": {
+                                        "type": "string"
+                                    },
+                                    "shipping_address_line1": {
+                                        "type": "string"
+                                    },
+                                    "shipping_city": {
+                                        "type": "string"
+                                    },
+                                    "shipping_state": {
+                                        "type": "string"
+                                    },
+                                    "shipping_postal_code": {
+                                        "type": "string"
+                                    },
+                                    "shipping_country": {
+                                        "type": "string",
+                                        "example": "US"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Cardholder created"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/cardholders/{id}": {
+            "get": {
+                "tags": [
+                    "Card Issuance"
+                ],
+                "summary": "Get cardholder details",
+                "description": "Get a cardholder by ID.",
+                "operationId": "ba0c3fa4c83f986e77e717ed5865ee28",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Cardholder details"
                     }
                 },
                 "security": [
@@ -27155,48 +27326,6 @@
                 ]
             }
         },
-        "/api/v1/notifications/unread-count": {
-            "get": {
-                "tags": [
-                    "Mobile"
-                ],
-                "summary": "Get unread notification count",
-                "description": "Get unread notification count.",
-                "operationId": "getNotificationUnreadCount",
-                "responses": {
-                    "200": {
-                        "description": "Unread count",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "properties": {
-                                        "success": {
-                                            "type": "boolean",
-                                            "example": true
-                                        },
-                                        "data": {
-                                            "properties": {
-                                                "unread_count": {
-                                                    "type": "integer",
-                                                    "example": 5
-                                                }
-                                            },
-                                            "type": "object"
-                                        }
-                                    },
-                                    "type": "object"
-                                }
-                            }
-                        }
-                    }
-                },
-                "security": [
-                    {
-                        "sanctum": []
-                    }
-                ]
-            }
-        },
         "/api/mobile/config": {
             "get": {
                 "tags": [
@@ -30715,6 +30844,123 @@
                                                 }
                                             },
                                             "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/partner/v1/billing/invoices/{id}/pay": {
+            "post": {
+                "tags": [
+                    "Partner BaaS"
+                ],
+                "summary": "Pay an invoice via Visa CLI",
+                "description": "Collects payment for a pending or overdue invoice using the Visa CLI payment gateway.",
+                "operationId": "partnerPayInvoice",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Invoice ID",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "example": 1
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "card_id": {
+                                        "description": "Optional enrolled card ID",
+                                        "type": "string",
+                                        "example": null
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Payment successful",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "data": {
+                                            "properties": {
+                                                "payment_reference": {
+                                                    "type": "string"
+                                                },
+                                                "status": {
+                                                    "type": "string",
+                                                    "example": "completed"
+                                                },
+                                                "amount_cents": {
+                                                    "type": "integer",
+                                                    "example": 29900
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Invoice not found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": false
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Invoice not found"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Invoice cannot be paid or payment failed",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": false
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Invoice cannot be paid"
                                         }
                                     },
                                     "type": "object"
@@ -45109,16 +45355,24 @@
                                             "items": {
                                                 "properties": {
                                                     "level": {
-                                                        "type": "string",
-                                                        "example": "verified"
+                                                        "type": "integer",
+                                                        "example": 2
                                                     },
-                                                    "label": {
+                                                    "name": {
                                                         "type": "string",
                                                         "example": "Verified"
                                                     },
-                                                    "numeric_value": {
-                                                        "type": "integer",
-                                                        "example": 2
+                                                    "description": {
+                                                        "type": "string",
+                                                        "example": "Full identity and address verification"
+                                                    },
+                                                    "dailyLimit": {
+                                                        "type": "number",
+                                                        "example": 10000
+                                                    },
+                                                    "monthlyLimit": {
+                                                        "type": "number",
+                                                        "example": 50000
                                                     },
                                                     "requirements": {
                                                         "type": "array",
@@ -45126,22 +45380,11 @@
                                                             "type": "string"
                                                         }
                                                     },
-                                                    "limits": {
-                                                        "properties": {
-                                                            "daily": {
-                                                                "type": "number",
-                                                                "example": 5000
-                                                            },
-                                                            "monthly": {
-                                                                "type": "number",
-                                                                "example": 50000
-                                                            },
-                                                            "single": {
-                                                                "type": "number",
-                                                                "example": 2000
-                                                            }
-                                                        },
-                                                        "type": "object"
+                                                    "documents": {
+                                                        "type": "array",
+                                                        "items": {
+                                                            "type": "string"
+                                                        }
                                                     }
                                                 },
                                                 "type": "object"
@@ -45634,6 +45877,73 @@
                 }
             }
         },
+        "/api/v1/users/avatar": {
+            "post": {
+                "tags": [
+                    "User"
+                ],
+                "summary": "Upload user avatar",
+                "description": "Upload or replace user avatar.",
+                "operationId": "uploadAvatar",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "required": [
+                                    "avatar"
+                                ],
+                                "properties": {
+                                    "avatar": {
+                                        "description": "Image file (jpg, png, webp, max 2MB)",
+                                        "type": "string",
+                                        "format": "binary"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Avatar uploaded"
+                    },
+                    "401": {
+                        "description": "Unauthorized"
+                    },
+                    "422": {
+                        "description": "Validation error"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            },
+            "delete": {
+                "tags": [
+                    "User"
+                ],
+                "summary": "Remove user avatar",
+                "description": "Remove user avatar.",
+                "operationId": "deleteAvatar",
+                "responses": {
+                    "200": {
+                        "description": "Avatar removed"
+                    },
+                    "401": {
+                        "description": "Unauthorized"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
         "/api/voting/polls": {
             "get": {
                 "tags": [
@@ -45813,6 +46123,103 @@
                 ]
             }
         },
+        "/api/v1/banners": {
+            "get": {
+                "tags": [
+                    "Banners"
+                ],
+                "summary": "List active banners for current user",
+                "operationId": "v1ListBanners",
+                "responses": {
+                    "200": {
+                        "description": "Active banners",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "properties": {
+                                                    "id": {
+                                                        "type": "integer"
+                                                    },
+                                                    "title": {
+                                                        "type": "string"
+                                                    },
+                                                    "subtitle": {
+                                                        "type": "string",
+                                                        "nullable": true
+                                                    },
+                                                    "image_url": {
+                                                        "type": "string",
+                                                        "nullable": true
+                                                    },
+                                                    "action_url": {
+                                                        "type": "string",
+                                                        "nullable": true
+                                                    },
+                                                    "action_type": {
+                                                        "type": "string",
+                                                        "enum": [
+                                                            "url",
+                                                            "screen",
+                                                            "deeplink"
+                                                        ]
+                                                    },
+                                                    "position": {
+                                                        "type": "integer"
+                                                    }
+                                                },
+                                                "type": "object"
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/banners/{id}/dismiss": {
+            "post": {
+                "tags": [
+                    "Banners"
+                ],
+                "summary": "Dismiss a banner for the current user",
+                "operationId": "v1DismissBanner",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Banner dismissed"
+                    },
+                    "404": {
+                        "description": "Banner not found"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
         "/api/v1/monitoring/live-dashboard": {
             "get": {
                 "tags": [
@@ -45899,6 +46306,828 @@
                 "responses": {
                     "200": {
                         "description": "Projector lag data"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/notifications": {
+            "get": {
+                "tags": [
+                    "Notifications"
+                ],
+                "summary": "List paginated notifications",
+                "operationId": "v1ListNotifications",
+                "parameters": [
+                    {
+                        "name": "offset",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "integer",
+                            "default": 0
+                        }
+                    },
+                    {
+                        "name": "limit",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "integer",
+                            "default": 20,
+                            "maximum": 100
+                        }
+                    },
+                    {
+                        "name": "type",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "transaction",
+                                "security",
+                                "system",
+                                "promo"
+                            ]
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Paginated notification list",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "properties": {
+                                                    "id": {
+                                                        "type": "string"
+                                                    },
+                                                    "type": {
+                                                        "type": "string",
+                                                        "enum": [
+                                                            "transaction",
+                                                            "security",
+                                                            "system",
+                                                            "promo"
+                                                        ]
+                                                    },
+                                                    "title": {
+                                                        "type": "string"
+                                                    },
+                                                    "body": {
+                                                        "type": "string"
+                                                    },
+                                                    "read": {
+                                                        "type": "boolean"
+                                                    },
+                                                    "created_at": {
+                                                        "type": "string",
+                                                        "format": "date-time"
+                                                    }
+                                                },
+                                                "type": "object"
+                                            }
+                                        },
+                                        "meta": {
+                                            "properties": {
+                                                "total": {
+                                                    "type": "integer"
+                                                },
+                                                "offset": {
+                                                    "type": "integer"
+                                                },
+                                                "limit": {
+                                                    "type": "integer"
+                                                },
+                                                "unread_count": {
+                                                    "type": "integer"
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/notifications/{id}": {
+            "get": {
+                "tags": [
+                    "Notifications"
+                ],
+                "summary": "Get a single notification",
+                "operationId": "v1ShowNotification",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Notification detail"
+                    },
+                    "404": {
+                        "description": "Not found"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/notifications/{id}/read": {
+            "post": {
+                "tags": [
+                    "Notifications"
+                ],
+                "summary": "Mark a notification as read",
+                "operationId": "v1MarkNotificationRead",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Marked as read"
+                    },
+                    "404": {
+                        "description": "Not found"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/notifications/read-all": {
+            "post": {
+                "tags": [
+                    "Notifications"
+                ],
+                "summary": "Mark all notifications as read",
+                "operationId": "v1MarkAllNotificationsRead",
+                "responses": {
+                    "200": {
+                        "description": "All marked as read"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/notifications/unread-count": {
+            "get": {
+                "tags": [
+                    "Notifications"
+                ],
+                "summary": "Get unread notification count",
+                "operationId": "v1NotificationUnreadCount",
+                "responses": {
+                    "200": {
+                        "description": "Unread count"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/ramp/quotes": {
+            "get": {
+                "tags": [
+                    "Ramp"
+                ],
+                "summary": "Get quotes from all aggregated providers",
+                "operationId": "v1RampQuotes",
+                "parameters": [
+                    {
+                        "name": "type",
+                        "in": "query",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "on",
+                                "off"
+                            ]
+                        }
+                    },
+                    {
+                        "name": "fiat",
+                        "in": "query",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "example": "USD"
+                        }
+                    },
+                    {
+                        "name": "amount",
+                        "in": "query",
+                        "required": true,
+                        "schema": {
+                            "type": "number",
+                            "example": 100
+                        }
+                    },
+                    {
+                        "name": "crypto",
+                        "in": "query",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "example": "USDC"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Provider quotes",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "properties": {
+                                                "quotes": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "properties": {
+                                                            "provider_name": {
+                                                                "type": "string",
+                                                                "example": "Simplex"
+                                                            },
+                                                            "quote_id": {
+                                                                "type": "string",
+                                                                "example": "q_12345"
+                                                            },
+                                                            "fiat_amount": {
+                                                                "type": "number",
+                                                                "example": 100
+                                                            },
+                                                            "crypto_amount": {
+                                                                "type": "number",
+                                                                "example": 0.0025
+                                                            },
+                                                            "exchange_rate": {
+                                                                "type": "number",
+                                                                "example": 2.6e-5
+                                                            },
+                                                            "fee": {
+                                                                "type": "number",
+                                                                "example": 3.5
+                                                            },
+                                                            "network_fee": {
+                                                                "type": "number",
+                                                                "example": 0.5
+                                                            },
+                                                            "fee_currency": {
+                                                                "type": "string",
+                                                                "example": "USD"
+                                                            },
+                                                            "payment_methods": {
+                                                                "type": "array",
+                                                                "items": {
+                                                                    "type": "string"
+                                                                }
+                                                            }
+                                                        },
+                                                        "type": "object"
+                                                    }
+                                                },
+                                                "provider": {
+                                                    "type": "string",
+                                                    "example": "onramper"
+                                                },
+                                                "valid_until": {
+                                                    "type": "string",
+                                                    "format": "date-time"
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation error"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/ramp/session": {
+            "post": {
+                "tags": [
+                    "Ramp"
+                ],
+                "summary": "Create a ramp session with a selected quote",
+                "operationId": "v1CreateRampSession",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "type",
+                                    "fiat_currency",
+                                    "fiat_amount",
+                                    "crypto_currency",
+                                    "wallet_address"
+                                ],
+                                "properties": {
+                                    "type": {
+                                        "type": "string",
+                                        "enum": [
+                                            "on",
+                                            "off"
+                                        ]
+                                    },
+                                    "fiat_currency": {
+                                        "type": "string",
+                                        "example": "USD"
+                                    },
+                                    "fiat_amount": {
+                                        "type": "number",
+                                        "example": 100
+                                    },
+                                    "crypto_currency": {
+                                        "type": "string",
+                                        "example": "USDC"
+                                    },
+                                    "wallet_address": {
+                                        "type": "string",
+                                        "example": "0x..."
+                                    },
+                                    "quote_id": {
+                                        "description": "Selected quote ID from GET /quotes",
+                                        "type": "string",
+                                        "example": "q_12345"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Session created with checkout_url"
+                    },
+                    "422": {
+                        "description": "Validation error"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/ramp/session/{id}": {
+            "get": {
+                "tags": [
+                    "Ramp"
+                ],
+                "summary": "Get ramp session status",
+                "operationId": "v1GetRampSession",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Session status"
+                    },
+                    "404": {
+                        "description": "Not found"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/ramp/sessions": {
+            "get": {
+                "tags": [
+                    "Ramp"
+                ],
+                "summary": "List user ramp sessions",
+                "operationId": "v1ListRampSessions",
+                "responses": {
+                    "200": {
+                        "description": "Session list"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/ramp/supported": {
+            "get": {
+                "tags": [
+                    "Ramp"
+                ],
+                "summary": "Get supported currencies and provider info",
+                "operationId": "v1RampSupported",
+                "responses": {
+                    "200": {
+                        "description": "Supported currencies",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "properties": {
+                                                "provider": {
+                                                    "type": "string",
+                                                    "example": "onramper"
+                                                },
+                                                "fiat_currencies": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "string"
+                                                    },
+                                                    "example": "[\"USD\",\"EUR\",\"GBP\"]"
+                                                },
+                                                "crypto_currencies": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "string"
+                                                    },
+                                                    "example": "[\"USDC\",\"USDT\",\"ETH\",\"BTC\"]"
+                                                },
+                                                "modes": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "properties": {
+                                                            "type": {
+                                                                "type": "string",
+                                                                "example": "on"
+                                                            },
+                                                            "label": {
+                                                                "type": "string",
+                                                                "example": "Buy Crypto"
+                                                            }
+                                                        },
+                                                        "type": "object"
+                                                    }
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/ramp/webhook/{provider}": {
+            "post": {
+                "tags": [
+                    "Ramp"
+                ],
+                "summary": "Ramp provider webhook",
+                "operationId": "v1RampWebhook",
+                "parameters": [
+                    {
+                        "name": "provider",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Webhook processed"
+                    },
+                    "400": {
+                        "description": "Invalid signature"
+                    }
+                }
+            }
+        },
+        "/api/v1/referrals/my-code": {
+            "get": {
+                "tags": [
+                    "Referrals"
+                ],
+                "summary": "Get or generate user referral code",
+                "operationId": "v1GetReferralCode",
+                "responses": {
+                    "200": {
+                        "description": "Referral code",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "properties": {
+                                                "code": {
+                                                    "type": "string",
+                                                    "example": "ABC12345"
+                                                },
+                                                "share_link": {
+                                                    "type": "string",
+                                                    "example": "https://finaegis.com/invite/ABC12345"
+                                                },
+                                                "share_text": {
+                                                    "type": "string"
+                                                },
+                                                "uses_count": {
+                                                    "type": "integer",
+                                                    "example": 3
+                                                },
+                                                "max_uses": {
+                                                    "type": "integer",
+                                                    "example": 50
+                                                },
+                                                "active": {
+                                                    "type": "boolean",
+                                                    "example": true
+                                                },
+                                                "expires_at": {
+                                                    "type": "string",
+                                                    "format": "date-time",
+                                                    "nullable": true
+                                                },
+                                                "created_at": {
+                                                    "type": "string",
+                                                    "format": "date-time"
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/referrals/apply": {
+            "post": {
+                "tags": [
+                    "Referrals"
+                ],
+                "summary": "Apply a referral code",
+                "operationId": "v1ApplyReferralCode",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "code"
+                                ],
+                                "properties": {
+                                    "code": {
+                                        "type": "string",
+                                        "example": "ABC12345"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Referral applied"
+                    },
+                    "422": {
+                        "description": "Validation error"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/referrals": {
+            "get": {
+                "tags": [
+                    "Referrals"
+                ],
+                "summary": "List user referrals",
+                "operationId": "v1ListReferrals",
+                "parameters": [
+                    {
+                        "name": "offset",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "integer",
+                            "default": 0
+                        }
+                    },
+                    {
+                        "name": "limit",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "integer",
+                            "default": 20,
+                            "maximum": 50
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Referral list"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/referrals/stats": {
+            "get": {
+                "tags": [
+                    "Referrals"
+                ],
+                "summary": "Get referral stats",
+                "operationId": "v1ReferralStats",
+                "responses": {
+                    "200": {
+                        "description": "Referral stats",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "properties": {
+                                                "total_referred": {
+                                                    "type": "integer",
+                                                    "example": 5
+                                                },
+                                                "completed": {
+                                                    "type": "integer",
+                                                    "example": 3
+                                                },
+                                                "pending": {
+                                                    "type": "integer",
+                                                    "example": 2
+                                                },
+                                                "rewards_earned": {
+                                                    "type": "integer",
+                                                    "example": 15
+                                                },
+                                                "reward_per_referral": {
+                                                    "type": "integer",
+                                                    "example": 5
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/sponsorship/status": {
+            "get": {
+                "tags": [
+                    "Sponsorship"
+                ],
+                "summary": "Get user gas sponsorship status",
+                "operationId": "v1SponsorshipStatus",
+                "responses": {
+                    "200": {
+                        "description": "Sponsorship status",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "properties": {
+                                                "eligible": {
+                                                    "type": "boolean",
+                                                    "example": true
+                                                },
+                                                "remaining_free_tx": {
+                                                    "type": "integer",
+                                                    "example": 3
+                                                },
+                                                "total_limit": {
+                                                    "type": "integer",
+                                                    "example": 5
+                                                },
+                                                "total_sponsored": {
+                                                    "type": "integer",
+                                                    "example": 2
+                                                },
+                                                "progress_pct": {
+                                                    "type": "number",
+                                                    "example": 40
+                                                },
+                                                "free_until": {
+                                                    "type": "string",
+                                                    "format": "date-time",
+                                                    "nullable": true
+                                                },
+                                                "expires_in_days": {
+                                                    "type": "integer",
+                                                    "example": 25,
+                                                    "nullable": true
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
                     }
                 },
                 "security": [
@@ -49171,7 +50400,7 @@
                                     "properties": {
                                         "name": {
                                             "type": "string",
-                                            "example": "FinAegis Public API"
+                                            "example": "Zelta Public API"
                                         },
                                         "version": {
                                             "type": "string",
@@ -49211,11 +50440,11 @@
                                         },
                                         "documentation": {
                                             "type": "string",
-                                            "example": "https://docs.finaegis.org"
+                                            "example": "https://docs.zelta.app"
                                         },
                                         "support": {
                                             "type": "string",
-                                            "example": "api@finaegis.org"
+                                            "example": "api@zelta.app"
                                         }
                                     },
                                     "type": "object"
@@ -49995,6 +51224,536 @@
                         }
                     }
                 }
+            }
+        },
+        "/api/v1/virtuals-agents": {
+            "get": {
+                "tags": [
+                    "Virtuals Agents"
+                ],
+                "summary": "List employer agents",
+                "description": "Returns all Virtuals Protocol agents registered by the authenticated user.",
+                "operationId": "virtualsAgentIndex",
+                "responses": {
+                    "200": {
+                        "description": "Success",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "properties": {
+                                                    "id": {
+                                                        "type": "string",
+                                                        "format": "uuid"
+                                                    },
+                                                    "virtualsAgentId": {
+                                                        "type": "string"
+                                                    },
+                                                    "agentName": {
+                                                        "type": "string"
+                                                    },
+                                                    "status": {
+                                                        "type": "string",
+                                                        "enum": [
+                                                            "registered",
+                                                            "active",
+                                                            "suspended",
+                                                            "deactivated"
+                                                        ]
+                                                    },
+                                                    "chain": {
+                                                        "type": "string"
+                                                    }
+                                                },
+                                                "type": "object"
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/virtuals-agents/onboard": {
+            "post": {
+                "tags": [
+                    "Virtuals Agents"
+                ],
+                "summary": "Onboard a new Virtuals agent",
+                "description": "Registers a Virtuals Protocol agent with FinAegis, provisions spending limits and TrustCert credentials.",
+                "operationId": "virtualsAgentOnboard",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "virtuals_agent_id",
+                                    "agent_name"
+                                ],
+                                "properties": {
+                                    "virtuals_agent_id": {
+                                        "type": "string",
+                                        "maxLength": 255,
+                                        "example": "agent_abc123"
+                                    },
+                                    "agent_name": {
+                                        "type": "string",
+                                        "maxLength": 255,
+                                        "example": "Treasury Bot"
+                                    },
+                                    "agent_description": {
+                                        "type": "string",
+                                        "example": "Handles daily treasury operations",
+                                        "nullable": true
+                                    },
+                                    "chain": {
+                                        "type": "string",
+                                        "enum": [
+                                            "base",
+                                            "polygon",
+                                            "arbitrum",
+                                            "ethereum"
+                                        ],
+                                        "example": "base"
+                                    },
+                                    "daily_limit_cents": {
+                                        "type": "integer",
+                                        "minimum": 1,
+                                        "example": 50000,
+                                        "nullable": true
+                                    },
+                                    "per_tx_limit_cents": {
+                                        "type": "integer",
+                                        "minimum": 1,
+                                        "example": 10000,
+                                        "nullable": true
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Agent onboarded successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "data": {
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized"
+                    },
+                    "422": {
+                        "description": "Validation error or onboarding failure"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/virtuals-agents/{id}": {
+            "get": {
+                "tags": [
+                    "Virtuals Agents"
+                ],
+                "summary": "Get agent details with spending summary",
+                "description": "Returns a single Virtuals agent profile with spending summary. Requires ownership.",
+                "operationId": "virtualsAgentShow",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Agent profile UUID",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "format": "uuid"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "data": {
+                                            "properties": {
+                                                "profile": {
+                                                    "type": "object"
+                                                },
+                                                "spending": {
+                                                    "properties": {
+                                                        "daily_limit": {
+                                                            "type": "integer"
+                                                        },
+                                                        "spent_today": {
+                                                            "type": "integer"
+                                                        },
+                                                        "remaining": {
+                                                            "type": "integer"
+                                                        },
+                                                        "last_transactions": {
+                                                            "type": "array",
+                                                            "items": {
+                                                                "type": "object"
+                                                            }
+                                                        }
+                                                    },
+                                                    "type": "object"
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized"
+                    },
+                    "403": {
+                        "description": "Forbidden — not the agent owner"
+                    },
+                    "404": {
+                        "description": "Agent not found"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/virtuals-agents/{id}/suspend": {
+            "put": {
+                "tags": [
+                    "Virtuals Agents"
+                ],
+                "summary": "Suspend an agent",
+                "description": "Suspends an active Virtuals agent. Requires ownership.",
+                "operationId": "virtualsAgentSuspend",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Agent profile UUID",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "format": "uuid"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Agent suspended",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "data": {
+                                            "properties": {
+                                                "message": {
+                                                    "type": "string",
+                                                    "example": "Agent suspended successfully."
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized"
+                    },
+                    "403": {
+                        "description": "Forbidden"
+                    },
+                    "404": {
+                        "description": "Agent not found"
+                    },
+                    "422": {
+                        "description": "Agent cannot be suspended"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/virtuals-agents/{id}/activate": {
+            "put": {
+                "tags": [
+                    "Virtuals Agents"
+                ],
+                "summary": "Activate an agent",
+                "description": "Activates a suspended or registered Virtuals agent. Requires ownership.",
+                "operationId": "virtualsAgentActivate",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Agent profile UUID",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "format": "uuid"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Agent activated",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "data": {
+                                            "properties": {
+                                                "message": {
+                                                    "type": "string",
+                                                    "example": "Agent activated successfully."
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized"
+                    },
+                    "403": {
+                        "description": "Forbidden"
+                    },
+                    "404": {
+                        "description": "Agent not found"
+                    },
+                    "422": {
+                        "description": "Agent cannot be activated"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/virtuals-agents/{id}/transactions": {
+            "get": {
+                "tags": [
+                    "Virtuals Agents"
+                ],
+                "summary": "Get agent transactions",
+                "description": "Returns recent payment transactions for the given Virtuals agent. Requires ownership.",
+                "operationId": "virtualsAgentTransactions",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Agent profile UUID",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "format": "uuid"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "data": {
+                                            "properties": {
+                                                "agent_id": {
+                                                    "type": "string"
+                                                },
+                                                "daily_limit": {
+                                                    "type": "integer"
+                                                },
+                                                "spent_today": {
+                                                    "type": "integer"
+                                                },
+                                                "remaining": {
+                                                    "type": "integer"
+                                                },
+                                                "last_transactions": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "object"
+                                                    }
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized"
+                    },
+                    "403": {
+                        "description": "Forbidden"
+                    },
+                    "404": {
+                        "description": "Agent not found"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/virtuals-agents/agdp": {
+            "get": {
+                "tags": [
+                    "Virtuals Agents"
+                ],
+                "summary": "Get aGDP metrics",
+                "description": "Returns aggregate Agent GDP metrics — total payments, active agents, and transaction counts across all Virtuals agents.",
+                "operationId": "virtualsAgentAgdp",
+                "parameters": [
+                    {
+                        "name": "period",
+                        "in": "query",
+                        "description": "Reporting period",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "default": "24h",
+                            "enum": [
+                                "1h",
+                                "24h",
+                                "7d",
+                                "30d"
+                            ]
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "data": {
+                                            "properties": {
+                                                "totalPaymentsCents": {
+                                                    "type": "integer"
+                                                },
+                                                "totalTransactions": {
+                                                    "type": "integer"
+                                                },
+                                                "activeAgents": {
+                                                    "type": "integer"
+                                                },
+                                                "totalAgents": {
+                                                    "type": "integer"
+                                                },
+                                                "period": {
+                                                    "type": "string"
+                                                },
+                                                "calculatedAt": {
+                                                    "type": "string",
+                                                    "format": "date-time"
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
             }
         },
         "/api/votes": {
@@ -55326,7 +57085,7 @@
                 },
                 "type": "object"
             },
-            "CreateReportRequest": {
+            "RegulatoryCreateReportRequest": {
                 "required": [
                     "report_type",
                     "period_start",
@@ -57471,6 +59230,723 @@
                 },
                 "type": "object"
             },
+            "TreasuryPortfolio": {
+                "description": "A treasury portfolio containing asset allocations",
+                "properties": {
+                    "portfolio_id": {
+                        "description": "Treasury API Documentation Schemas.",
+                        "type": "string",
+                        "format": "uuid",
+                        "example": "550e8400-e29b-41d4-a716-446655440000"
+                    },
+                    "treasury_id": {
+                        "type": "string",
+                        "format": "uuid",
+                        "example": "550e8400-e29b-41d4-a716-446655440001"
+                    },
+                    "name": {
+                        "type": "string",
+                        "example": "Main Treasury Portfolio"
+                    },
+                    "status": {
+                        "type": "string",
+                        "enum": [
+                            "active",
+                            "inactive",
+                            "rebalancing",
+                            "liquidating"
+                        ],
+                        "example": "active"
+                    },
+                    "total_value": {
+                        "type": "number",
+                        "format": "float",
+                        "example": 1000000
+                    },
+                    "asset_count": {
+                        "type": "integer",
+                        "example": 5
+                    },
+                    "is_rebalancing": {
+                        "type": "boolean",
+                        "example": false
+                    },
+                    "last_rebalance_date": {
+                        "type": "string",
+                        "format": "date-time",
+                        "nullable": true
+                    },
+                    "created_at": {
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "updated_at": {
+                        "type": "string",
+                        "format": "date-time"
+                    }
+                },
+                "type": "object"
+            },
+            "TreasuryPortfolioDetailed": {
+                "description": "Detailed treasury portfolio with summary and rebalancing status",
+                "type": "object",
+                "allOf": [
+                    {
+                        "$ref": "#/components/schemas/TreasuryPortfolio"
+                    },
+                    {
+                        "properties": {
+                            "strategy": {
+                                "properties": {
+                                    "type": {
+                                        "type": "string",
+                                        "example": "balanced"
+                                    },
+                                    "risk_tolerance": {
+                                        "type": "string",
+                                        "example": "moderate"
+                                    },
+                                    "target_allocations": {
+                                        "type": "object"
+                                    }
+                                },
+                                "type": "object"
+                            },
+                            "asset_allocations": {
+                                "type": "array",
+                                "items": {
+                                    "$ref": "#/components/schemas/AssetAllocation"
+                                }
+                            },
+                            "latest_metrics": {
+                                "type": "object"
+                            },
+                            "summary": {
+                                "type": "object"
+                            },
+                            "needs_rebalancing": {
+                                "type": "boolean",
+                                "example": false
+                            }
+                        },
+                        "type": "object"
+                    }
+                ]
+            },
+            "CreateTreasuryPortfolioRequest": {
+                "required": [
+                    "treasury_id",
+                    "name",
+                    "strategy"
+                ],
+                "properties": {
+                    "treasury_id": {
+                        "description": "ID of the treasury account",
+                        "type": "string",
+                        "format": "uuid"
+                    },
+                    "name": {
+                        "description": "Portfolio name",
+                        "type": "string",
+                        "example": "Growth Portfolio"
+                    },
+                    "strategy": {
+                        "required": [
+                            "type"
+                        ],
+                        "properties": {
+                            "type": {
+                                "type": "string",
+                                "enum": [
+                                    "conservative",
+                                    "balanced",
+                                    "aggressive",
+                                    "custom"
+                                ],
+                                "example": "balanced"
+                            },
+                            "risk_tolerance": {
+                                "type": "string",
+                                "enum": [
+                                    "low",
+                                    "moderate",
+                                    "high"
+                                ],
+                                "example": "moderate"
+                            },
+                            "target_allocations": {
+                                "properties": {
+                                    "USD": {
+                                        "type": "number",
+                                        "format": "float",
+                                        "example": 40
+                                    },
+                                    "EUR": {
+                                        "type": "number",
+                                        "format": "float",
+                                        "example": 30
+                                    },
+                                    "GCU": {
+                                        "type": "number",
+                                        "format": "float",
+                                        "example": 30
+                                    }
+                                },
+                                "type": "object"
+                            },
+                            "rebalancing_threshold": {
+                                "description": "Percentage deviation threshold for rebalancing",
+                                "type": "number",
+                                "format": "float",
+                                "example": 5
+                            }
+                        },
+                        "type": "object"
+                    }
+                },
+                "type": "object"
+            },
+            "UpdateTreasuryPortfolioRequest": {
+                "required": [
+                    "strategy"
+                ],
+                "properties": {
+                    "strategy": {
+                        "properties": {
+                            "type": {
+                                "type": "string",
+                                "enum": [
+                                    "conservative",
+                                    "balanced",
+                                    "aggressive",
+                                    "custom"
+                                ],
+                                "example": "balanced"
+                            },
+                            "risk_tolerance": {
+                                "type": "string",
+                                "enum": [
+                                    "low",
+                                    "moderate",
+                                    "high"
+                                ],
+                                "example": "moderate"
+                            },
+                            "target_allocations": {
+                                "type": "object"
+                            },
+                            "rebalancing_threshold": {
+                                "type": "number",
+                                "format": "float",
+                                "example": 5
+                            }
+                        },
+                        "type": "object"
+                    }
+                },
+                "type": "object"
+            },
+            "AllocateAssetsRequest": {
+                "required": [
+                    "allocations"
+                ],
+                "properties": {
+                    "allocations": {
+                        "type": "array",
+                        "items": {
+                            "properties": {
+                                "asset_symbol": {
+                                    "type": "string",
+                                    "example": "USD"
+                                },
+                                "target_percentage": {
+                                    "type": "number",
+                                    "format": "float",
+                                    "example": 40
+                                },
+                                "quantity": {
+                                    "type": "number",
+                                    "format": "float",
+                                    "example": 400000
+                                }
+                            },
+                            "type": "object"
+                        }
+                    }
+                },
+                "type": "object"
+            },
+            "AssetAllocation": {
+                "description": "An asset allocation within a treasury portfolio",
+                "properties": {
+                    "asset_id": {
+                        "type": "string",
+                        "format": "uuid"
+                    },
+                    "asset_symbol": {
+                        "type": "string",
+                        "example": "USD"
+                    },
+                    "asset_type": {
+                        "type": "string",
+                        "enum": [
+                            "fiat",
+                            "crypto",
+                            "stablecoin",
+                            "commodity"
+                        ],
+                        "example": "fiat"
+                    },
+                    "quantity": {
+                        "type": "number",
+                        "format": "float",
+                        "example": 500000
+                    },
+                    "current_value": {
+                        "type": "number",
+                        "format": "float",
+                        "example": 500000
+                    },
+                    "target_percentage": {
+                        "type": "number",
+                        "format": "float",
+                        "example": 50
+                    },
+                    "current_percentage": {
+                        "type": "number",
+                        "format": "float",
+                        "example": 48.5
+                    },
+                    "deviation": {
+                        "type": "number",
+                        "format": "float",
+                        "example": -1.5
+                    }
+                },
+                "type": "object"
+            },
+            "TriggerRebalancingRequest": {
+                "properties": {
+                    "reason": {
+                        "description": "Reason for triggering rebalancing",
+                        "type": "string",
+                        "example": "manual_trigger"
+                    }
+                },
+                "type": "object"
+            },
+            "RebalancingPlan": {
+                "description": "Treasury portfolio rebalancing plan",
+                "properties": {
+                    "plan_id": {
+                        "type": "string",
+                        "format": "uuid"
+                    },
+                    "portfolio_id": {
+                        "type": "string",
+                        "format": "uuid"
+                    },
+                    "status": {
+                        "type": "string",
+                        "enum": [
+                            "pending",
+                            "approved",
+                            "executing",
+                            "completed",
+                            "cancelled"
+                        ],
+                        "example": "pending"
+                    },
+                    "trades": {
+                        "type": "array",
+                        "items": {
+                            "properties": {
+                                "asset_symbol": {
+                                    "type": "string"
+                                },
+                                "action": {
+                                    "type": "string",
+                                    "enum": [
+                                        "buy",
+                                        "sell"
+                                    ]
+                                },
+                                "quantity": {
+                                    "type": "number",
+                                    "format": "float"
+                                },
+                                "estimated_value": {
+                                    "type": "number",
+                                    "format": "float"
+                                }
+                            },
+                            "type": "object"
+                        }
+                    },
+                    "estimated_cost": {
+                        "type": "number",
+                        "format": "float",
+                        "example": 50
+                    },
+                    "current_allocations": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/AssetAllocation"
+                        }
+                    },
+                    "target_allocations": {
+                        "type": "object"
+                    },
+                    "created_at": {
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "approved_at": {
+                        "type": "string",
+                        "format": "date-time",
+                        "nullable": true
+                    }
+                },
+                "type": "object"
+            },
+            "ApproveRebalancingRequest": {
+                "required": [
+                    "plan"
+                ],
+                "properties": {
+                    "plan": {
+                        "properties": {
+                            "trades": {
+                                "type": "array",
+                                "items": {
+                                    "properties": {
+                                        "asset_symbol": {
+                                            "type": "string"
+                                        },
+                                        "action": {
+                                            "type": "string",
+                                            "enum": [
+                                                "buy",
+                                                "sell"
+                                            ]
+                                        },
+                                        "quantity": {
+                                            "type": "number",
+                                            "format": "float"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        },
+                        "type": "object"
+                    }
+                },
+                "type": "object"
+            },
+            "PortfolioPerformance": {
+                "description": "Portfolio performance metrics",
+                "properties": {
+                    "portfolio_id": {
+                        "type": "string",
+                        "format": "uuid"
+                    },
+                    "period": {
+                        "type": "string",
+                        "example": "30d"
+                    },
+                    "performance": {
+                        "properties": {
+                            "starting_value": {
+                                "type": "number",
+                                "format": "float",
+                                "example": 1000000
+                            },
+                            "ending_value": {
+                                "type": "number",
+                                "format": "float",
+                                "example": 1050000
+                            },
+                            "absolute_return": {
+                                "type": "number",
+                                "format": "float",
+                                "example": 50000
+                            },
+                            "percentage_return": {
+                                "type": "number",
+                                "format": "float",
+                                "example": 5
+                            },
+                            "volatility": {
+                                "type": "number",
+                                "format": "float",
+                                "example": 2.5
+                            },
+                            "sharpe_ratio": {
+                                "type": "number",
+                                "format": "float",
+                                "example": 1.5
+                            }
+                        },
+                        "type": "object"
+                    },
+                    "rebalancing_metrics": {
+                        "properties": {
+                            "total_rebalances": {
+                                "type": "integer",
+                                "example": 3
+                            },
+                            "last_rebalance": {
+                                "type": "string",
+                                "format": "date-time"
+                            },
+                            "deviation_score": {
+                                "type": "number",
+                                "format": "float",
+                                "example": 2.1
+                            }
+                        },
+                        "type": "object"
+                    },
+                    "generated_at": {
+                        "type": "string",
+                        "format": "date-time"
+                    }
+                },
+                "type": "object"
+            },
+            "PortfolioValuation": {
+                "description": "Portfolio valuation details",
+                "properties": {
+                    "portfolio_id": {
+                        "type": "string",
+                        "format": "uuid"
+                    },
+                    "valuation": {
+                        "properties": {
+                            "total_value": {
+                                "type": "number",
+                                "format": "float",
+                                "example": 1000000
+                            },
+                            "currency": {
+                                "type": "string",
+                                "example": "USD"
+                            },
+                            "assets": {
+                                "type": "array",
+                                "items": {
+                                    "properties": {
+                                        "symbol": {
+                                            "type": "string"
+                                        },
+                                        "quantity": {
+                                            "type": "number",
+                                            "format": "float"
+                                        },
+                                        "unit_price": {
+                                            "type": "number",
+                                            "format": "float"
+                                        },
+                                        "total_value": {
+                                            "type": "number",
+                                            "format": "float"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        },
+                        "type": "object"
+                    },
+                    "timestamp": {
+                        "type": "string",
+                        "format": "date-time"
+                    }
+                },
+                "type": "object"
+            },
+            "PortfolioHistory": {
+                "description": "Portfolio historical data",
+                "properties": {
+                    "portfolio_id": {
+                        "type": "string",
+                        "format": "uuid"
+                    },
+                    "type": {
+                        "type": "string",
+                        "enum": [
+                            "rebalancing",
+                            "performance",
+                            "all"
+                        ],
+                        "example": "all"
+                    },
+                    "history": {
+                        "properties": {
+                            "rebalancing": {
+                                "type": "array",
+                                "items": {
+                                    "properties": {
+                                        "date": {
+                                            "type": "string",
+                                            "format": "date-time"
+                                        },
+                                        "reason": {
+                                            "type": "string"
+                                        },
+                                        "trades_executed": {
+                                            "type": "integer"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            },
+                            "performance": {
+                                "type": "array",
+                                "items": {
+                                    "properties": {
+                                        "date": {
+                                            "type": "string",
+                                            "format": "date"
+                                        },
+                                        "value": {
+                                            "type": "number",
+                                            "format": "float"
+                                        },
+                                        "daily_return": {
+                                            "type": "number",
+                                            "format": "float"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        },
+                        "type": "object"
+                    }
+                },
+                "type": "object"
+            },
+            "CreateReportRequest": {
+                "required": [
+                    "type",
+                    "period"
+                ],
+                "properties": {
+                    "type": {
+                        "type": "string",
+                        "enum": [
+                            "summary",
+                            "detailed",
+                            "compliance",
+                            "performance"
+                        ],
+                        "example": "summary"
+                    },
+                    "period": {
+                        "description": "Report period (e.g., 7d, 30d, 90d, 1y)",
+                        "type": "string",
+                        "example": "30d"
+                    }
+                },
+                "type": "object"
+            },
+            "PortfolioReport": {
+                "description": "Generated portfolio report",
+                "properties": {
+                    "report_id": {
+                        "type": "string",
+                        "format": "uuid"
+                    },
+                    "portfolio_id": {
+                        "type": "string",
+                        "format": "uuid"
+                    },
+                    "type": {
+                        "type": "string",
+                        "example": "summary"
+                    },
+                    "period": {
+                        "type": "string",
+                        "example": "30d"
+                    },
+                    "status": {
+                        "type": "string",
+                        "enum": [
+                            "pending",
+                            "generating",
+                            "completed",
+                            "failed"
+                        ],
+                        "example": "completed"
+                    },
+                    "generated_at": {
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "download_url": {
+                        "type": "string",
+                        "format": "uri",
+                        "nullable": true
+                    }
+                },
+                "type": "object"
+            },
+            "V2Error": {
+                "properties": {
+                    "message": {
+                        "description": "V2 API Documentation Schemas.",
+                        "type": "string",
+                        "example": "An error occurred"
+                    },
+                    "errors": {
+                        "type": "object"
+                    }
+                },
+                "type": "object"
+            },
+            "V2ValidationError": {
+                "properties": {
+                    "message": {
+                        "type": "string",
+                        "example": "The given data was invalid."
+                    },
+                    "errors": {
+                        "type": "object"
+                    }
+                },
+                "type": "object"
+            },
+            "V2Pagination": {
+                "properties": {
+                    "current_page": {
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "last_page": {
+                        "type": "integer",
+                        "example": 10
+                    },
+                    "per_page": {
+                        "type": "integer",
+                        "example": 20
+                    },
+                    "total": {
+                        "type": "integer",
+                        "example": 200
+                    },
+                    "from": {
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "to": {
+                        "type": "integer",
+                        "example": 20
+                    }
+                },
+                "type": "object"
+            },
             "BasketPerformance": {
                 "properties": {
                     "id": {
@@ -57609,6 +60085,11 @@
                 "type": "http",
                 "description": "Enter token in format: Bearer {token}",
                 "scheme": "bearer"
+            },
+            "bearerAuth": {
+                "type": "http",
+                "bearerFormat": "JWT",
+                "scheme": "bearer"
             }
         }
     },
@@ -57655,11 +60136,11 @@
         },
         {
             "name": "Assets",
-            "description": "Asset management endpoints"
+            "description": "Asset and currency management"
         },
         {
             "name": "Authentication",
-            "description": "API endpoints for authentication"
+            "description": "User authentication and authorization"
         },
         {
             "name": "UserOp Signing",
@@ -57683,7 +60164,7 @@
         },
         {
             "name": "Baskets",
-            "description": "Basket asset management endpoints"
+            "description": "Multi-asset basket operations"
         },
         {
             "name": "Basket Performance",
@@ -57695,7 +60176,7 @@
         },
         {
             "name": "Card Issuance",
-            "description": "Virtual card provisioning for Apple Pay / Google Pay"
+            "description": "Virtual card provisioning and cardholder management"
         },
         {
             "name": "Card Webhooks",
@@ -57727,15 +60208,15 @@
         },
         {
             "name": "Accounts",
-            "description": "Account management operations"
+            "description": "Bank account management"
         },
         {
             "name": "Transactions",
-            "description": "Transaction operations (deposits and withdrawals)"
+            "description": "Transaction operations and history"
         },
         {
             "name": "Transfers",
-            "description": "Money transfer operations between accounts"
+            "description": "Money transfers between accounts"
         },
         {
             "name": "Balance",
@@ -57831,7 +60312,7 @@
         },
         {
             "name": "Exchange Rates",
-            "description": "Exchange rate provider management and currency conversion"
+            "description": "Currency exchange rate information"
         },
         {
             "name": "Exchange Rate Providers",
@@ -57934,6 +60415,10 @@
             "description": "Critical transaction reversal operations for error recovery"
         },
         {
+            "name": "Treasury Portfolio",
+            "description": "Treasury portfolio management operations"
+        },
+        {
             "name": "TrustCert Certificates",
             "description": "TrustCert certificate viewing and export endpoints"
         },
@@ -57947,7 +60432,7 @@
         },
         {
             "name": "GCU",
-            "description": "Global Currency Unit specific endpoints"
+            "description": "Global Currency Unit operations"
         },
         {
             "name": "GCU Trading",
@@ -58022,12 +60507,36 @@
             "description": "Transaction Monitoring"
         },
         {
-            "name": "Treasury Portfolio",
-            "description": "Treasury Portfolio"
+            "name": "User",
+            "description": "User"
+        },
+        {
+            "name": "Banners",
+            "description": "Banners"
+        },
+        {
+            "name": "Notifications",
+            "description": "Notifications"
+        },
+        {
+            "name": "Ramp",
+            "description": "Ramp"
+        },
+        {
+            "name": "Referrals",
+            "description": "Referrals"
+        },
+        {
+            "name": "Sponsorship",
+            "description": "Sponsorship"
         },
         {
             "name": "GCU Voting",
             "description": "GCU Voting"
+        },
+        {
+            "name": "Virtuals Agents",
+            "description": "Virtuals Agents"
         }
     ]
 }
