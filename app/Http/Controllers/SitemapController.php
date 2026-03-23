@@ -81,16 +81,46 @@ class SitemapController extends Controller
     {
         $baseUrl = config('app.url');
         $now = Carbon::now()->toW3cString();
+        $showPromo = (bool) config('brand.show_promo_pages', true);
 
         $routes = [
-            // Homepage - highest priority
+            // Homepage - always included
             [
                 'url'        => $baseUrl,
                 'lastmod'    => $now,
                 'changefreq' => 'daily',
                 'priority'   => '1.0',
             ],
+        ];
 
+        // Legal pages — always included regardless of promo mode
+        $legalRoutes = [
+            [
+                'url'        => $baseUrl . '/legal/terms',
+                'lastmod'    => $now,
+                'changefreq' => 'monthly',
+                'priority'   => '0.5',
+            ],
+            [
+                'url'        => $baseUrl . '/legal/privacy',
+                'lastmod'    => $now,
+                'changefreq' => 'monthly',
+                'priority'   => '0.5',
+            ],
+            [
+                'url'        => $baseUrl . '/legal/cookies',
+                'lastmod'    => $now,
+                'changefreq' => 'monthly',
+                'priority'   => '0.5',
+            ],
+        ];
+
+        // Promo/marketing pages — only when SHOW_PROMO_PAGES=true (e.g. finaegis.org)
+        if (! $showPromo) {
+            return array_merge($routes, $legalRoutes);
+        }
+
+        $promoRoutes = [
             // Main pages - high priority
             [
                 'url'        => $baseUrl . '/about',
@@ -343,25 +373,6 @@ class SitemapController extends Controller
                 'priority'   => '0.7',
             ],
 
-            // Legal pages - lower priority
-            [
-                'url'        => $baseUrl . '/legal/terms',
-                'lastmod'    => $now,
-                'changefreq' => 'monthly',
-                'priority'   => '0.5',
-            ],
-            [
-                'url'        => $baseUrl . '/legal/privacy',
-                'lastmod'    => $now,
-                'changefreq' => 'monthly',
-                'priority'   => '0.5',
-            ],
-            [
-                'url'        => $baseUrl . '/legal/cookies',
-                'lastmod'    => $now,
-                'changefreq' => 'monthly',
-                'priority'   => '0.5',
-            ],
             [
                 'url'        => $baseUrl . '/cgo/terms',
                 'lastmod'    => $now,
@@ -386,22 +397,10 @@ class SitemapController extends Controller
             ],
         ];
 
-        // Add authentication pages
-        $routes[] = [
-            'url'        => $baseUrl . '/login',
-            'lastmod'    => $now,
-            'changefreq' => 'monthly',
-            'priority'   => '0.7',
-        ];
+        // Auth pages excluded from sitemap — they provide no SEO value
+        // and are blocked by robots.txt anyway
 
-        $routes[] = [
-            'url'        => $baseUrl . '/register',
-            'lastmod'    => $now,
-            'changefreq' => 'monthly',
-            'priority'   => '0.7',
-        ];
-
-        return $routes;
+        return array_merge($routes, $promoRoutes, $legalRoutes);
     }
 
         #[OA\Get(
@@ -439,6 +438,11 @@ class SitemapController extends Controller
         $content .= "Disallow: /profile/\n";
         $content .= "Disallow: /teams/\n";
         $content .= "Disallow: /subscriber/unsubscribe/\n";
+        $content .= "Disallow: /login\n";
+        $content .= "Disallow: /register\n";
+        $content .= "Disallow: /forgot-password\n";
+        $content .= "Disallow: /reset-password\n";
+        $content .= "Disallow: /email/verify\n";
 
         // In production, also disallow API documentation paths
         if (app()->environment('production')) {

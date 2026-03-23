@@ -647,10 +647,12 @@
             <div class="flex flex-col gap-4">
                 @php
                 $faqs = [
-                    ['q' => 'Is ' . $brand . ' a custodial wallet?', 'a' => 'No. ' . $brand . ' is fully non-custodial. Your keys, your coins. We never hold your funds — the wallet uses split-key architecture so only you can authorise transactions.'],
-                    ['q' => 'How does transaction shielding work?', 'a' => $brand . ' routes your stablecoin transactions through privacy-preserving relayers. Your on-chain history is decoupled from your spending identity, so merchants and observers can\'t link your wallet to your purchases.'],
-                    ['q' => 'Do I pay gas fees?', 'a' => 'Gas fees are abstracted away. You pay a flat micro-fee in the stablecoin you\'re spending — no ETH or native tokens needed. We batch and optimise under the hood.'],
-                    ['q' => 'What is Super KYC?', 'a' => 'Super KYC is our one-time premium verification. Once you pass it you unlock higher spending limits, fiat off-ramps, and the physical metal card — all while your identity stays encrypted.'],
+                    ['q' => 'Is ' . $brand . ' a custodial wallet?', 'a' => 'No. ' . $brand . ' is fully non-custodial. Your private key is split into three encrypted shards using Shamir\'s Secret Sharing. One lives in your device\'s Secure Enclave, one in our HSM infrastructure, and one is an optional cloud backup. Any two of three are needed to sign. No seed phrase, no single point of failure.'],
+                    ['q' => 'How does transaction shielding work?', 'a' => $brand . ' uses zero-knowledge proofs (ZK-SNARKs) to shield your stablecoin balance from public view. Your transactions become unlinkable on-chain — nobody can trace your spending habits or total balance. When compliance is needed, generate a Proof of Innocence: a cryptographic certificate proving your funds are clean, without revealing your history.'],
+                    ['q' => 'Do I pay gas fees?', 'a' => 'No. ' . $brand . ' uses ERC-4337 Account Abstraction so you never need to hold ETH. Gas fees are either sponsored or paid in the stablecoin you\'re spending. You think in dollars, not in gwei.'],
+                    ['q' => 'What is TrustCert?', 'a' => 'TrustCert is ' . $brand . '\'s identity verification system, issued as non-transferable Soulbound Tokens on-chain. Levels range from Basic (email + phone) to Premium (full KYB). Higher levels unlock larger spending limits and fiat off-ramps. Certificates are verifiable by third parties without accessing your personal data.'],
+                    ['q' => 'Can AI agents use ' . $brand . '?', 'a' => 'Yes. ' . $brand . ' supports x402 HTTP-native micropayments with per-agent spending limits. AI agents can pay for APIs, datasets, and cloud services autonomously — constrained by daily budgets and per-transaction caps that you control. Payments above your auto-pay threshold require biometric approval.'],
+                    ['q' => 'Which networks are supported?', 'a' => $brand . ' supports Polygon, Base, and Arbitrum from a single wallet. All networks are EVM-compatible with sub-cent transaction fees. Switch networks anytime for the best rates.'],
                 ];
                 @endphp
                 @foreach($faqs as $i => $faq)

@@ -16,5 +16,10 @@ Disallow: /api-keys/
 Disallow: /profile/
 Disallow: /teams/
 Disallow: /subscriber/unsubscribe/
+Disallow: /login
+Disallow: /register
+Disallow: /forgot-password
+Disallow: /reset-password
+Disallow: /email/verify
 
 Sitemap: http://finaegis.local/sitemap.xml
