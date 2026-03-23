@@ -54,9 +54,9 @@ class CreateNewUser implements CreatesNewUsers
             if ($referrer && $referrer->id !== $user->id) {
                 $user->update(['referred_by' => $referrer->id]);
                 Log::info('Referral tracked', [
-                    'user_id'    => $user->id,
+                    'user_id'     => $user->id,
                     'referrer_id' => $referrer->id,
-                    'code'       => $input['referral_code'],
+                    'code'        => $input['referral_code'],
                 ]);
             } elseif (! $referrer) {
                 Log::warning('Invalid referral code used during registration', [

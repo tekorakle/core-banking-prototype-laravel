@@ -616,7 +616,7 @@ class MobileController extends Controller
     /**
      * Get unread notification count.
      *
-     * @see \App\Http\Controllers\Api\V1\NotificationController::unreadCount() for OpenAPI docs
+     * @see V1\NotificationController::unreadCount() for OpenAPI docs
      */
     public function getUnreadNotificationCount(Request $request): JsonResponse
     {

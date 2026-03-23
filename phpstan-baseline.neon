@@ -8975,3 +8975,9 @@ parameters:
 			identifier: method.nonObject
 			count: 1
 			path: tests/Integration/VisaCli/VisaCliPaymentFlowTest.php
+
+		-
+			message: '#^Access to an undefined property Pest\\Mixins\\Expectation\<array\<int, string\>\|null\>\:\:\$not\.$#'
+			identifier: property.notFound
+			count: 1
+			path: tests/Unit/Domain/TrustCert/Enums/TrustLevelTest.php

@@ -19,6 +19,7 @@ class UserBankPreferenceResource extends Resource
     protected static ?string $model = UserBankPreference::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-building-library';
+
     protected static ?string $navigationGroup = 'Banking';
 
     protected static ?string $navigationLabel = 'Bank Allocations';
