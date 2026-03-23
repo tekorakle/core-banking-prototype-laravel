@@ -146,7 +146,7 @@ describe('CertificateApplicationController submit', function (): void {
         $data = $response->getData(true);
 
         expect($data['success'])->toBeTrue()
-            ->and($data['data']['status'])->toBe('submitted')
+            ->and($data['data']['status'])->toBe('in_review')
             ->and($data['data']['submitted_at'])->not->toBeNull();
     });
 

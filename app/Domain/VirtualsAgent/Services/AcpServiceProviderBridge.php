@@ -172,8 +172,10 @@ class AcpServiceProviderBridge
             return ['status' => 'error', 'message' => 'Payments require "url" (string) and "amount_cents" (int).'];
         }
 
-        if (filter_var($url, FILTER_VALIDATE_URL) === false
-            || ! in_array(parse_url($url, PHP_URL_SCHEME), ['http', 'https'], true)) {
+        if (
+            filter_var($url, FILTER_VALIDATE_URL) === false
+            || ! in_array(parse_url($url, PHP_URL_SCHEME), ['http', 'https'], true)
+        ) {
             return ['status' => 'error', 'message' => 'Invalid payment URL. Only http/https URLs are accepted.'];
         }
 
