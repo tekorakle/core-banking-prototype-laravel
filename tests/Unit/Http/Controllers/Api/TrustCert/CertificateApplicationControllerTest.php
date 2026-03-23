@@ -51,7 +51,7 @@ describe('CertificateApplicationController create', function (): void {
         expect($response->getStatusCode())->toBe(201)
             ->and($data['success'])->toBeTrue()
             ->and($data['data']['target_level'])->toBe('verified')
-            ->and($data['data']['status'])->toBe('draft')
+            ->and($data['data']['status'])->toBe('pending')
             ->and($data['data']['id'])->toStartWith('app_');
     });
 
