@@ -460,10 +460,10 @@ return [
         'mandate_disputed'  => App\Domain\AgentProtocol\Events\MandateDisputed::class,
 
         // Machine Payments Protocol Events
-        'mpp_challenge_issued'  => App\Domain\MachinePay\Events\MppChallengeIssued::class,
-        'mpp_payment_verified'  => App\Domain\MachinePay\Events\MppPaymentVerified::class,
-        'mpp_payment_settled'   => App\Domain\MachinePay\Events\MppPaymentSettled::class,
-        'mpp_payment_failed'    => App\Domain\MachinePay\Events\MppPaymentFailed::class,
+        'mpp_challenge_issued' => App\Domain\MachinePay\Events\MppChallengeIssued::class,
+        'mpp_payment_verified' => App\Domain\MachinePay\Events\MppPaymentVerified::class,
+        'mpp_payment_settled'  => App\Domain\MachinePay\Events\MppPaymentSettled::class,
+        'mpp_payment_failed'   => App\Domain\MachinePay\Events\MppPaymentFailed::class,
 
         // Virtuals Agent Events
         'virtuals_agent_registered' => App\Domain\VirtualsAgent\Events\VirtualsAgentRegistered::class,
