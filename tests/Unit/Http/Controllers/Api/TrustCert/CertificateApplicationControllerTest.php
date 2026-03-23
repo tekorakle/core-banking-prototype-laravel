@@ -200,13 +200,13 @@ describe('CertificateApplicationController uploadDocuments', function (): void {
         $response = $controller->uploadDocuments($appId, certAppUserRequest(
             "/api/v1/trustcert/applications/{$appId}/documents",
             'POST',
-            ['document_type' => 'identity', 'file_name' => 'passport.pdf'],
+            ['document_type' => 'id_front', 'file_name' => 'passport.pdf'],
         ));
         $data = $response->getData(true);
 
         expect($response->getStatusCode())->toBe(201)
             ->and($data['success'])->toBeTrue()
-            ->and($data['data']['document_type'])->toBe('identity')
+            ->and($data['data']['document_type'])->toBe('id_front')
             ->and($data['data']['id'])->toStartWith('doc_');
     });
 });
