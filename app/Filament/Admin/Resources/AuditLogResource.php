@@ -12,6 +12,7 @@ use Filament\Tables\Table;
 class AuditLogResource extends Resource
 {
     use \App\Filament\Admin\Traits\RespectsModuleVisibility;
+
     protected static ?string $model = AuditLog::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';

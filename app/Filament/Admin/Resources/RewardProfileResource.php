@@ -16,6 +16,7 @@ use Illuminate\Database\Eloquent\Builder;
 class RewardProfileResource extends Resource
 {
     use \App\Filament\Admin\Traits\RespectsModuleVisibility;
+
     protected static ?string $model = RewardProfile::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-star';
