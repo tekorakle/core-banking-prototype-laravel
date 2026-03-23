@@ -2419,6 +2419,23 @@ Rain is a modern card issuing platform for crypto/fintech companies.
 
 ---
 
-*Document Version: 6.3.2*
+### v6.3.3 — Mobile API Fixes + CI Green (COMPLETED)
+
+**Release Date**: March 23, 2026
+**Theme**: TrustCert Mobile Compatibility, Avatar Upload, Referral Registration
+
+| Feature | Description |
+|---------|-------------|
+| TrustCert test fixes | Updated all test assertions for new response format (pending/in_review, numeric levels, documents array, null for no cert) |
+| Referral in registration | `POST /auth/register` accepts optional `referral_code`, tracks `referred_by`, self-referral prevention, audit logging |
+| Avatar upload | `POST /api/v1/users/avatar` (multipart, 2MB, 4096px max), `DELETE /api/v1/users/avatar` |
+| Avatar security | Image dimension validation (decompression bomb), 10/min upload rate limit |
+| Document upload fix | Validation accepts `id_front,id_back,selfie,proof_of_address,source_of_funds` (was `identity,address,kyc,audit`) |
+| Auth rate limit fix | `GET /auth/user` moved to 100/min query rate (was 5/min auth rate with 5-min lockout) |
+| CI green | All 16 CI jobs passing: code quality, unit tests, feature tests, integration, security, performance, load |
+
+---
+
+*Document Version: 6.3.3*
 *Created: January 11, 2026*
-*Updated: March 23, 2026 (v6.3.2 production hardening + landing page)*
+*Updated: March 23, 2026 (v6.3.3 all CI green)*
