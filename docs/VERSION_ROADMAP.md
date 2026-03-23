@@ -2437,5 +2437,37 @@ Rain is a modern card issuing platform for crypto/fintech companies.
 ---
 
 *Document Version: 6.3.3*
+### v6.4.0 — Machine Payments Protocol + AP2 Mandates + Solana (COMPLETED)
+
+**Release Date**: March 23, 2026
+**Theme**: Multi-Protocol Agent Payments, Google AP2, Solana Launch
+
+| Component | Files | Description |
+|-----------|-------|-------------|
+| MachinePay Domain | 41 | Full MPP protocol: Stripe SPT, Tempo, Lightning, Card rails |
+| MPP Middleware | 1 | `MppPaymentGateMiddleware` with `WWW-Authenticate: Payment` headers |
+| MPP MCP Tools | 2 | `mpp.payment` + `mpp.discovery` with -32042 error code binding |
+| MPP API | 3 | Protocol status, monetized resource CRUD, payment history |
+| AP2 Mandates | 25 | Cart/Intent/Payment mandates, VDCs, MandateService lifecycle |
+| AP2 MCP Tools | 2 | `agent_protocol.mandate` + `agent_protocol.vdc` |
+| Multi-Protocol Bridge | 1 | X402 + MPP + AP2 protocol selection service |
+| Solana x402 | 2 | `solana:mainnet` + `solana:devnet` in X402Network enum |
+| Helius Webhook | 1 | Solana balance monitoring via Enhanced Transactions |
+| Feature Page | 1 | `/features/machine-payments` with rail comparison |
+| Legal Disclaimers | 3 | Rizon-style platform positioning (landing + footer + FAQ) |
+| Documentation | 4 | MPP, AP2, Multi-Protocol, Mobile Handover docs |
+| Tests | 6 | 32 tests, 115 assertions — all passing |
+| Dependabot | 7 | Merged: symfony/http-client, waterline, postcss, 4 Docker actions |
+
+**Security hardening**: Transaction-level locking on settlement idempotency, HMAC key separation (derived keys, never reuse app key), mandate state machine with `lockForUpdate`, admin-only resource monetization, blocked sensitive path prefixes, production environment guards on demo adapters.
+
+**Protocol comparison**:
+- **x402** (Coinbase): USDC on EVM + Solana, custom headers, facilitator settlement
+- **MPP** (Stripe + Tempo): Multi-rail fiat+crypto, standard HTTP auth, HMAC challenges
+- **AP2** (Google): Cart/Intent/Payment mandates with VDCs, wraps x402+MPP as payment methods
+
+---
+
+*Document Version: 6.4.0*
 *Created: January 11, 2026*
-*Updated: March 23, 2026 (v6.3.3 all CI green)*
+*Updated: March 23, 2026 (v6.4.0 MPP + AP2 + Solana)*
