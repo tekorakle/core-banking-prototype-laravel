@@ -95,7 +95,7 @@ Route::prefix('auth')->middleware('api.rate_limit:auth')->group(function () {
     Route::middleware(['auth:sanctum'])->group(function () {
         Route::post('/logout', [LoginController::class, 'logout']);
         Route::post('/logout-all', [LoginController::class, 'logoutAll']);
-        Route::get('/user', [LoginController::class, 'user']);
+        Route::get('/user', [LoginController::class, 'user'])->withoutMiddleware('api.rate_limit:auth')->middleware('api.rate_limit:query');
         Route::get('/me', [LoginController::class, 'user'])->name('api.auth.me');
         Route::post('/delete-account', AccountDeletionController::class)->name('api.auth.delete-account');
 
