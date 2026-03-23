@@ -269,6 +269,11 @@ Route::post('webhooks/helius/solana', [App\Http\Controllers\Api\Webhook\HeliusWe
     ->middleware('api.rate_limit:webhook')
     ->name('api.webhooks.helius.solana');
 
+// HyperSwitch payment lifecycle webhook (HMAC-SHA512 verified)
+Route::post('webhooks/hyperswitch', [App\Http\Controllers\Api\Webhook\HyperSwitchWebhookController::class, 'handle'])
+    ->middleware('api.rate_limit:webhook')
+    ->name('api.webhooks.hyperswitch');
+
 // Visa CLI payment status webhook (no auth, HMAC verified)
 Route::post('webhooks/visa-cli/payment', [App\Http\Controllers\Api\Webhook\VisaCliWebhookController::class, 'handle'])
     ->middleware('api.rate_limit:webhook')
