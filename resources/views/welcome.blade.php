@@ -43,7 +43,7 @@
 
                 <!-- Subheading -->
                 <p class="text-lg sm:text-xl text-slate-400 max-w-2xl mx-auto mb-10 leading-relaxed animate-fade-in-up" style="animation-delay: 0.15s">
-                    Production-grade core banking built with Laravel. Event sourcing, CQRS, cross-chain DeFi, privacy-preserving identity, and AI-driven analytics.
+                    Production-grade core banking built with Laravel. Event sourcing, CQRS, cross-chain DeFi, privacy-preserving identity, AI agent commerce, and HTTP-native micropayments.
                 </p>
 
                 <!-- CTA Buttons -->
@@ -167,6 +167,7 @@
                         ['route' => 'features.show', 'slug' => 'crosschain-defi', 'title' => 'Cross-Chain & DeFi', 'desc' => 'Bridge across Wormhole, LayerZero, Axelar. Aggregate DEX liquidity, optimize yield, manage multi-chain portfolios.', 'icon' => 'M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1', 'color' => 'orange'],
                         ['route' => 'features.show', 'slug' => 'privacy-identity', 'title' => 'Privacy & Identity', 'desc' => 'ZK-KYC proofs, RAILGUN shielded transfers, W3C verifiable credentials, soulbound tokens, Shamir key mgmt.', 'icon' => 'M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z', 'color' => 'teal'],
                         ['route' => 'features.show', 'slug' => 'mobile-payments', 'title' => 'Mobile Payments', 'desc' => 'Passkey authentication, payment intents, P2P transfers, push notifications, and ERC-4337 account abstraction.', 'icon' => 'M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z', 'color' => 'pink'],
+                        ['route' => 'features.show', 'slug' => 'x402-protocol', 'title' => 'x402 Micropayments', 'desc' => 'HTTP-native payments with USDC on Base. AI agents pay for APIs on demand with per-agent spending limits.', 'icon' => 'M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z', 'color' => 'emerald'],
                         ['route' => 'features.show', 'slug' => 'regtech-compliance', 'title' => 'RegTech Compliance', 'desc' => 'MiFID II, MiCA, and Travel Rule adapters with jurisdiction-aware routing and automated reporting.', 'icon' => 'M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z', 'color' => 'yellow'],
                         ['route' => 'features.show', 'slug' => 'baas-platform', 'title' => 'Banking-as-a-Service', 'desc' => 'White-label your banking stack. Partner APIs, auto-generated SDKs, embeddable widgets, and usage billing.', 'icon' => 'M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10', 'color' => 'indigo'],
                     ];
