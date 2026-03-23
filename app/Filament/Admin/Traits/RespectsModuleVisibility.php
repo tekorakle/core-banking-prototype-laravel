@@ -26,9 +26,9 @@ trait RespectsModuleVisibility
 
         $group = static::getNavigationGroup();
 
-        // Resources without a group are always visible (ungrouped)
+        // When ADMIN_MODULES is set, ungrouped resources are hidden
         if ($group === null || $group === '') {
-            return true;
+            return false;
         }
 
         return in_array($group, $allowedModules, true);
