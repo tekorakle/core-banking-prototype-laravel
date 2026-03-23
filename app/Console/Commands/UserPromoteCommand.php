@@ -6,6 +6,7 @@ namespace App\Console\Commands;
 
 use App\Models\User;
 use Illuminate\Console\Command;
+use Illuminate\Support\Facades\Log;
 use Spatie\Permission\Models\Role;
 
 class UserPromoteCommand extends Command
@@ -49,6 +50,12 @@ class UserPromoteCommand extends Command
 
         Role::firstOrCreate(['name' => $roleName, 'guard_name' => 'web']);
         $user->assignRole($roleName);
+
+        Log::info('User promoted via CLI', [
+            'user_id' => $user->id,
+            'email'   => $email,
+            'role'    => $roleName,
+        ]);
 
         $this->info("Promoted {$email} to '{$roleName}'.");
 

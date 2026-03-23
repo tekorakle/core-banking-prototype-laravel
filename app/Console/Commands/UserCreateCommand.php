@@ -7,6 +7,7 @@ namespace App\Console\Commands;
 use App\Models\User;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
 use Spatie\Permission\Models\Role;
 
@@ -18,7 +19,7 @@ class UserCreateCommand extends Command
     protected $signature = 'user:create
                             {--name= : Full name}
                             {--email= : Email address}
-                            {--password= : Password (prompted if omitted)}
+                            {--password= : Password (min 8 chars — prefer omitting to be prompted securely)}
                             {--admin : Assign admin role}';
 
     /**
@@ -28,9 +29,19 @@ class UserCreateCommand extends Command
 
     public function handle(): int
     {
-        $name = $this->option('name') ?: $this->ask('Full name');
-        $email = $this->option('email') ?: $this->ask('Email address');
-        $password = $this->option('password') ?: $this->secret('Password (min 8 characters)');
+        $name = $this->option('name');
+        $name = is_string($name) && $name !== '' ? $name : $this->ask('Full name');
+
+        $email = $this->option('email');
+        $email = is_string($email) && $email !== '' ? $email : $this->ask('Email address');
+
+        $password = $this->option('password');
+        if (is_string($password) && $password !== '') {
+            $this->warn('Password visible in shell history. Prefer omitting --password to be prompted securely.');
+        } else {
+            $password = $this->secret('Password (min 8 characters)');
+        }
+
         $makeAdmin = (bool) $this->option('admin');
 
         $validator = Validator::make([
@@ -61,6 +72,12 @@ class UserCreateCommand extends Command
             Role::firstOrCreate(['name' => 'admin', 'guard_name' => 'web']);
             $user->assignRole('admin');
         }
+
+        Log::info('User created via CLI', [
+            'user_id' => $user->id,
+            'email'   => $user->email,
+            'admin'   => $makeAdmin,
+        ]);
 
         $this->info("User created: {$user->email} (ID: {$user->id})");
         if ($makeAdmin) {

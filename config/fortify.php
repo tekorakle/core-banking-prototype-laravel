@@ -6,6 +6,19 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | Registration Control
+    |--------------------------------------------------------------------------
+    |
+    | Disabled in production by default. Users are created via CLI:
+    |   php artisan user:create --admin
+    | Set REGISTRATION_ENABLED=true for demo/sandbox environments.
+    |
+    */
+
+    'registration_enabled' => (bool) env('REGISTRATION_ENABLED', in_array(env('APP_ENV', 'production'), ['local', 'testing', 'demo'])),
+
+    /*
+    |--------------------------------------------------------------------------
     | Fortify Guard
     |--------------------------------------------------------------------------
     |
@@ -144,9 +157,6 @@ return [
     */
 
     'features' => array_filter([
-        // Registration disabled in production — users are created by admins via CLI.
-        // Set REGISTRATION_ENABLED=true in .env for demo/sandbox environments.
-        // Defaults to enabled for local/testing/demo, disabled for production.
         (bool) env('REGISTRATION_ENABLED', in_array(env('APP_ENV', 'production'), ['local', 'testing', 'demo'])) ? Features::registration() : null,
         Features::resetPasswords(),
         Features::emailVerification(),

@@ -2383,6 +2383,24 @@ Rain is a modern card issuing platform for crypto/fintech companies.
 
 ---
 
-*Document Version: 6.3.0*
+### v6.3.1 — Admin CLI & Registration Control (COMPLETED)
+
+**Release Date**: March 23, 2026
+**Theme**: Production Access Control
+
+| Feature | Description |
+|---------|-------------|
+| `user:create --admin` | Create users via CLI (interactive or scripted) |
+| `user:promote` / `user:demote` | Manage admin roles with audit logging |
+| `user:admins` | List all admin users |
+| Registration control | `REGISTRATION_ENABLED=false` disables public registration in production |
+| Defense-in-depth | CreateNewUser action also checks flag (abort 403 if bypassed) |
+| Last-admin protection | Cannot demote the last admin user |
+| Audit logging | All role changes logged with user ID and email |
+| Horizon memory | Master supervisor limit increased to 128MB (configurable) |
+
+---
+
+*Document Version: 6.3.1*
 *Created: January 11, 2026*
-*Updated: March 23, 2026 (v6.3.0 Virtuals Protocol agent integration complete)*
+*Updated: March 23, 2026 (v6.3.1 admin CLI + registration control)*

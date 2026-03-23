@@ -23,8 +23,7 @@ class CreateNewUser implements CreatesNewUsers
     public function create(array $input): User
     {
         // Defense-in-depth: block registration even if Fortify feature flag is bypassed
-        $registrationEnabled = (bool) env('REGISTRATION_ENABLED', in_array(app()->environment(), ['local', 'testing', 'demo']));
-        if (! $registrationEnabled) {
+        if (! config('fortify.registration_enabled', false)) {
             abort(403, 'Registration is disabled. Contact an administrator.');
         }
 
