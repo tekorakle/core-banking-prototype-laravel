@@ -238,6 +238,7 @@ return [
 
     'helius' => [
         'api_key'        => env('HELIUS_API_KEY'),
+        'webhook_id'     => env('HELIUS_WEBHOOK_ID'),
         'webhook_secret' => env('HELIUS_WEBHOOK_SECRET'),
         'rpc_url'        => env('SOLANA_RPC_URL', 'https://api.mainnet-beta.solana.com'),
     ],
