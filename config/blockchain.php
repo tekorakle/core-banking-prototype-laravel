@@ -73,6 +73,10 @@ return [
             'address'       => env('BITCOIN_HOT_WALLET_ADDRESS'),
             'encrypted_key' => env('BITCOIN_HOT_WALLET_KEY'),
         ],
+        'solana' => [
+            'address'       => env('SOLANA_HOT_WALLET_ADDRESS'),
+            'encrypted_key' => env('SOLANA_HOT_WALLET_KEY'),
+        ],
     ],
 
     /*
