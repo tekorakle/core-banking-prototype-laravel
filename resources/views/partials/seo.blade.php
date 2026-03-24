@@ -36,6 +36,7 @@
 @endif
 
 {{-- Additional SEO Tags --}}
+<meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="{{ $brandName }}">
 <meta name="application-name" content="{{ $brandName }}">
