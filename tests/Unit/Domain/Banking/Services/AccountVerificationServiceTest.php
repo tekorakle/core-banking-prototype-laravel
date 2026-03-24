@@ -23,6 +23,7 @@ class AccountVerificationServiceTest extends TestCase
     {
         parent::setUp();
 
+        config(['cache.default' => 'array']);
         Cache::flush();
 
         $this->service = new AccountVerificationService();
