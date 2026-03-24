@@ -35,7 +35,7 @@ Welcome to the FinAegis documentation. This guide covers the platform's 49 domai
 
 ### API Reference
 - [REST API](04-API/REST_API_REFERENCE.md) - Complete API documentation (1,250+ routes)
-- [GraphQL API](04-API/REST_API_REFERENCE.md#graphql) - 36 domain schemas
+- [GraphQL API](04-API/REST_API_REFERENCE.md#graphql) - 39 domain schemas
 - [WebSocket Streaming](04-API/REST_API_REFERENCE.md#websocket) - Real-time events
 - [BIAN API](04-API/BIAN_API_DOCUMENTATION.md) - Banking industry standard
 - [Webhook Integration](04-API/WEBHOOK_INTEGRATION.md) - Event notifications

@@ -13,7 +13,7 @@
 
     @include('partials.seo', [
         'title' => $brand . ' — Agentic Payments',
-        'description' => 'Get your personal card to spend anywhere. Get your agent a card to spend anywhere. Stablecoin-powered virtual cards with non-custodial security and privacy built in.',
+        'description' => 'Agentic payments — stablecoin-powered virtual cards for you and your AI agents. Non-custodial security, tap-to-pay crypto, and privacy built in.',
         'keywords' => $brand . ', agentic payments, AI agent card, stablecoin card, virtual card, crypto payments, non-custodial wallet, tap to pay crypto, privacy payments',
     ])
 

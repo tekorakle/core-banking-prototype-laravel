@@ -5,7 +5,7 @@
 @section('seo')
     @include('partials.seo', [
         'title' => 'About ' . config('brand.name', 'Zelta') . ' - Open Source Core Banking Infrastructure',
-        'description' => config('brand.name', 'Zelta') . ' is an open-source core banking platform with 47 DDD domains, event sourcing, CQRS, and the Global Currency Unit. Built with Laravel for fintech developers.',
+        'description' => config('brand.name', 'Zelta') . ' is an open-source core banking platform with 49 DDD domains, event sourcing, CQRS, and the Global Currency Unit. Built with Laravel for fintech developers.',
         'keywords' => config('brand.name', 'Zelta') . ' about, open source banking, core banking platform, GCU, event sourcing, CQRS, Laravel banking, DDD, fintech infrastructure',
     ])
 

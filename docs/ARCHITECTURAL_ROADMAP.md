@@ -17,7 +17,7 @@ Transform FinAegis into the **premier open source core banking platform** that:
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────┐
-│                     FINAEGIS CORE BANKING PLATFORM (v5.9.0)              │
+│                     FINAEGIS CORE BANKING PLATFORM (v6.5.0)              │
 ├─────────────────────────────────────────────────────────────────────────┤
 │  CORE BANKING                                                            │
 │  ┌────────────┐  ┌────────────┐  ┌────────────┐  ┌────────────┐        │

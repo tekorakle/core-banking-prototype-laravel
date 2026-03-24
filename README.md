@@ -30,10 +30,10 @@ FinAegis provides the foundation for building digital banking applications. The 
 | Privacy-preserving transactions | ZK-KYC, Merkle trees, ERC-4337 gas abstraction (v2.4.0-v2.6.0) |
 | Multi-jurisdiction RegTech | MiFID II, MiCA, FATF Travel Rule, 4-jurisdiction adapters (v2.8.0) |
 | Cross-chain & DeFi | Bridge protocols, DEX aggregation, yield optimization (v3.0.0) |
-| Modular plugin architecture | 45 domains with manifests, enable/disable, dependency resolution (v3.2.0) |
+| Modular plugin architecture | 49 domains with manifests, enable/disable, dependency resolution (v3.2.0) |
 | Compliance certification | SOC 2 Type II, PCI DSS readiness, multi-region deployment (v3.5.0) |
-| GraphQL API | Schema-first Lighthouse PHP, 36 domains, subscriptions (v4.0.0+) |
-| Event Store v2 | Domain routing (36 domains), upcasting, migration tooling (v4.0.0) |
+| GraphQL API | Schema-first Lighthouse PHP, 39 domains, subscriptions (v4.0.0+) |
+| Event Store v2 | Domain routing (49 domains), upcasting, migration tooling (v4.0.0) |
 | Plugin Marketplace | Manager, loader, sandbox, security scanner (v4.0.0) |
 | Event streaming | Redis Streams publisher/consumer, live dashboard (v5.0.0) |
 | API monetization | x402 protocol: HTTP-native micropayments with USDC on Base (v5.2.0) |
@@ -303,9 +303,9 @@ See [Domain Management Guide](docs/06-DEVELOPMENT/DOMAIN_MANAGEMENT.md) for deta
 - **Event Sourcing** - Domain-specific event tables with Event Store v2, replay, and upcasting (v4.0.0)
 - **CQRS** - Separated read/write models for optimal performance
 - **Saga Pattern** - Distributed transactions with automatic rollback
-- **DDD** - 45 bounded contexts with clear boundaries
+- **DDD** - 49 bounded contexts with clear boundaries
 - **Multi-Tenancy** - Team-based data isolation with stancl/tenancy v3.9
-- **GraphQL** - Schema-first Lighthouse PHP across 36 domains with subscriptions (v4.0.0+)
+- **GraphQL** - Schema-first Lighthouse PHP across 39 domains with subscriptions (v4.0.0+)
 - **Event Streaming** - Redis Streams publisher/consumer with live dashboard (v5.0.0)
 
 See [Architecture Decision Records](docs/ADR/) for detailed design rationale.
