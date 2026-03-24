@@ -43,6 +43,7 @@ class SmsController extends Controller
         description: 'SMS sent successfully',
         content: new OA\JsonContent(
             properties: [
+                new OA\Property(property: 'success', type: 'boolean', example: true),
                 new OA\Property(property: 'data', type: 'object', properties: [
                     new OA\Property(property: 'message_id', type: 'string'),
                     new OA\Property(property: 'status', type: 'string', enum: ['pending', 'sent']),
@@ -81,7 +82,8 @@ class SmsController extends Controller
         );
 
         return response()->json([
-            'data' => $result,
+            'success' => true,
+            'data'    => $result,
         ]);
     }
 
@@ -100,6 +102,7 @@ class SmsController extends Controller
         description: 'Rate found',
         content: new OA\JsonContent(
             properties: [
+                new OA\Property(property: 'success', type: 'boolean', example: true),
                 new OA\Property(property: 'data', type: 'object', properties: [
                     new OA\Property(property: 'country_code', type: 'string'),
                     new OA\Property(property: 'price_usdc', type: 'string'),
@@ -147,6 +150,7 @@ class SmsController extends Controller
         description: 'Message status',
         content: new OA\JsonContent(
             properties: [
+                new OA\Property(property: 'success', type: 'boolean', example: true),
                 new OA\Property(property: 'data', type: 'object', properties: [
                     new OA\Property(property: 'message_id', type: 'string'),
                     new OA\Property(property: 'status', type: 'string', enum: ['pending', 'sent', 'delivered', 'failed']),
@@ -169,7 +173,8 @@ class SmsController extends Controller
         }
 
         return response()->json([
-            'data' => $result,
+            'success' => true,
+            'data'    => $result,
         ]);
     }
 
@@ -185,6 +190,7 @@ class SmsController extends Controller
         description: 'Service info',
         content: new OA\JsonContent(
             properties: [
+                new OA\Property(property: 'success', type: 'boolean', example: true),
                 new OA\Property(property: 'data', type: 'object', properties: [
                     new OA\Property(property: 'provider', type: 'string'),
                     new OA\Property(property: 'enabled', type: 'boolean'),

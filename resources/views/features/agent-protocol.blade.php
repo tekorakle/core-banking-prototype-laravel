@@ -27,23 +27,27 @@
             <div class="text-center">
                 <div class="flex justify-center mb-6">
                     <div class="w-20 h-20 bg-white/10 rounded-2xl flex items-center justify-center">
-                        <svg class="w-10 h-10 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <svg class="w-10 h-10 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"></path>
                         </svg>
                     </div>
                 </div>
+                @include('partials.breadcrumb', ['items' => [
+                    ['name' => 'Features', 'url' => url('/features')],
+                    ['name' => 'Agent Protocol', 'url' => url('/features/agent-protocol')]
+                ]])
                 <div class="inline-flex items-center px-3 py-1 bg-white/10 backdrop-blur-sm rounded-full text-sm text-slate-300 mb-6">
                     <span class="w-2 h-2 bg-cyan-400 rounded-full mr-2"></span>
-                    v6.5.0 &middot; 10 Aggregates &middot; 60+ Events &middot; 200+ Files
+                    v6.5.0 &middot; Autonomous Agent Commerce
                 </div>
-                <h1 class="text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-6">
+                <h1 class="font-display text-4xl md:text-5xl lg:text-6xl font-extrabold text-white tracking-tight mb-6">
                     Agent Protocol
                 </h1>
                 <p class="text-lg md:text-xl text-slate-300 max-w-3xl mx-auto mb-8">
                     The infrastructure layer for autonomous agent commerce. DID-based identity, agent-to-agent messaging, escrow with dispute resolution, reputation scoring, and AP2 payment mandates.
                 </p>
                 <div class="flex flex-wrap justify-center gap-4">
-                    <a href="{{ url('/api/v1/agent-protocol/protocol/versions') }}" class="btn-primary px-8 py-4 text-lg">Protocol Versions</a>
+                    <a href="{{ route('developers') }}" class="btn-primary px-8 py-4 text-lg">API Documentation</a>
                     <a href="{{ route('features.show', 'ai-framework') }}" class="btn-outline px-8 py-4 text-lg">AI Framework</a>
                 </div>
             </div>
@@ -57,7 +61,7 @@
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
                 <div class="card-feature !p-6 text-center">
                     <div class="w-14 h-14 bg-cyan-50 rounded-lg flex items-center justify-center mx-auto mb-4">
-                        <svg class="w-7 h-7 text-cyan-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V8a2 2 0 00-2-2h-5m-4 0V5a2 2 0 114 0v1m-4 0a2 2 0 104 0m-5 8a2 2 0 100-4 2 2 0 000 4zm0 0c1.306 0 2.417.835 2.83 2M9 14a3.001 3.001 0 00-2.83 2M15 11h3m-3 4h2"></path></svg>
+                        <svg class="w-7 h-7 text-cyan-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V8a2 2 0 00-2-2h-5m-4 0V5a2 2 0 114 0v1m-4 0a2 2 0 104 0m-5 8a2 2 0 100-4 2 2 0 000 4zm0 0c1.306 0 2.417.835 2.83 2M9 14a3.001 3.001 0 00-2.83 2M15 11h3m-3 4h2"></path></svg>
                     </div>
                     <h3 class="text-lg font-bold mb-2">DID Identity</h3>
                     <p class="text-sm text-slate-500">Decentralized identifiers for agents. Register, authenticate, and manage agent identity with cryptographic verification.</p>
@@ -65,7 +69,7 @@
 
                 <div class="card-feature !p-6 text-center">
                     <div class="w-14 h-14 bg-purple-50 rounded-lg flex items-center justify-center mx-auto mb-4">
-                        <svg class="w-7 h-7 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"></path></svg>
+                        <svg class="w-7 h-7 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"></path></svg>
                     </div>
                     <h3 class="text-lg font-bold mb-2">A2A Messaging</h3>
                     <p class="text-sm text-slate-500">Structured agent-to-agent communication with priority queuing, delivery receipts, and protocol negotiation.</p>
@@ -73,7 +77,7 @@
 
                 <div class="card-feature !p-6 text-center">
                     <div class="w-14 h-14 bg-green-50 rounded-lg flex items-center justify-center mx-auto mb-4">
-                        <svg class="w-7 h-7 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path></svg>
+                        <svg class="w-7 h-7 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path></svg>
                     </div>
                     <h3 class="text-lg font-bold mb-2">Escrow</h3>
                     <p class="text-sm text-slate-500">Multi-party escrow with milestone-based release, dispute resolution, voting, and automatic expiration.</p>
@@ -81,7 +85,7 @@
 
                 <div class="card-feature !p-6 text-center">
                     <div class="w-14 h-14 bg-amber-50 rounded-lg flex items-center justify-center mx-auto mb-4">
-                        <svg class="w-7 h-7 text-amber-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z"></path></svg>
+                        <svg class="w-7 h-7 text-amber-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z"></path></svg>
                     </div>
                     <h3 class="text-lg font-bold mb-2">Reputation</h3>
                     <p class="text-sm text-slate-500">Trust scoring with decay, boosts, and penalties. Reputation leaderboards and threshold-based access control.</p>
@@ -181,19 +185,19 @@
                     <div class="card-feature !p-6">
                         <ul class="space-y-2 text-sm text-slate-600">
                             <li class="flex items-center">
-                                <svg class="w-4 h-4 text-green-500 mr-2 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+                                <svg class="w-4 h-4 text-green-500 mr-2 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
                                 Transaction signing and verification
                             </li>
                             <li class="flex items-center">
-                                <svg class="w-4 h-4 text-green-500 mr-2 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+                                <svg class="w-4 h-4 text-green-500 mr-2 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
                                 End-to-end message encryption
                             </li>
                             <li class="flex items-center">
-                                <svg class="w-4 h-4 text-green-500 mr-2 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+                                <svg class="w-4 h-4 text-green-500 mr-2 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
                                 Fraud detection with 16+ risk factors
                             </li>
                             <li class="flex items-center">
-                                <svg class="w-4 h-4 text-green-500 mr-2 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+                                <svg class="w-4 h-4 text-green-500 mr-2 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
                                 AML screening with high-risk country list
                             </li>
                         </ul>
@@ -213,21 +217,21 @@
                     <h3 class="text-2xl font-bold mb-6 text-cyan-900">Escrow System</h3>
                     <ul class="space-y-4">
                         <li class="flex items-start">
-                            <svg class="w-6 h-6 text-cyan-600 mr-3 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4"></path></svg>
+                            <svg class="w-6 h-6 text-cyan-600 mr-3 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4"></path></svg>
                             <div>
                                 <h4 class="font-semibold mb-1">Multi-Party Escrow</h4>
                                 <p class="text-slate-600 text-sm">$10 to $1M range with configurable hold periods and automatic expiration (30-day default).</p>
                             </div>
                         </li>
                         <li class="flex items-start">
-                            <svg class="w-6 h-6 text-cyan-600 mr-3 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4"></path></svg>
+                            <svg class="w-6 h-6 text-cyan-600 mr-3 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4"></path></svg>
                             <div>
                                 <h4 class="font-semibold mb-1">Dispute Resolution</h4>
                                 <p class="text-slate-600 text-sm">Voting-based resolution for escrows above $10k. Dispute filing, evidence submission, and arbitration.</p>
                             </div>
                         </li>
                         <li class="flex items-start">
-                            <svg class="w-6 h-6 text-cyan-600 mr-3 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4"></path></svg>
+                            <svg class="w-6 h-6 text-cyan-600 mr-3 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4"></path></svg>
                             <div>
                                 <h4 class="font-semibold mb-1">Event-Sourced Lifecycle</h4>
                                 <p class="text-slate-600 text-sm">Full audit trail: created, funded, held, released, expired, cancelled, disputed, resolved.</p>
@@ -240,21 +244,21 @@
                     <h3 class="text-2xl font-bold mb-6 text-purple-900">Agent Wallets</h3>
                     <ul class="space-y-4">
                         <li class="flex items-start">
-                            <svg class="w-6 h-6 text-purple-600 mr-3 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4"></path></svg>
+                            <svg class="w-6 h-6 text-purple-600 mr-3 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4"></path></svg>
                             <div>
                                 <h4 class="font-semibold mb-1">Multi-Currency Support</h4>
                                 <p class="text-slate-600 text-sm">10+ supported currencies with per-asset fee rates (0.5%&ndash;2.5%). Fund from main accounts or external sources.</p>
                             </div>
                         </li>
                         <li class="flex items-start">
-                            <svg class="w-6 h-6 text-purple-600 mr-3 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4"></path></svg>
+                            <svg class="w-6 h-6 text-purple-600 mr-3 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4"></path></svg>
                             <div>
                                 <h4 class="font-semibold mb-1">Transaction Limits</h4>
                                 <p class="text-slate-600 text-sm">Configurable daily ($10k) and per-transaction ($5k) limits. Automatic escalation when exceeded.</p>
                             </div>
                         </li>
                         <li class="flex items-start">
-                            <svg class="w-6 h-6 text-purple-600 mr-3 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4"></path></svg>
+                            <svg class="w-6 h-6 text-purple-600 mr-3 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4"></path></svg>
                             <div>
                                 <h4 class="font-semibold mb-1">Fee Structure</h4>
                                 <p class="text-slate-600 text-sm">2.5% standard rate, $0.50 minimum, $100 maximum. Fee calculations recorded as events.</p>
@@ -478,21 +482,21 @@
             <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
                 <a href="{{ route('features.show', 'ai-framework') }}" class="card-feature !p-6 hover:border-purple-300 transition-colors group">
                     <div class="w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center mb-4">
-                        <svg class="w-6 h-6 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path></svg>
+                        <svg class="w-6 h-6 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path></svg>
                     </div>
                     <h3 class="font-bold text-slate-900 mb-2 group-hover:text-purple-700">AI Framework</h3>
                     <p class="text-sm text-slate-500">6 specialized agents, 24 MCP tools, ML anomaly detection, and Temporal workflow orchestration.</p>
                 </a>
                 <a href="{{ route('features.show', 'machine-payments') }}" class="card-feature !p-6 hover:border-orange-300 transition-colors group">
                     <div class="w-12 h-12 bg-orange-100 rounded-lg flex items-center justify-center mb-4">
-                        <svg class="w-6 h-6 text-orange-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z"></path></svg>
+                        <svg class="w-6 h-6 text-orange-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z"></path></svg>
                     </div>
                     <h3 class="font-bold text-slate-900 mb-2 group-hover:text-orange-700">Machine Payments (MPP)</h3>
                     <p class="text-sm text-slate-500">Multi-rail HTTP 402 payments. AP2 mandates bridge directly to MPP and x402 payment rails.</p>
                 </a>
                 <a href="{{ route('features.show', 'virtuals-protocol') }}" class="card-feature !p-6 hover:border-violet-300 transition-colors group">
                     <div class="w-12 h-12 bg-violet-100 rounded-lg flex items-center justify-center mb-4">
-                        <svg class="w-6 h-6 text-violet-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path></svg>
+                        <svg class="w-6 h-6 text-violet-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path></svg>
                     </div>
                     <h3 class="font-bold text-slate-900 mb-2 group-hover:text-violet-700">AI Agent Commerce</h3>
                     <p class="text-sm text-slate-500">Virtuals Protocol integration with TrustCert identity, spending limits, and Pimlico enforcement.</p>
