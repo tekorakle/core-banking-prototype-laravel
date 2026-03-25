@@ -23,7 +23,7 @@ describe('WebSocketPaymentGateMiddleware payment header processing', function ()
     it('creates subscription when valid x402 payment header is provided', function (): void {
         $user = User::factory()->create();
 
-        $payload = base64_encode(json_encode(['payment_id' => 'pay_x402_abc123']));
+        $payload = base64_encode((string) json_encode(['payment_id' => 'pay_x402_abc123']));
 
         $middleware = app(WebSocketPaymentGateMiddleware::class);
         $request = Request::create('/broadcasting/auth', 'POST', [
@@ -40,16 +40,16 @@ describe('WebSocketPaymentGateMiddleware payment header processing', function ()
             ->where('channel', 'tenant.1.exchange.orderbook')
             ->first();
 
-        expect($subscription)->not->toBeNull()
-            ->and($subscription->protocol)->toBe('x402')
-            ->and($subscription->payment_id)->toBe('pay_x402_abc123')
-            ->and($subscription->isActive())->toBeTrue();
+        assert($subscription instanceof WebSocketSubscription);
+        expect($subscription->protocol)->toBe('x402');
+        expect($subscription->payment_id)->toBe('pay_x402_abc123');
+        expect($subscription->isActive())->toBeTrue();
     });
 
     it('creates subscription when valid mpp payment header is provided', function (): void {
         $user = User::factory()->create();
 
-        $credential = base64_encode(json_encode(['challenge_id' => 'ch_mpp_def456']));
+        $credential = base64_encode((string) json_encode(['challenge_id' => 'ch_mpp_def456']));
 
         $middleware = app(WebSocketPaymentGateMiddleware::class);
         $request = Request::create('/broadcasting/auth', 'POST', [
@@ -66,10 +66,10 @@ describe('WebSocketPaymentGateMiddleware payment header processing', function ()
             ->where('channel', 'tenant.1.exchange.orderbook')
             ->first();
 
-        expect($subscription)->not->toBeNull()
-            ->and($subscription->protocol)->toBe('mpp')
-            ->and($subscription->payment_id)->toBe('ch_mpp_def456')
-            ->and($subscription->isActive())->toBeTrue();
+        assert($subscription instanceof WebSocketSubscription);
+        expect($subscription->protocol)->toBe('mpp');
+        expect($subscription->payment_id)->toBe('ch_mpp_def456');
+        expect($subscription->isActive())->toBeTrue();
     });
 
     it('returns 402 when payment header is malformed', function (): void {
@@ -86,7 +86,8 @@ describe('WebSocketPaymentGateMiddleware payment header processing', function ()
 
         expect($response->getStatusCode())->toBe(402);
 
-        $body = json_decode($response->getContent(), true);
+        $body = json_decode((string) $response->getContent(), true);
+        assert(is_array($body));
         expect($body['error'])->toBe('PAYMENT_REQUIRED')
             ->and($body['message'])->toContain('base64 decode failed');
     });
@@ -94,7 +95,7 @@ describe('WebSocketPaymentGateMiddleware payment header processing', function ()
     it('returns 402 when x402 payload is missing payment_id', function (): void {
         $user = User::factory()->create();
 
-        $payload = base64_encode(json_encode(['amount' => '1000']));
+        $payload = base64_encode((string) json_encode(['amount' => '1000']));
 
         $middleware = app(WebSocketPaymentGateMiddleware::class);
         $request = Request::create('/broadcasting/auth', 'POST', [
@@ -107,14 +108,15 @@ describe('WebSocketPaymentGateMiddleware payment header processing', function ()
 
         expect($response->getStatusCode())->toBe(402);
 
-        $body = json_decode($response->getContent(), true);
+        $body = json_decode((string) $response->getContent(), true);
+        assert(is_array($body));
         expect($body['message'])->toContain('missing payment_id');
     });
 
     it('returns 402 when mpp payload is missing challenge_id', function (): void {
         $user = User::factory()->create();
 
-        $credential = base64_encode(json_encode(['token' => 'something']));
+        $credential = base64_encode((string) json_encode(['token' => 'something']));
 
         $middleware = app(WebSocketPaymentGateMiddleware::class);
         $request = Request::create('/broadcasting/auth', 'POST', [
@@ -127,12 +129,13 @@ describe('WebSocketPaymentGateMiddleware payment header processing', function ()
 
         expect($response->getStatusCode())->toBe(402);
 
-        $body = json_decode($response->getContent(), true);
+        $body = json_decode((string) $response->getContent(), true);
+        assert(is_array($body));
         expect($body['message'])->toContain('missing challenge_id');
     });
 
     it('creates subscription for agent via X-Agent-ID header', function (): void {
-        $payload = base64_encode(json_encode(['payment_id' => 'pay_agent_xyz']));
+        $payload = base64_encode((string) json_encode(['payment_id' => 'pay_agent_xyz']));
 
         $middleware = app(WebSocketPaymentGateMiddleware::class);
         $request = Request::create('/broadcasting/auth', 'POST', [
@@ -149,9 +152,9 @@ describe('WebSocketPaymentGateMiddleware payment header processing', function ()
             ->where('channel', 'tenant.1.exchange.orderbook')
             ->first();
 
-        expect($subscription)->not->toBeNull()
-            ->and($subscription->protocol)->toBe('x402')
-            ->and($subscription->payment_id)->toBe('pay_agent_xyz');
+        assert($subscription instanceof WebSocketSubscription);
+        expect($subscription->protocol)->toBe('x402');
+        expect($subscription->payment_id)->toBe('pay_agent_xyz');
     });
 });
 
@@ -181,8 +184,8 @@ describe('WebSocketPaymentService::renewSubscription', function (): void {
         $service = app(WebSocketPaymentService::class);
         $renewed = $service->renewSubscription('tenant.1.exchange.orderbook', $user->id, null);
 
-        expect($renewed)->not->toBeNull()
-            ->and($renewed->expires_at->timestamp)->toBeGreaterThan($originalExpiry->timestamp);
+        assert($renewed instanceof WebSocketSubscription);
+        expect($renewed->expires_at->timestamp)->toBeGreaterThan($originalExpiry->timestamp);
     });
 
     it('returns null when no active subscription exists', function (): void {
@@ -215,7 +218,7 @@ describe('WebSocketPaymentService::renewSubscription', function (): void {
         $service = app(WebSocketPaymentService::class);
         $renewed = $service->renewSubscription('tenant.1.exchange.orderbook', null, 'agent-renewal');
 
-        expect($renewed)->not->toBeNull()
-            ->and($renewed->expires_at->timestamp)->toBeGreaterThan($originalExpiry->timestamp);
+        assert($renewed instanceof WebSocketSubscription);
+        expect($renewed->expires_at->timestamp)->toBeGreaterThan($originalExpiry->timestamp);
     });
 });
