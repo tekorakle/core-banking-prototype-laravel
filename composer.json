@@ -112,7 +112,8 @@
         "psr-4": {
             "Tests\\": "tests/",
             "Zelta\\": "packages/zelta-sdk/src/",
-            "Zelta\\Tests\\": "packages/zelta-sdk/tests/"
+            "Zelta\\Tests\\": "packages/zelta-sdk/tests/",
+            "ZeltaCli\\": "packages/zelta-cli/app/"
         }
     },
     "scripts": {
