@@ -82,6 +82,19 @@ class WebSocketPaymentService
         ?string $paymentId = null,
         ?string $network = null,
     ): WebSocketSubscription {
+        // Idempotent: if the same payment_id already created a subscription, return it
+        if ($paymentId !== null) {
+            $existing = WebSocketSubscription::where('payment_id', $paymentId)->first();
+            if ($existing !== null) {
+                Log::info('ws: Idempotent subscription return (duplicate payment_id)', [
+                    'payment_id' => $paymentId,
+                    'channel'    => $channel,
+                ]);
+
+                return $existing;
+            }
+        }
+
         $subscription = WebSocketSubscription::create([
             'user_id'    => $userId,
             'agent_id'   => $agentId,
@@ -118,11 +131,17 @@ class WebSocketPaymentService
     }
 
     /**
-     * Cancel a subscription.
+     * Cancel a subscription (ownership-enforced).
      */
-    public function cancelSubscription(string $subscriptionId): bool
+    public function cancelSubscription(string $subscriptionId, ?int $userId = null): bool
     {
-        $subscription = WebSocketSubscription::find($subscriptionId);
+        $query = WebSocketSubscription::where('id', $subscriptionId);
+
+        if ($userId !== null) {
+            $query->where('user_id', $userId);
+        }
+
+        $subscription = $query->first();
 
         if ($subscription === null) {
             return false;

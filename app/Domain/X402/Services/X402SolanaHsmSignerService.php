@@ -88,6 +88,13 @@ class X402SolanaHsmSignerService implements X402SignerInterface
 
     private function signWithSodium(string $message): string
     {
+        if (app()->isProduction()) {
+            throw new RuntimeException(
+                'Sodium provider reads raw private keys from disk — use "aws" or "azure" provider in production. '
+                . 'Set X402_SOLANA_HSM_PROVIDER=aws in .env.'
+            );
+        }
+
         $keyPath = (string) config('x402.client.solana_key_path', '');
         if ($keyPath === '' || ! file_exists($keyPath)) {
             throw new RuntimeException(
@@ -152,7 +159,35 @@ class X402SolanaHsmSignerService implements X402SignerInterface
         $publicKey = substr($keypairBytes, 32, 32);
         sodium_memzero($keypairBytes);
 
-        // Base58 encode (simplified — use a proper base58 library in production)
-        return bin2hex($publicKey); // Placeholder: real impl needs base58
+        return self::base58Encode($publicKey);
+    }
+
+    /**
+     * Base58 encode (Bitcoin/Solana alphabet).
+     */
+    private static function base58Encode(string $bytes): string
+    {
+        $alphabet = '123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz';
+
+        // Count leading zero bytes
+        $leadingZeros = 0;
+        $len = strlen($bytes);
+        while ($leadingZeros < $len && $bytes[$leadingZeros] === "\x00") {
+            $leadingZeros++;
+        }
+
+        // Convert bytes to a GMP integer and encode
+        $num = gmp_import($bytes);
+        $encoded = '';
+        $base = gmp_init(58);
+        $zero = gmp_init(0);
+
+        while (gmp_cmp($num, $zero) > 0) {
+            [$num, $remainder] = gmp_div_qr($num, $base);
+            $encoded = $alphabet[gmp_intval($remainder)] . $encoded;
+        }
+
+        // Prepend '1' for each leading zero byte
+        return str_repeat('1', $leadingZeros) . $encoded;
     }
 }
