@@ -23,6 +23,8 @@ php artisan user:admins              # List all admin users
 ## Architecture
 
 - **49 domains** in `app/Domain/` (DDD bounded contexts)
+- **Payment Protocols**: x402 (Coinbase), MPP (Stripe/Tempo), AP2 (Google)
+- **Packages**: `packages/zelta-sdk/` (Payment SDK), `packages/zelta-cli/` (CLI binary)
 - **Event Sourcing**: Spatie v7.7+ with domain-specific tables
 - **CQRS**: Command/Query Bus in `app/Infrastructure/`
 - **GraphQL**: Lighthouse PHP, 39 domain schemas
@@ -39,6 +41,8 @@ declare(strict_types=1);
 namespace App\Domain\Exchange\Services;
 ```
 
+- Symfony Console 7.x: use constructor `parent::__construct('name')`, NOT `$defaultName` static property
+- Eloquent: always set explicit `$table` when class name doesn't match (e.g. `WebSocketSubscription` → `websocket_subscriptions`)
 - Import order: `App\Domain` → `App\Http` → `App\Models` → `Illuminate` → Third-party
 - Commits: `feat:` / `fix:` / `test:` / `refactor:` + `Co-Authored-By: Claude <noreply@anthropic.com>`
 - Tests: Always pass `['read', 'write', 'delete']` abilities to `Sanctum::actingAs()`
@@ -48,6 +52,10 @@ namespace App\Domain\Exchange\Services;
 | Issue | Fix |
 |-------|-----|
 | PHPStan type errors | Cast return types, add `@var` PHPDoc, null checks |
+| PHPStan `->first()` nullable | Use `assert($x instanceof Model)` after expect not-null |
+| PHPStan `json_encode` | Cast `(string) json_encode(...)` — returns `string\|false` |
+| PHPStan `env()` in config | Cast `(string) env(...)` before `explode()` etc. |
+| Unit tests use `config()` | Add `uses(Tests\TestCase::class)` — pure unit tests lack app container |
 | Test scope 403s | Add abilities to `Sanctum::actingAs($user, ['read', 'write', 'delete'])` |
 | Code style | `./vendor/bin/php-cs-fixer fix --config=.php-cs-fixer.php` |
 | PHPCS | `./vendor/bin/phpcbf --standard=PSR12 app/` |
@@ -59,6 +67,9 @@ gh run view <RUN_ID> --log-failed     # View failed logs
 
 ## Notes
 
+- New packages: add PSR-4 to root `composer.json` autoload-dev, then `composer dump-autoload`
+- Parallel agents: avoid touching `composer.json`, `bootstrap/app.php` from multiple agents (merge conflicts)
+- Feature pages: always update version badge + features/index.blade.php when shipping new features
 - Always work in feature branches
 - Ensure GitHub Actions pass before merging
 - Never create docs files unless explicitly requested
