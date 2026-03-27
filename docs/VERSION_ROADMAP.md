@@ -2644,6 +2644,56 @@ Rain is a modern card issuing platform for crypto/fintech companies.
 
 ---
 
-*Document Version: 6.10.0*
+## Version 6.11.0 — CrossChain/DeFi Production Adapters (RELEASED)
+
+**Release Date**: March 27, 2026
+**Theme**: Web3 Integration Layer + Production Protocol Adapters
+
+### Infrastructure
+- EthRpcClient — JSON-RPC client with circuit breaker, retry, multi-config URL resolution
+- AbiEncoder — Solidity ABI encoding/decoding for address, uint256, uint16, uint32, bytes32, structs
+
+### CrossChain Production Adapters
+- Wormhole: TokenBridge.transferTokens() ABI encoding, Guardian VAA polling, destination receipt verification
+- Circle CCTP: TokenMessenger.depositForBurn(), attestation polling, MessageTransmitter.receiveMessage()
+
+### DeFi Production Adapters
+- Uniswap V3: Quoter2.quoteExactInputSingle() struct encoding, SwapRouter02 with slippage protection
+- Aave V3: Pool.supply/borrow/repay/withdraw() encoding, UiPoolDataProvider.getUserReservesData()
+
+### Testing
+- 52 new tests (AbiEncoder 25, EthRpcClient 13, Wormhole 6, Uniswap 8)
+
+---
+
+## Version 6.12.0 — Privacy ZK Production Prover (RELEASED)
+
+**Release Date**: March 27, 2026
+**Theme**: Zero-Knowledge Proving Infrastructure
+
+### Circom Circuits (5)
+- age_check.circom — age >= threshold without revealing birthdate
+- residency_check.circom — region membership without revealing address
+- kyc_tier_check.circom — KYC tier meets minimum without documents
+- sanctions_check.circom — Merkle exclusion proof for sanctions clearance
+- income_range_check.circom — income within range without exact amount
+
+### Proving Infrastructure
+- TrustedSetupService — Powers of Tau download, Groth16 setup, vkey/sol export
+- CircuitCompilationService — Circom compilation wrapper, constraint counting
+- ZkSetupCommand — `php artisan zk:setup --circuit=<name>` or `--all`
+- SnarkjsProverService enhanced — .wasm validation, proving time metrics, constraint counts
+
+### Solidity Verifiers (5)
+- AgeCheckVerifier.sol, ResidencyCheckVerifier.sol, KycTierCheckVerifier.sol
+- SanctionsCheckVerifier.sol, IncomeRangeCheckVerifier.sol
+
+### Testing
+- 33 new tests (TrustedSetup 13, CircuitCompilation 11, Roundtrip 9)
+- PHPStan Level 8 compliant
+
+---
+
+*Document Version: 6.12.0*
 *Created: January 11, 2026*
-*Updated: March 27, 2026 (v6.10.0 Multi-Tenancy Hardening)*
+*Updated: March 27, 2026 (v6.12.0 Privacy ZK Production Prover)*
