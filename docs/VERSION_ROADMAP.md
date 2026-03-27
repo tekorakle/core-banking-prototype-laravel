@@ -2619,6 +2619,31 @@ Rain is a modern card issuing platform for crypto/fintech companies.
 
 ---
 
-*Document Version: 6.9.0*
+## Version 6.10.0 — Multi-Tenancy Hardening (RELEASED)
+
+**Release Date**: March 27, 2026
+**Theme**: Tenant Security, Audit Logging, Plan Enforcement
+
+### Audit Logging
+- TenantAuditLog model + tenant_audit_logs migration
+- TenantAuditService integrated into all TenantProvisioningService lifecycle methods
+- Persistent audit trail for: create, suspend, reactivate, delete, plan change, config update
+
+### Plan Enforcement
+- EnforceTenantPlanLimits middleware — returns 429 when plan limits exceeded
+- Integrates with TenantUsageMeteringService for real-time limit checking
+
+### Soft-Delete & Lifecycle
+- Tenant soft-delete with 14-day grace period (deletion_scheduled_at)
+- restoreTenant() cancels scheduled deletion
+- purgeTenant() enforces grace period before permanent deletion + DB drop
+
+### Data Migration Hardening
+- Table name whitelist in TenantDataMigrationService
+- Rejects any non-whitelisted table names to prevent SQL injection vectors
+
+---
+
+*Document Version: 6.10.0*
 *Created: January 11, 2026*
-*Updated: March 27, 2026 (v6.9.0 Banking Integration Hardening)*
+*Updated: March 27, 2026 (v6.10.0 Multi-Tenancy Hardening)*
