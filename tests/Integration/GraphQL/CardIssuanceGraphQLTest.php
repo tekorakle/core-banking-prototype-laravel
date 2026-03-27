@@ -210,4 +210,220 @@ describe('GraphQL CardIssuance API', function () {
         expect($json['data']['cardholder']['kyc_status'])->toBe('pending');
         expect($json['data']['cardholder']['is_verified'])->toBeFalse();
     });
+
+    it('creates a card via createCard mutation', function () {
+        $user = User::factory()->create();
+
+        $response = $this->actingAs($user, 'sanctum')
+            ->postJson('/graphql', [
+                'query' => '
+                    mutation ($input: CreateCardInput!) {
+                        createCard(input: $input) {
+                            id
+                            card_token
+                            cardholder_name
+                            last_four
+                            network
+                            status
+                            currency
+                            label
+                        }
+                    }
+                ',
+                'variables' => [
+                    'input' => [
+                        'cardholder_id' => 'ch-123',
+                        'network'       => 'visa',
+                        'label'         => 'My Card',
+                        'currency'      => 'USD',
+                    ],
+                ],
+            ]);
+
+        $response->assertOk();
+        $json = $response->json();
+        expect($json)->not->toHaveKey('errors');
+        $data = $response->json('data.createCard');
+        expect($data)->toHaveKeys(['id', 'card_token', 'network', 'status']);
+        expect($data['network'])->toBe('visa');
+    });
+
+    it('freezes a card via freezeCard mutation', function () {
+        $user = User::factory()->create();
+
+        // First create a card to get a valid token
+        $provisionResponse = $this->actingAs($user, 'sanctum')
+            ->postJson('/graphql', [
+                'query' => '
+                    mutation ($input: ProvisionCardInput!) {
+                        provisionCard(input: $input) {
+                            id
+                            card_token
+                        }
+                    }
+                ',
+                'variables' => [
+                    'input' => ['cardholder_name' => 'Freeze Test'],
+                ],
+            ]);
+
+        $cardToken = $provisionResponse->json('data.provisionCard.card_token');
+
+        $response = $this->actingAs($user, 'sanctum')
+            ->postJson('/graphql', [
+                'query' => '
+                    mutation ($id: ID!) {
+                        freezeCard(id: $id) {
+                            id
+                            card_token
+                            status
+                            network
+                            cardholder_name
+                        }
+                    }
+                ',
+                'variables' => ['id' => $cardToken],
+            ]);
+
+        $response->assertOk();
+        $json = $response->json();
+        expect($json)->toHaveKey('data.freezeCard');
+        expect($json['data']['freezeCard'])->toHaveKeys(['id', 'card_token', 'status']);
+    });
+
+    it('unfreezes a card via unfreezeCard mutation', function () {
+        $user = User::factory()->create();
+
+        // First create and freeze a card
+        $provisionResponse = $this->actingAs($user, 'sanctum')
+            ->postJson('/graphql', [
+                'query' => '
+                    mutation ($input: ProvisionCardInput!) {
+                        provisionCard(input: $input) {
+                            id
+                            card_token
+                        }
+                    }
+                ',
+                'variables' => [
+                    'input' => ['cardholder_name' => 'Unfreeze Test'],
+                ],
+            ]);
+
+        $cardToken = $provisionResponse->json('data.provisionCard.card_token');
+
+        // Freeze first
+        $this->actingAs($user, 'sanctum')
+            ->postJson('/graphql', [
+                'query' => 'mutation ($id: ID!) { freezeCard(id: $id) { id status } }',
+                'variables' => ['id' => $cardToken],
+            ]);
+
+        // Now unfreeze
+        $response = $this->actingAs($user, 'sanctum')
+            ->postJson('/graphql', [
+                'query' => '
+                    mutation ($id: ID!) {
+                        unfreezeCard(id: $id) {
+                            id
+                            card_token
+                            status
+                            network
+                            cardholder_name
+                        }
+                    }
+                ',
+                'variables' => ['id' => $cardToken],
+            ]);
+
+        $response->assertOk();
+        $json = $response->json();
+        expect($json)->toHaveKey('data.unfreezeCard');
+        expect($json['data']['unfreezeCard'])->toHaveKeys(['id', 'card_token', 'status']);
+    });
+
+    it('cancels a card via cancelCard mutation', function () {
+        $user = User::factory()->create();
+
+        // First create a card
+        $provisionResponse = $this->actingAs($user, 'sanctum')
+            ->postJson('/graphql', [
+                'query' => '
+                    mutation ($input: ProvisionCardInput!) {
+                        provisionCard(input: $input) {
+                            id
+                            card_token
+                        }
+                    }
+                ',
+                'variables' => [
+                    'input' => ['cardholder_name' => 'Cancel Test'],
+                ],
+            ]);
+
+        $cardToken = $provisionResponse->json('data.provisionCard.card_token');
+
+        $response = $this->actingAs($user, 'sanctum')
+            ->postJson('/graphql', [
+                'query' => '
+                    mutation ($id: ID!) {
+                        cancelCard(id: $id) {
+                            id
+                            card_token
+                            status
+                            network
+                            cardholder_name
+                        }
+                    }
+                ',
+                'variables' => ['id' => $cardToken],
+            ]);
+
+        $response->assertOk();
+        $json = $response->json();
+        expect($json)->toHaveKey('data.cancelCard');
+        expect($json['data']['cancelCard'])->toHaveKeys(['id', 'card_token', 'status']);
+    });
+
+    it('creates a cardholder via createCardholder mutation', function () {
+        $user = User::factory()->create();
+
+        $response = $this->actingAs($user, 'sanctum')
+            ->postJson('/graphql', [
+                'query' => '
+                    mutation ($input: CreateCardholderInput!) {
+                        createCardholder(input: $input) {
+                            id
+                            first_name
+                            last_name
+                            full_name
+                            email
+                            kyc_status
+                            is_verified
+                            card_count
+                        }
+                    }
+                ',
+                'variables' => [
+                    'input' => [
+                        'first_name' => 'Alice',
+                        'last_name'  => 'Johnson',
+                        'email'      => 'alice@example.com',
+                        'phone'      => '+1234567890',
+                    ],
+                ],
+            ]);
+
+        $response->assertOk();
+        $json = $response->json();
+        expect($json)->not->toHaveKey('errors');
+        $data = $response->json('data.createCardholder');
+        expect($data['first_name'])->toBe('Alice');
+        expect($data['last_name'])->toBe('Johnson');
+        expect($data['full_name'])->toBe('Alice Johnson');
+        expect($data['email'])->toBe('alice@example.com');
+        expect($data['kyc_status'])->toBe('pending');
+        expect($data['is_verified'])->toBeFalse();
+        expect($data['card_count'])->toBe(0);
+    });
 });
