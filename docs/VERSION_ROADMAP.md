@@ -2576,6 +2576,27 @@ Rain is a modern card issuing platform for crypto/fintech companies.
 
 ---
 
-*Document Version: 6.7.0*
+## Version 6.8.0 — Card Issuance Completion (RELEASED)
+
+**Release Date**: March 27, 2026
+**Theme**: Card Issuance Feature Completeness
+
+### GraphQL API Completion
+- 3 missing query resolvers: CardTransactionsQuery, CardholdersQuery, CardholderQuery
+- 5 missing mutation resolvers: CreateCard, FreezeCard, UnfreezeCard, CancelCard, CreateCardholder
+- All 12 GraphQL operations now fully functional (was 3/12)
+
+### Spend Limit Enforcement
+- SpendLimitEnforcementService with daily/monthly cache-backed tracking
+- Integrated into JIT funding authorization flow
+- DECLINED_LIMIT_EXCEEDED decision for over-limit transactions
+
+### Testing
+- 18 tests passing (12 GraphQL integration + 6 spend limit unit)
+- PHPStan Level 8 compliant
+
+---
+
+*Document Version: 6.8.0*
 *Created: January 11, 2026*
-*Updated: March 27, 2026 (v6.7.0 A2A Protocol + Developer Ecosystem)*
+*Updated: March 27, 2026 (v6.8.0 Card Issuance Completion)*

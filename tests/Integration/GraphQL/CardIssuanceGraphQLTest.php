@@ -315,7 +315,7 @@ describe('GraphQL CardIssuance API', function () {
         // Freeze first
         $this->actingAs($user, 'sanctum')
             ->postJson('/graphql', [
-                'query' => 'mutation ($id: ID!) { freezeCard(id: $id) { id status } }',
+                'query'     => 'mutation ($id: ID!) { freezeCard(id: $id) { id status } }',
                 'variables' => ['id' => $cardToken],
             ]);
 
