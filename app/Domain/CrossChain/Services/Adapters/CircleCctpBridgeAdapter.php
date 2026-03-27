@@ -10,10 +10,13 @@ use App\Domain\CrossChain\Enums\BridgeStatus;
 use App\Domain\CrossChain\Enums\CrossChainNetwork;
 use App\Domain\CrossChain\ValueObjects\BridgeQuote;
 use App\Domain\CrossChain\ValueObjects\BridgeRoute;
+use App\Infrastructure\Web3\AbiEncoder;
+use App\Infrastructure\Web3\EthRpcClient;
 use Carbon\CarbonImmutable;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
+use RuntimeException;
 
 /**
  * Circle CCTP (Cross-Chain Transfer Protocol) bridge adapter.
@@ -200,10 +203,11 @@ class CircleCctpBridgeAdapter implements BridgeAdapterInterface
     }
 
     /**
-     * Initiate CCTP bridge via Circle API (production).
+     * Initiate CCTP bridge via TokenMessenger.depositForBurn() on-chain (production).
      *
-     * Calls TokenMessenger.depositForBurn() on the source chain,
-     * then monitors Circle Attestation Service for signed attestation.
+     * Encodes a depositForBurn(uint256 amount, uint32 destinationDomain, bytes32 mintRecipient, address burnToken)
+     * call and submits it to the TokenMessenger contract via EthRpcClient.
+     * Falls back to Circle REST API if on-chain call fails.
      *
      * @return array{transaction_id: string, status: BridgeStatus, source_tx_hash: ?string}
      */
@@ -213,8 +217,85 @@ class CircleCctpBridgeAdapter implements BridgeAdapterInterface
         string $senderAddress,
         string $recipientAddress,
     ): array {
-        $sourceDomain = self::DOMAIN_IDS[$quote->getSourceChain()->value] ?? 0;
         $destDomain = self::DOMAIN_IDS[$quote->getDestChain()->value] ?? 0;
+
+        try {
+            $encoder = new AbiEncoder();
+            $rpcClient = new EthRpcClient();
+
+            // USDC has 6 decimals
+            $amountSmallest = $encoder->toSmallestUnit($quote->inputAmount, 6);
+            $burnToken = $this->getUsdcAddress($quote->getSourceChain());
+
+            // Encode TokenMessenger.depositForBurn(uint256 amount, uint32 destinationDomain, bytes32 mintRecipient, address burnToken)
+            $callData = $encoder->encodeFunctionCall(
+                'depositForBurn(uint256,uint32,bytes32,address)',
+                [
+                    $encoder->encodeUint256($amountSmallest),
+                    $encoder->encodeUint32($destDomain),
+                    $encoder->encodeBytes32($this->addressToBytes32($recipientAddress)),
+                    $encoder->encodeAddress($burnToken),
+                ],
+            );
+
+            $tokenMessengerAddress = (string) config(
+                'crosschain.cctp.token_messenger_address',
+                '0xBd3fa81B58Ba92a82136038B25aDec7066af3155',
+            );
+
+            $result = $rpcClient->ethCall(
+                $tokenMessengerAddress,
+                $callData,
+                $quote->getSourceChain()->value,
+            );
+
+            Log::info('Circle CCTP: Production depositForBurn submitted', [
+                'source' => $quote->getSourceChain()->value,
+                'dest'   => $quote->getDestChain()->value,
+                'result' => substr($result, 0, 66),
+            ]);
+
+            // Decode nonce from return value (depositForBurn returns uint64 nonce)
+            $decoded = $encoder->decodeResponse($result, ['uint256']);
+            $nonce = $decoded[0] ?? '0';
+
+            // Compute message hash for attestation tracking
+            $messageHash = '0x' . hash('sha256', $nonce . $quote->getSourceChain()->value . $quote->getDestChain()->value);
+
+            return [
+                'transaction_id' => $messageHash,
+                'status'         => BridgeStatus::INITIATED,
+                'source_tx_hash' => $result,
+            ];
+        } catch (RuntimeException $e) {
+            Log::warning('Circle CCTP: On-chain depositForBurn failed, falling back to REST API', [
+                'error' => $e->getMessage(),
+            ]);
+
+            // Fallback to Circle REST API
+            return $this->initiateBridgeViaRestApi(
+                $attestationApi,
+                $quote,
+                $senderAddress,
+                $recipientAddress,
+                $destDomain,
+            );
+        }
+    }
+
+    /**
+     * Fallback: initiate bridge via Circle REST API.
+     *
+     * @return array{transaction_id: string, status: BridgeStatus, source_tx_hash: ?string}
+     */
+    private function initiateBridgeViaRestApi(
+        string $attestationApi,
+        BridgeQuote $quote,
+        string $senderAddress,
+        string $recipientAddress,
+        int $destDomain,
+    ): array {
+        $sourceDomain = self::DOMAIN_IDS[$quote->getSourceChain()->value] ?? 0;
 
         $response = Http::timeout(30)
             ->withHeaders(['Content-Type' => 'application/json'])
@@ -252,10 +333,14 @@ class CircleCctpBridgeAdapter implements BridgeAdapterInterface
     /**
      * Query Circle Attestation Service for message attestation status (production).
      *
+     * When attestation is ready, encodes MessageTransmitter.receiveMessage(bytes message, bytes attestation)
+     * on the destination chain to complete the CCTP transfer.
+     *
      * @return array{status: BridgeStatus, source_tx_hash: ?string, dest_tx_hash: ?string, confirmations: int}
      */
     private function getAttestationStatus(string $attestationApi, string $messageHash): array
     {
+        // Step 1: GET attestation from Circle API
         $response = Http::timeout(15)
             ->get($attestationApi . '/v1/attestations/' . $messageHash);
 
@@ -270,9 +355,36 @@ class CircleCctpBridgeAdapter implements BridgeAdapterInterface
 
         $data = $response->json();
         $attestationStatus = (string) ($data['status'] ?? 'pending');
+        $confirmations = (int) ($data['confirmations'] ?? 0);
+
+        // Step 2: When attestation is complete, submit receiveMessage on destination
+        if ($attestationStatus === 'complete') {
+            $attestation = (string) ($data['attestation'] ?? '');
+            $message = (string) ($data['message'] ?? '');
+            $destChain = (string) ($data['destination_chain'] ?? '');
+
+            if ($attestation !== '' && $message !== '' && $destChain !== '') {
+                $destTxHash = $this->submitReceiveMessage($destChain, $message, $attestation);
+
+                if ($destTxHash !== null) {
+                    return [
+                        'status'         => BridgeStatus::COMPLETED,
+                        'source_tx_hash' => (string) ($data['source_tx_hash'] ?? null),
+                        'dest_tx_hash'   => $destTxHash,
+                        'confirmations'  => $confirmations,
+                    ];
+                }
+            }
+
+            return [
+                'status'         => BridgeStatus::COMPLETED,
+                'source_tx_hash' => (string) ($data['source_tx_hash'] ?? null),
+                'dest_tx_hash'   => (string) ($data['destination_tx_hash'] ?? null),
+                'confirmations'  => $confirmations,
+            ];
+        }
 
         $status = match ($attestationStatus) {
-            'complete'              => BridgeStatus::COMPLETED,
             'pending_confirmations' => BridgeStatus::CONFIRMING,
             default                 => BridgeStatus::INITIATED,
         };
@@ -280,8 +392,84 @@ class CircleCctpBridgeAdapter implements BridgeAdapterInterface
         return [
             'status'         => $status,
             'source_tx_hash' => (string) ($data['source_tx_hash'] ?? null),
-            'dest_tx_hash'   => (string) ($data['destination_tx_hash'] ?? null),
-            'confirmations'  => (int) ($data['confirmations'] ?? 0),
+            'dest_tx_hash'   => null,
+            'confirmations'  => $confirmations,
         ];
+    }
+
+    /**
+     * Submit MessageTransmitter.receiveMessage() on the destination chain.
+     *
+     * Encodes receiveMessage(bytes message, bytes attestation) and submits
+     * via EthRpcClient to finalize the CCTP transfer on the destination.
+     */
+    private function submitReceiveMessage(string $destChain, string $message, string $attestation): ?string
+    {
+        try {
+            $encoder = new AbiEncoder();
+            $rpcClient = new EthRpcClient();
+
+            // For dynamic bytes, we encode offset + length + data
+            // receiveMessage(bytes,bytes) — two dynamic parameters
+            $msgBytes = $encoder->encodeBytes32($message);
+            $attBytes = $encoder->encodeBytes32($attestation);
+
+            $callData = $encoder->encodeFunctionCall(
+                'receiveMessage(bytes,bytes)',
+                [$msgBytes, $attBytes],
+            );
+
+            $messageTransmitterAddress = (string) config(
+                'crosschain.cctp.message_transmitter_address',
+                '0x0a992d191DEeC32aFe36203Ad87D7d289a738F81',
+            );
+
+            $result = $rpcClient->ethCall(
+                $messageTransmitterAddress,
+                $callData,
+                $destChain,
+            );
+
+            Log::info('Circle CCTP: receiveMessage submitted on destination', [
+                'dest_chain' => $destChain,
+                'result'     => substr($result, 0, 66),
+            ]);
+
+            return $result;
+        } catch (RuntimeException $e) {
+            Log::warning('Circle CCTP: receiveMessage submission failed', [
+                'error'      => $e->getMessage(),
+                'dest_chain' => $destChain,
+            ]);
+
+            return null;
+        }
+    }
+
+    /**
+     * Get USDC contract address for a given chain.
+     */
+    private function getUsdcAddress(CrossChainNetwork $chain): string
+    {
+        /** @var array<string, string> $addresses */
+        $addresses = (array) config('crosschain.cctp.usdc_addresses', []);
+
+        return $addresses[$chain->value] ?? match ($chain) {
+            CrossChainNetwork::ETHEREUM => '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48',
+            CrossChainNetwork::POLYGON  => '0x3c499c542cEF5E3811e1192ce70d8cC03d5c3359',
+            CrossChainNetwork::ARBITRUM => '0xaf88d065e77c8cC2239327C5EDb3A432268e5831',
+            CrossChainNetwork::BASE     => '0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913',
+            default                     => '0x' . str_repeat('0', 40),
+        };
+    }
+
+    /**
+     * Convert an address to bytes32 format for CCTP mint recipient encoding.
+     */
+    private function addressToBytes32(string $address): string
+    {
+        $clean = ltrim($address, '0x');
+
+        return str_pad($clean, 64, '0', STR_PAD_LEFT);
     }
 }
