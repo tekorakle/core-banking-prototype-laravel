@@ -71,6 +71,12 @@ class JitFundingService
             return $this->decline($request, AuthorizationDecision::DECLINED_INSUFFICIENT_FUNDS);
         }
 
+        // 2b. Check spend limits
+        $spendLimitService = app(SpendLimitEnforcementService::class);
+        if (! $spendLimitService->checkLimit($request->cardToken, $requiredAmount)) {
+            return $this->decline($request, AuthorizationDecision::DECLINED_LIMIT_EXCEEDED);
+        }
+
         // 3. Create hold on funds
         $holdId = $this->createHold(
             $card->metadata['user_id'] ?? '',
@@ -100,6 +106,10 @@ class JitFundingService
             holdId: $holdId,
             merchantName: $request->merchantName,
         ));
+
+        // 4b. Record spend against limit tracker
+        $spendLimitService = app(SpendLimitEnforcementService::class);
+        $spendLimitService->recordSpend($request->cardToken, $requiredAmount);
 
         return [
             'approved' => true,
