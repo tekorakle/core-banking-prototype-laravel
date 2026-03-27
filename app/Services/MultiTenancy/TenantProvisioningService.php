@@ -9,6 +9,7 @@ use App\Events\Tenant\TenantDeleted;
 use App\Events\Tenant\TenantSuspended;
 use App\Models\Team;
 use App\Models\Tenant;
+use Carbon\Carbon;
 use Exception;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\DB;
@@ -23,6 +24,8 @@ use RuntimeException;
  * - Configuring tenant plans and settings
  * - Running tenant-specific migrations
  * - Suspending and deleting tenants
+ * - Soft-delete with 14-day grace period
+ * - Audit logging of all lifecycle events
  */
 class TenantProvisioningService
 {
@@ -57,6 +60,14 @@ class TenantProvisioningService
             'features'       => ['basic_banking', 'reports', 'api_access', 'webhooks', 'multi_currency', 'audit_logs', 'custom_integrations', 'dedicated_support'],
         ],
     ];
+
+    /** @var int Grace period in days before a scheduled deletion is purged */
+    public const DELETION_GRACE_DAYS = 14;
+
+    public function __construct(
+        private readonly ?TenantAuditService $auditService = null,
+    ) {
+    }
 
     /**
      * Create a new tenant for the given team.
@@ -99,6 +110,12 @@ class TenantProvisioningService
                 'plan'      => $plan,
             ]);
 
+            $this->audit((string) $tenant->id, 'created', null, [
+                'name'    => $name,
+                'plan'    => $plan,
+                'team_id' => $team->id,
+            ]);
+
             event(new TenantCreated($tenant, $plan));
 
             return $tenant;
@@ -139,6 +156,12 @@ class TenantProvisioningService
                 'new_plan'  => $plan,
             ]);
 
+            $this->audit((string) $tenant->id, 'plan_changed', [
+                'plan' => $oldPlan,
+            ], [
+                'plan' => $plan,
+            ]);
+
             return $tenant;
         });
     }
@@ -156,6 +179,8 @@ class TenantProvisioningService
             /** @var array<string, mixed> $existingConfig */
             $existingConfig = $existingData['config'] ?? [];
 
+            $beforeConfig = $existingConfig;
+
             $existingData['config'] = array_merge($existingConfig, $config);
             $tenant->data = $existingData;
 
@@ -164,6 +189,12 @@ class TenantProvisioningService
             Log::info('Tenant config updated', [
                 'tenant_id' => $tenant->id,
                 'keys'      => array_keys($config),
+            ]);
+
+            $this->audit((string) $tenant->id, 'config_updated', [
+                'config' => $beforeConfig,
+            ], [
+                'config' => $existingData['config'],
             ]);
 
             return $tenant;
@@ -220,6 +251,7 @@ class TenantProvisioningService
         return DB::transaction(function () use ($tenant, $reason): Tenant {
             /** @var array<string, mixed> $data */
             $data = $tenant->data ?? [];
+            $beforeStatus = $data['status'] ?? 'active';
             $data['status'] = 'suspended';
             $data['suspended_at'] = now()->toIso8601String();
             $data['suspension_reason'] = $reason;
@@ -230,6 +262,13 @@ class TenantProvisioningService
             Log::warning('Tenant suspended', [
                 'tenant_id' => $tenant->id,
                 'reason'    => $reason,
+            ]);
+
+            $this->audit((string) $tenant->id, 'suspended', [
+                'status' => $beforeStatus,
+            ], [
+                'status' => 'suspended',
+                'reason' => $reason,
             ]);
 
             event(new TenantSuspended($tenant, $reason));
@@ -246,8 +285,9 @@ class TenantProvisioningService
         return DB::transaction(function () use ($tenant): Tenant {
             /** @var array<string, mixed> $data */
             $data = $tenant->data ?? [];
-            $data['status'] = 'active';
+            $beforeStatus = $data['status'] ?? 'suspended';
             unset($data['suspended_at'], $data['suspension_reason']);
+            $data['status'] = 'active';
             $tenant->data = $data;
 
             $tenant->save();
@@ -256,14 +296,21 @@ class TenantProvisioningService
                 'tenant_id' => $tenant->id,
             ]);
 
+            $this->audit((string) $tenant->id, 'reactivated', [
+                'status' => $beforeStatus,
+            ], [
+                'status' => 'active',
+            ]);
+
             return $tenant;
         });
     }
 
     /**
-     * Permanently delete a tenant and all associated data.
+     * Schedule a tenant for deletion with a 14-day grace period.
      *
-     * @throws RuntimeException If the tenant cannot be deleted
+     * Sets deletion_scheduled_at and suspends the tenant. The tenant
+     * can be restored within the grace period via restoreTenant().
      */
     public function deleteTenant(Tenant $tenant): bool
     {
@@ -271,19 +318,129 @@ class TenantProvisioningService
         $tenantName = $tenant->name;
 
         return DB::transaction(function () use ($tenant, $tenantId, $tenantName): bool {
-            Log::warning('Deleting tenant', [
-                'tenant_id'   => $tenantId,
-                'tenant_name' => $tenantName,
+            $scheduledAt = now()->addDays(self::DELETION_GRACE_DAYS);
+
+            $tenant->deletion_scheduled_at = $scheduledAt;
+
+            /** @var array<string, mixed> $data */
+            $data = $tenant->data ?? [];
+            $data['status'] = 'pending_deletion';
+            $tenant->data = $data;
+
+            $tenant->save();
+
+            Log::warning('Tenant scheduled for deletion', [
+                'tenant_id'             => $tenantId,
+                'tenant_name'           => $tenantName,
+                'deletion_scheduled_at' => $scheduledAt->toIso8601String(),
             ]);
 
-            $tenant->delete();
-
-            Log::info('Tenant deleted', [
-                'tenant_id'   => $tenantId,
-                'tenant_name' => $tenantName,
+            $this->audit($tenantId, 'deleted', [
+                'name' => $tenantName,
+            ], [
+                'deletion_scheduled_at' => $scheduledAt->toIso8601String(),
+                'grace_days'            => self::DELETION_GRACE_DAYS,
             ]);
 
             event(new TenantDeleted($tenantId, $tenantName));
+
+            return true;
+        });
+    }
+
+    /**
+     * Restore a tenant that was scheduled for deletion.
+     *
+     * Clears the deletion schedule and reactivates the tenant.
+     *
+     * @throws RuntimeException If the tenant is not scheduled for deletion
+     */
+    public function restoreTenant(string $tenantId): Tenant
+    {
+        /** @var Tenant|null $tenant */
+        $tenant = Tenant::withTrashed()->find($tenantId);
+
+        if ($tenant === null) {
+            throw new RuntimeException("Tenant not found: {$tenantId}");
+        }
+
+        return DB::transaction(function () use ($tenant): Tenant {
+            // Restore soft-delete if applicable
+            if ($tenant->trashed()) {
+                $tenant->restore();
+            }
+
+            $tenant->deletion_scheduled_at = null;
+
+            /** @var array<string, mixed> $data */
+            $data = $tenant->data ?? [];
+            $data['status'] = 'active';
+            unset($data['suspended_at'], $data['suspension_reason']);
+            $tenant->data = $data;
+
+            $tenant->save();
+
+            Log::info('Tenant restored from scheduled deletion', [
+                'tenant_id' => $tenant->id,
+            ]);
+
+            $this->audit((string) $tenant->id, 'reactivated', [
+                'status' => 'pending_deletion',
+            ], [
+                'status'   => 'active',
+                'restored' => true,
+            ]);
+
+            return $tenant;
+        });
+    }
+
+    /**
+     * Permanently purge a tenant that has passed its grace period.
+     *
+     * Only allows purging if deletion_scheduled_at is in the past.
+     *
+     * @throws RuntimeException If the tenant is not eligible for purging
+     */
+    public function purgeTenant(string $tenantId): bool
+    {
+        /** @var Tenant|null $tenant */
+        $tenant = Tenant::withTrashed()->find($tenantId);
+
+        if ($tenant === null) {
+            throw new RuntimeException("Tenant not found: {$tenantId}");
+        }
+
+        if ($tenant->deletion_scheduled_at === null) {
+            throw new RuntimeException("Tenant {$tenantId} is not scheduled for deletion");
+        }
+
+        $scheduledAt = Carbon::parse($tenant->deletion_scheduled_at);
+        if ($scheduledAt->isFuture()) {
+            throw new RuntimeException(
+                "Tenant {$tenantId} grace period has not expired. Scheduled for: {$scheduledAt->toIso8601String()}"
+            );
+        }
+
+        $tenantName = $tenant->name;
+
+        return DB::transaction(function () use ($tenant, $tenantId, $tenantName): bool {
+            Log::warning('Permanently purging tenant', [
+                'tenant_id'   => $tenantId,
+                'tenant_name' => $tenantName,
+            ]);
+
+            $this->audit($tenantId, 'purged', [
+                'name' => $tenantName,
+            ], null);
+
+            // Force-delete the tenant (bypass soft-delete)
+            $tenant->forceDelete();
+
+            Log::info('Tenant permanently purged', [
+                'tenant_id'   => $tenantId,
+                'tenant_name' => $tenantName,
+            ]);
 
             return true;
         });
@@ -332,5 +489,16 @@ class TenantProvisioningService
     public function getAvailablePlans(): array
     {
         return $this->planDefaults;
+    }
+
+    /**
+     * Record an audit log entry if the audit service is available.
+     *
+     * @param array<string, mixed>|null $beforeData
+     * @param array<string, mixed>|null $afterData
+     */
+    private function audit(string $tenantId, string $action, ?array $beforeData, ?array $afterData): void
+    {
+        $this->auditService?->log($tenantId, $action, $beforeData, $afterData);
     }
 }
