@@ -2597,6 +2597,28 @@ Rain is a modern card issuing platform for crypto/fintech companies.
 
 ---
 
-*Document Version: 6.8.0*
+## Version 6.9.0 — Banking Integration Hardening (RELEASED)
+
+**Release Date**: March 27, 2026
+**Theme**: Banking REST API + GraphQL Completion
+
+### REST API Controllers
+- BankingController: 8 endpoints (connect, disconnect, connections, accounts, sync, transfer, status, health)
+- AccountVerificationController: 3 endpoints (micro-deposit initiate/confirm, instant verify)
+- BankWebhookController: 2 endpoints (transfer-update, account-update) with HMAC signature verification
+
+### GraphQL Completion
+- Fixed AggregatedBalanceQuery (was returning hardcoded 0.0)
+- Added BankTransfersQuery for transfer history
+- Added CancelTransferMutation with state machine validation
+- Registered banking.graphql in Lighthouse schema
+
+### Testing
+- 24 tests passing (14 REST controller + 10 GraphQL integration)
+- PHPStan Level 8 compliant
+
+---
+
+*Document Version: 6.9.0*
 *Created: January 11, 2026*
-*Updated: March 27, 2026 (v6.8.0 Card Issuance Completion)*
+*Updated: March 27, 2026 (v6.9.0 Banking Integration Hardening)*
