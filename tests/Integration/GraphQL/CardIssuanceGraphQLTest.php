@@ -2,8 +2,10 @@
 
 declare(strict_types=1);
 
+use App\Domain\CardIssuance\Models\Cardholder;
 use App\Models\User;
 
+uses(Tests\TestCase::class);
 uses(Illuminate\Foundation\Testing\RefreshDatabase::class);
 
 describe('GraphQL CardIssuance API', function () {
@@ -94,5 +96,118 @@ describe('GraphQL CardIssuance API', function () {
         expect($json)->not->toHaveKey('errors');
         $data = $response->json('data.provisionCard');
         expect($data['cardholder_name'])->toBe('John Doe');
+    });
+
+    it('queries card transactions with authentication', function () {
+        $user = User::factory()->create();
+
+        $response = $this->actingAs($user, 'sanctum')
+            ->postJson('/graphql', [
+                'query' => '
+                    query ($cardId: String!, $first: Int) {
+                        cardTransactions(card_id: $cardId, first: $first) {
+                            id
+                            card_id
+                            merchant_name
+                            merchant_category
+                            amount_cents
+                            currency
+                            status
+                            transacted_at
+                        }
+                    }
+                ',
+                'variables' => [
+                    'cardId' => 'test-card-token',
+                    'first'  => 10,
+                ],
+            ]);
+
+        $response->assertOk();
+        $json = $response->json();
+        expect($json)->toHaveKey('data');
+        // The resolver returns an array of transactions (may be empty from mock issuer)
+        expect($json['data']['cardTransactions'])->toBeArray();
+    });
+
+    it('lists cardholders for authenticated user', function () {
+        $user = User::factory()->create();
+
+        // Create a cardholder belonging to this user
+        Cardholder::create([
+            'user_id'    => $user->id,
+            'first_name' => 'Jane',
+            'last_name'  => 'Smith',
+            'email'      => 'jane@example.com',
+            'kyc_status' => 'verified',
+        ]);
+
+        $response = $this->actingAs($user, 'sanctum')
+            ->postJson('/graphql', [
+                'query' => '
+                    {
+                        cardholders {
+                            id
+                            first_name
+                            last_name
+                            full_name
+                            email
+                            kyc_status
+                            is_verified
+                            card_count
+                        }
+                    }
+                ',
+            ]);
+
+        $response->assertOk();
+        $json = $response->json();
+        expect($json)->toHaveKey('data');
+        expect($json['data']['cardholders'])->toBeArray();
+        expect($json['data']['cardholders'])->toHaveCount(1);
+        expect($json['data']['cardholders'][0]['first_name'])->toBe('Jane');
+        expect($json['data']['cardholders'][0]['last_name'])->toBe('Smith');
+        expect($json['data']['cardholders'][0]['full_name'])->toBe('Jane Smith');
+    });
+
+    it('queries single cardholder by id with authentication', function () {
+        $user = User::factory()->create();
+
+        $cardholder = Cardholder::create([
+            'user_id'    => $user->id,
+            'first_name' => 'John',
+            'last_name'  => 'Doe',
+            'email'      => 'john@example.com',
+            'kyc_status' => 'pending',
+        ]);
+
+        $response = $this->actingAs($user, 'sanctum')
+            ->postJson('/graphql', [
+                'query' => '
+                    query ($id: ID!) {
+                        cardholder(id: $id) {
+                            id
+                            first_name
+                            last_name
+                            full_name
+                            email
+                            kyc_status
+                            is_verified
+                            card_count
+                        }
+                    }
+                ',
+                'variables' => ['id' => $cardholder->id],
+            ]);
+
+        $response->assertOk();
+        $json = $response->json();
+        expect($json)->toHaveKey('data');
+        expect($json['data']['cardholder'])->not->toBeNull();
+        expect($json['data']['cardholder']['first_name'])->toBe('John');
+        expect($json['data']['cardholder']['last_name'])->toBe('Doe');
+        expect($json['data']['cardholder']['full_name'])->toBe('John Doe');
+        expect($json['data']['cardholder']['kyc_status'])->toBe('pending');
+        expect($json['data']['cardholder']['is_verified'])->toBeFalse();
     });
 });
