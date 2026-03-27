@@ -11,6 +11,7 @@ use App\Domain\Privacy\Exceptions\SnarkjsException;
 use App\Domain\Privacy\ValueObjects\ZkProof;
 use DateTimeImmutable;
 use Illuminate\Support\Facades\Log;
+use RuntimeException;
 use Symfony\Component\Process\Process;
 
 /**
@@ -47,10 +48,15 @@ class SnarkjsProverService implements ZkProverInterface
         $circuitName = $this->resolveCircuitName($type);
         $this->validateCircuitFiles($circuitName);
 
+        $constraintCount = $this->getConstraintCount($circuitName);
+
         Log::info('Starting snarkjs proof generation', [
-            'proof_type' => $type->value,
-            'circuit'    => $circuitName,
+            'proof_type'       => $type->value,
+            'circuit'          => $circuitName,
+            'constraint_count' => $constraintCount,
         ]);
+
+        $startTime = microtime(true);
 
         // Write input JSON to temp file
         $inputFile = tempnam(sys_get_temp_dir(), 'zk_input_');
@@ -94,9 +100,13 @@ class SnarkjsProverService implements ZkProverInterface
             $validityDays = (int) config('privacy.zk.proof_validity_days', 90);
             $expiresAt = $createdAt->modify("+{$validityDays} days");
 
+            $provingTimeMs = round((microtime(true) - $startTime) * 1000, 2);
+
             Log::info('snarkjs proof generation complete', [
-                'proof_type' => $type->value,
-                'circuit'    => $circuitName,
+                'proof_type'       => $type->value,
+                'circuit'          => $circuitName,
+                'proving_time_ms'  => $provingTimeMs,
+                'constraint_count' => $constraintCount,
             ]);
 
             return new ZkProof(
@@ -107,9 +117,11 @@ class SnarkjsProverService implements ZkProverInterface
                 createdAt: $createdAt,
                 expiresAt: $expiresAt,
                 metadata: [
-                    'provider'        => $this->getProviderName(),
-                    'circuit'         => $circuitName,
-                    'circuit_version' => config("privacy.zk.circuit_versions.{$type->value}", '1.0.0'),
+                    'provider'         => $this->getProviderName(),
+                    'circuit'          => $circuitName,
+                    'circuit_version'  => config("privacy.zk.circuit_versions.{$type->value}", '1.0.0'),
+                    'proving_time_ms'  => $provingTimeMs,
+                    'constraint_count' => $constraintCount,
                 ],
             );
         } finally {
@@ -183,6 +195,42 @@ class SnarkjsProverService implements ZkProverInterface
     }
 
     /**
+     * Get the constraint count for a compiled circuit by parsing R1CS info.
+     *
+     * Returns null if the r1cs file does not exist or snarkjs is unavailable.
+     *
+     * @param string $circuitName The circuit name
+     */
+    public function getConstraintCount(string $circuitName): ?int
+    {
+        $r1csPath = $this->getCircuitPath($circuitName, 'r1cs');
+
+        if (! file_exists($r1csPath)) {
+            return null;
+        }
+
+        $process = new Process([
+            $this->snarkjsBinary,
+            'r1cs', 'info',
+            $r1csPath,
+        ]);
+        $process->setTimeout($this->timeoutSeconds);
+        $process->run();
+
+        if (! $process->isSuccessful()) {
+            return null;
+        }
+
+        $output = $process->getOutput();
+
+        if (preg_match('/# of Constraints:\s*(\d+)/i', $output, $matches)) {
+            return (int) $matches[1];
+        }
+
+        return null;
+    }
+
+    /**
      * Resolve the circuit name for a proof type.
      */
     private function resolveCircuitName(ProofType $type): string
@@ -205,13 +253,23 @@ class SnarkjsProverService implements ZkProverInterface
     }
 
     /**
-     * Validate that required circuit files exist.
+     * Validate that required circuit files (.zkey, .wasm) exist.
+     *
+     * @throws CircuitNotFoundException If the .zkey file is missing
+     * @throws RuntimeException If the .wasm file is missing
      */
     private function validateCircuitFiles(string $circuitName): void
     {
         $zkeyPath = $this->getCircuitPath($circuitName, 'zkey');
         if (! file_exists($zkeyPath)) {
             throw CircuitNotFoundException::zkeyNotFound($circuitName, $zkeyPath);
+        }
+
+        $wasmPath = $this->getCircuitPath($circuitName, 'wasm');
+        if (! file_exists($wasmPath)) {
+            throw new RuntimeException(
+                "Circuit artifacts not found for: {$circuitName}. Run php artisan zk:setup --circuit={$circuitName}"
+            );
         }
     }
 }
