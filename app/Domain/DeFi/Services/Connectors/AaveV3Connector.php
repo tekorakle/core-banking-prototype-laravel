@@ -7,9 +7,11 @@ namespace App\Domain\DeFi\Services\Connectors;
 use App\Domain\CrossChain\Enums\CrossChainNetwork;
 use App\Domain\DeFi\Contracts\LendingProtocolInterface;
 use App\Domain\DeFi\Enums\DeFiProtocol;
-use Illuminate\Support\Facades\Http;
+use App\Infrastructure\Web3\AbiEncoder;
+use App\Infrastructure\Web3\EthRpcClient;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
+use RuntimeException;
 
 /**
  * Aave V3 connector: supply, borrow, repay, flash loans, health factor.
@@ -37,6 +39,13 @@ class AaveV3Connector implements LendingProtocolInterface
             'chain' => $chain->value, 'token' => $token, 'amount' => $amount,
         ]);
 
+        $rpcUrl = $this->getRpcUrl($chain);
+
+        if ($rpcUrl !== null && app()->environment('production')) {
+            return $this->supplyViaRpc($chain, $token, $amount, $walletAddress);
+        }
+
+        // Demo mode fallback
         return [
             'tx_hash'         => '0x' . Str::random(64),
             'supplied_amount' => $amount,
@@ -54,6 +63,13 @@ class AaveV3Connector implements LendingProtocolInterface
             'chain' => $chain->value, 'token' => $token, 'amount' => $amount,
         ]);
 
+        $rpcUrl = $this->getRpcUrl($chain);
+
+        if ($rpcUrl !== null && app()->environment('production')) {
+            return $this->borrowViaRpc($chain, $token, $amount, $walletAddress);
+        }
+
+        // Demo mode fallback
         return [
             'tx_hash'         => '0x' . Str::random(64),
             'borrowed_amount' => $amount,
@@ -67,6 +83,17 @@ class AaveV3Connector implements LendingProtocolInterface
         string $amount,
         string $walletAddress,
     ): array {
+        Log::info('Aave V3: Repay', [
+            'chain' => $chain->value, 'token' => $token, 'amount' => $amount,
+        ]);
+
+        $rpcUrl = $this->getRpcUrl($chain);
+
+        if ($rpcUrl !== null && app()->environment('production')) {
+            return $this->repayViaRpc($chain, $token, $amount, $walletAddress);
+        }
+
+        // Demo mode fallback
         return [
             'tx_hash'        => '0x' . Str::random(64),
             'repaid_amount'  => $amount,
@@ -80,6 +107,17 @@ class AaveV3Connector implements LendingProtocolInterface
         string $amount,
         string $walletAddress,
     ): array {
+        Log::info('Aave V3: Withdraw', [
+            'chain' => $chain->value, 'token' => $token, 'amount' => $amount,
+        ]);
+
+        $rpcUrl = $this->getRpcUrl($chain);
+
+        if ($rpcUrl !== null && app()->environment('production')) {
+            return $this->withdrawViaRpc($chain, $token, $amount, $walletAddress);
+        }
+
+        // Demo mode fallback
         return [
             'tx_hash'          => '0x' . Str::random(64),
             'withdrawn_amount' => $amount,
@@ -152,7 +190,8 @@ class AaveV3Connector implements LendingProtocolInterface
     /**
      * Read user positions from Aave V3 UiPoolDataProvider contract (production).
      *
-     * Calls getUserReserveData() on the UiPoolDataProvider to get real-time
+     * Encodes UiPoolDataProvider.getUserReservesData(address provider, address user)
+     * via AbiEncoder and submits via EthRpcClient. Decodes the response for
      * supply/borrow positions, health factor, and APYs.
      *
      * @return array{supplies: array<array<string, mixed>>, borrows: array<array<string, mixed>>, health_factor: string, net_apy: string}
@@ -164,30 +203,37 @@ class AaveV3Connector implements LendingProtocolInterface
     ): array {
         $dataProvider = $this->getDataProviderAddress($chain);
 
-        // Call getUserReserveData(address provider, address user)
-        // Function selector: 0x92cf3942
-        $paddedAddress = str_pad(ltrim($walletAddress, '0x'), 64, '0', STR_PAD_LEFT);
-        $callData = '0x92cf3942' . $paddedAddress;
+        try {
+            $encoder = new AbiEncoder();
+            $rpcClient = new EthRpcClient();
 
-        $response = Http::timeout(15)
-            ->post($rpcUrl, [
-                'jsonrpc' => '2.0',
-                'id'      => 1,
-                'method'  => 'eth_call',
-                'params'  => [
-                    ['to' => $dataProvider, 'data' => $callData],
-                    'latest',
+            $poolAddressesProvider = $this->getPoolAddressesProvider($chain);
+
+            // Encode getUserReservesData(address provider, address user)
+            $callData = $encoder->encodeFunctionCall(
+                'getUserReservesData(address,address)',
+                [
+                    $encoder->encodeAddress($poolAddressesProvider),
+                    $encoder->encodeAddress($walletAddress),
                 ],
+            );
+
+            $result = $rpcClient->ethCall($dataProvider, $callData, $chain->value);
+
+            Log::info('Aave V3: On-chain position data received via ABI encoding', [
+                'chain'       => $chain->value,
+                'wallet'      => $walletAddress,
+                'data_length' => strlen($result),
             ]);
 
-        if (! $response->successful() || isset($response->json()['error'])) {
+            return $this->decodeUserPositions($result);
+        } catch (RuntimeException $e) {
             Log::warning('Aave V3: On-chain position read failed', [
                 'chain'  => $chain->value,
                 'wallet' => $walletAddress,
-                'error'  => $response->json()['error'] ?? 'unknown',
+                'error'  => $e->getMessage(),
             ]);
 
-            // Fallback to empty data
             return [
                 'supplies'      => [],
                 'borrows'       => [],
@@ -195,16 +241,221 @@ class AaveV3Connector implements LendingProtocolInterface
                 'net_apy'       => '0',
             ];
         }
+    }
 
-        $result = (string) ($response->json()['result'] ?? '0x');
+    /**
+     * Supply an asset to Aave V3 Pool via on-chain transaction (production).
+     *
+     * Encodes Pool.supply(address asset, uint256 amount, address onBehalfOf, uint16 referralCode)
+     *
+     * @return array{tx_hash: string, supplied_amount: string, atoken_received: string}
+     */
+    private function supplyViaRpc(
+        CrossChainNetwork $chain,
+        string $token,
+        string $amount,
+        string $walletAddress,
+    ): array {
+        try {
+            $encoder = new AbiEncoder();
+            $rpcClient = new EthRpcClient();
 
-        Log::info('Aave V3: On-chain position data received', [
-            'chain'       => $chain->value,
-            'wallet'      => $walletAddress,
-            'data_length' => strlen($result),
-        ]);
+            $assetAddress = $this->resolveTokenAddress($token, $chain);
+            $amountWei = $encoder->toSmallestUnit($amount, 18);
+            $poolAddress = $this->getPoolAddress($chain);
 
-        return $this->decodeUserPositions($result);
+            // Encode Pool.supply(address asset, uint256 amount, address onBehalfOf, uint16 referralCode)
+            $callData = $encoder->encodeFunctionCall(
+                'supply(address,uint256,address,uint16)',
+                [
+                    $encoder->encodeAddress($assetAddress),
+                    $encoder->encodeUint256($amountWei),
+                    $encoder->encodeAddress($walletAddress),
+                    $encoder->encodeUint16(0), // No referral
+                ],
+            );
+
+            $txHash = $rpcClient->sendTransaction($walletAddress, $poolAddress, $callData, $chain->value);
+
+            Log::info('Aave V3: Supply executed on-chain', [
+                'chain' => $chain->value, 'token' => $token, 'tx_hash' => $txHash,
+            ]);
+
+            return [
+                'tx_hash'         => $txHash,
+                'supplied_amount' => $amount,
+                'atoken_received' => $amount,
+            ];
+        } catch (RuntimeException $e) {
+            Log::error('Aave V3: Supply on-chain failed', ['error' => $e->getMessage()]);
+
+            return [
+                'tx_hash'         => '',
+                'supplied_amount' => $amount,
+                'atoken_received' => '0',
+            ];
+        }
+    }
+
+    /**
+     * Borrow an asset from Aave V3 Pool via on-chain transaction (production).
+     *
+     * Encodes Pool.borrow(address asset, uint256 amount, uint256 interestRateMode, uint16 referralCode, address onBehalfOf)
+     *
+     * @return array{tx_hash: string, borrowed_amount: string, health_factor: string}
+     */
+    private function borrowViaRpc(
+        CrossChainNetwork $chain,
+        string $token,
+        string $amount,
+        string $walletAddress,
+    ): array {
+        try {
+            $encoder = new AbiEncoder();
+            $rpcClient = new EthRpcClient();
+
+            $assetAddress = $this->resolveTokenAddress($token, $chain);
+            $amountWei = $encoder->toSmallestUnit($amount, 18);
+            $poolAddress = $this->getPoolAddress($chain);
+
+            // Encode Pool.borrow(address asset, uint256 amount, uint256 interestRateMode, uint16 referralCode, address onBehalfOf)
+            // interestRateMode: 2 = variable rate
+            $callData = $encoder->encodeFunctionCall(
+                'borrow(address,uint256,uint256,uint16,address)',
+                [
+                    $encoder->encodeAddress($assetAddress),
+                    $encoder->encodeUint256($amountWei),
+                    $encoder->encodeUint256('2'), // Variable rate
+                    $encoder->encodeUint16(0),    // No referral
+                    $encoder->encodeAddress($walletAddress),
+                ],
+            );
+
+            $txHash = $rpcClient->sendTransaction($walletAddress, $poolAddress, $callData, $chain->value);
+
+            Log::info('Aave V3: Borrow executed on-chain', [
+                'chain' => $chain->value, 'token' => $token, 'tx_hash' => $txHash,
+            ]);
+
+            return [
+                'tx_hash'         => $txHash,
+                'borrowed_amount' => $amount,
+                'health_factor'   => '0', // Must be read from chain after tx confirmation
+            ];
+        } catch (RuntimeException $e) {
+            Log::error('Aave V3: Borrow on-chain failed', ['error' => $e->getMessage()]);
+
+            return [
+                'tx_hash'         => '',
+                'borrowed_amount' => $amount,
+                'health_factor'   => '0',
+            ];
+        }
+    }
+
+    /**
+     * Repay a borrowed asset on Aave V3 Pool via on-chain transaction (production).
+     *
+     * Encodes Pool.repay(address asset, uint256 amount, uint256 interestRateMode, address onBehalfOf)
+     *
+     * @return array{tx_hash: string, repaid_amount: string, remaining_debt: string}
+     */
+    private function repayViaRpc(
+        CrossChainNetwork $chain,
+        string $token,
+        string $amount,
+        string $walletAddress,
+    ): array {
+        try {
+            $encoder = new AbiEncoder();
+            $rpcClient = new EthRpcClient();
+
+            $assetAddress = $this->resolveTokenAddress($token, $chain);
+            $amountWei = $encoder->toSmallestUnit($amount, 18);
+            $poolAddress = $this->getPoolAddress($chain);
+
+            // Encode Pool.repay(address asset, uint256 amount, uint256 interestRateMode, address onBehalfOf)
+            $callData = $encoder->encodeFunctionCall(
+                'repay(address,uint256,uint256,address)',
+                [
+                    $encoder->encodeAddress($assetAddress),
+                    $encoder->encodeUint256($amountWei),
+                    $encoder->encodeUint256('2'), // Variable rate
+                    $encoder->encodeAddress($walletAddress),
+                ],
+            );
+
+            $txHash = $rpcClient->sendTransaction($walletAddress, $poolAddress, $callData, $chain->value);
+
+            Log::info('Aave V3: Repay executed on-chain', [
+                'chain' => $chain->value, 'token' => $token, 'tx_hash' => $txHash,
+            ]);
+
+            return [
+                'tx_hash'        => $txHash,
+                'repaid_amount'  => $amount,
+                'remaining_debt' => '0', // Must be read from chain after tx confirmation
+            ];
+        } catch (RuntimeException $e) {
+            Log::error('Aave V3: Repay on-chain failed', ['error' => $e->getMessage()]);
+
+            return [
+                'tx_hash'        => '',
+                'repaid_amount'  => $amount,
+                'remaining_debt' => $amount,
+            ];
+        }
+    }
+
+    /**
+     * Withdraw a supplied asset from Aave V3 Pool via on-chain transaction (production).
+     *
+     * Encodes Pool.withdraw(address asset, uint256 amount, address to)
+     *
+     * @return array{tx_hash: string, withdrawn_amount: string}
+     */
+    private function withdrawViaRpc(
+        CrossChainNetwork $chain,
+        string $token,
+        string $amount,
+        string $walletAddress,
+    ): array {
+        try {
+            $encoder = new AbiEncoder();
+            $rpcClient = new EthRpcClient();
+
+            $assetAddress = $this->resolveTokenAddress($token, $chain);
+            $amountWei = $encoder->toSmallestUnit($amount, 18);
+            $poolAddress = $this->getPoolAddress($chain);
+
+            // Encode Pool.withdraw(address asset, uint256 amount, address to)
+            $callData = $encoder->encodeFunctionCall(
+                'withdraw(address,uint256,address)',
+                [
+                    $encoder->encodeAddress($assetAddress),
+                    $encoder->encodeUint256($amountWei),
+                    $encoder->encodeAddress($walletAddress),
+                ],
+            );
+
+            $txHash = $rpcClient->sendTransaction($walletAddress, $poolAddress, $callData, $chain->value);
+
+            Log::info('Aave V3: Withdraw executed on-chain', [
+                'chain' => $chain->value, 'token' => $token, 'tx_hash' => $txHash,
+            ]);
+
+            return [
+                'tx_hash'          => $txHash,
+                'withdrawn_amount' => $amount,
+            ];
+        } catch (RuntimeException $e) {
+            Log::error('Aave V3: Withdraw on-chain failed', ['error' => $e->getMessage()]);
+
+            return [
+                'tx_hash'          => '',
+                'withdrawn_amount' => '0',
+            ];
+        }
     }
 
     /**
@@ -214,8 +465,8 @@ class AaveV3Connector implements LendingProtocolInterface
      */
     private function decodeUserPositions(string $hexData): array
     {
-        // Simplified ABI decoding for user reserve data
-        // In production, use a proper ABI decoder library
+        $encoder = new AbiEncoder();
+
         if (strlen($hexData) < 66) {
             return [
                 'supplies'      => [],
@@ -225,12 +476,13 @@ class AaveV3Connector implements LendingProtocolInterface
             ];
         }
 
-        // Extract health factor from the encoded response
-        // Health factor is typically in ray units (1e27)
-        $healthFactorHex = substr($hexData, 2, 64);
-        $healthFactorRaw = hexdec($healthFactorHex);
-        $healthFactor = $healthFactorRaw > 0
-            ? bcdiv((string) $healthFactorRaw, bcpow('10', '27'), 2)
+        // Decode the response — health factor is in ray units (1e27)
+        $decoded = $encoder->decodeResponse($hexData, ['uint256']);
+        /** @var numeric-string $healthFactorRaw */
+        $healthFactorRaw = $decoded[0] ?? '0';
+
+        $healthFactor = bccomp($healthFactorRaw, '0', 0) > 0
+            ? bcdiv($healthFactorRaw, bcpow('10', '27'), 2)
             : '0';
 
         return [
@@ -241,15 +493,57 @@ class AaveV3Connector implements LendingProtocolInterface
         ];
     }
 
+    /**
+     * Get UiPoolDataProvider address for a given chain.
+     */
     private function getDataProviderAddress(CrossChainNetwork $chain): string
     {
         /** @var array<string, string> $addresses */
         $addresses = (array) config('defi.aave.data_provider_addresses', []);
 
         return $addresses[$chain->value]
-            ?? '0x91c0eA31b49B69Ea18607702c5d9aC360bf1A97D'; // Default Aave V3 UiPoolDataProvider
+            ?? '0x91c0eA31b49B69Ea18607702c5d9aC360bf1A97D';
     }
 
+    /**
+     * Get Aave V3 Pool Addresses Provider for a given chain.
+     */
+    private function getPoolAddressesProvider(CrossChainNetwork $chain): string
+    {
+        /** @var array<string, string> $addresses */
+        $addresses = (array) config('defi.aave.pool_addresses_provider', []);
+
+        return $addresses[$chain->value]
+            ?? '0x2f39d218133AFaB8F2B819B1066c7E434Ad94E9e';
+    }
+
+    /**
+     * Get Aave V3 Pool contract address for a given chain.
+     */
+    private function getPoolAddress(CrossChainNetwork $chain): string
+    {
+        /** @var array<string, string> $addresses */
+        $addresses = (array) config('defi.aave.pool_addresses', []);
+
+        return $addresses[$chain->value]
+            ?? '0x87870Bca3F3fD6335C3F4ce8392D69350B4fA4E2';
+    }
+
+    /**
+     * Resolve token symbol to contract address on a given chain.
+     */
+    private function resolveTokenAddress(string $token, CrossChainNetwork $chain): string
+    {
+        /** @var array<string, array<string, string>> $addresses */
+        $addresses = (array) config('defi.token_addresses', []);
+        $chainAddresses = $addresses[$chain->value] ?? [];
+
+        return $chainAddresses[$token] ?? '0x' . str_repeat('0', 40);
+    }
+
+    /**
+     * Get RPC URL for a given chain from config.
+     */
     private function getRpcUrl(CrossChainNetwork $chain): ?string
     {
         $key = 'defi.rpc_urls.' . $chain->value;

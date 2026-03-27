@@ -8,10 +8,12 @@ use App\Domain\CrossChain\Enums\CrossChainNetwork;
 use App\Domain\DeFi\Contracts\SwapProtocolInterface;
 use App\Domain\DeFi\Enums\DeFiProtocol;
 use App\Domain\DeFi\ValueObjects\SwapQuote;
+use App\Infrastructure\Web3\AbiEncoder;
+use App\Infrastructure\Web3\EthRpcClient;
 use Carbon\CarbonImmutable;
-use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
+use RuntimeException;
 
 /**
  * Uniswap V3 connector: exact input/output swaps, multi-hop routing.
@@ -159,7 +161,11 @@ class UniswapV3Connector implements SwapProtocolInterface
     }
 
     /**
-     * Get on-chain quote from Uniswap V3 Quoter2 contract via JSON-RPC.
+     * Get on-chain quote from Uniswap V3 Quoter2 contract via EthRpcClient.
+     *
+     * Encodes Quoter2.quoteExactInputSingle(QuoteExactInputSingleParams) where
+     * the struct contains: tokenIn, tokenOut, amountIn, fee, sqrtPriceLimitX96.
+     * Decodes response: (uint256 amountOut, uint160 sqrtPriceX96After, uint32 initializedTicksCrossed, uint256 gasEstimate)
      */
     private function getOnChainQuote(
         string $rpcUrl,
@@ -172,29 +178,65 @@ class UniswapV3Connector implements SwapProtocolInterface
         $quoterAddress = (string) config('defi.uniswap.quoter_address', '0x61fFE014bA17989E743c5F6cB21bF9697530B21e');
         $bestFeeTier = $this->findBestFeeTier($fromToken, $toToken, $amount);
 
-        // Encode quoteExactInputSingle call data
-        // Function selector: 0xc6a5026a (quoteExactInputSingle)
-        $callData = '0xc6a5026a' . str_pad('', 256, '0'); // Simplified ABI encoding
+        try {
+            $encoder = new AbiEncoder();
+            $rpcClient = new EthRpcClient();
 
-        $response = Http::timeout(15)
-            ->post($rpcUrl, [
-                'jsonrpc' => '2.0',
-                'id'      => 1,
-                'method'  => 'eth_call',
-                'params'  => [
-                    [
-                        'to'   => $quoterAddress,
-                        'data' => $callData,
-                    ],
-                    'latest',
-                ],
+            $tokenInAddress = $this->resolveTokenAddress($fromToken, $chain);
+            $tokenOutAddress = $this->resolveTokenAddress($toToken, $chain);
+            $amountIn = $encoder->toSmallestUnit($amount, 18);
+
+            // Encode QuoteExactInputSingleParams struct:
+            // {address tokenIn, address tokenOut, uint256 amountIn, uint24 fee, uint160 sqrtPriceLimitX96}
+            $structFields = $encoder->encodeStruct([
+                $encoder->encodeAddress($tokenInAddress),
+                $encoder->encodeAddress($tokenOutAddress),
+                $encoder->encodeUint256($amountIn),
+                $encoder->encodeUint256((string) $bestFeeTier),
+                $encoder->encodeUint256('0'), // sqrtPriceLimitX96 = 0 (no limit)
             ]);
 
-        if (! $response->successful() || isset($response->json()['error'])) {
+            $callData = $encoder->encodeFunctionCall(
+                'quoteExactInputSingle((address,address,uint256,uint24,uint160))',
+                [$structFields],
+            );
+
+            $result = $rpcClient->ethCall($quoterAddress, $callData, $chain->value);
+
+            // Decode response: (uint256 amountOut, uint160 sqrtPriceX96After, uint32 initializedTicksCrossed, uint256 gasEstimate)
+            $decoded = $encoder->decodeResponse($result, ['uint256', 'uint160', 'uint256', 'uint256']);
+            $amountOutRaw = $decoded[0] ?? '0';
+            $onChainGasEstimate = $decoded[3] ?? '0';
+
+            // Convert from smallest unit back to human-readable
+            $amountOut = bcdiv($amountOutRaw, bcpow('10', '18'), 8);
+            $priceImpact = $this->estimatePriceImpact($amount);
+
+            Log::info('Uniswap V3: On-chain quote received via ABI encoding', [
+                'chain'        => $chain->value,
+                'pair'         => "{$fromToken}/{$toToken}",
+                'amount_out'   => $amountOut,
+                'gas_estimate' => $onChainGasEstimate,
+            ]);
+
+            return new SwapQuote(
+                quoteId: 'uni-v3-' . Str::uuid()->toString(),
+                chain: $chain,
+                inputToken: $fromToken,
+                outputToken: $toToken,
+                inputAmount: $amount,
+                outputAmount: $amountOut,
+                priceImpact: $priceImpact,
+                protocol: DeFiProtocol::UNISWAP_V3,
+                gasEstimate: $this->estimateGas($chain),
+                feeTier: $bestFeeTier,
+                expiresAt: CarbonImmutable::now()->addSeconds((int) config('defi.swap.quote_ttl_seconds', 60)),
+            );
+        } catch (RuntimeException $e) {
             Log::warning('Uniswap V3: On-chain quote failed, falling back to estimate', [
-                'chain'  => $chain->value,
-                'pair'   => "{$fromToken}/{$toToken}",
-                'status' => $response->status(),
+                'chain' => $chain->value,
+                'pair'  => "{$fromToken}/{$toToken}",
+                'error' => $e->getMessage(),
             ]);
 
             // Fallback to estimated quote
@@ -220,36 +262,14 @@ class UniswapV3Connector implements SwapProtocolInterface
                 expiresAt: CarbonImmutable::now()->addSeconds((int) config('defi.swap.quote_ttl_seconds', 60)),
             );
         }
-
-        $result = $response->json()['result'] ?? '0x0';
-        // Decode the Quoter2 response (amountOut, sqrtPriceX96After, initializedTicksCrossed, gasEstimate)
-        $amountOutHex = substr((string) $result, 2, 64);
-        $amountOut = (string) hexdec($amountOutHex);
-        $priceImpact = $this->estimatePriceImpact($amount);
-
-        Log::info('Uniswap V3: On-chain quote received', [
-            'chain'      => $chain->value,
-            'pair'       => "{$fromToken}/{$toToken}",
-            'amount_out' => $amountOut,
-        ]);
-
-        return new SwapQuote(
-            quoteId: 'uni-v3-' . Str::uuid()->toString(),
-            chain: $chain,
-            inputToken: $fromToken,
-            outputToken: $toToken,
-            inputAmount: $amount,
-            outputAmount: $amountOut,
-            priceImpact: $priceImpact,
-            protocol: DeFiProtocol::UNISWAP_V3,
-            gasEstimate: $this->estimateGas($chain),
-            feeTier: $bestFeeTier,
-            expiresAt: CarbonImmutable::now()->addSeconds((int) config('defi.swap.quote_ttl_seconds', 60)),
-        );
     }
 
     /**
-     * Execute swap via SwapRouter02 on-chain (production).
+     * Execute swap via SwapRouter02 on-chain using ABI encoding (production).
+     *
+     * Encodes SwapRouter02.exactInputSingle(ExactInputSingleParams) where the struct
+     * contains: tokenIn, tokenOut, fee, recipient, amountIn, amountOutMinimum, sqrtPriceLimitX96.
+     * amountOutMinimum is calculated as outputAmount * (1 - slippage%).
      *
      * @return array{tx_hash: string, input_amount: string, output_amount: string, price_impact: string}
      */
@@ -257,25 +277,63 @@ class UniswapV3Connector implements SwapProtocolInterface
     {
         $routerAddress = (string) config('defi.uniswap.router_address', '0x68b3465833fb72A70ecDF485E0e4C7bD8665Fc45');
 
-        // Build exactInputSingle transaction
-        $response = Http::timeout(30)
-            ->post($rpcUrl, [
-                'jsonrpc' => '2.0',
-                'id'      => 1,
-                'method'  => 'eth_sendTransaction',
-                'params'  => [
-                    [
-                        'from' => $walletAddress,
-                        'to'   => $routerAddress,
-                        'data' => '0x414bf389' . str_pad('', 320, '0'), // exactInputSingle selector
-                    ],
-                ],
+        try {
+            $encoder = new AbiEncoder();
+            $rpcClient = new EthRpcClient();
+
+            $tokenInAddress = $this->resolveTokenAddress($quote->inputToken, $quote->chain);
+            $tokenOutAddress = $this->resolveTokenAddress($quote->outputToken, $quote->chain);
+            $amountIn = $encoder->toSmallestUnit($quote->inputAmount, 18);
+
+            // Calculate amountOutMinimum with slippage (default 0.5%)
+            $slippageMultiplier = bcsub('1', '0.005', 8);
+            /** @var numeric-string $outputAmount */
+            $outputAmount = $quote->outputAmount;
+            $minOutputHuman = bcmul($outputAmount, $slippageMultiplier, 8);
+            $amountOutMinimum = $encoder->toSmallestUnit($minOutputHuman, 18);
+
+            $feeTier = $quote->feeTier ?? 3000;
+
+            // Encode ExactInputSingleParams struct:
+            // {address tokenIn, address tokenOut, uint24 fee, address recipient, uint256 amountIn, uint256 amountOutMinimum, uint160 sqrtPriceLimitX96}
+            $structFields = $encoder->encodeStruct([
+                $encoder->encodeAddress($tokenInAddress),
+                $encoder->encodeAddress($tokenOutAddress),
+                $encoder->encodeUint256((string) $feeTier),
+                $encoder->encodeAddress($walletAddress),
+                $encoder->encodeUint256($amountIn),
+                $encoder->encodeUint256($amountOutMinimum),
+                $encoder->encodeUint256('0'), // sqrtPriceLimitX96 = 0 (no limit)
             ]);
 
-        if (! $response->successful() || isset($response->json()['error'])) {
+            $callData = $encoder->encodeFunctionCall(
+                'exactInputSingle((address,address,uint24,address,uint256,uint256,uint160))',
+                [$structFields],
+            );
+
+            $txHash = $rpcClient->sendTransaction(
+                $walletAddress,
+                $routerAddress,
+                $callData,
+                $quote->chain->value,
+            );
+
+            Log::info('Uniswap V3: Swap executed via ABI encoding', [
+                'chain'   => $quote->chain->value,
+                'pair'    => "{$quote->inputToken}/{$quote->outputToken}",
+                'tx_hash' => $txHash,
+            ]);
+
+            return [
+                'tx_hash'       => $txHash,
+                'input_amount'  => $quote->inputAmount,
+                'output_amount' => $quote->outputAmount,
+                'price_impact'  => $quote->priceImpact,
+            ];
+        } catch (RuntimeException $e) {
             Log::error('Uniswap V3: Swap execution failed', [
                 'chain' => $quote->chain->value,
-                'error' => $response->json()['error'] ?? 'unknown',
+                'error' => $e->getMessage(),
             ]);
 
             return [
@@ -285,15 +343,18 @@ class UniswapV3Connector implements SwapProtocolInterface
                 'price_impact'  => $quote->priceImpact,
             ];
         }
+    }
 
-        $txHash = (string) ($response->json()['result'] ?? '');
+    /**
+     * Resolve token symbol to contract address on a given chain.
+     */
+    private function resolveTokenAddress(string $token, CrossChainNetwork $chain): string
+    {
+        /** @var array<string, array<string, string>> $addresses */
+        $addresses = (array) config('defi.token_addresses', []);
+        $chainAddresses = $addresses[$chain->value] ?? [];
 
-        return [
-            'tx_hash'       => $txHash,
-            'input_amount'  => $quote->inputAmount,
-            'output_amount' => $quote->outputAmount,
-            'price_impact'  => $quote->priceImpact,
-        ];
+        return $chainAddresses[$token] ?? '0x' . str_repeat('0', 40);
     }
 
     private function getRpcUrl(CrossChainNetwork $chain): ?string
