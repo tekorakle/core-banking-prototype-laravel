@@ -12,6 +12,8 @@ use App\Domain\DeFi\Services\Connectors\DemoSwapConnector;
 use App\Domain\DeFi\Services\Connectors\UniswapV3Connector;
 use App\Domain\DeFi\Services\SwapAggregatorService;
 use App\Domain\DeFi\Services\SwapRouterService;
+use App\Infrastructure\Web3\AbiEncoder;
+use App\Infrastructure\Web3\EthRpcClient;
 
 uses(Tests\TestCase::class);
 
@@ -21,7 +23,7 @@ beforeEach(function () {
 
     $aggregator = new SwapAggregatorService();
     $aggregator->registerConnector(new DemoSwapConnector());
-    $aggregator->registerConnector(new UniswapV3Connector());
+    $aggregator->registerConnector(new UniswapV3Connector(new AbiEncoder(), new EthRpcClient()));
     $swapRouter = new SwapRouterService($aggregator);
 
     $tracker = new BridgeTransactionTracker();

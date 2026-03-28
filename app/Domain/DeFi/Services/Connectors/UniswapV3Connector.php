@@ -31,6 +31,12 @@ class UniswapV3Connector implements SwapProtocolInterface
 
     private const FEE_TIERS = [100, 500, 3000, 10000];
 
+    public function __construct(
+        private readonly AbiEncoder $encoder,
+        private readonly EthRpcClient $rpcClient,
+    ) {
+    }
+
     public function getProtocol(): DeFiProtocol
     {
         return DeFiProtocol::UNISWAP_V3;
@@ -182,32 +188,29 @@ class UniswapV3Connector implements SwapProtocolInterface
         $bestFeeTier = $this->findBestFeeTier($fromToken, $toToken, $amount);
 
         try {
-            $encoder = new AbiEncoder();
-            $rpcClient = new EthRpcClient();
-
             $tokenInAddress = $this->resolveTokenAddress($fromToken, $chain);
             $tokenOutAddress = $this->resolveTokenAddress($toToken, $chain);
-            $amountIn = $encoder->toSmallestUnit($amount, 18);
+            $amountIn = $this->encoder->toSmallestUnit($amount, 18);
 
             // Encode QuoteExactInputSingleParams struct:
             // {address tokenIn, address tokenOut, uint256 amountIn, uint24 fee, uint160 sqrtPriceLimitX96}
-            $structFields = $encoder->encodeStruct([
-                $encoder->encodeAddress($tokenInAddress),
-                $encoder->encodeAddress($tokenOutAddress),
-                $encoder->encodeUint256($amountIn),
-                $encoder->encodeUint256((string) $bestFeeTier),
-                $encoder->encodeUint256('0'), // sqrtPriceLimitX96 = 0 (no limit)
+            $structFields = $this->encoder->encodeStruct([
+                $this->encoder->encodeAddress($tokenInAddress),
+                $this->encoder->encodeAddress($tokenOutAddress),
+                $this->encoder->encodeUint256($amountIn),
+                $this->encoder->encodeUint256((string) $bestFeeTier),
+                $this->encoder->encodeUint256('0'), // sqrtPriceLimitX96 = 0 (no limit)
             ]);
 
-            $callData = $encoder->encodeFunctionCall(
+            $callData = $this->encoder->encodeFunctionCall(
                 'quoteExactInputSingle((address,address,uint256,uint24,uint160))',
                 [$structFields],
             );
 
-            $result = $rpcClient->ethCall($quoterAddress, $callData, $chain->value);
+            $result = $this->rpcClient->ethCall($quoterAddress, $callData, $chain->value);
 
             // Decode response: (uint256 amountOut, uint160 sqrtPriceX96After, uint32 initializedTicksCrossed, uint256 gasEstimate)
-            $decoded = $encoder->decodeResponse($result, ['uint256', 'uint160', 'uint256', 'uint256']);
+            $decoded = $this->encoder->decodeResponse($result, ['uint256', 'uint160', 'uint256', 'uint256']);
             $amountOutRaw = $decoded[0] ?? '0';
             $onChainGasEstimate = $decoded[3] ?? '0';
 
@@ -281,40 +284,37 @@ class UniswapV3Connector implements SwapProtocolInterface
         $routerAddress = (string) config('defi.uniswap.router_address', '0x68b3465833fb72A70ecDF485E0e4C7bD8665Fc45');
 
         try {
-            $encoder = new AbiEncoder();
-            $rpcClient = new EthRpcClient();
-
             $tokenInAddress = $this->resolveTokenAddress($quote->inputToken, $quote->chain);
             $tokenOutAddress = $this->resolveTokenAddress($quote->outputToken, $quote->chain);
-            $amountIn = $encoder->toSmallestUnit($quote->inputAmount, 18);
+            $amountIn = $this->encoder->toSmallestUnit($quote->inputAmount, 18);
 
             // Calculate amountOutMinimum with slippage (default 0.5%)
             $slippageMultiplier = bcsub('1', '0.005', 8);
             /** @var numeric-string $outputAmount */
             $outputAmount = $quote->outputAmount;
             $minOutputHuman = bcmul($outputAmount, $slippageMultiplier, 8);
-            $amountOutMinimum = $encoder->toSmallestUnit($minOutputHuman, 18);
+            $amountOutMinimum = $this->encoder->toSmallestUnit($minOutputHuman, 18);
 
             $feeTier = $quote->feeTier ?? 3000;
 
             // Encode ExactInputSingleParams struct:
             // {address tokenIn, address tokenOut, uint24 fee, address recipient, uint256 amountIn, uint256 amountOutMinimum, uint160 sqrtPriceLimitX96}
-            $structFields = $encoder->encodeStruct([
-                $encoder->encodeAddress($tokenInAddress),
-                $encoder->encodeAddress($tokenOutAddress),
-                $encoder->encodeUint256((string) $feeTier),
-                $encoder->encodeAddress($walletAddress),
-                $encoder->encodeUint256($amountIn),
-                $encoder->encodeUint256($amountOutMinimum),
-                $encoder->encodeUint256('0'), // sqrtPriceLimitX96 = 0 (no limit)
+            $structFields = $this->encoder->encodeStruct([
+                $this->encoder->encodeAddress($tokenInAddress),
+                $this->encoder->encodeAddress($tokenOutAddress),
+                $this->encoder->encodeUint256((string) $feeTier),
+                $this->encoder->encodeAddress($walletAddress),
+                $this->encoder->encodeUint256($amountIn),
+                $this->encoder->encodeUint256($amountOutMinimum),
+                $this->encoder->encodeUint256('0'), // sqrtPriceLimitX96 = 0 (no limit)
             ]);
 
-            $callData = $encoder->encodeFunctionCall(
+            $callData = $this->encoder->encodeFunctionCall(
                 'exactInputSingle((address,address,uint24,address,uint256,uint256,uint160))',
                 [$structFields],
             );
 
-            $txHash = $rpcClient->sendTransaction(
+            $txHash = $this->rpcClient->sendTransaction(
                 $walletAddress,
                 $routerAddress,
                 $callData,

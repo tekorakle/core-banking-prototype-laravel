@@ -17,6 +17,10 @@ use Throwable;
  * Supports both standard Ethereum RPC and bundler-specific endpoints (Pimlico v2).
  * Includes retry logic with configurable attempts and delay.
  * Read-only RPC calls (blockNumber, gasPrice) are cached to reduce provider usage.
+ *
+ * @deprecated Use {@see \App\Infrastructure\Web3\EthRpcClient} for CrossChain/DeFi adapters.
+ *             This Relayer-specific client remains for ERC-4337 bundler integration
+ *             (SupportedNetwork enum, Pimlico endpoints) until full migration in v7.1.
  */
 class EthRpcClient
 {
