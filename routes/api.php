@@ -56,6 +56,10 @@ Route::prefix('monitoring')->group(function () {
     Route::get('/alive', [App\Http\Controllers\Api\MonitoringController::class, 'alive'])->name('monitoring.alive');
 });
 
+// Domain metrics endpoints (public - for Prometheus scraping)
+Route::get('/metrics/prometheus', [App\Http\Controllers\Api\MetricsController::class, 'prometheus'])->name('metrics.prometheus');
+Route::get('/health', [App\Http\Controllers\Api\MetricsController::class, 'health'])->name('health.quick');
+
 // WebSocket configuration endpoints (public - for client initialization)
 Route::prefix('websocket')->name('api.websocket.')->group(function () {
     Route::get('/config', [App\Http\Controllers\Api\WebSocketController::class, 'config'])->name('config');
