@@ -2719,6 +2719,40 @@ Rain is a modern card issuing platform for crypto/fintech companies.
 
 ---
 
-*Document Version: 7.0.0*
+## Version 7.1.0 — Production Hardening (RELEASED)
+
+**Release Date**: March 29, 2026
+**Theme**: Observability, Mobile Compatibility, Security Readiness, Partner Onboarding
+
+### Observability
+- MetricsService with increment/gauge/timing + Prometheus exposition endpoint
+- Health check endpoint (`/api/health`) with DB + cache + app checks
+- JIT funding instrumented: latency, approval/decline counters
+- Circuit breaker trip counter with chain tags
+- Grafana dashboard: 8 panels across JIT Funding, API, Web3/Privacy
+
+### Mobile App Compatibility
+- API compatibility audit: 97/103 endpoints compatible
+- Fixed 6 route mismatches: notifications path/method, relayer method, auth prefix, device routes
+- All route aliases added without breaking existing endpoints
+
+### Smoke Test Suite
+- 36 E2E smoke tests across 5 files: health, auth, API, features, payments
+- Lightweight SmokeTestCase (no DB migrations)
+- Payment protocol discovery validation
+
+### Partner Onboarding
+- Partner Integration Guide with SDK quickstart, protocol comparison, webhook setup
+- 5-phase onboarding checklist (14-day timeline)
+
+### Security Audit Preparation
+- Pentest scope document: full attack surface inventory (~1,360 routes, 40 GraphQL schemas)
+- STRIDE threat model for 5 critical flows
+- 15 prioritized findings (2 Critical, 4 High)
+- Automated scan: zero CVEs, no leaked secrets, no dd()/dump()
+
+---
+
+*Document Version: 7.1.0*
 *Created: January 11, 2026*
-*Updated: March 28, 2026 (v7.0.0 Production Release)*
+*Updated: March 29, 2026 (v7.1.0 Production Hardening)*
