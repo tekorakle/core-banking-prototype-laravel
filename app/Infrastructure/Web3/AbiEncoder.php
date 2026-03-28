@@ -156,6 +156,21 @@ class AbiEncoder
     }
 
     /**
+     * Encode an Ethereum address as a bytes32 value (left-padded with zeros).
+     *
+     * Used by cross-chain protocols (Wormhole, CCTP) for recipient encoding.
+     *
+     * @param  string $address Hex address (with or without 0x prefix)
+     * @return string 64-char hex string (32 bytes, left-padded)
+     */
+    public function encodeAddressAsBytes32(string $address): string
+    {
+        $clean = str_replace('0x', '', $address);
+
+        return str_pad($clean, 64, '0', STR_PAD_LEFT);
+    }
+
+    /**
      * Compute the 4-byte function selector (first 4 bytes of keccak256 hash).
      *
      * @param  string $signature Function signature, e.g. "transfer(address,uint256)"

@@ -17,6 +17,9 @@ use Illuminate\Support\Facades\Log;
  */
 class SpendLimitEnforcementService
 {
+    /** @var array<string, Card|null> Request-scoped card cache */
+    private array $cardCache = [];
+
     /**
      * Check if a spend amount is within the card's configured limit.
      *
@@ -26,7 +29,7 @@ class SpendLimitEnforcementService
      */
     public function checkLimit(string $cardToken, float $amount): bool
     {
-        $card = Card::where('issuer_card_token', $cardToken)->first();
+        $card = $this->resolveCard($cardToken);
 
         if ($card === null || $card->spend_limit_cents === null) {
             return true;
@@ -59,12 +62,14 @@ class SpendLimitEnforcementService
     /**
      * Record a successful spend against the card's running total.
      *
+     * Uses atomic cache operations to prevent race conditions under concurrent requests.
+     *
      * @param string $cardToken The issuer card token
      * @param float  $amount    The transaction amount in decimal (e.g. 25.50)
      */
     public function recordSpend(string $cardToken, float $amount): void
     {
-        $card = Card::where('issuer_card_token', $cardToken)->first();
+        $card = $this->resolveCard($cardToken);
 
         if ($card === null || $card->spend_limit_cents === null) {
             return;
@@ -76,17 +81,27 @@ class SpendLimitEnforcementService
         $cacheKey = $this->buildCacheKey($cardToken, $interval);
         $ttl = $this->getTtl($interval);
 
-        /** @var int $currentSpendCents */
-        $currentSpendCents = Cache::get($cacheKey, 0);
-
-        Cache::put($cacheKey, $currentSpendCents + $amountCents, $ttl);
+        // Atomic: ensure key exists with TTL, then increment
+        Cache::add($cacheKey, 0, $ttl);
+        Cache::increment($cacheKey, $amountCents);
 
         Log::info('SpendLimitEnforcement: Spend recorded', [
             'card_token'   => $cardToken,
             'interval'     => $interval,
             'amount_cents' => $amountCents,
-            'new_total'    => $currentSpendCents + $amountCents,
         ]);
+    }
+
+    /**
+     * Resolve a card by its issuer token, with request-scoped memoization.
+     */
+    private function resolveCard(string $cardToken): ?Card
+    {
+        if (! array_key_exists($cardToken, $this->cardCache)) {
+            $this->cardCache[$cardToken] = Card::where('issuer_card_token', $cardToken)->first();
+        }
+
+        return $this->cardCache[$cardToken];
     }
 
     /**

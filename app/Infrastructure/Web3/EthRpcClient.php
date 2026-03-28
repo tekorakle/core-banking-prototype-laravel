@@ -35,6 +35,9 @@ class EthRpcClient
     /** @var int Retry delay in milliseconds */
     private const RETRY_DELAY_MS = 1000;
 
+    /** @var int HTTP timeout in seconds for sendTransaction (higher latency expected) */
+    private const SEND_TX_TIMEOUT = 30;
+
     /**
      * Execute an eth_call against the specified chain's RPC endpoint.
      *
@@ -112,7 +115,7 @@ class EthRpcClient
 
         $this->checkCircuitBreaker($chain);
 
-        $response = Http::timeout(30)
+        $response = Http::timeout(self::SEND_TX_TIMEOUT)
             ->retry(self::RETRY_ATTEMPTS, self::RETRY_DELAY_MS)
             ->post($rpcUrl, [
                 'jsonrpc' => '2.0',
@@ -152,6 +155,8 @@ class EthRpcClient
             return null;
         }
 
+        $this->checkCircuitBreaker($chain);
+
         $response = Http::timeout(self::HTTP_TIMEOUT)
             ->post($rpcUrl, [
                 'jsonrpc' => '2.0',
@@ -161,8 +166,12 @@ class EthRpcClient
             ]);
 
         if ($response->failed()) {
+            $this->recordFailure($chain);
+
             return null;
         }
+
+        $this->recordSuccess($chain);
 
         /** @var array<string, mixed>|null */
         return $response->json('result');
@@ -212,8 +221,8 @@ class EthRpcClient
     private function recordFailure(string $chain): void
     {
         $key = "eth_rpc_failures:{$chain}";
-        $failures = (int) Cache::get($key, 0);
-        Cache::put($key, $failures + 1, self::CIRCUIT_BREAKER_TTL);
+        Cache::add($key, 0, self::CIRCUIT_BREAKER_TTL);
+        Cache::increment($key);
     }
 
     /**

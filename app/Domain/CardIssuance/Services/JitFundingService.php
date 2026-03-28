@@ -30,6 +30,7 @@ class JitFundingService
 
     public function __construct(
         private readonly CardIssuerInterface $cardIssuer,
+        private readonly SpendLimitEnforcementService $spendLimitService,
     ) {
     }
 
@@ -72,8 +73,7 @@ class JitFundingService
         }
 
         // 2b. Check spend limits
-        $spendLimitService = app(SpendLimitEnforcementService::class);
-        if (! $spendLimitService->checkLimit($request->cardToken, $requiredAmount)) {
+        if (! $this->spendLimitService->checkLimit($request->cardToken, $requiredAmount)) {
             return $this->decline($request, AuthorizationDecision::DECLINED_LIMIT_EXCEEDED);
         }
 
@@ -108,8 +108,7 @@ class JitFundingService
         ));
 
         // 4b. Record spend against limit tracker
-        $spendLimitService = app(SpendLimitEnforcementService::class);
-        $spendLimitService->recordSpend($request->cardToken, $requiredAmount);
+        $this->spendLimitService->recordSpend($request->cardToken, $requiredAmount);
 
         return [
             'approved' => true,

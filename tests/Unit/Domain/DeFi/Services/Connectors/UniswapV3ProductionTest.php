@@ -6,7 +6,6 @@ use App\Domain\CrossChain\Enums\CrossChainNetwork;
 use App\Domain\DeFi\Enums\DeFiProtocol;
 use App\Domain\DeFi\Services\Connectors\UniswapV3Connector;
 use App\Infrastructure\Web3\AbiEncoder;
-use Illuminate\Support\Facades\Http;
 
 uses(Tests\TestCase::class);
 

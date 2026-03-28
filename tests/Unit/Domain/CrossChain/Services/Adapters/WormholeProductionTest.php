@@ -7,7 +7,6 @@ use App\Domain\CrossChain\Enums\BridgeStatus;
 use App\Domain\CrossChain\Enums\CrossChainNetwork;
 use App\Domain\CrossChain\Services\Adapters\WormholeBridgeAdapter;
 use App\Infrastructure\Web3\AbiEncoder;
-use Illuminate\Support\Facades\Http;
 
 uses(Tests\TestCase::class);
 

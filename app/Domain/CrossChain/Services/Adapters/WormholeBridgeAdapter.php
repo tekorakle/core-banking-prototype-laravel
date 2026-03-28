@@ -234,7 +234,7 @@ class WormholeBridgeAdapter implements BridgeAdapterInterface
                     $encoder->encodeAddress($tokenAddress),
                     $encoder->encodeUint256($amountWei),
                     $encoder->encodeUint16($destChainId),
-                    $encoder->encodeBytes32($this->addressToBytes32($recipientAddress)),
+                    $encoder->encodeBytes32($encoder->encodeAddressAsBytes32($recipientAddress)),
                     $encoder->encodeUint256($feeWei),
                     $encoder->encodeUint256((string) $nonce),
                 ],
@@ -411,15 +411,5 @@ class WormholeBridgeAdapter implements BridgeAdapterInterface
         $chainAddresses = $addresses[$chain->value] ?? [];
 
         return $chainAddresses[$token] ?? '0x' . str_repeat('0', 40);
-    }
-
-    /**
-     * Convert an address to bytes32 format for Wormhole recipient encoding.
-     */
-    private function addressToBytes32(string $address): string
-    {
-        $clean = ltrim($address, '0x');
-
-        return str_pad($clean, 64, '0', STR_PAD_LEFT);
     }
 }
