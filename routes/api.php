@@ -223,6 +223,14 @@ Route::prefix('admin')->middleware(['auth:sanctum', 'require.2fa.admin'])->group
     });
 });
 
+// UserOperation signing alias — mobile app expects /api/v1/auth/sign-userop (v7.1.0)
+Route::prefix('v1/auth')
+    ->middleware(['auth:sanctum', 'throttle:10,1'])
+    ->group(function () {
+        Route::post('/sign-userop', [App\Http\Controllers\Api\Auth\UserOpSigningController::class, 'sign'])
+            ->name('api.v1.auth.sign-userop');
+    });
+
 // Passkey/WebAuthn Authentication (v2.7.0) - public assertion flow
 Route::prefix('v1/auth/passkey')
     ->middleware('throttle:5,1')
