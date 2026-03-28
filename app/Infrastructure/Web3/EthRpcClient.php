@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Infrastructure\Web3;
 
+use App\Infrastructure\Monitoring\MetricsService;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
@@ -210,6 +211,8 @@ class EthRpcClient
                 'chain'    => $chain,
                 'failures' => $failures,
             ]);
+
+            app(MetricsService::class)->increment('circuit_breaker_trip', 1, ['chain' => $chain]);
 
             throw new RuntimeException("Circuit breaker open for chain: {$chain}");
         }

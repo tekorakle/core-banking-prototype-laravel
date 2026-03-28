@@ -9,6 +9,7 @@ use App\Domain\CardIssuance\Enums\AuthorizationDecision;
 use App\Domain\CardIssuance\Events\AuthorizationApproved;
 use App\Domain\CardIssuance\Events\AuthorizationDeclined;
 use App\Domain\CardIssuance\ValueObjects\AuthorizationRequest;
+use App\Infrastructure\Monitoring\MetricsService;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Log;
 use Throwable;
@@ -31,6 +32,7 @@ class JitFundingService
     public function __construct(
         private readonly CardIssuerInterface $cardIssuer,
         private readonly SpendLimitEnforcementService $spendLimitService,
+        private readonly MetricsService $metrics,
     ) {
     }
 
@@ -92,6 +94,9 @@ class JitFundingService
         // 4. Approve transaction
         $latencyMs = (microtime(true) - $startTime) * 1000;
 
+        $this->metrics->timing('jit_funding_latency', $latencyMs);
+        $this->metrics->increment('jit_funding_approved');
+
         Log::info('JIT Funding: Authorization approved', [
             'authorization_id' => $request->authorizationId,
             'hold_id'          => $holdId,
@@ -126,6 +131,8 @@ class JitFundingService
         AuthorizationRequest $request,
         AuthorizationDecision $decision
     ): array {
+        $this->metrics->increment('jit_funding_declined', 1, ['reason' => $decision->value]);
+
         Log::warning('JIT Funding: Authorization declined', [
             'authorization_id' => $request->authorizationId,
             'reason'           => $decision->value,
