@@ -7,6 +7,7 @@ namespace App\Domain\DeFi\Services\Connectors;
 use App\Domain\CrossChain\Enums\CrossChainNetwork;
 use App\Domain\DeFi\Contracts\SwapProtocolInterface;
 use App\Domain\DeFi\Enums\DeFiProtocol;
+use App\Domain\DeFi\Traits\UsesDeFiConfig;
 use App\Domain\DeFi\ValueObjects\SwapQuote;
 use App\Infrastructure\Web3\AbiEncoder;
 use App\Infrastructure\Web3\EthRpcClient;
@@ -24,6 +25,8 @@ use RuntimeException;
  */
 class UniswapV3Connector implements SwapProtocolInterface
 {
+    use UsesDeFiConfig;
+
     private const SUPPORTED_CHAINS = ['ethereum', 'polygon', 'arbitrum', 'optimism', 'base'];
 
     private const FEE_TIERS = [100, 500, 3000, 10000];
@@ -343,25 +346,5 @@ class UniswapV3Connector implements SwapProtocolInterface
                 'price_impact'  => $quote->priceImpact,
             ];
         }
-    }
-
-    /**
-     * Resolve token symbol to contract address on a given chain.
-     */
-    private function resolveTokenAddress(string $token, CrossChainNetwork $chain): string
-    {
-        /** @var array<string, array<string, string>> $addresses */
-        $addresses = (array) config('defi.token_addresses', []);
-        $chainAddresses = $addresses[$chain->value] ?? [];
-
-        return $chainAddresses[$token] ?? '0x' . str_repeat('0', 40);
-    }
-
-    private function getRpcUrl(CrossChainNetwork $chain): ?string
-    {
-        $key = 'defi.rpc_urls.' . $chain->value;
-        $url = config($key, '');
-
-        return $url !== '' ? (string) $url : null;
     }
 }

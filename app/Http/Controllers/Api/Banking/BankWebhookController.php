@@ -118,7 +118,7 @@ class BankWebhookController extends Controller
     {
         $signature = $request->header('X-Webhook-Signature', '');
 
-        if ($signature === '' || $signature === null) {
+        if ($signature === '') {
             return false;
         }
 

@@ -233,7 +233,7 @@ class CircleCctpBridgeAdapter implements BridgeAdapterInterface
                 [
                     $encoder->encodeUint256($amountSmallest),
                     $encoder->encodeUint32($destDomain),
-                    $encoder->encodeBytes32($this->addressToBytes32($recipientAddress)),
+                    $encoder->encodeBytes32($encoder->encodeAddressAsBytes32($recipientAddress)),
                     $encoder->encodeAddress($burnToken),
                 ],
             );
@@ -461,15 +461,5 @@ class CircleCctpBridgeAdapter implements BridgeAdapterInterface
             CrossChainNetwork::BASE     => '0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913',
             default                     => '0x' . str_repeat('0', 40),
         };
-    }
-
-    /**
-     * Convert an address to bytes32 format for CCTP mint recipient encoding.
-     */
-    private function addressToBytes32(string $address): string
-    {
-        $clean = ltrim($address, '0x');
-
-        return str_pad($clean, 64, '0', STR_PAD_LEFT);
     }
 }

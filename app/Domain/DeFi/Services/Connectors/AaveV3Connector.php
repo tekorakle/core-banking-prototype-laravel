@@ -7,6 +7,7 @@ namespace App\Domain\DeFi\Services\Connectors;
 use App\Domain\CrossChain\Enums\CrossChainNetwork;
 use App\Domain\DeFi\Contracts\LendingProtocolInterface;
 use App\Domain\DeFi\Enums\DeFiProtocol;
+use App\Domain\DeFi\Traits\UsesDeFiConfig;
 use App\Infrastructure\Web3\AbiEncoder;
 use App\Infrastructure\Web3\EthRpcClient;
 use Illuminate\Support\Facades\Log;
@@ -22,6 +23,8 @@ use RuntimeException;
  */
 class AaveV3Connector implements LendingProtocolInterface
 {
+    use UsesDeFiConfig;
+
     private const SUPPORTED_CHAINS = ['ethereum', 'polygon', 'arbitrum', 'optimism', 'base'];
 
     public function getProtocol(): DeFiProtocol
@@ -527,28 +530,5 @@ class AaveV3Connector implements LendingProtocolInterface
 
         return $addresses[$chain->value]
             ?? '0x87870Bca3F3fD6335C3F4ce8392D69350B4fA4E2';
-    }
-
-    /**
-     * Resolve token symbol to contract address on a given chain.
-     */
-    private function resolveTokenAddress(string $token, CrossChainNetwork $chain): string
-    {
-        /** @var array<string, array<string, string>> $addresses */
-        $addresses = (array) config('defi.token_addresses', []);
-        $chainAddresses = $addresses[$chain->value] ?? [];
-
-        return $chainAddresses[$token] ?? '0x' . str_repeat('0', 40);
-    }
-
-    /**
-     * Get RPC URL for a given chain from config.
-     */
-    private function getRpcUrl(CrossChainNetwork $chain): ?string
-    {
-        $key = 'defi.rpc_urls.' . $chain->value;
-        $url = config($key, '');
-
-        return $url !== '' ? (string) $url : null;
     }
 }
