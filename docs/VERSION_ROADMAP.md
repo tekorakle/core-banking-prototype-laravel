@@ -2240,9 +2240,9 @@ Mobile app polling `wallet/balances` + `wallet/state` every 60s generated ~98K A
 
 ---
 
-## v6.1.0 — Feature Completeness & Production Readiness (PLANNED)
+## v6.1.0 — Feature Completeness & Production Readiness (COMPLETED)
 
-**Target**: Q2 2026
+**Completed**: March 27, 2026 (delivered across v6.2.0–v6.12.0)
 **Theme**: Every advertised feature at 100% — no gaps between marketing and implementation
 
 ### Comprehensive Feature Audit (March 17, 2026)
@@ -2436,7 +2436,6 @@ Rain is a modern card issuing platform for crypto/fintech companies.
 
 ---
 
-*Document Version: 6.3.3*
 ### v6.4.0 — Machine Payments Protocol + AP2 Mandates + Solana (COMPLETED)
 
 **Release Date**: March 23, 2026
