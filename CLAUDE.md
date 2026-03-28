@@ -22,6 +22,8 @@ php artisan user:admins              # List all admin users
 
 ## Architecture
 
+- **Web3 Integration**: `app/Infrastructure/Web3/` (EthRpcClient, AbiEncoder) — also legacy `app/Domain/Relayer/Services/EthRpcClient.php`
+- **ZK Circuits**: `storage/app/circuits/` (Circom sources + Solidity verifiers)
 - **49 domains** in `app/Domain/` (DDD bounded contexts)
 - **Payment Protocols**: x402 (Coinbase), MPP (Stripe/Tempo), AP2 (Google)
 - **Packages**: `packages/zelta-sdk/` (Payment SDK), `packages/zelta-cli/` (CLI binary)
@@ -51,6 +53,8 @@ namespace App\Domain\Exchange\Services;
 
 | Issue | Fix |
 |-------|-----|
+| Cache counters (concurrent) | Use `Cache::add($key, 0, $ttl)` + `Cache::increment()` — never read-then-write |
+| Service locator in hot paths | Inject via constructor, don't use `app()` — especially in latency-sensitive code |
 | PHPStan type errors | Cast return types, add `@var` PHPDoc, null checks |
 | PHPStan `->first()` nullable | Use `assert($x instanceof Model)` after expect not-null |
 | PHPStan `json_encode` | Cast `(string) json_encode(...)` — returns `string\|false` |
@@ -67,6 +71,10 @@ gh run view <RUN_ID> --log-failed     # View failed logs
 
 ## Notes
 
+- Feature pages: only visible when `SHOW_PROMO_PAGES=true` (demo mode); production shows app landing page only
+- Sitemap: dynamic via `SitemapController`, gated by `SHOW_PROMO_PAGES` — no static sitemap.xml needed
+- GraphQL schemas: must be imported in `graphql/schema.graphql` to be registered with Lighthouse
+- DeFi connectors: use `UsesDeFiConfig` trait for shared `resolveTokenAddress()`/`getRpcUrl()` methods
 - New packages: add PSR-4 to root `composer.json` autoload-dev, then `composer dump-autoload`
 - Parallel agents: avoid touching `composer.json`, `bootstrap/app.php` from multiple agents (merge conflicts)
 - Feature pages: always update version badge + features/index.blade.php when shipping new features
