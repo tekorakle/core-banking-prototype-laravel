@@ -235,7 +235,7 @@
                     </div>
                     <h3 class="text-xl font-semibold mb-3">Bank Integration Patterns</h3>
                     <p class="text-slate-500 mb-4">
-                        Open Banking-compliant API adapters including Ondato KYC, Chainalysis sanctions screening, and Marqeta card issuing.
+                        Open Banking-compliant API adapters including Ondato KYC, Chainalysis sanctions screening, and Marqeta card issuing. Full GraphQL API with 12 card operations, spend limit enforcement, REST API with webhooks, and account verification.
                     </p>
                     <a href="{{ route('features.show', 'bank-integration') }}" class="text-red-600 font-medium hover:text-red-700">
                         Explore patterns →
@@ -267,7 +267,7 @@
                     </div>
                     <h3 class="text-xl font-semibold mb-3">Cross-Chain & DeFi</h3>
                     <p class="text-slate-500 mb-4">
-                        Bridge assets across blockchains and access DeFi protocols. Wormhole, LayerZero, Axelar bridges with Uniswap, Aave, Curve, and Lido.
+                        Bridge assets across blockchains and access DeFi protocols. Production-ready adapters with ABI encoding and RPC integration for Wormhole, Circle CCTP, Uniswap V3, and Aave V3.
                     </p>
                     <a href="{{ route('features.show', 'crosschain-defi') }}" class="text-cyan-600 font-medium hover:text-cyan-700">
                         Explore DeFi →
@@ -299,7 +299,7 @@
                     </div>
                     <h3 class="text-xl font-semibold mb-3">Privacy & Identity</h3>
                     <p class="text-slate-500 mb-4">
-                        Prove compliance without exposing data. ZK-KYC proofs, W3C verifiable credentials, soulbound tokens, and Shamir key management.
+                        Prove compliance without exposing data. ZK-KYC proofs, W3C verifiable credentials, soulbound tokens, Shamir key management, and production ZK proving with 5 Circom circuits and Solidity verifier contracts.
                     </p>
                     <a href="{{ route('features.show', 'privacy-identity') }}" class="text-teal-600 font-medium hover:text-teal-700">
                         Learn more →
@@ -401,7 +401,7 @@
                     </div>
                     <h3 class="text-xl font-semibold mb-3">Multi-Tenancy</h3>
                     <p class="text-slate-500 mb-4">
-                        Team-based isolation with tenant data migration, per-tenant configuration, and enterprise management features.
+                        Team-based isolation with persistent audit logging, EnforceTenantPlanLimits middleware, soft-delete with 14-day grace period, data migration table whitelisting, and per-tenant configuration.
                     </p>
                     <a href="{{ route('features.show', 'multi-tenancy') }}" class="text-emerald-600 font-medium hover:text-emerald-700">
                         Learn more &rarr;

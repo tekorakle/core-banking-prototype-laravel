@@ -67,7 +67,7 @@
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <h2 class="font-display text-3xl md:text-4xl font-bold text-center text-slate-900 mb-4">Bridge Protocols</h2>
             <p class="text-lg text-slate-500 text-center max-w-2xl mx-auto mb-12">
-                Transfer assets between chains with confidence using battle-tested bridge providers. Automatic fee comparison ensures the best route for every transfer.
+                Transfer assets between chains with confidence using production-ready adapters with ABI encoding and RPC integration. Wormhole, Circle CCTP, LayerZero, and Axelar bridges with automatic fee comparison for the best route.
             </p>
 
             <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
@@ -80,7 +80,7 @@
                     </div>
                     <h3 class="text-2xl font-bold mb-3">Wormhole</h3>
                     <p class="text-slate-500 mb-4">
-                        Generic message-passing protocol supporting 30+ chains. Ideal for high-value transfers with guardian-validated security.
+                        Production adapter with EthRpcClient integration and ABI-encoded contract calls. Generic message-passing protocol supporting 30+ chains with guardian-validated security.
                     </p>
                     <ul class="space-y-2 text-sm text-gray-500">
                         <li class="flex items-center">
@@ -192,7 +192,7 @@
                     <h3 class="text-xl font-bold mb-2">Uniswap V3</h3>
                     <span class="inline-block bg-pink-100 text-pink-800 text-xs font-medium px-2 py-1 rounded mb-3">DEX</span>
                     <p class="text-slate-500 text-sm">
-                        Concentrated liquidity DEX with optimal price execution. Multi-hop routing across token pairs with slippage protection.
+                        Production adapter with ABI-encoded swaps and RPC price quoting. Concentrated liquidity DEX with optimal price execution and multi-hop routing with slippage protection.
                     </p>
                 </div>
 
@@ -206,7 +206,7 @@
                     <h3 class="text-xl font-bold mb-2">Aave V3</h3>
                     <span class="inline-block bg-cyan-100 text-cyan-800 text-xs font-medium px-2 py-1 rounded mb-3">Lending</span>
                     <p class="text-slate-500 text-sm">
-                        Decentralized lending and borrowing protocol. Supply assets to earn yield or borrow against collateral with flash loan support.
+                        Production adapter with ABI-encoded supply, borrow, and repay operations via EthRpcClient. Supply assets to earn yield or borrow against collateral with flash loan support.
                     </p>
                 </div>
 
