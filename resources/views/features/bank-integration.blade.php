@@ -383,7 +383,9 @@
                         <div>
                             <h4 class="font-bold mb-4">Technical Integration</h4>
                             <ul class="space-y-2 text-slate-500">
-                                <li>• API connections for real-time operations</li>
+                                <li>• REST API with 13 endpoints and webhook notifications</li>
+                                <li>• Account verification via micro-deposit and instant methods</li>
+                                <li>• GraphQL transfer operations with real-time subscriptions</li>
                                 <li>• Automated reconciliation systems</li>
                                 <li>• Secure multi-signature protocols</li>
                                 <li>• Daily balance verification</li>

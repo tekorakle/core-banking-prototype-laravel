@@ -154,7 +154,7 @@
                             </svg>
                             <div>
                                 <h4 class="font-semibold mb-1">Tenant Data Migration</h4>
-                                <p class="text-slate-600">Move tenant data between environments with integrity checks and rollback support</p>
+                                <p class="text-slate-600">Move tenant data between environments with integrity checks, rollback support, and table whitelisting for safe migration scoping</p>
                             </div>
                         </li>
                         <li class="flex items-start">
@@ -233,7 +233,7 @@
                             <svg class="w-6 h-6 text-green-500 mr-3 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
                             </svg>
-                            <span>Tenant-aware middleware for request-level isolation</span>
+                            <span>Tenant-aware middleware with EnforceTenantPlanLimits for plan enforcement</span>
                         </li>
                         <li class="flex items-start">
                             <svg class="w-6 h-6 text-green-500 mr-3 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -257,7 +257,7 @@
                             <svg class="w-6 h-6 text-green-500 mr-3 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
                             </svg>
-                            <span>Audit logging scoped to tenant context</span>
+                            <span>Persistent audit logging scoped to tenant context</span>
                         </li>
                     </ul>
                 </div>
@@ -299,7 +299,7 @@
                             <svg class="w-6 h-6 text-green-500 mr-3 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
                             </svg>
-                            <span>Tenant suspension and archival with data retention policies</span>
+                            <span>Tenant soft-delete with 14-day grace period and data retention policies</span>
                         </li>
                     </ul>
                 </div>
