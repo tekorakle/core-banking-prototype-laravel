@@ -7,13 +7,14 @@ use App\Domain\CrossChain\Enums\BridgeStatus;
 use App\Domain\CrossChain\Enums\CrossChainNetwork;
 use App\Domain\CrossChain\Services\Adapters\WormholeBridgeAdapter;
 use App\Infrastructure\Web3\AbiEncoder;
+use App\Infrastructure\Web3\EthRpcClient;
 
 uses(Tests\TestCase::class);
 
 beforeEach(function () {
     config(['cache.default' => 'array']);
-    $this->adapter = new WormholeBridgeAdapter();
     $this->encoder = new AbiEncoder();
+    $this->adapter = new WormholeBridgeAdapter($this->encoder, new EthRpcClient());
 });
 
 describe('Wormhole Production Mode', function () {

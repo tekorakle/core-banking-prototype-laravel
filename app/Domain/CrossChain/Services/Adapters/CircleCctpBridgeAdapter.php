@@ -41,6 +41,12 @@ class CircleCctpBridgeAdapter implements BridgeAdapterInterface
         'base'     => 6,
     ];
 
+    public function __construct(
+        private readonly AbiEncoder $encoder,
+        private readonly EthRpcClient $rpcClient,
+    ) {
+    }
+
     public function getProvider(): BridgeProvider
     {
         return BridgeProvider::CIRCLE_CCTP;
@@ -220,21 +226,18 @@ class CircleCctpBridgeAdapter implements BridgeAdapterInterface
         $destDomain = self::DOMAIN_IDS[$quote->getDestChain()->value] ?? 0;
 
         try {
-            $encoder = new AbiEncoder();
-            $rpcClient = new EthRpcClient();
-
             // USDC has 6 decimals
-            $amountSmallest = $encoder->toSmallestUnit($quote->inputAmount, 6);
+            $amountSmallest = $this->encoder->toSmallestUnit($quote->inputAmount, 6);
             $burnToken = $this->getUsdcAddress($quote->getSourceChain());
 
             // Encode TokenMessenger.depositForBurn(uint256 amount, uint32 destinationDomain, bytes32 mintRecipient, address burnToken)
-            $callData = $encoder->encodeFunctionCall(
+            $callData = $this->encoder->encodeFunctionCall(
                 'depositForBurn(uint256,uint32,bytes32,address)',
                 [
-                    $encoder->encodeUint256($amountSmallest),
-                    $encoder->encodeUint32($destDomain),
-                    $encoder->encodeBytes32($encoder->encodeAddressAsBytes32($recipientAddress)),
-                    $encoder->encodeAddress($burnToken),
+                    $this->encoder->encodeUint256($amountSmallest),
+                    $this->encoder->encodeUint32($destDomain),
+                    $this->encoder->encodeBytes32($this->encoder->encodeAddressAsBytes32($recipientAddress)),
+                    $this->encoder->encodeAddress($burnToken),
                 ],
             );
 
@@ -243,7 +246,7 @@ class CircleCctpBridgeAdapter implements BridgeAdapterInterface
                 '0xBd3fa81B58Ba92a82136038B25aDec7066af3155',
             );
 
-            $result = $rpcClient->ethCall(
+            $result = $this->rpcClient->ethCall(
                 $tokenMessengerAddress,
                 $callData,
                 $quote->getSourceChain()->value,
@@ -256,7 +259,7 @@ class CircleCctpBridgeAdapter implements BridgeAdapterInterface
             ]);
 
             // Decode nonce from return value (depositForBurn returns uint64 nonce)
-            $decoded = $encoder->decodeResponse($result, ['uint256']);
+            $decoded = $this->encoder->decodeResponse($result, ['uint256']);
             $nonce = $decoded[0] ?? '0';
 
             // Compute message hash for attestation tracking
@@ -406,15 +409,12 @@ class CircleCctpBridgeAdapter implements BridgeAdapterInterface
     private function submitReceiveMessage(string $destChain, string $message, string $attestation): ?string
     {
         try {
-            $encoder = new AbiEncoder();
-            $rpcClient = new EthRpcClient();
-
             // For dynamic bytes, we encode offset + length + data
             // receiveMessage(bytes,bytes) — two dynamic parameters
-            $msgBytes = $encoder->encodeBytes32($message);
-            $attBytes = $encoder->encodeBytes32($attestation);
+            $msgBytes = $this->encoder->encodeBytes32($message);
+            $attBytes = $this->encoder->encodeBytes32($attestation);
 
-            $callData = $encoder->encodeFunctionCall(
+            $callData = $this->encoder->encodeFunctionCall(
                 'receiveMessage(bytes,bytes)',
                 [$msgBytes, $attBytes],
             );
@@ -424,7 +424,7 @@ class CircleCctpBridgeAdapter implements BridgeAdapterInterface
                 '0x0a992d191DEeC32aFe36203Ad87D7d289a738F81',
             );
 
-            $result = $rpcClient->ethCall(
+            $result = $this->rpcClient->ethCall(
                 $messageTransmitterAddress,
                 $callData,
                 $destChain,

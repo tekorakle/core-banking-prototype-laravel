@@ -42,6 +42,12 @@ class WormholeBridgeAdapter implements BridgeAdapterInterface
         'solana'   => 1,
     ];
 
+    public function __construct(
+        private readonly AbiEncoder $encoder,
+        private readonly EthRpcClient $rpcClient,
+    ) {
+    }
+
     public function getProvider(): BridgeProvider
     {
         return BridgeProvider::WORMHOLE;
@@ -219,24 +225,21 @@ class WormholeBridgeAdapter implements BridgeAdapterInterface
         $destChainId = self::CHAIN_IDS[$quote->getDestChain()->value] ?? 0;
 
         try {
-            $encoder = new AbiEncoder();
-            $rpcClient = new EthRpcClient();
-
             $tokenAddress = $this->resolveTokenAddress($quote->route->token, $quote->getSourceChain());
-            $amountWei = $encoder->toSmallestUnit($quote->inputAmount, 18);
-            $feeWei = $encoder->toSmallestUnit($quote->fee, 18);
+            $amountWei = $this->encoder->toSmallestUnit($quote->inputAmount, 18);
+            $feeWei = $this->encoder->toSmallestUnit($quote->fee, 18);
             $nonce = random_int(0, 4294967295);
 
             // Encode TokenBridge.transferTokens(address token, uint256 amount, uint16 recipientChain, bytes32 recipient, uint256 arbiterFee, uint32 nonce)
-            $callData = $encoder->encodeFunctionCall(
+            $callData = $this->encoder->encodeFunctionCall(
                 'transferTokens(address,uint256,uint16,bytes32,uint256,uint256)',
                 [
-                    $encoder->encodeAddress($tokenAddress),
-                    $encoder->encodeUint256($amountWei),
-                    $encoder->encodeUint16($destChainId),
-                    $encoder->encodeBytes32($encoder->encodeAddressAsBytes32($recipientAddress)),
-                    $encoder->encodeUint256($feeWei),
-                    $encoder->encodeUint256((string) $nonce),
+                    $this->encoder->encodeAddress($tokenAddress),
+                    $this->encoder->encodeUint256($amountWei),
+                    $this->encoder->encodeUint16($destChainId),
+                    $this->encoder->encodeBytes32($this->encoder->encodeAddressAsBytes32($recipientAddress)),
+                    $this->encoder->encodeUint256($feeWei),
+                    $this->encoder->encodeUint256((string) $nonce),
                 ],
             );
 
@@ -245,7 +248,7 @@ class WormholeBridgeAdapter implements BridgeAdapterInterface
                 '0x3ee18B2214AFF97000D974cf647E7C347E8fa585',
             );
 
-            $result = $rpcClient->ethCall(
+            $result = $this->rpcClient->ethCall(
                 $tokenBridgeAddress,
                 $callData,
                 $quote->getSourceChain()->value,
@@ -258,7 +261,7 @@ class WormholeBridgeAdapter implements BridgeAdapterInterface
             ]);
 
             // Parse sequence number from return value
-            $decoded = $encoder->decodeResponse($result, ['uint256']);
+            $decoded = $this->encoder->decodeResponse($result, ['uint256']);
             $sequence = $decoded[0] ?? '0';
 
             return [
@@ -368,9 +371,8 @@ class WormholeBridgeAdapter implements BridgeAdapterInterface
         // Step 2: If VAA is signed, check destination chain for completion
         if ($vaaBytes !== null && $destTxHash !== '') {
             try {
-                $rpcClient = new EthRpcClient();
                 $destChain = (string) ($data['target_chain'] ?? 'ethereum');
-                $receipt = $rpcClient->getTransactionReceipt($destTxHash, $destChain);
+                $receipt = $this->rpcClient->getTransactionReceipt($destTxHash, $destChain);
 
                 if ($receipt !== null) {
                     $receiptStatus = $receipt['status'] ?? '0x0';

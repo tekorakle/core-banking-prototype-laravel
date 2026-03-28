@@ -2693,6 +2693,32 @@ Rain is a modern card issuing platform for crypto/fintech companies.
 
 ---
 
-*Document Version: 6.12.0*
+## Version 7.0.0 — Production Release (RELEASED)
+
+**Release Date**: March 28, 2026
+**Theme**: Production-Grade Platform — Code Quality, SDK Stability, Deployment Readiness
+
+### Web3 Infrastructure Consolidation
+- Deprecated legacy Relayer EthRpcClient in favor of Infrastructure/Web3 canonical implementation
+- Constructor injection for all 4 CrossChain/DeFi adapters (15 inline `new` sites eliminated)
+- AbiEncoder and EthRpcClient now testable and mockable via DI
+
+### Zelta SDK v1.0.0
+- Version bump to 1.0.0 — stable API with typed DTOs and handler contracts
+- PSR-4 autoload verified, PHPStan Level 8 clean
+
+### Test Coverage Expansion
+- 23 new tests: BankWebhookController (16 HMAC + payload tests), ZkSetupCommand (7 artisan tests)
+- Total test suite stable across all domains
+
+### Production Readiness Fixes
+- Removed Marqeta sandbox URL from production env examples (was defaulting to sandbox API)
+- Fixed `env()` calls in ProductionMerkleTreeService (would return null after config:cache)
+- Helm Chart bumped to appVersion 7.0.0
+- Added production guards to 5 demo services (Payment, Exchange, Lending, Stablecoin)
+
+---
+
+*Document Version: 7.0.0*
 *Created: January 11, 2026*
-*Updated: March 27, 2026 (v6.12.0 Privacy ZK Production Prover)*
+*Updated: March 28, 2026 (v7.0.0 Production Release)*

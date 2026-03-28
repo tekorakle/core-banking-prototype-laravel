@@ -6,13 +6,14 @@ use App\Domain\CrossChain\Enums\CrossChainNetwork;
 use App\Domain\DeFi\Enums\DeFiProtocol;
 use App\Domain\DeFi\Services\Connectors\UniswapV3Connector;
 use App\Infrastructure\Web3\AbiEncoder;
+use App\Infrastructure\Web3\EthRpcClient;
 
 uses(Tests\TestCase::class);
 
 beforeEach(function () {
     config(['cache.default' => 'array']);
-    $this->connector = new UniswapV3Connector();
     $this->encoder = new AbiEncoder();
+    $this->connector = new UniswapV3Connector($this->encoder, new EthRpcClient());
 });
 
 describe('Uniswap V3 Production Mode', function () {

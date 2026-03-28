@@ -27,6 +27,12 @@ class AaveV3Connector implements LendingProtocolInterface
 
     private const SUPPORTED_CHAINS = ['ethereum', 'polygon', 'arbitrum', 'optimism', 'base'];
 
+    public function __construct(
+        private readonly AbiEncoder $encoder,
+        private readonly EthRpcClient $rpcClient,
+    ) {
+    }
+
     public function getProtocol(): DeFiProtocol
     {
         return DeFiProtocol::AAVE_V3;
@@ -207,21 +213,18 @@ class AaveV3Connector implements LendingProtocolInterface
         $dataProvider = $this->getDataProviderAddress($chain);
 
         try {
-            $encoder = new AbiEncoder();
-            $rpcClient = new EthRpcClient();
-
             $poolAddressesProvider = $this->getPoolAddressesProvider($chain);
 
             // Encode getUserReservesData(address provider, address user)
-            $callData = $encoder->encodeFunctionCall(
+            $callData = $this->encoder->encodeFunctionCall(
                 'getUserReservesData(address,address)',
                 [
-                    $encoder->encodeAddress($poolAddressesProvider),
-                    $encoder->encodeAddress($walletAddress),
+                    $this->encoder->encodeAddress($poolAddressesProvider),
+                    $this->encoder->encodeAddress($walletAddress),
                 ],
             );
 
-            $result = $rpcClient->ethCall($dataProvider, $callData, $chain->value);
+            $result = $this->rpcClient->ethCall($dataProvider, $callData, $chain->value);
 
             Log::info('Aave V3: On-chain position data received via ABI encoding', [
                 'chain'       => $chain->value,
@@ -260,25 +263,22 @@ class AaveV3Connector implements LendingProtocolInterface
         string $walletAddress,
     ): array {
         try {
-            $encoder = new AbiEncoder();
-            $rpcClient = new EthRpcClient();
-
             $assetAddress = $this->resolveTokenAddress($token, $chain);
-            $amountWei = $encoder->toSmallestUnit($amount, 18);
+            $amountWei = $this->encoder->toSmallestUnit($amount, 18);
             $poolAddress = $this->getPoolAddress($chain);
 
             // Encode Pool.supply(address asset, uint256 amount, address onBehalfOf, uint16 referralCode)
-            $callData = $encoder->encodeFunctionCall(
+            $callData = $this->encoder->encodeFunctionCall(
                 'supply(address,uint256,address,uint16)',
                 [
-                    $encoder->encodeAddress($assetAddress),
-                    $encoder->encodeUint256($amountWei),
-                    $encoder->encodeAddress($walletAddress),
-                    $encoder->encodeUint16(0), // No referral
+                    $this->encoder->encodeAddress($assetAddress),
+                    $this->encoder->encodeUint256($amountWei),
+                    $this->encoder->encodeAddress($walletAddress),
+                    $this->encoder->encodeUint16(0), // No referral
                 ],
             );
 
-            $txHash = $rpcClient->sendTransaction($walletAddress, $poolAddress, $callData, $chain->value);
+            $txHash = $this->rpcClient->sendTransaction($walletAddress, $poolAddress, $callData, $chain->value);
 
             Log::info('Aave V3: Supply executed on-chain', [
                 'chain' => $chain->value, 'token' => $token, 'tx_hash' => $txHash,
@@ -314,27 +314,24 @@ class AaveV3Connector implements LendingProtocolInterface
         string $walletAddress,
     ): array {
         try {
-            $encoder = new AbiEncoder();
-            $rpcClient = new EthRpcClient();
-
             $assetAddress = $this->resolveTokenAddress($token, $chain);
-            $amountWei = $encoder->toSmallestUnit($amount, 18);
+            $amountWei = $this->encoder->toSmallestUnit($amount, 18);
             $poolAddress = $this->getPoolAddress($chain);
 
             // Encode Pool.borrow(address asset, uint256 amount, uint256 interestRateMode, uint16 referralCode, address onBehalfOf)
             // interestRateMode: 2 = variable rate
-            $callData = $encoder->encodeFunctionCall(
+            $callData = $this->encoder->encodeFunctionCall(
                 'borrow(address,uint256,uint256,uint16,address)',
                 [
-                    $encoder->encodeAddress($assetAddress),
-                    $encoder->encodeUint256($amountWei),
-                    $encoder->encodeUint256('2'), // Variable rate
-                    $encoder->encodeUint16(0),    // No referral
-                    $encoder->encodeAddress($walletAddress),
+                    $this->encoder->encodeAddress($assetAddress),
+                    $this->encoder->encodeUint256($amountWei),
+                    $this->encoder->encodeUint256('2'), // Variable rate
+                    $this->encoder->encodeUint16(0),    // No referral
+                    $this->encoder->encodeAddress($walletAddress),
                 ],
             );
 
-            $txHash = $rpcClient->sendTransaction($walletAddress, $poolAddress, $callData, $chain->value);
+            $txHash = $this->rpcClient->sendTransaction($walletAddress, $poolAddress, $callData, $chain->value);
 
             Log::info('Aave V3: Borrow executed on-chain', [
                 'chain' => $chain->value, 'token' => $token, 'tx_hash' => $txHash,
@@ -370,25 +367,22 @@ class AaveV3Connector implements LendingProtocolInterface
         string $walletAddress,
     ): array {
         try {
-            $encoder = new AbiEncoder();
-            $rpcClient = new EthRpcClient();
-
             $assetAddress = $this->resolveTokenAddress($token, $chain);
-            $amountWei = $encoder->toSmallestUnit($amount, 18);
+            $amountWei = $this->encoder->toSmallestUnit($amount, 18);
             $poolAddress = $this->getPoolAddress($chain);
 
             // Encode Pool.repay(address asset, uint256 amount, uint256 interestRateMode, address onBehalfOf)
-            $callData = $encoder->encodeFunctionCall(
+            $callData = $this->encoder->encodeFunctionCall(
                 'repay(address,uint256,uint256,address)',
                 [
-                    $encoder->encodeAddress($assetAddress),
-                    $encoder->encodeUint256($amountWei),
-                    $encoder->encodeUint256('2'), // Variable rate
-                    $encoder->encodeAddress($walletAddress),
+                    $this->encoder->encodeAddress($assetAddress),
+                    $this->encoder->encodeUint256($amountWei),
+                    $this->encoder->encodeUint256('2'), // Variable rate
+                    $this->encoder->encodeAddress($walletAddress),
                 ],
             );
 
-            $txHash = $rpcClient->sendTransaction($walletAddress, $poolAddress, $callData, $chain->value);
+            $txHash = $this->rpcClient->sendTransaction($walletAddress, $poolAddress, $callData, $chain->value);
 
             Log::info('Aave V3: Repay executed on-chain', [
                 'chain' => $chain->value, 'token' => $token, 'tx_hash' => $txHash,
@@ -424,24 +418,21 @@ class AaveV3Connector implements LendingProtocolInterface
         string $walletAddress,
     ): array {
         try {
-            $encoder = new AbiEncoder();
-            $rpcClient = new EthRpcClient();
-
             $assetAddress = $this->resolveTokenAddress($token, $chain);
-            $amountWei = $encoder->toSmallestUnit($amount, 18);
+            $amountWei = $this->encoder->toSmallestUnit($amount, 18);
             $poolAddress = $this->getPoolAddress($chain);
 
             // Encode Pool.withdraw(address asset, uint256 amount, address to)
-            $callData = $encoder->encodeFunctionCall(
+            $callData = $this->encoder->encodeFunctionCall(
                 'withdraw(address,uint256,address)',
                 [
-                    $encoder->encodeAddress($assetAddress),
-                    $encoder->encodeUint256($amountWei),
-                    $encoder->encodeAddress($walletAddress),
+                    $this->encoder->encodeAddress($assetAddress),
+                    $this->encoder->encodeUint256($amountWei),
+                    $this->encoder->encodeAddress($walletAddress),
                 ],
             );
 
-            $txHash = $rpcClient->sendTransaction($walletAddress, $poolAddress, $callData, $chain->value);
+            $txHash = $this->rpcClient->sendTransaction($walletAddress, $poolAddress, $callData, $chain->value);
 
             Log::info('Aave V3: Withdraw executed on-chain', [
                 'chain' => $chain->value, 'token' => $token, 'tx_hash' => $txHash,
@@ -468,8 +459,6 @@ class AaveV3Connector implements LendingProtocolInterface
      */
     private function decodeUserPositions(string $hexData): array
     {
-        $encoder = new AbiEncoder();
-
         if (strlen($hexData) < 66) {
             return [
                 'supplies'      => [],
@@ -480,7 +469,7 @@ class AaveV3Connector implements LendingProtocolInterface
         }
 
         // Decode the response — health factor is in ray units (1e27)
-        $decoded = $encoder->decodeResponse($hexData, ['uint256']);
+        $decoded = $this->encoder->decodeResponse($hexData, ['uint256']);
         /** @var numeric-string $healthFactorRaw */
         $healthFactorRaw = $decoded[0] ?? '0';
 
