@@ -36,6 +36,8 @@ class PasskeyAuthenticateRequest extends BaseMobileRequest
             'authenticator_data' => ['required', 'string'],
             'client_data_json'   => ['required', 'string'],
             'signature'          => ['required', 'string'],
+            'device_attestation' => ['nullable', 'string', 'max:4096'],
+            'device_type'        => ['nullable', 'string', 'in:ios,android'],
         ];
     }
 
