@@ -34,3 +34,4 @@ scalar DateTime @scalar(class: "Nuwave\\Lighthouse\\Schema\\Types\\Scalars\\Date
 #import banking.graphql
 #import plugin.graphql
 #import rewards.graphql
+#import open-banking.graphql
