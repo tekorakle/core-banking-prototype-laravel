@@ -2,12 +2,9 @@
 
 declare(strict_types=1);
 
-/**
- * Tests for the zk:setup Artisan command.
- *
- * These tests validate argument handling and error paths without
- * requiring the circom/snarkjs toolchain to be installed.
- */
+// Tests for the zk:setup Artisan command.
+// Validates argument handling and error paths without requiring circom/snarkjs.
+
 beforeEach(function (): void {
     $this->testDir = sys_get_temp_dir() . '/zk_setup_cmd_' . uniqid();
     @mkdir($this->testDir, 0755, true);

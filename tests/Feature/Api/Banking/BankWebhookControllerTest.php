@@ -5,11 +5,6 @@ declare(strict_types=1);
 use App\Domain\Banking\Services\BankTransferService;
 use Mockery\MockInterface;
 
-/**
- * Dedicated tests for BankWebhookController — HMAC verification,
- * status mapping, field validation, and both transfer-update / account-update endpoints.
- */
-
 // ---------------------------------------------------------------
 // Transfer-update endpoint — signature verification
 // ---------------------------------------------------------------
