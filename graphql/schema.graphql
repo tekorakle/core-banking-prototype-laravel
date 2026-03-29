@@ -16,6 +16,7 @@ scalar DateTime @scalar(class: "Nuwave\\Lighthouse\\Schema\\Types\\Scalars\\Date
 #import crosschain.graphql
 #import defi.graphql
 #import fraud.graphql
+#import iso20022.graphql
 #import mobile.graphql
 #import mobile-payment.graphql
 #import trust-cert.graphql
@@ -33,3 +34,4 @@ scalar DateTime @scalar(class: "Nuwave\\Lighthouse\\Schema\\Types\\Scalars\\Date
 #import banking.graphql
 #import plugin.graphql
 #import rewards.graphql
+#import open-banking.graphql
