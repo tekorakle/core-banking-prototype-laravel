@@ -155,4 +155,9 @@ Route::prefix('v1/wallet')->name('mobile.wallet.')
             ->name('recovery-shard-backup.retrieve');
         Route::delete('/recovery-shard-backup', [RecoveryShardController::class, 'destroy'])
             ->name('recovery-shard-backup.destroy');
+
+        // Recovery key reconstruction (v7.2.0)
+        Route::post('/recovery/reconstruct', [RecoveryShardController::class, 'reconstruct'])
+            ->middleware('transaction.rate_limit:blockchain')
+            ->name('recovery.reconstruct');
     });
