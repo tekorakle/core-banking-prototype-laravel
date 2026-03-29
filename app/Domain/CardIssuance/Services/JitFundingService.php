@@ -10,6 +10,7 @@ use App\Domain\CardIssuance\Events\AuthorizationApproved;
 use App\Domain\CardIssuance\Events\AuthorizationDeclined;
 use App\Domain\CardIssuance\ValueObjects\AuthorizationRequest;
 use App\Infrastructure\Monitoring\MetricsService;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Log;
 use Throwable;
@@ -66,30 +67,55 @@ class JitFundingService
             return $this->decline($request, $decision);
         }
 
-        // 2. Check stablecoin balance (demo implementation)
-        $balance = $this->getStablecoinBalance($card->metadata['user_id'] ?? '');
+        // 2. Check balance + create hold atomically to prevent TOCTOU race condition.
+        //    Without a transaction lock, two concurrent authorizations could both pass
+        //    the balance check before either creates a hold, leading to double-spending.
+        $userId = $card->metadata['user_id'] ?? '';
         $requiredAmount = (float) $request->getAmountDecimal();
 
-        if ($balance < $requiredAmount) {
-            return $this->decline($request, AuthorizationDecision::DECLINED_INSUFFICIENT_FUNDS);
-        }
+        $declineReason = null;
+        $holdId = '';
 
-        // 2b. Check spend limits
-        if (! $this->spendLimitService->checkLimit($request->cardToken, $requiredAmount)) {
-            return $this->decline($request, AuthorizationDecision::DECLINED_LIMIT_EXCEEDED);
-        }
+        DB::transaction(function () use ($request, $userId, $requiredAmount, &$declineReason, &$holdId): void {
+            // Acquire row lock on account to serialize concurrent authorizations.
+            // Demo mode skips locking (no real account rows exist).
+            if (! $this->isDemoMode()) {
+                \App\Domain\Account\Models\Account::where('user_uuid', $userId)
+                    ->lockForUpdate()
+                    ->first();
+            }
 
-        // 3. Create hold on funds
-        $holdId = $this->createHold(
-            $card->metadata['user_id'] ?? '',
-            self::DEFAULT_FUNDING_TOKEN,
-            $requiredAmount,
-            [
-                'authorization_id'  => $request->authorizationId,
-                'merchant'          => $request->merchantName,
-                'merchant_category' => $request->merchantCategory,
-            ]
-        );
+            $balance = $this->getStablecoinBalance($userId);
+
+            if ($balance < $requiredAmount) {
+                $declineReason = AuthorizationDecision::DECLINED_INSUFFICIENT_FUNDS;
+
+                return;
+            }
+
+            // Check spend limits inside the lock to prevent limit bypass
+            if (! $this->spendLimitService->checkLimit($request->cardToken, $requiredAmount)) {
+                $declineReason = AuthorizationDecision::DECLINED_LIMIT_EXCEEDED;
+
+                return;
+            }
+
+            // Create hold while lock is held — guarantees no concurrent double-spend
+            $holdId = $this->createHold(
+                $userId,
+                self::DEFAULT_FUNDING_TOKEN,
+                $requiredAmount,
+                [
+                    'authorization_id'  => $request->authorizationId,
+                    'merchant'          => $request->merchantName,
+                    'merchant_category' => $request->merchantCategory,
+                ]
+            );
+        });
+
+        if ($declineReason !== null) {
+            return $this->decline($request, $declineReason);
+        }
 
         // 4. Approve transaction
         $latencyMs = (microtime(true) - $startTime) * 1000;
