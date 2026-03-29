@@ -2753,6 +2753,24 @@ Rain is a modern card issuing platform for crypto/fintech companies.
 
 ---
 
-*Document Version: 7.1.0*
+## Version 7.1.1 — Security Hotfix (RELEASED)
+
+**Release Date**: March 29, 2026
+**Theme**: Critical Security Fixes from Threat Model
+
+### JIT Funding TOCTOU Race Condition (Critical)
+- Wrapped balance check + hold creation in `DB::transaction()` with `lockForUpdate()`
+- Prevents double-spending via concurrent authorization requests
+- Demo mode bypasses locking (no real account rows)
+
+### Webhook SSRF Prevention (Critical)
+- `UrlValidator::validateExternalUrl()` blocks private IPs, cloud metadata, loopback
+- Enforces HTTPS in production
+- Integrated into WebhookController (store/update) and AgentWebhookService
+- 14 unit tests for all rejection/acceptance cases
+
+---
+
+*Document Version: 7.1.1*
 *Created: January 11, 2026*
 *Updated: March 29, 2026 (v7.1.0 Production Hardening)*
