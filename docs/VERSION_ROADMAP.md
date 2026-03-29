@@ -2771,6 +2771,53 @@ Rain is a modern card issuing platform for crypto/fintech companies.
 
 ---
 
-*Document Version: 7.1.1*
+## Version 7.2.0 — Standards & Compliance Foundation (RELEASED)
+
+**Release Date**: March 30, 2026
+**Theme**: Close traditional banking infrastructure gaps — ISO standards and Open Banking compliance
+
+Based on competitive analysis of 19 worldwide open-source core banking platforms (Apache Fineract, Moov, Open Bank Project, Hyperswitch, Rafiki, Mojaloop, Galoy, and commercial platforms). FinAegis leads in Web3/DeFi/ZK/PQC; these gaps are in traditional banking infrastructure.
+
+### ISO 20022 Message Engine (New Domain)
+- 8 message type DTOs: Pain001, Pain008, Pacs008, Pacs002, Pacs003, Pacs004, Camt053, Camt054
+- MessageParser — XML-to-DTO with namespace-aware parsing
+- MessageGenerator — DTO-to-XML generation
+- MessageValidator — 5-step validation (well-formed XML, namespace, enabled family, size, required fields)
+- MessageRegistry — type-to-class mapping with namespace detection
+- REST API: `/v1/iso20022/{validate,parse,generate,supported-types}`
+- GraphQL: `iso20022Validate` mutation, `iso20022SupportedTypes` query
+- UETR (Unique End-to-End Transaction Reference) for cross-border tracking
+
+### Open Banking PSD2 Compliance (New Domain)
+- PSD2 consent lifecycle: create → authorize → use → expire/revoke
+- AISP (Account Information Service Provider) — consent-gated account/balance/transaction access
+- PISP (Payment Initiation Service Provider) — consent-gated payment initiation
+- TPP Registration Service — Third-Party Provider management with certificate validation
+- Berlin Group NextGenPSD2 format adapter
+- UK Open Banking format adapter
+- ValidateTppCertificate middleware — eIDAS/QWAC certificate validation
+- EnforceConsent middleware — consent-based access control
+- REST API: 11 endpoints under `/v1/open-banking/`
+- GraphQL: 2 queries + 3 mutations for consent management
+- 3 models (Consent, TppRegistration, ConsentAccessLog) with migrations
+
+### ISO 8583 Card Network Processor (New Domain)
+- MessageCodec — encode/decode ISO 8583 bitmap-based messages
+- FieldDefinitions — 25 standard fields (PAN, amount, STAN, terminal/merchant IDs, etc.)
+- Bitmap — primary (64-bit) and secondary (128-bit) with hex encode/decode
+- AuthorizationHandler — 0100→0110 auth request/response with PAN/amount validation
+- ReversalHandler — 0400→0410 reversal processing
+- SettlementHandler — 0500→0510 settlement batch processing
+- REST API: `/v1/iso8583/{authorize,reverse,settle}`
+- Integration point with CardIssuance domain for spend limit enforcement
+
+### Statistics
+- 3 new domains, ~51 files, 94 tests, 439 assertions
+- PHPStan Level 8 — zero errors
+- All features opt-in via config flags (ISO20022_ENABLED, OPEN_BANKING_ENABLED, ISO8583_ENABLED)
+
+---
+
+*Document Version: 7.2.0*
 *Created: January 11, 2026*
-*Updated: March 29, 2026 (v7.1.0 Production Hardening)*
+*Updated: March 30, 2026 (v7.2.0 Standards & Compliance Foundation)*
