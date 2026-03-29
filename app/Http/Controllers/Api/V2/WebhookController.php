@@ -7,11 +7,13 @@ namespace App\Http\Controllers\Api\V2;
 use App\Domain\Webhook\Models\Webhook;
 use App\Domain\Webhook\Models\WebhookDelivery;
 use App\Http\Controllers\Controller;
+use App\Infrastructure\Security\UrlValidator;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
 use OpenApi\Attributes as OA;
+use RuntimeException;
 
 #[OA\Tag(
     name: 'Webhooks',
@@ -106,6 +108,16 @@ class WebhookController extends Controller
                 'is_active'   => 'boolean',
             ]
         );
+
+        // SSRF protection: validate URL does not resolve to private/internal IPs
+        try {
+            UrlValidator::validateExternalUrl($validated['url']);
+        } catch (RuntimeException $e) {
+            return response()->json(
+                ['error' => 'Invalid webhook URL: ' . $e->getMessage()],
+                422
+            );
+        }
 
         $secret = 'whsec_' . Str::random(32);
 
@@ -227,6 +239,18 @@ class WebhookController extends Controller
                 'is_active'   => 'boolean',
             ]
         );
+
+        // SSRF protection: validate URL if it's being changed
+        if (isset($validated['url'])) {
+            try {
+                UrlValidator::validateExternalUrl($validated['url']);
+            } catch (RuntimeException $e) {
+                return response()->json(
+                    ['error' => 'Invalid webhook URL: ' . $e->getMessage()],
+                    422
+                );
+            }
+        }
 
         $webhook->update($validated);
 
