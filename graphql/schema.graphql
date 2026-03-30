@@ -39,3 +39,13 @@ scalar DateTime @scalar(class: "Nuwave\\Lighthouse\\Schema\\Types\\Scalars\\Date
 #import payment-rails.graphql
 #import ledger.graphql
 #import microfinance.graphql
+#import ai.graphql
+#import asset.graphql
+#import commerce.graphql
+#import custodian.graphql
+#import governance.graphql
+#import key-management.graphql
+#import privacy.graphql
+#import regtech.graphql
+#import relayer.graphql
+#import sms.graphql

@@ -5,7 +5,7 @@
 @section('seo')
     @include('partials.seo', [
         'title' => 'About ' . config('brand.name', 'Zelta') . ' - Open Source Core Banking Infrastructure',
-        'description' => config('brand.name', 'Zelta') . ' is an open-source core banking platform with 49 DDD domains, event sourcing, CQRS, and the Global Currency Unit. Built with Laravel for fintech developers.',
+        'description' => config('brand.name', 'Zelta') . ' is an open-source core banking platform with 56 DDD domains, event sourcing, CQRS, and the Global Currency Unit. Built with Laravel for fintech developers.',
         'keywords' => config('brand.name', 'Zelta') . ' about, open source banking, core banking platform, GCU, event sourcing, CQRS, Laravel banking, DDD, fintech infrastructure',
     ])
 
@@ -47,7 +47,7 @@
                 <div class="animate-on-scroll">
                     <h2 class="font-display text-3xl lg:text-4xl font-bold text-slate-900 mb-6">What Is {{ config('brand.name', 'Zelta') }}?</h2>
                     <p class="text-lg text-slate-600 mb-4 leading-relaxed">
-                        {{ config('brand.name', 'Zelta') }} is a core banking platform built with Laravel, implementing event sourcing, CQRS, domain-driven design, and AI agent integration across 49 bounded contexts.
+                        {{ config('brand.name', 'Zelta') }} is a core banking platform built with Laravel, implementing event sourcing, CQRS, domain-driven design, and AI agent integration across 56 bounded contexts.
                     </p>
                     <p class="text-lg text-slate-600 mb-6 leading-relaxed">
                         At its heart is the <strong>Global Currency Unit (GCU)</strong>&mdash;a democratically governed basket currency where users vote on composition from six global reserve assets.
@@ -147,7 +147,7 @@
                     ['title' => 'Banking API Patterns', 'desc' => 'Open Banking-compliant API adapters including Ondato KYC, Chainalysis sanctions screening, and Marqeta card issuing for real-world integration patterns.'],
                     ['title' => 'Cross-Chain & DeFi', 'desc' => 'Bridge protocols (Wormhole, LayerZero, Axelar), DEX aggregation via Uniswap/Aave/Curve/Lido, cross-chain swaps, and multi-chain portfolio management.'],
                     ['title' => 'Privacy & Identity', 'desc' => 'ZK-KYC proofs, Merkle tree commitments, soulbound tokens, W3C verifiable credentials, Shamir secret sharing, and delegated proof verification.'],
-                    ['title' => 'GraphQL API', 'desc' => 'Lighthouse-powered GraphQL covering 39 domains with real-time subscriptions, N+1 safe DataLoaders, and cursor-based pagination alongside REST/OpenAPI.'],
+                    ['title' => 'GraphQL API', 'desc' => 'Lighthouse-powered GraphQL covering 43 domains with real-time subscriptions, N+1 safe DataLoaders, and cursor-based pagination alongside REST/OpenAPI.'],
                     ['title' => 'Plugin Marketplace', 'desc' => 'Extensible plugin system with sandboxed execution, static security scanning, hook-based integration points, and a manager UI for discovering and installing plugins.'],
                     ['title' => 'Event Streaming', 'desc' => 'Redis Streams-powered event streaming with a live dashboard, consumer groups, backpressure handling, and dead-letter queues for reliable event processing.'],
                     ['title' => 'Compliance Certification', 'desc' => 'SOC 2 Type II and PCI DSS readiness tooling, GDPR enhanced privacy (ROPA, DPIA, breach notification, consent v2), and multi-region deployment support.'],

@@ -5,9 +5,9 @@ namespace App\Http\Controllers\Api\Documentation;
 use OpenApi\Attributes as OA;
 
 #[OA\Info(
-    version: '6.5.0',
+    version: '7.7.0',
     title: 'Zelta API',
-    description: 'Agentic payments API — stablecoin-powered virtual cards, non-custodial wallet, and AI agent card issuance. Built with Laravel 12, featuring 49 DDD domains, event sourcing, CQRS, and privacy-preserving architecture.',
+    description: 'Core banking API — stablecoin-powered virtual cards, non-custodial wallet, AI agent card issuance, ISO 20022, Open Banking, US Payment Rails, Interledger, and Microfinance. Built with Laravel 12, featuring 56 DDD domains, event sourcing, CQRS, and privacy-preserving architecture.',
     contact: new OA\Contact(email: 'support@finaegis.org', name: 'Zelta Support'),
     license: new OA\License(name: 'Apache 2.0', url: 'https://www.apache.org/licenses/LICENSE-2.0.html'),
 )]
