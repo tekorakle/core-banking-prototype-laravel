@@ -434,7 +434,7 @@
                 <!-- Platform API Area Cards -->
                 <div class="mt-16">
                     <h3 class="text-2xl font-bold text-slate-900 mb-2 text-center">Platform API Areas</h3>
-                    <p class="text-slate-500 text-center mb-8">Explore the full breadth of the {{ config('brand.name', 'Zelta') }} platform across 49 DDD domains</p>
+                    <p class="text-slate-500 text-center mb-8">Explore the full breadth of the {{ config('brand.name', 'Zelta') }} platform across 56 DDD domains</p>
                     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
 
                         <!-- CrossChain -->
@@ -563,10 +563,10 @@
                                     </div>
                                     <div>
                                         <h4 class="text-lg font-semibold text-slate-900">GraphQL API</h4>
-                                        <span class="text-xs text-slate-400">39 domains</span>
+                                        <span class="text-xs text-slate-400">43 domains</span>
                                     </div>
                                 </div>
-                                <p class="text-slate-500 text-sm mb-3">Schema-first GraphQL via Lighthouse PHP with queries, mutations, subscriptions, and DataLoaders across 39 domain schemas.</p>
+                                <p class="text-slate-500 text-sm mb-3">Schema-first GraphQL via Lighthouse PHP with queries, mutations, subscriptions, and DataLoaders across 43 domain schemas.</p>
                                 <span class="text-sky-600 text-sm font-medium group-hover:text-sky-700">View endpoints &rarr;</span>
                             </div>
                         </a>
@@ -695,7 +695,7 @@
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 <div class="grid grid-cols-2 md:grid-cols-5 gap-8 text-center">
                     <div>
-                        <div class="text-4xl md:text-5xl font-bold mb-2">1,350+</div>
+                        <div class="text-4xl md:text-5xl font-bold mb-2">1,400+</div>
                         <p class="text-indigo-200 flex items-center justify-center">
                             <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 9l3 3-3 3m5 0h3M5 20h14a2 2 0 002-2V6a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
