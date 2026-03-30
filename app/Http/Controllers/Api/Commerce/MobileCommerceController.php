@@ -465,8 +465,16 @@ class MobileCommerceController extends Controller
                 'asset'       => 'USDC',
                 'network'     => 'polygon',
                 'status'      => 'pending',
-                'created_at'  => now()->toIso8601String(),
-                'expires_at'  => now()->addMinutes(15)->toIso8601String(),
+                'merchant'    => [
+                    'id'           => 'merchant_demo_001',
+                    'name'         => 'Demo Merchant',
+                    'display_name' => 'Demo Merchant',
+                    'category'     => 'retail',
+                    'logo_url'     => null,
+                    'verified'     => true,
+                ],
+                'created_at' => now()->toIso8601String(),
+                'expires_at' => now()->addMinutes(15)->toIso8601String(),
             ],
         ]);
     }
