@@ -155,20 +155,24 @@ class MobileWalletController extends Controller
                         ? (float) $balance
                         : 0.0;
                     $balances[] = [
-                        'token'     => $token,
-                        'network'   => $networkStr,
-                        'address'   => $account->account_address,
-                        'balance'   => $balance,
-                        'usd_value' => $usdValue,
+                        'token'             => $token,
+                        'network'           => $networkStr,
+                        'address'           => $account->account_address,
+                        'balance'           => $balance,
+                        'balance_formatted' => $this->formatBalance($balance, $token),
+                        'usd_value'         => $usdValue,
+                        'change_24h'        => 0.0,
                     ];
                 } catch (Throwable) {
                     $balances[] = [
-                        'token'     => $token,
-                        'network'   => $networkStr,
-                        'address'   => $account->account_address,
-                        'balance'   => '0',
-                        'usd_value' => 0.0,
-                        'error'     => 'Balance query failed',
+                        'token'             => $token,
+                        'network'           => $networkStr,
+                        'address'           => $account->account_address,
+                        'balance'           => '0',
+                        'balance_formatted' => '0.00',
+                        'usd_value'         => 0.0,
+                        'change_24h'        => 0.0,
+                        'error'             => 'Balance query failed',
                     ];
                 }
             }
@@ -612,5 +616,15 @@ class MobileWalletController extends Controller
             'success' => true,
             'data'    => $recipients,
         ]);
+    }
+
+    /**
+     * Format a raw balance string for display.
+     */
+    private function formatBalance(string $balance, string $token): string
+    {
+        $decimals = in_array($token, ['USDC', 'USDT'], true) ? 2 : 6;
+
+        return number_format((float) $balance, $decimals, '.', ',');
     }
 }

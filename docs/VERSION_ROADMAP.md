@@ -2879,6 +2879,38 @@ Based on competitive analysis of 19 worldwide open-source core banking platforms
 ### Statistics
 - 1 new domain, ~35 new files, 60 tests, 175 assertions
 
-*Document Version: 7.4.0*
+---
+
+## Version 7.5.0 — Market Expansion & Developer Experience (RELEASED)
+
+**Release Date**: March 30, 2026
+**Theme**: Full MFI suite for microfinance institutions + developer experience enhancements
+
+### Full Microfinance Suite (New Domain)
+- **Group Lending** — Joint liability groups, center hierarchy, meeting management with frequency-based scheduling
+- **Loan Provisioning** — IFRS-compliant classification (standard/substandard/doubtful/loss), configurable rates and thresholds, batch reclassification
+- **Share Accounts** — Cooperative shares with purchase/redeem, dividend calculation and distribution
+- **Teller Operations** — Cashier vault management, cash-in/cash-out with balance guards, reconciliation
+- **Field Officer** — Territory assignment, collection sheet generation, mobile sync
+- **Savings Products** — Dormancy detection (configurable thresholds), simple and compound interest calculation
+- 5 enums, 8 models, 8 migrations, 6 services
+- REST API (14 endpoints), GraphQL (3 queries + 5 mutations), 3 artisan commands
+
+### Developer Experience (Option A+)
+- **Sandbox Provisioning** — Isolated sandbox environments with 3 seed profiles (basic/full/payments)
+- **Sandbox Reset** — Clean state reset with re-seeding
+- **Webhook Testing** — Test payload generation for 5 event types, webhook replay with HMAC signatures
+- **Webhook Delivery Routes** — Event listing, test payload, delivery log endpoints
+- **API Key Management** — CLI commands: `partner:api-key {create,rotate,revoke,list}`
+- **Sandbox CLI** — `partner:sandbox:{create,reset}` with profile selection
+
+### Mobile Compatibility Fixes
+- GET /v1/wallet/balances: added `balance_formatted` and `change_24h` fields
+- GET /v1/commerce/payment-requests/{id}: added nested `merchant` object
+
+### Statistics
+- 1 new domain + 2 extended, ~60 new files, 150+ tests
+
+*Document Version: 7.5.0*
 *Created: January 11, 2026*
-*Updated: March 30, 2026 (v7.4.0 Accounting & Infrastructure)*
+*Updated: March 30, 2026 (v7.5.0 Market Expansion & Developer Experience)*
