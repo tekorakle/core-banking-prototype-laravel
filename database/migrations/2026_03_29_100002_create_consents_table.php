@@ -11,7 +11,7 @@ return new class () extends Migration {
     {
         Schema::create('consents', function (Blueprint $table): void {
             $table->uuid('id')->primary();
-            $table->uuid('tpp_id');
+            $table->string('tpp_id');
             $table->foreignId('user_id')->constrained()->cascadeOnDelete();
             $table->string('status')->default('awaiting_authorization');
             $table->json('permissions');
