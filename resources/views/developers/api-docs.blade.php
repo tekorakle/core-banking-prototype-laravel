@@ -46,6 +46,12 @@
                     <a href="#graphql" class="text-sky-600 hover:text-sky-800">GraphQL</a>
                     <a href="#event-streaming" class="text-lime-600 hover:text-lime-800">Event Streaming</a>
                     <a href="#x402" class="text-emerald-600 hover:text-emerald-800">x402 Protocol</a>
+                    <a href="#iso20022" class="text-blue-600 hover:text-blue-800">ISO 20022</a>
+                    <a href="#open-banking" class="text-teal-600 hover:text-teal-800">Open Banking</a>
+                    <a href="#payment-rails" class="text-orange-600 hover:text-orange-800">Payment Rails</a>
+                    <a href="#interledger" class="text-purple-600 hover:text-purple-800">Interledger</a>
+                    <a href="#ledger" class="text-slate-600 hover:text-slate-900">Ledger</a>
+                    <a href="#microfinance" class="text-green-600 hover:text-green-800">Microfinance</a>
                     <a href="#webhooks" class="text-gray-600 hover:text-gray-900">Webhooks</a>
                     <a href="#errors" class="text-gray-600 hover:text-gray-900">Errors</a>
                 </nav>
@@ -1412,6 +1418,248 @@ curl -H "Authorization: Bearer your_api_key" \
                         </div>
                     </section>
 
+                    <!-- ISO 20022 API -->
+                    <section id="iso20022" class="mb-16">
+                        <h2 class="text-3xl font-bold text-gray-900 mb-8">ISO 20022 API</h2>
+                        <div class="prose prose-lg max-w-none mb-8">
+                            <p>Parse, generate, and validate ISO 20022 financial messages. Supports 8 message types (pacs.008, pacs.002, pain.001, pain.002, camt.053, camt.054, camt.056, admi.002) with full REST and GraphQL coverage. XML is validated against official XSD schemas.</p>
+                        </div>
+                        <div class="space-y-8">
+                            <div class="border rounded-lg p-6">
+                                <h3 class="text-xl font-semibold mb-4">Parse Message</h3>
+                                <div class="flex items-center gap-3 mb-4">
+                                    <span class="inline-block bg-orange-100 text-orange-800 text-xs font-medium px-2.5 py-0.5 rounded">POST</span>
+                                    <span class="font-mono text-sm">/api/v1/iso20022/parse</span>
+                                </div>
+                                <p class="text-gray-600 mb-4">Parse an ISO 20022 XML message and return a structured JSON representation.</p>
+                                <x-code-block language="bash">
+curl -X POST \
+  -H "Authorization: Bearer your_api_key" \
+  -H "Content-Type: application/xml" \
+  --data-binary @payment.xml \
+  {{ config('app.url') }}/api/v1/iso20022/parse
+                                </x-code-block>
+                            </div>
+                            <div class="border rounded-lg p-6">
+                                <h3 class="text-xl font-semibold mb-4">Generate Message</h3>
+                                <div class="flex items-center gap-3 mb-4">
+                                    <span class="inline-block bg-orange-100 text-orange-800 text-xs font-medium px-2.5 py-0.5 rounded">POST</span>
+                                    <span class="font-mono text-sm">/api/v1/iso20022/generate</span>
+                                </div>
+                                <p class="text-gray-600 mb-4">Generate a standards-compliant ISO 20022 XML message from a JSON payload.</p>
+                                <x-code-block language="bash">
+curl -X POST \
+  -H "Authorization: Bearer your_api_key" \
+  -H "Content-Type: application/json" \
+  -d '{"type":"pacs.008","amount":"1000.00","currency":"EUR","debtor":"...","creditor":"..."}' \
+  {{ config('app.url') }}/api/v1/iso20022/generate
+                                </x-code-block>
+                            </div>
+                            <div class="border rounded-lg p-6">
+                                <h3 class="text-xl font-semibold mb-4">Validate Message</h3>
+                                <div class="flex items-center gap-3 mb-4">
+                                    <span class="inline-block bg-orange-100 text-orange-800 text-xs font-medium px-2.5 py-0.5 rounded">POST</span>
+                                    <span class="font-mono text-sm">/api/v1/iso20022/validate</span>
+                                </div>
+                                <p class="text-gray-600 mb-4">Validate an ISO 20022 XML message against the official XSD schema and business rules.</p>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- Open Banking API -->
+                    <section id="open-banking" class="mb-16">
+                        <h2 class="text-3xl font-bold text-gray-900 mb-8">Open Banking API</h2>
+                        <div class="prose prose-lg max-w-none mb-8">
+                            <p>Full PSD2 consent lifecycle with AISP (Account Information Service Provider) and PISP (Payment Initiation Service Provider) services. Supports Berlin Group NextGenPSD2 and UK Open Banking adapters. TPP registration with eIDAS certificate validation.</p>
+                        </div>
+                        <div class="space-y-8">
+                            <div class="border rounded-lg p-6">
+                                <h3 class="text-xl font-semibold mb-4">Create Consent</h3>
+                                <div class="flex items-center gap-3 mb-4">
+                                    <span class="inline-block bg-orange-100 text-orange-800 text-xs font-medium px-2.5 py-0.5 rounded">POST</span>
+                                    <span class="font-mono text-sm">/api/v1/open-banking/consents</span>
+                                </div>
+                                <p class="text-gray-600 mb-4">Initiate a PSD2 consent request for account access or payment initiation.</p>
+                                <x-code-block language="bash">
+curl -X POST \
+  -H "Authorization: Bearer your_api_key" \
+  -H "Content-Type: application/json" \
+  -d '{"access":{"accounts":"all","balances":"all","transactions":"all"},"recurringIndicator":false,"validUntil":"2026-12-31","frequencyPerDay":4}' \
+  {{ config('app.url') }}/api/v1/open-banking/consents
+                                </x-code-block>
+                            </div>
+                            <div class="border rounded-lg p-6">
+                                <h3 class="text-xl font-semibold mb-4">Get Account Information (AISP)</h3>
+                                <div class="flex items-center gap-3 mb-4">
+                                    <span class="inline-block bg-green-100 text-green-800 text-xs font-medium px-2.5 py-0.5 rounded">GET</span>
+                                    <span class="font-mono text-sm">/api/v1/open-banking/accounts</span>
+                                </div>
+                                <p class="text-gray-600 mb-4">Retrieve account list under an active AISP consent.</p>
+                            </div>
+                            <div class="border rounded-lg p-6">
+                                <h3 class="text-xl font-semibold mb-4">Initiate Payment (PISP)</h3>
+                                <div class="flex items-center gap-3 mb-4">
+                                    <span class="inline-block bg-orange-100 text-orange-800 text-xs font-medium px-2.5 py-0.5 rounded">POST</span>
+                                    <span class="font-mono text-sm">/api/v1/open-banking/payments</span>
+                                </div>
+                                <p class="text-gray-600 mb-4">Initiate a payment under an active PISP consent.</p>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- Payment Rails API -->
+                    <section id="payment-rails" class="mb-16">
+                        <h2 class="text-3xl font-bold text-gray-900 mb-8">Payment Rails API</h2>
+                        <div class="prose prose-lg max-w-none mb-8">
+                            <p>Multi-rail payment processing with ACH (NACHA file generation), Fedwire, RTP, FedNow (ISO 20022 native), SEPA Direct Debit, and SCT Inst. Intelligent routing automatically selects the optimal rail based on amount, currency, and counterparty.</p>
+                        </div>
+                        <div class="space-y-8">
+                            <div class="border rounded-lg p-6">
+                                <h3 class="text-xl font-semibold mb-4">Initiate Payment</h3>
+                                <div class="flex items-center gap-3 mb-4">
+                                    <span class="inline-block bg-orange-100 text-orange-800 text-xs font-medium px-2.5 py-0.5 rounded">POST</span>
+                                    <span class="font-mono text-sm">/api/v1/payment-rails/payments</span>
+                                </div>
+                                <p class="text-gray-600 mb-4">Initiate a payment via the specified rail, or let intelligent routing select the optimal rail automatically.</p>
+                                <x-code-block language="bash">
+curl -X POST \
+  -H "Authorization: Bearer your_api_key" \
+  -H "Content-Type: application/json" \
+  -d '{"amount":"500.00","currency":"USD","rail":"auto","creditor_account":"...","memo":"Invoice #1234"}' \
+  {{ config('app.url') }}/api/v1/payment-rails/payments
+                                </x-code-block>
+                            </div>
+                            <div class="border rounded-lg p-6">
+                                <h3 class="text-xl font-semibold mb-4">List Supported Rails</h3>
+                                <div class="flex items-center gap-3 mb-4">
+                                    <span class="inline-block bg-green-100 text-green-800 text-xs font-medium px-2.5 py-0.5 rounded">GET</span>
+                                    <span class="font-mono text-sm">/api/v1/payment-rails/rails</span>
+                                </div>
+                                <p class="text-gray-600 mb-4">List all available payment rails with current availability and cut-off times.</p>
+                            </div>
+                            <div class="border rounded-lg p-6">
+                                <h3 class="text-xl font-semibold mb-4">Generate ACH File</h3>
+                                <div class="flex items-center gap-3 mb-4">
+                                    <span class="inline-block bg-orange-100 text-orange-800 text-xs font-medium px-2.5 py-0.5 rounded">POST</span>
+                                    <span class="font-mono text-sm">/api/v1/payment-rails/ach/files</span>
+                                </div>
+                                <p class="text-gray-600 mb-4">Generate a NACHA-compliant ACH batch file from a list of payment entries.</p>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- Interledger API -->
+                    <section id="interledger" class="mb-16">
+                        <h2 class="text-3xl font-bold text-gray-900 mb-8">Interledger API</h2>
+                        <div class="prose prose-lg max-w-none mb-8">
+                            <p>Cross-network value transfer with ILP connector, Open Payments (GNAP authorization), and cross-currency quotes. Bridge fiat and crypto payment networks seamlessly.</p>
+                        </div>
+                        <div class="space-y-8">
+                            <div class="border rounded-lg p-6">
+                                <h3 class="text-xl font-semibold mb-4">Get Quote</h3>
+                                <div class="flex items-center gap-3 mb-4">
+                                    <span class="inline-block bg-orange-100 text-orange-800 text-xs font-medium px-2.5 py-0.5 rounded">POST</span>
+                                    <span class="font-mono text-sm">/api/v1/interledger/quotes</span>
+                                </div>
+                                <p class="text-gray-600 mb-4">Get a cross-currency quote for an Interledger payment including fees and FX rate.</p>
+                                <x-code-block language="bash">
+curl -X POST \
+  -H "Authorization: Bearer your_api_key" \
+  -H "Content-Type: application/json" \
+  -d '{"send_amount":"100.00","send_currency":"USD","receive_currency":"EUR","receiver":"$wallet.example.com/alice"}' \
+  {{ config('app.url') }}/api/v1/interledger/quotes
+                                </x-code-block>
+                            </div>
+                            <div class="border rounded-lg p-6">
+                                <h3 class="text-xl font-semibold mb-4">Send Payment</h3>
+                                <div class="flex items-center gap-3 mb-4">
+                                    <span class="inline-block bg-orange-100 text-orange-800 text-xs font-medium px-2.5 py-0.5 rounded">POST</span>
+                                    <span class="font-mono text-sm">/api/v1/interledger/payments</span>
+                                </div>
+                                <p class="text-gray-600 mb-4">Execute an Interledger payment using a previously obtained quote.</p>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- Ledger API -->
+                    <section id="ledger" class="mb-16">
+                        <h2 class="text-3xl font-bold text-gray-900 mb-8">Ledger API</h2>
+                        <div class="prose prose-lg max-w-none mb-8">
+                            <p>Production-grade double-entry accounting engine. Manage chart of accounts, post journal entries, run trial balances, and configure GL auto-posting rules. Supports an optional TigerBeetle driver for extreme throughput workloads.</p>
+                        </div>
+                        <div class="space-y-8">
+                            <div class="border rounded-lg p-6">
+                                <h3 class="text-xl font-semibold mb-4">Chart of Accounts</h3>
+                                <div class="flex items-center gap-3 mb-4">
+                                    <span class="inline-block bg-green-100 text-green-800 text-xs font-medium px-2.5 py-0.5 rounded">GET</span>
+                                    <span class="font-mono text-sm">/api/v1/ledger/accounts</span>
+                                </div>
+                                <p class="text-gray-600 mb-4">Retrieve the full chart of accounts with balances.</p>
+                                <x-code-block language="bash">
+curl -H "Authorization: Bearer your_api_key" \
+     {{ config('app.url') }}/api/v1/ledger/accounts
+                                </x-code-block>
+                            </div>
+                            <div class="border rounded-lg p-6">
+                                <h3 class="text-xl font-semibold mb-4">Post Journal Entry</h3>
+                                <div class="flex items-center gap-3 mb-4">
+                                    <span class="inline-block bg-orange-100 text-orange-800 text-xs font-medium px-2.5 py-0.5 rounded">POST</span>
+                                    <span class="font-mono text-sm">/api/v1/ledger/entries</span>
+                                </div>
+                                <p class="text-gray-600 mb-4">Post a balanced double-entry journal entry. Debits must equal credits.</p>
+                            </div>
+                            <div class="border rounded-lg p-6">
+                                <h3 class="text-xl font-semibold mb-4">Trial Balance</h3>
+                                <div class="flex items-center gap-3 mb-4">
+                                    <span class="inline-block bg-green-100 text-green-800 text-xs font-medium px-2.5 py-0.5 rounded">GET</span>
+                                    <span class="font-mono text-sm">/api/v1/ledger/trial-balance</span>
+                                </div>
+                                <p class="text-gray-600 mb-4">Generate a trial balance report for a given date range.</p>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- Microfinance API -->
+                    <section id="microfinance" class="mb-16">
+                        <h2 class="text-3xl font-bold text-gray-900 mb-8">Microfinance API</h2>
+                        <div class="prose prose-lg max-w-none mb-8">
+                            <p>Complete inclusion banking infrastructure: group lending with joint liability, IFRS 9 loan provisioning, cooperative share accounts, teller cash operations, field officer tools, and savings products with dormancy tracking.</p>
+                        </div>
+                        <div class="space-y-8">
+                            <div class="border rounded-lg p-6">
+                                <h3 class="text-xl font-semibold mb-4">Create Loan Group</h3>
+                                <div class="flex items-center gap-3 mb-4">
+                                    <span class="inline-block bg-orange-100 text-orange-800 text-xs font-medium px-2.5 py-0.5 rounded">POST</span>
+                                    <span class="font-mono text-sm">/api/v1/microfinance/groups</span>
+                                </div>
+                                <p class="text-gray-600 mb-4">Create a group lending entity with joint liability configuration.</p>
+                                <x-code-block language="bash">
+curl -X POST \
+  -H "Authorization: Bearer your_api_key" \
+  -H "Content-Type: application/json" \
+  -d '{"name":"Village Savings Group A","members":["user_1","user_2","user_3"],"liability_type":"joint"}' \
+  {{ config('app.url') }}/api/v1/microfinance/groups
+                                </x-code-block>
+                            </div>
+                            <div class="border rounded-lg p-6">
+                                <h3 class="text-xl font-semibold mb-4">IFRS Loan Provisioning</h3>
+                                <div class="flex items-center gap-3 mb-4">
+                                    <span class="inline-block bg-green-100 text-green-800 text-xs font-medium px-2.5 py-0.5 rounded">GET</span>
+                                    <span class="font-mono text-sm">/api/v1/microfinance/loans/{id}/provision</span>
+                                </div>
+                                <p class="text-gray-600 mb-4">Calculate IFRS 9 expected credit loss (ECL) provision for a loan.</p>
+                            </div>
+                            <div class="border rounded-lg p-6">
+                                <h3 class="text-xl font-semibold mb-4">Teller Operations</h3>
+                                <div class="flex items-center gap-3 mb-4">
+                                    <span class="inline-block bg-orange-100 text-orange-800 text-xs font-medium px-2.5 py-0.5 rounded">POST</span>
+                                    <span class="font-mono text-sm">/api/v1/microfinance/teller/transactions</span>
+                                </div>
+                                <p class="text-gray-600 mb-4">Post a teller cash transaction (deposit, withdrawal, or currency exchange).</p>
+                            </div>
+                        </div>
+                    </section>
+
                     <!-- x402 Protocol API -->
                     <section id="x402" class="mb-16">
                         <h2 class="text-3xl font-bold text-gray-900 mb-8">x402 Protocol API</h2>
@@ -1575,6 +1823,12 @@ if (response.status === 402) {
                                 <li><a href="#graphql" class="text-sky-600 hover:text-sky-800 flex justify-between"><span>GraphQL</span><span class="text-gray-400">43 domains</span></a></li>
                                 <li><a href="#event-streaming" class="text-lime-600 hover:text-lime-800 flex justify-between"><span>Event Streaming</span><span class="text-gray-400">5 endpoints</span></a></li>
                                 <li><a href="#x402" class="text-emerald-600 hover:text-emerald-800 flex justify-between"><span>x402 Protocol</span><span class="text-gray-400">15+ endpoints</span></a></li>
+                                <li><a href="#iso20022" class="text-blue-600 hover:text-blue-800 flex justify-between"><span>ISO 20022</span><span class="text-gray-400">8 msg types</span></a></li>
+                                <li><a href="#open-banking" class="text-teal-600 hover:text-teal-800 flex justify-between"><span>Open Banking</span><span class="text-gray-400">AISP + PISP</span></a></li>
+                                <li><a href="#payment-rails" class="text-orange-600 hover:text-orange-800 flex justify-between"><span>Payment Rails</span><span class="text-gray-400">ACH/Fedwire/SEPA</span></a></li>
+                                <li><a href="#interledger" class="text-purple-600 hover:text-purple-800 flex justify-between"><span>Interledger</span><span class="text-gray-400">ILP + GNAP</span></a></li>
+                                <li><a href="#ledger" class="text-slate-600 hover:text-slate-800 flex justify-between"><span>Ledger</span><span class="text-gray-400">Double-entry</span></a></li>
+                                <li><a href="#microfinance" class="text-green-600 hover:text-green-800 flex justify-between"><span>Microfinance</span><span class="text-gray-400">Group lending</span></a></li>
                             </ul>
                         </div>
 

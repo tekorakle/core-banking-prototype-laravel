@@ -178,7 +178,7 @@
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
                     </svg>
                     <span class="font-medium">v7.7 Released:</span>
-                    <span class="ml-2">Production Deployment Readiness — Helm chart v7.7, card settings API, 56 DDD domains, 1,400+ API routes, GraphQL (40 domains), ISO 20022, ISO 8583, US Payment Rails, Interledger, Ledger, Microfinance, x402 Protocol, and more.</span>
+                    <span class="ml-2">Production Deployment Readiness — Helm chart v7.7, card settings API, 56 DDD domains, 1,400+ API routes, GraphQL (43 domains), ISO 20022, ISO 8583, US Payment Rails, Interledger, Ledger, Microfinance, x402 Protocol, and more.</span>
                 </div>
             </div>
         </section>
@@ -609,6 +609,120 @@
                             </div>
                         </a>
 
+                        <!-- ISO 20022 -->
+                        <a href="{{ route('developers.show', 'api-docs') }}#iso20022" class="group block">
+                            <div class="bg-white rounded-xl border border-gray-200 p-6 hover:shadow-lg transition-all hover:-translate-y-1 h-full">
+                                <div class="flex items-center mb-3">
+                                    <div class="w-10 h-10 bg-gradient-to-br from-blue-600 to-indigo-700 rounded-lg flex items-center justify-center text-white mr-3">
+                                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                                        </svg>
+                                    </div>
+                                    <div>
+                                        <h4 class="text-lg font-semibold text-slate-900">ISO 20022</h4>
+                                        <span class="text-xs text-slate-400">8 message types</span>
+                                    </div>
+                                </div>
+                                <p class="text-slate-500 text-sm mb-3">Parse, generate, validate ISO 20022 messages. 8 message types (pacs, pain, camt) with REST + GraphQL APIs.</p>
+                                <span class="text-blue-600 text-sm font-medium group-hover:text-blue-700">View endpoints &rarr;</span>
+                            </div>
+                        </a>
+
+                        <!-- Open Banking -->
+                        <a href="{{ route('developers.show', 'api-docs') }}#open-banking" class="group block">
+                            <div class="bg-white rounded-xl border border-gray-200 p-6 hover:shadow-lg transition-all hover:-translate-y-1 h-full">
+                                <div class="flex items-center mb-3">
+                                    <div class="w-10 h-10 bg-gradient-to-br from-teal-500 to-emerald-600 rounded-lg flex items-center justify-center text-white mr-3">
+                                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path>
+                                        </svg>
+                                    </div>
+                                    <div>
+                                        <h4 class="text-lg font-semibold text-slate-900">Open Banking</h4>
+                                        <span class="text-xs text-slate-400">PSD2 &middot; AISP &middot; PISP</span>
+                                    </div>
+                                </div>
+                                <p class="text-slate-500 text-sm mb-3">PSD2 consent management, AISP account access, PISP payment initiation. Berlin Group and UK Open Banking adapters.</p>
+                                <span class="text-teal-600 text-sm font-medium group-hover:text-teal-700">View endpoints &rarr;</span>
+                            </div>
+                        </a>
+
+                        <!-- Payment Rails -->
+                        <a href="{{ route('developers.show', 'api-docs') }}#payment-rails" class="group block">
+                            <div class="bg-white rounded-xl border border-gray-200 p-6 hover:shadow-lg transition-all hover:-translate-y-1 h-full">
+                                <div class="flex items-center mb-3">
+                                    <div class="w-10 h-10 bg-gradient-to-br from-orange-500 to-amber-600 rounded-lg flex items-center justify-center text-white mr-3">
+                                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4"></path>
+                                        </svg>
+                                    </div>
+                                    <div>
+                                        <h4 class="text-lg font-semibold text-slate-900">Payment Rails</h4>
+                                        <span class="text-xs text-slate-400">ACH &middot; Fedwire &middot; SEPA &middot; RTP &middot; FedNow</span>
+                                    </div>
+                                </div>
+                                <p class="text-slate-500 text-sm mb-3">ACH, Fedwire, RTP, FedNow, SEPA with intelligent routing that selects the optimal rail automatically.</p>
+                                <span class="text-orange-600 text-sm font-medium group-hover:text-orange-700">View endpoints &rarr;</span>
+                            </div>
+                        </a>
+
+                        <!-- Interledger -->
+                        <a href="{{ route('developers.show', 'api-docs') }}#interledger" class="group block">
+                            <div class="bg-white rounded-xl border border-gray-200 p-6 hover:shadow-lg transition-all hover:-translate-y-1 h-full">
+                                <div class="flex items-center mb-3">
+                                    <div class="w-10 h-10 bg-gradient-to-br from-purple-500 to-violet-600 rounded-lg flex items-center justify-center text-white mr-3">
+                                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                                        </svg>
+                                    </div>
+                                    <div>
+                                        <h4 class="text-lg font-semibold text-slate-900">Interledger</h4>
+                                        <span class="text-xs text-slate-400">ILP &middot; Open Payments &middot; GNAP</span>
+                                    </div>
+                                </div>
+                                <p class="text-slate-500 text-sm mb-3">ILP connections, Open Payments (GNAP authorization), and cross-currency quotes. Bridge fiat and crypto networks.</p>
+                                <span class="text-purple-600 text-sm font-medium group-hover:text-purple-700">View endpoints &rarr;</span>
+                            </div>
+                        </a>
+
+                        <!-- Ledger -->
+                        <a href="{{ route('developers.show', 'api-docs') }}#ledger" class="group block">
+                            <div class="bg-white rounded-xl border border-gray-200 p-6 hover:shadow-lg transition-all hover:-translate-y-1 h-full">
+                                <div class="flex items-center mb-3">
+                                    <div class="w-10 h-10 bg-gradient-to-br from-slate-600 to-gray-700 rounded-lg flex items-center justify-center text-white mr-3">
+                                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path>
+                                        </svg>
+                                    </div>
+                                    <div>
+                                        <h4 class="text-lg font-semibold text-slate-900">Ledger</h4>
+                                        <span class="text-xs text-slate-400">Double-entry accounting</span>
+                                    </div>
+                                </div>
+                                <p class="text-slate-500 text-sm mb-3">Double-entry accounting, chart of accounts, journal entries, trial balance, and GL auto-posting with optional TigerBeetle driver.</p>
+                                <span class="text-slate-600 text-sm font-medium group-hover:text-slate-800">View endpoints &rarr;</span>
+                            </div>
+                        </a>
+
+                        <!-- Microfinance -->
+                        <a href="{{ route('developers.show', 'api-docs') }}#microfinance" class="group block">
+                            <div class="bg-white rounded-xl border border-gray-200 p-6 hover:shadow-lg transition-all hover:-translate-y-1 h-full">
+                                <div class="flex items-center mb-3">
+                                    <div class="w-10 h-10 bg-gradient-to-br from-green-500 to-teal-600 rounded-lg flex items-center justify-center text-white mr-3">
+                                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path>
+                                        </svg>
+                                    </div>
+                                    <div>
+                                        <h4 class="text-lg font-semibold text-slate-900">Microfinance</h4>
+                                        <span class="text-xs text-slate-400">Group lending &middot; IFRS &middot; Teller ops</span>
+                                    </div>
+                                </div>
+                                <p class="text-slate-500 text-sm mb-3">Group lending, IFRS loan provisioning, share accounts, teller operations, and savings products for inclusion banking.</p>
+                                <span class="text-green-600 text-sm font-medium group-hover:text-green-700">View endpoints &rarr;</span>
+                            </div>
+                        </a>
+
                         <div class="col-span-full mt-2">
                             <p class="text-slate-500 text-sm text-center">
                                 Explore payment features: <a href="/features/x402-protocol" class="text-blue-600 hover:text-blue-800 font-medium">x402 Protocol</a> &middot;
@@ -704,7 +818,7 @@
                         </p>
                     </div>
                     <div>
-                        <div class="text-4xl md:text-5xl font-bold mb-2">42</div>
+                        <div class="text-4xl md:text-5xl font-bold mb-2">56</div>
                         <p class="text-indigo-200 flex items-center justify-center">
                             <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"></path>

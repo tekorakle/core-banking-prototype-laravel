@@ -5,8 +5,8 @@
 @section('seo')
     @include('partials.seo', [
         'title' => 'Features - Modern Banking Platform',
-        'description' => config('brand.name', 'Zelta') . ' features - Global Currency Unit (GCU), x402 protocol, cross-chain bridges, DeFi protocols, privacy-preserving identity, mobile payments, RegTech compliance, BaaS, and AI analytics.',
-        'keywords' => config('brand.name', 'Zelta') . ' features, GCU, global currency unit, cross-chain, DeFi, privacy, mobile payments, RegTech, BaaS, AI, multi-tenancy',
+        'description' => config('brand.name', 'Zelta') . ' features - 56 domain modules: GCU, ISO 20022, PSD2 Open Banking, multi-rail payments (ACH, SEPA, FedNow), Interledger, Double-Entry Ledger, Microfinance, x402, DeFi, AI analytics, and more.',
+        'keywords' => config('brand.name', 'Zelta') . ' features, GCU, ISO 20022, PSD2, open banking, payment rails, ACH, SEPA, Interledger, ledger, microfinance, cross-chain, DeFi, privacy, x402, RegTech, BaaS',
     ])
 
     {{-- Schema.org Markup --}}
@@ -564,6 +564,134 @@
                     </p>
                     <a href="{{ route('security') }}" class="text-emerald-600 font-medium hover:text-emerald-700">
                         View security &rarr;
+                    </a>
+                </div>
+
+                <!-- ISO 20022 Messaging -->
+                <div class="card-feature">
+                    <div class="w-14 h-14 bg-blue-100 rounded-lg flex items-center justify-center mb-6">
+                        <svg class="w-8 h-8 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                        </svg>
+                    </div>
+                    <h3 class="text-xl font-semibold mb-3">ISO 20022 Messaging</h3>
+                    <p class="text-slate-500 mb-4">
+                        Standards-compliant financial messaging with 8 message types (pacs, pain, camt). Parse, generate, and validate ISO 20022 XML with REST + GraphQL APIs.
+                    </p>
+                    <a href="{{ route('features') }}" class="text-blue-600 font-medium hover:text-blue-700">
+                        Learn more &rarr;
+                    </a>
+                </div>
+
+                <!-- Open Banking & PSD2 -->
+                <div class="card-feature">
+                    <div class="w-14 h-14 bg-teal-100 rounded-lg flex items-center justify-center mb-6">
+                        <svg class="w-8 h-8 text-teal-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path>
+                        </svg>
+                    </div>
+                    <h3 class="text-xl font-semibold mb-3">Open Banking &amp; PSD2</h3>
+                    <p class="text-slate-500 mb-4">
+                        Full PSD2 consent lifecycle with AISP and PISP services. Berlin Group NextGenPSD2 and UK Open Banking adapters. TPP registration with eIDAS certificate validation.
+                    </p>
+                    <a href="{{ route('features') }}" class="text-teal-600 font-medium hover:text-teal-700">
+                        Learn more &rarr;
+                    </a>
+                </div>
+
+                <!-- Payment Rails -->
+                <div class="card-feature">
+                    <div class="w-14 h-14 bg-orange-100 rounded-lg flex items-center justify-center mb-6">
+                        <svg class="w-8 h-8 text-orange-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4"></path>
+                        </svg>
+                    </div>
+                    <h3 class="text-xl font-semibold mb-3">Payment Rails</h3>
+                    <p class="text-slate-500 mb-4">
+                        Multi-rail payment processing: ACH (NACHA file generation), Fedwire, RTP, FedNow (ISO 20022 native), SEPA Direct Debit, and SCT Inst. Intelligent routing selects the optimal rail automatically.
+                    </p>
+                    <a href="{{ route('features') }}" class="text-orange-600 font-medium hover:text-orange-700">
+                        Learn more &rarr;
+                    </a>
+                </div>
+
+                <!-- ISO 8583 Card Processing -->
+                <div class="card-feature">
+                    <div class="w-14 h-14 bg-slate-100 rounded-lg flex items-center justify-center mb-6">
+                        <svg class="w-8 h-8 text-slate-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"></path>
+                        </svg>
+                    </div>
+                    <h3 class="text-xl font-semibold mb-3">ISO 8583 Card Processing</h3>
+                    <p class="text-slate-500 mb-4">
+                        Full card network message processing with bitmap codec. Authorization, reversal, and settlement handlers for direct Visa/Mastercard integration.
+                    </p>
+                    <a href="{{ route('features') }}" class="text-slate-600 font-medium hover:text-slate-700">
+                        Learn more &rarr;
+                    </a>
+                </div>
+
+                <!-- Interledger Protocol -->
+                <div class="card-feature">
+                    <div class="w-14 h-14 bg-purple-100 rounded-lg flex items-center justify-center mb-6">
+                        <svg class="w-8 h-8 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                        </svg>
+                    </div>
+                    <h3 class="text-xl font-semibold mb-3">Interledger Protocol</h3>
+                    <p class="text-slate-500 mb-4">
+                        Cross-network value transfer with ILP connector, Open Payments (GNAP authorization), and cross-currency quotes. Bridge fiat and crypto payment networks.
+                    </p>
+                    <a href="{{ route('features') }}" class="text-purple-600 font-medium hover:text-purple-700">
+                        Learn more &rarr;
+                    </a>
+                </div>
+
+                <!-- Double-Entry Ledger -->
+                <div class="card-feature">
+                    <div class="w-14 h-14 bg-gray-100 rounded-lg flex items-center justify-center mb-6">
+                        <svg class="w-8 h-8 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path>
+                        </svg>
+                    </div>
+                    <h3 class="text-xl font-semibold mb-3">Double-Entry Ledger</h3>
+                    <p class="text-slate-500 mb-4">
+                        Production-grade accounting engine with chart of accounts, journal entries, trial balance, and GL auto-posting. PHP-native default with optional TigerBeetle driver for extreme throughput.
+                    </p>
+                    <a href="{{ route('features') }}" class="text-gray-600 font-medium hover:text-gray-700">
+                        Learn more &rarr;
+                    </a>
+                </div>
+
+                <!-- Microfinance Suite -->
+                <div class="card-feature">
+                    <div class="w-14 h-14 bg-green-100 rounded-lg flex items-center justify-center mb-6">
+                        <svg class="w-8 h-8 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path>
+                        </svg>
+                    </div>
+                    <h3 class="text-xl font-semibold mb-3">Microfinance Suite</h3>
+                    <p class="text-slate-500 mb-4">
+                        Complete inclusion banking: group lending with joint liability, IFRS loan provisioning, cooperative share accounts, teller operations, field officer tools, and savings products with dormancy tracking.
+                    </p>
+                    <a href="{{ route('features') }}" class="text-green-600 font-medium hover:text-green-700">
+                        Learn more &rarr;
+                    </a>
+                </div>
+
+                <!-- Developer Experience -->
+                <div class="card-feature">
+                    <div class="w-14 h-14 bg-indigo-100 rounded-lg flex items-center justify-center mb-6">
+                        <svg class="w-8 h-8 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 9l3 3-3 3m5 0h3M5 20h14a2 2 0 002-2V6a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+                        </svg>
+                    </div>
+                    <h3 class="text-xl font-semibold mb-3">Developer Experience</h3>
+                    <p class="text-slate-500 mb-4">
+                        Partner sandbox provisioning with 3 seed profiles, webhook testing and replay, API key management CLI. Everything developers need to integrate quickly.
+                    </p>
+                    <a href="{{ route('developers') }}" class="text-indigo-600 font-medium hover:text-indigo-700">
+                        View docs &rarr;
                     </a>
                 </div>
             </div>
