@@ -29,7 +29,7 @@ php artisan user:admins              # List all admin users
 - **Packages**: `packages/zelta-sdk/` (Payment SDK), `packages/zelta-cli/` (CLI binary)
 - **Event Sourcing**: Spatie v7.7+ with domain-specific tables
 - **CQRS**: Command/Query Bus in `app/Infrastructure/`
-- **GraphQL**: Lighthouse PHP, 40 domain schemas
+- **GraphQL**: Lighthouse PHP, 43 domain schemas
 - **Multi-Tenancy**: Team-based isolation (`UsesTenantConnection` trait)
 - **Event Streaming**: Redis Streams publisher/consumer with DLQ + backpressure
 - **Post-Quantum Crypto**: ML-KEM-768, ML-DSA-65, hybrid encryption
@@ -63,6 +63,11 @@ namespace App\Domain\Exchange\Services;
 | Test scope 403s | Add abilities to `Sanctum::actingAs($user, ['read', 'write', 'delete'])` |
 | Code style | `./vendor/bin/php-cs-fixer fix --config=.php-cs-fixer.php` |
 | PHPCS | `./vendor/bin/phpcbf --standard=PSR12 app/` |
+| Financial arithmetic | Always use `bcmath` (`bcadd`, `bcsub`, `bcmul`, `bcdiv`) — NEVER `(float)` for money. Normalize with `bcadd($val, '0', 4)` |
+| DB transactions | Wrap multi-table financial writes in `DB::transaction()` — use `lockForUpdate()` for balance checks |
+| XML parsing | Always pass `LIBXML_NONET` to `SimpleXMLElement` when parsing external input (XXE prevention) |
+| PHPCS version | CI uses PHPCS v4.0.1 — run `./vendor/bin/phpcs` locally to match before pushing |
+| PHPStan `numeric-string` | bcmath requires `numeric-string` type — use `bcadd($val, '0', 4)` to normalize, not `(float)` cast |
 
 ```bash
 gh pr checks <PR_NUMBER>              # Check PR status
@@ -82,4 +87,7 @@ gh run view <RUN_ID> --log-failed     # View failed logs
 - Ensure GitHub Actions pass before merging
 - Never create docs files unless explicitly requested
 - Prefer editing existing files over creating new ones
+- New domains: always add `#import {domain}.graphql` to `graphql/schema.graphql` — schemas are invisible without it
+- New domains: update domain count in public views (welcome, about, pricing, developers) and CLAUDE.md
+- New domains: add env vars to `.env.production.example` and `.env.zelta.example`
 - Use Serena memories for deep architectural context when needed
