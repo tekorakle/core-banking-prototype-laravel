@@ -122,7 +122,7 @@ final class FedNowService
     public function processStatusReport(string $xml): array
     {
         try {
-            $element = new SimpleXMLElement($xml);
+            $element = new SimpleXMLElement($xml, LIBXML_NONET);
         } catch (Exception $e) {
             throw new RuntimeException('Invalid Pacs.002 XML: ' . $e->getMessage(), 0, $e);
         }

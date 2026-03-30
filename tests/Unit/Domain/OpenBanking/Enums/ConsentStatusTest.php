@@ -27,9 +27,11 @@ it('identifies active status', function (): void {
 });
 
 it('has all consent permissions', function (): void {
-    expect(ConsentPermission::cases())->toHaveCount(7);
+    expect(ConsentPermission::cases())->toHaveCount(8);
     expect(ConsentPermission::READ_BALANCES->value)->toBe('ReadBalances');
     expect(ConsentPermission::READ_BALANCES->label())->toBe('Read Balances');
+    expect(ConsentPermission::PAYMENT_INITIATION->value)->toBe('PaymentInitiation');
+    expect(ConsentPermission::PAYMENT_INITIATION->label())->toBe('Payment Initiation');
 });
 
 it('has open banking standards', function (): void {

@@ -8,6 +8,7 @@ use App\Domain\PaymentRails\Enums\AchSecCode;
 use App\Domain\PaymentRails\Enums\RailStatus;
 use App\Domain\PaymentRails\Models\AchBatch;
 use App\Domain\PaymentRails\Models\AchEntry;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 
 /**
@@ -29,7 +30,7 @@ final class AchService
      *   22 = checking account credit (deposit)
      *   32 = savings account credit
      *
-     * @param  string $amount  Dollar amount, e.g. "250.00"
+     * @param  numeric-string $amount  Dollar amount, e.g. "250.00"
      */
     public function originateCredit(
         int $userId,
@@ -39,6 +40,9 @@ final class AchService
         string $name,
         string $secCode = 'PPD',
     ): AchBatch {
+        /** @var numeric-string $numericAmount */
+        $numericAmount = $amount;
+
         return $this->createBatch(
             userId: $userId,
             secCode: $secCode,
@@ -46,7 +50,7 @@ final class AchService
                 [
                     'routing_number'   => $routingNumber,
                     'account_number'   => $accountNumber,
-                    'amount'           => $amount,
+                    'amount'           => $numericAmount,
                     'transaction_code' => '22', // Checking account credit
                     'name'             => $name,
                 ],
@@ -61,7 +65,7 @@ final class AchService
      *   27 = checking account debit
      *   37 = savings account debit
      *
-     * @param  string $amount  Dollar amount, e.g. "250.00"
+     * @param  numeric-string $amount  Dollar amount, e.g. "250.00"
      */
     public function originateDebit(
         int $userId,
@@ -71,6 +75,9 @@ final class AchService
         string $name,
         string $secCode = 'PPD',
     ): AchBatch {
+        /** @var numeric-string $numericAmount */
+        $numericAmount = $amount;
+
         return $this->createBatch(
             userId: $userId,
             secCode: $secCode,
@@ -78,7 +85,7 @@ final class AchService
                 [
                     'routing_number'   => $routingNumber,
                     'account_number'   => $accountNumber,
-                    'amount'           => $amount,
+                    'amount'           => $numericAmount,
                     'transaction_code' => '27', // Checking account debit
                     'name'             => $name,
                 ],
@@ -102,7 +109,7 @@ final class AchService
      * @param array<int, array{
      *     routing_number: string,
      *     account_number: string,
-     *     amount: string,
+     *     amount: numeric-string,
      *     transaction_code: string,
      *     name: string,
      *     individual_id?: string
@@ -117,59 +124,66 @@ final class AchService
         // Validate SEC code
         AchSecCode::from($secCode);
 
+        /** @var numeric-string $totalDebit */
         $totalDebit = '0.00';
+        /** @var numeric-string $totalCredit */
         $totalCredit = '0.00';
 
         foreach ($entries as $entry) {
             $code = $entry['transaction_code'];
+            /** @var numeric-string $amount */
             $amount = $entry['amount'];
 
             // Debit codes: 27 (checking), 37 (savings), 23/33 (prenote debit)
             if (in_array($code, ['27', '37', '23', '33'], true)) {
+                /** @var numeric-string $totalDebit */
                 $totalDebit = $this->addAmounts($totalDebit, $amount);
             } else {
                 // Credit codes: 22 (checking), 32 (savings), etc.
+                /** @var numeric-string $totalCredit */
                 $totalCredit = $this->addAmounts($totalCredit, $amount);
             }
         }
 
-        $batch = AchBatch::create([
-            'batch_id'        => Str::uuid()->toString(),
-            'user_id'         => $userId,
-            'sec_code'        => $secCode,
-            'status'          => RailStatus::PENDING,
-            'entry_count'     => count($entries),
-            'total_debit'     => $totalDebit,
-            'total_credit'    => $totalCredit,
-            'same_day'        => $sameDay,
-            'settlement_date' => null,
-        ]);
-
-        $traceSeq = 1;
-        $origDfi = str_pad(
-            substr((string) config('payment_rails.ach.originating_dfi', ''), 0, 8),
-            8,
-            '0',
-            STR_PAD_LEFT,
-        );
-
-        foreach ($entries as $entry) {
-            $traceNumber = $origDfi . str_pad((string) $traceSeq++, 7, '0', STR_PAD_LEFT);
-
-            AchEntry::create([
-                'batch_id'         => $batch->id,
-                'trace_number'     => $traceNumber,
-                'routing_number'   => $entry['routing_number'],
-                'account_number'   => $entry['account_number'],
-                'amount'           => $entry['amount'],
-                'transaction_code' => $entry['transaction_code'],
-                'individual_name'  => $entry['name'],
-                'individual_id'    => $entry['individual_id'] ?? null,
-                'status'           => RailStatus::PENDING,
+        return DB::transaction(function () use ($userId, $secCode, $entries, $sameDay, $totalDebit, $totalCredit): AchBatch {
+            $batch = AchBatch::create([
+                'batch_id'        => Str::uuid()->toString(),
+                'user_id'         => $userId,
+                'sec_code'        => $secCode,
+                'status'          => RailStatus::PENDING,
+                'entry_count'     => count($entries),
+                'total_debit'     => $totalDebit,
+                'total_credit'    => $totalCredit,
+                'same_day'        => $sameDay,
+                'settlement_date' => null,
             ]);
-        }
 
-        return $batch->fresh() ?? $batch;
+            $traceSeq = 1;
+            $origDfi = str_pad(
+                substr((string) config('payment_rails.ach.originating_dfi', ''), 0, 8),
+                8,
+                '0',
+                STR_PAD_LEFT,
+            );
+
+            foreach ($entries as $entry) {
+                $traceNumber = $origDfi . str_pad((string) $traceSeq++, 7, '0', STR_PAD_LEFT);
+
+                AchEntry::create([
+                    'batch_id'         => $batch->id,
+                    'trace_number'     => $traceNumber,
+                    'routing_number'   => $entry['routing_number'],
+                    'account_number'   => $entry['account_number'],
+                    'amount'           => $entry['amount'],
+                    'transaction_code' => $entry['transaction_code'],
+                    'individual_name'  => $entry['name'],
+                    'individual_id'    => $entry['individual_id'] ?? null,
+                    'status'           => RailStatus::PENDING,
+                ]);
+            }
+
+            return $batch->fresh() ?? $batch;
+        });
     }
 
     /**
@@ -242,11 +256,13 @@ final class AchService
 
     /**
      * Add two decimal-string amounts together, returning a decimal string.
+     *
+     * @param  numeric-string $a
+     * @param  numeric-string $b
+     * @return numeric-string
      */
     private function addAmounts(string $a, string $b): string
     {
-        $result = (float) $a + (float) $b;
-
-        return number_format($result, 2, '.', '');
+        return bcadd($a, $b, 2);
     }
 }

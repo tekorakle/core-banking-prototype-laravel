@@ -54,7 +54,7 @@ final class MessageParser
      */
     private function parsePain001(string $xml): array
     {
-        $doc = new SimpleXMLElement($xml);
+        $doc = new SimpleXMLElement($xml, LIBXML_NONET);
         $ns = 'urn:iso:std:iso:20022:tech:xsd:pain.001.001.09';
 
         $root = $doc->children($ns);
@@ -102,7 +102,7 @@ final class MessageParser
      */
     private function parsePacs008(string $xml): array
     {
-        $doc = new SimpleXMLElement($xml);
+        $doc = new SimpleXMLElement($xml, LIBXML_NONET);
         $ns = 'urn:iso:std:iso:20022:tech:xsd:pacs.008.001.08';
 
         $root = $doc->children($ns);
@@ -134,7 +134,7 @@ final class MessageParser
      */
     private function parsePacs002(string $xml): array
     {
-        $doc = new SimpleXMLElement($xml);
+        $doc = new SimpleXMLElement($xml, LIBXML_NONET);
         $ns = 'urn:iso:std:iso:20022:tech:xsd:pacs.002.001.10';
 
         $root = $doc->children($ns);
@@ -177,7 +177,7 @@ final class MessageParser
      */
     private function parseGeneric(string $xml): array
     {
-        $doc = new SimpleXMLElement($xml);
+        $doc = new SimpleXMLElement($xml, LIBXML_NONET);
         $json = json_encode($doc);
 
         if ($json === false) {

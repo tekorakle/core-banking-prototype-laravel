@@ -22,6 +22,11 @@ class IlpConnectorService
      */
     private array $connections = [];
 
+    public function __construct(
+        private readonly IlpAddressResolver $addressResolver = new IlpAddressResolver(),
+    ) {
+    }
+
     /**
      * Create a new STREAM connection to a destination ILP address.
      *
@@ -114,10 +119,8 @@ class IlpConnectorService
      */
     public function resolveAddress(string $paymentPointer): string
     {
-        $resolver = new IlpAddressResolver();
-
         if (str_starts_with($paymentPointer, '$')) {
-            return $resolver->fromPaymentPointer($paymentPointer);
+            return $this->addressResolver->fromPaymentPointer($paymentPointer);
         }
 
         // Already an ILP address.

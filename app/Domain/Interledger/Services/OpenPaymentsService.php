@@ -19,6 +19,11 @@ use App\Domain\Interledger\Enums\PaymentState;
  */
 class OpenPaymentsService
 {
+    public function __construct(
+        private readonly IlpAddressResolver $addressResolver = new IlpAddressResolver(),
+    ) {
+    }
+
     /**
      * Create an incoming payment resource at the given wallet address.
      *
@@ -117,10 +122,8 @@ class OpenPaymentsService
      */
     private function walletAddressToIlp(string $walletAddress): string
     {
-        $resolver = new IlpAddressResolver();
-
         if (str_starts_with($walletAddress, '$')) {
-            return $resolver->fromPaymentPointer($walletAddress);
+            return $this->addressResolver->fromPaymentPointer($walletAddress);
         }
 
         // Treat as a URL — strip scheme and convert to dotted segments.

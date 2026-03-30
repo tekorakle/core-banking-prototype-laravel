@@ -7,7 +7,7 @@ namespace App\Domain\OpenBanking\Services;
 use App\Domain\OpenBanking\Enums\ConsentStatus;
 use App\Domain\OpenBanking\Models\Consent;
 use App\Domain\OpenBanking\Models\ConsentAccessLog;
-use Carbon\Carbon;
+use Illuminate\Support\Facades\Cache;
 
 final class ConsentEnforcementService
 {
@@ -72,6 +72,10 @@ final class ConsentEnforcementService
             'endpoint'   => $endpoint,
             'ip_address' => $ipAddress,
         ]);
+
+        $key = "ob_consent_freq:{$consentId}:" . now()->format('Y-m-d');
+        Cache::add($key, 0, 86400);
+        Cache::increment($key);
     }
 
     /**
@@ -79,10 +83,10 @@ final class ConsentEnforcementService
      */
     public function checkFrequencyLimit(Consent $consent): bool
     {
-        $todayCount = ConsentAccessLog::where('consent_id', $consent->id)
-            ->whereDate('created_at', Carbon::today())
-            ->count();
+        $key = "ob_consent_freq:{$consent->id}:" . now()->format('Y-m-d');
+        Cache::add($key, 0, 86400);
+        $count = (int) Cache::get($key, 0);
 
-        return $todayCount < $consent->frequency_per_day;
+        return $count < $consent->frequency_per_day;
     }
 }

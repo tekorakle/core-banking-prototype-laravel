@@ -10,6 +10,7 @@ use App\Domain\Ledger\Models\JournalEntry;
 use App\Domain\Ledger\Models\JournalLine;
 use Carbon\Carbon;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use RuntimeException;
 
@@ -51,27 +52,32 @@ final class LedgerService
             throw new RuntimeException('Journal entry has zero total — at least one line must have a non-zero amount');
         }
 
-        $entry = JournalEntry::create([
-            'entry_number'    => 'JE-' . strtoupper(Str::random(8)),
-            'description'     => $description,
-            'status'          => EntryStatus::POSTED,
-            'posted_at'       => Carbon::now(),
-            'source_domain'   => $sourceDomain,
-            'source_event_id' => $sourceEventId,
-        ]);
-
-        foreach ($lines as $line) {
-            JournalLine::create([
-                'journal_entry_id' => $entry->id,
-                'account_code'     => $line['account_code'],
-                'debit_amount'     => $line['debit'],
-                'credit_amount'    => $line['credit'],
-                'currency'         => (string) config('ledger.default_currency', 'USD'),
-                'narrative'        => $line['narrative'] ?? null,
+        $entry = DB::transaction(function () use ($description, $lines, $sourceDomain, $sourceEventId): JournalEntry {
+            $entry = JournalEntry::create([
+                'entry_number'    => 'JE-' . strtoupper(Str::random(8)),
+                'description'     => $description,
+                'status'          => EntryStatus::POSTED,
+                'posted_at'       => Carbon::now(),
+                'source_domain'   => $sourceDomain,
+                'source_event_id' => $sourceEventId,
             ]);
-        }
 
-        $entry->load('lines');
+            foreach ($lines as $line) {
+                JournalLine::create([
+                    'journal_entry_id' => $entry->id,
+                    'account_code'     => $line['account_code'],
+                    'debit_amount'     => $line['debit'],
+                    'credit_amount'    => $line['credit'],
+                    'currency'         => (string) config('ledger.default_currency', 'USD'),
+                    'narrative'        => $line['narrative'] ?? null,
+                ]);
+            }
+
+            $entry->load('lines');
+
+            return $entry;
+        });
+
         $this->driver->post($entry);
 
         return $entry;
@@ -92,10 +98,14 @@ final class LedgerService
         /** @var array<int, array{account_code: string, debit: numeric-string, credit: numeric-string, narrative?: string}> $reversalLines */
         $reversalLines = [];
         foreach ($original->lines as $line) {
+            /** @var numeric-string $creditAmt */
+            $creditAmt = (string) $line->credit_amount;
+            /** @var numeric-string $debitAmt */
+            $debitAmt = (string) $line->debit_amount;
             $reversalLines[] = [
                 'account_code' => $line->account_code,
-                'debit'        => number_format((float) $line->credit_amount, 4, '.', ''),
-                'credit'       => number_format((float) $line->debit_amount, 4, '.', ''),
+                'debit'        => bcadd($creditAmt, '0', 4),
+                'credit'       => bcadd($debitAmt, '0', 4),
                 'narrative'    => "Reversal: {$reason}",
             ];
         }
