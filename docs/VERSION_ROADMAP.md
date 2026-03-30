@@ -2818,6 +2818,37 @@ Based on competitive analysis of 19 worldwide open-source core banking platforms
 
 ---
 
-*Document Version: 7.2.0*
+---
+
+## Version 7.3.0 — Payment Rails (RELEASED)
+
+**Release Date**: March 30, 2026
+**Theme**: US payment rails, SEPA enhancement, intelligent routing, and Interledger interoperability
+
+### US Payment Rails (New Domain: PaymentRails)
+- **ACH** — NACHA file generation/parsing, originate credits/debits, same-day ACH, return processing (R01-R29)
+- **Fedwire** — Real-time gross settlement with callback processing
+- **RTP** — The Clearing House Real-Time Payments with Request-for-Payment
+- **FedNow** — ISO 20022 native instant payments using Pacs008/Pacs002 from v7.2.0
+- PaymentRailRouter — Intelligent dispatch to optimal rail
+- 4 enums, 3 models, 3 migrations
+
+### SEPA Enhancement (extend Banking domain)
+- SEPA Direct Debit — mandate lifecycle, DD collection with ISO 20022 Pain008
+- SEPA Credit Transfer — SCT and SCT Inst using Pain001/Pacs008
+- SepaMandate model with 36-month expiry
+
+### Intelligent Payment Routing
+- ML-style weighted scoring (success rate 30%, latency 20%, cost 25%, availability 15%, urgency 10%)
+- Atomic outcome recording, failover chains, operating hours, decision audit logging
+
+### Interledger Protocol (New Domain)
+- ILP Connector, Open Payments (GNAP), Cross-currency Quotes, Address Resolver
+- REST API (7 endpoints) + GraphQL (3 queries + 3 mutations)
+
+### Statistics
+- 2 new domains + 1 extended, ~80 new files, 174 tests, 432 assertions
+
+*Document Version: 7.3.0*
 *Created: January 11, 2026*
-*Updated: March 30, 2026 (v7.2.0 Standards & Compliance Foundation)*
+*Updated: March 30, 2026 (v7.3.0 Payment Rails)*
