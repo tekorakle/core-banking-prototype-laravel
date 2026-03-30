@@ -44,7 +44,7 @@ describe('LedgerService', function (): void {
 
         $returnType = $method->getReturnType();
         assert($returnType instanceof ReflectionNamedType);
-        expect($returnType->getName())->toBe(\App\Domain\Ledger\Models\JournalEntry::class);
+        expect($returnType->getName())->toBe(App\Domain\Ledger\Models\JournalEntry::class);
     });
 
     it('declares the reverse method with 2 string parameters', function (): void {
