@@ -37,3 +37,4 @@ scalar DateTime @scalar(class: "Nuwave\\Lighthouse\\Schema\\Types\\Scalars\\Date
 #import open-banking.graphql
 #import interledger.graphql
 #import payment-rails.graphql
+#import ledger.graphql
