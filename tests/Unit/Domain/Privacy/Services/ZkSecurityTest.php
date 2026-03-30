@@ -236,7 +236,7 @@ describe('Finding #13 — circuit integrity verification', function (): void {
                 ['date_of_birth' => '1990-01-01'],
                 ['minimum_age'   => 18],
             );
-        } catch (App\Domain\Privacy\Exceptions\SnarkjsException|CircuitNotFoundException $e) {
+        } catch (App\Domain\Privacy\Exceptions\SnarkjsException | CircuitNotFoundException $e) {
             // Expected — binary missing, not integrity
             expect($e->getMessage())->not->toContain('integrity');
         } catch (RuntimeException $e) {
