@@ -5,7 +5,7 @@
 @section('seo')
     @include('partials.seo', [
         'title' => config('brand.name', 'Zelta') . ' - Open Source Core Banking Infrastructure',
-        'description' => 'Open-source core banking infrastructure with 56 DDD domains. ISO 20022, PSD2 Open Banking, multi-rail payments (ACH, SEPA, Fedwire, FedNow), Interledger, Microfinance, cross-chain DeFi, and HTTP-native micropayments. Built with Laravel.',
+        'description' => 'Open-source core banking platform with 56 modules: payments, lending, compliance, and DeFi. ISO 20022, PSD2, ACH, SEPA. MIT licensed, built with Laravel.',
         'keywords' => config('brand.name', 'Zelta') . ', open source banking, core banking infrastructure, GCU, ISO 20022, PSD2, open banking, ACH, SEPA, Interledger, microfinance, event sourcing, DeFi, RegTech, banking API, Laravel fintech',
     ])
 
@@ -43,13 +43,13 @@
 
                 <!-- Subheading -->
                 <p class="text-lg sm:text-xl text-slate-400 max-w-2xl mx-auto mb-10 leading-relaxed animate-fade-in-up" style="animation-delay: 0.15s">
-                    Production-grade core banking built with Laravel. Event sourcing, CQRS, ISO 20022 messaging, PSD2 Open Banking, multi-rail payments (ACH, SEPA, Fedwire, FedNow), Interledger cross-network transfers, IFRS-compliant microfinance, cross-chain DeFi, and HTTP-native micropayments.
+                    Ship compliant banking products in weeks, not years. 56 production-ready modules cover payments, lending, compliance, and cross-border transfers — so you build features, not infrastructure.
                 </p>
 
                 <!-- CTA Buttons -->
                 <div class="flex flex-col sm:flex-row gap-4 justify-center animate-fade-in-up" style="animation-delay: 0.3s">
                     <a href="{{ route('register') }}" class="btn-primary !py-3.5 !px-8 !text-base !rounded-lg group">
-                        Explore the Platform
+                        Get Started Free
                         <svg class="w-4 h-4 ml-2 transition-transform group-hover:translate-x-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6"></path></svg>
                     </a>
                     <a href="{{ config('brand.github_url') }}" target="_blank" class="btn-outline !py-3.5 !px-8 !text-base !rounded-lg group">

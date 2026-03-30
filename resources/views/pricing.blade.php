@@ -1,6 +1,6 @@
 @extends('layouts.public')
 
-@section('title', 'Pricing - Flexible Plans for Every Scale | ' . config('brand.name', 'Zelta') . '')
+@section('title', 'Pricing - Flexible Plans for Every Scale | ' . config('brand.name', 'Zelta'))
 
 @section('seo')
     @include('partials.seo', [

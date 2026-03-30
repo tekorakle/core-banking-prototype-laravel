@@ -5,7 +5,7 @@
 @section('seo')
     @include('partials.seo', [
         'title' => 'About ' . config('brand.name', 'Zelta') . ' - Open Source Core Banking Infrastructure',
-        'description' => config('brand.name', 'Zelta') . ' is an open-source core banking platform with 56 DDD domains: GCU, ISO 20022, PSD2, multi-rail payments, Interledger, Double-Entry Ledger, Microfinance, and AI agent commerce. Built with Laravel.',
+        'description' => 'Learn about ' . config('brand.name', 'Zelta') . ' — open-source core banking with 56 modules for payments, lending, and compliance. MIT licensed.',
         'keywords' => config('brand.name', 'Zelta') . ' about, open source banking, core banking platform, GCU, ISO 20022, PSD2, open banking, Interledger, microfinance, event sourcing, CQRS, Laravel banking, DDD, fintech infrastructure',
     ])
 
@@ -113,7 +113,7 @@
             <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
                 @php
                     $reasons = [
-                        ['title' => 'Transparency', 'desc' => "Core banking systems are rarely open. ' . config('brand.name', 'Zelta') . ' lets developers see how ledgers, transactions, and financial workflows actually work\x{2014}no black boxes.", 'color' => 'blue', 'icon' => 'M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253'],
+                        ['title' => 'Transparency', 'desc' => 'Core banking systems are rarely open. ' . config('brand.name', 'Zelta') . ' lets developers see how ledgers, transactions, and financial workflows actually work — no black boxes.', 'color' => 'blue', 'icon' => 'M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253'],
                         ['title' => 'Experimentation', 'desc' => 'What if users could vote on their currency\'s composition? What if AI agents could autonomously transact? ' . config('brand.name', 'Zelta') . ' is where these ideas become working code.', 'color' => 'teal', 'icon' => 'M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z'],
                         ['title' => 'Architecture Patterns', 'desc' => "Event sourcing, CQRS, domain-driven design, saga patterns\x{2014}real implementations of patterns that are often only discussed in theory.", 'color' => 'slate', 'icon' => 'M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4'],
                     ];
@@ -229,7 +229,7 @@
             </p>
             <div class="flex flex-col sm:flex-row gap-4 justify-center">
                 <a href="{{ route('register') }}" class="btn-primary px-8 py-4 text-lg">
-                    See It in Action
+                    Create Free Account
                 </a>
                 <a href="{{ route('features') }}" class="btn-outline px-8 py-4 text-lg">
                     See Features

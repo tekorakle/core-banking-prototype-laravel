@@ -140,7 +140,7 @@
                         <span>v7.7 Documentation — 56 Domains, 1,400+ Routes, GraphQL + REST + x402</span>
                     </div>
                     <h1 class="text-5xl md:text-7xl font-bold mb-6 bg-clip-text text-transparent bg-gradient-to-r from-white to-blue-200">
-                        Built for Developers
+                        Developer Experience, Engineered In
                     </h1>
                     <p class="text-xl md:text-2xl text-gray-300 max-w-4xl mx-auto mb-12">
                         Open source banking infrastructure with comprehensive APIs, SDKs, and documentation.

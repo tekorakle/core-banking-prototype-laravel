@@ -250,7 +250,7 @@
                 <div class="faq-item" data-category="gcu">
                     <button class="faq-question w-full text-left px-6 py-4 bg-white rounded-lg hover:bg-slate-50 transition shadow-sm">
                         <div class="flex justify-between items-center">
-                            <h3 class="text-lg font-semibold text-slate-900">How will GCU voting work?</h3>
+                            <h3 class="text-lg font-semibold text-slate-900">How does GCU voting work?</h3>
                             <svg class="w-5 h-5 text-slate-400 transform transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
                             </svg>
@@ -258,7 +258,7 @@
                     </button>
                     <div class="faq-answer px-6 py-4 bg-white rounded-b-lg">
                         <p class="text-slate-500">
-                            When implemented, GCU voting will allow currency holders to participate in governance:
+                            GCU voting is available in the platform. Monthly voting cycles let holders propose and vote on basket composition changes:
                         </p>
                         <ul class="list-disc list-inside mt-2 text-slate-500 space-y-1">
                             <li>Monthly voting cycles to adjust currency composition</li>
@@ -267,9 +267,6 @@
                             <li>Transparent vote counting and results</li>
                             <li>Automatic rebalancing based on vote outcomes</li>
                         </ul>
-                        <p class="text-slate-500 mt-3">
-                            <strong>Status:</strong> Voting functionality is on the roadmap for a future release.
-                        </p>
                     </div>
                 </div>
 
@@ -346,7 +343,7 @@
                             <li><strong>Delivered:</strong> 56 domain modules, 1,400+ API routes, GraphQL (43 domains), event sourcing</li>
                             <li><strong>Delivered:</strong> Mobile app backend, passkey auth, card issuing, KYC/AML</li>
                             <li><strong>Delivered:</strong> Cross-chain bridges, DeFi connectors, X402 micropayments</li>
-                            <li><strong>Upcoming:</strong> GCU voting system, production bank integrations</li>
+                            <li><strong>Delivered:</strong> GCU voting system, production bank integrations</li>
                             <li><strong>Upcoming:</strong> Live transaction processing, expanded mobile features</li>
                         </ul>
                         <p class="text-slate-500 mt-3">
@@ -399,53 +396,6 @@
             </div>
         </div>
     </section>
-
-    <!-- Footer -->
-    <footer class="bg-gray-900 text-gray-400 py-12">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="grid md:grid-cols-4 gap-8">
-                <div>
-                    <h4 class="text-white font-semibold mb-4">Platform</h4>
-                    <ul class="space-y-2">
-                        <li><a href="/platform" class="hover:text-white transition">Overview</a></li>
-                        <li><a href="/gcu" class="hover:text-white transition">GCU</a></li>
-                        <li><a href="/sub-products" class="hover:text-white transition">Modules</a></li>
-                        <li><a href="/pricing" class="hover:text-white transition">Pricing</a></li>
-                    </ul>
-                </div>
-                <div>
-                    <h4 class="text-white font-semibold mb-4">Developers</h4>
-                    <ul class="space-y-2">
-                        <li><a href="/developers" class="hover:text-white transition">Documentation</a></li>
-                        <li><a href="/developers/api-docs" class="hover:text-white transition">API Reference</a></li>
-                        <li><a href="/developers/sdks" class="hover:text-white transition">SDKs</a></li>
-                        <li><a href="/status" class="hover:text-white transition">System Status</a></li>
-                    </ul>
-                </div>
-                <div>
-                    <h4 class="text-white font-semibold mb-4">Resources</h4>
-                    <ul class="space-y-2">
-                        <li><a href="/support" class="hover:text-white transition">Support</a></li>
-                        <li><a href="/blog" class="hover:text-white transition">Blog</a></li>
-                        <li><a href="/partners" class="hover:text-white transition">Partners</a></li>
-                        <li><a href="/about" class="hover:text-white transition">About</a></li>
-                    </ul>
-                </div>
-                <div>
-                    <h4 class="text-white font-semibold mb-4">Legal</h4>
-                    <ul class="space-y-2">
-                        <li><a href="/legal/terms" class="hover:text-white transition">Terms</a></li>
-                        <li><a href="/legal/privacy" class="hover:text-white transition">Privacy</a></li>
-                        <li><a href="/legal/cookies" class="hover:text-white transition">Cookies</a></li>
-                        <li><a href="/support/faq" class="hover:text-white transition">FAQ</a></li>
-                    </ul>
-                </div>
-            </div>
-            <div class="mt-8 pt-8 border-t border-gray-800 text-center">
-                <p>&copy; {{ date('Y') }} {{ config('brand.name', 'Zelta') }}. All rights reserved. Open Source Project.</p>
-            </div>
-        </div>
-    </footer>
 
     <script>
         // FAQ Toggle

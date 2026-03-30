@@ -152,7 +152,7 @@
                         
                         <p class="text-xl text-gray-400 mb-8">
                             Open-source banking infrastructure with everything you need. 
-                            No vendor lock-in. No licensing fees. Just pure developer freedom.
+                            No vendor lock-in. No licensing fees. Fork it, self-host it, and own your stack.
                         </p>
                         
                         <div class="flex flex-col sm:flex-row gap-4">
@@ -181,8 +181,8 @@
                                 <div class="text-sm text-gray-500">Domains</div>
                             </div>
                             <div>
-                                <div class="text-2xl font-bold text-purple-400 code-font">∞</div>
-                                <div class="text-sm text-gray-500">Scale</div>
+                                <div class="text-2xl font-bold text-purple-400 code-font">1,400+</div>
+                                <div class="text-sm text-gray-500">API Routes</div>
                             </div>
                         </div>
                     </div>

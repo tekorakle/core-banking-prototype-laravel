@@ -1,6 +1,6 @@
 @extends('layouts.public')
 
-@section('title', 'Compliance - ' . config('brand.name', 'Zelta') . '')
+@section('title', 'Compliance - ' . config('brand.name', 'Zelta'))
 
 @section('seo')
     @include('partials.seo', [
@@ -356,7 +356,7 @@
     <!-- CTA -->
     <section class="py-20 bg-white">
         <div class="max-w-4xl mx-auto text-center px-4 sm:px-6 lg:px-8 animate-on-scroll">
-            <h2 class="font-display text-3xl md:text-4xl font-bold text-slate-900 mb-4">Learn More About Our Compliance Architecture</h2>
+            <h2 class="font-display text-3xl md:text-4xl font-bold text-slate-900 mb-4">Ready to Meet Regulatory Requirements?</h2>
             <p class="text-lg text-slate-500 mb-10 max-w-2xl mx-auto">
                 Interested in how our platform can support your compliance requirements? Contact us to learn more.
             </p>
