@@ -37,7 +37,7 @@ final class PispService
         $hasAccess = $this->enforcement->validateAccess(
             $tppId,
             $userId,
-            ConsentPermission::READ_ACCOUNTS_BASIC->value,
+            ConsentPermission::PAYMENT_INITIATION->value,
         );
 
         if (! $hasAccess) {

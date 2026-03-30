@@ -43,8 +43,12 @@ final class EloquentDriver implements LedgerDriverInterface
 
         $account = LedgerAccount::where('code', $accountCode)->first();
 
-        $totalDebit = bcadd((string) (float) ($totals->total_debit ?? 0), '0', 4);
-        $totalCredit = bcadd((string) (float) ($totals->total_credit ?? 0), '0', 4);
+        /** @var numeric-string $rawDebit */
+        $rawDebit = (string) ($totals->total_debit ?? '0');
+        /** @var numeric-string $rawCredit */
+        $rawCredit = (string) ($totals->total_credit ?? '0');
+        $totalDebit = bcadd($rawDebit, '0', 4);
+        $totalCredit = bcadd($rawCredit, '0', 4);
 
         // For debit-normal accounts (assets, expenses): balance = debits - credits
         // For credit-normal accounts (liabilities, equity, revenue): balance = credits - debits
@@ -83,8 +87,12 @@ final class EloquentDriver implements LedgerDriverInterface
             $totals = $query->selectRaw('COALESCE(SUM(debit_amount), 0) as total_debit, COALESCE(SUM(credit_amount), 0) as total_credit')
                 ->first();
 
-            $debit = bcadd((string) (float) ($totals->total_debit ?? 0), '0', 4);
-            $credit = bcadd((string) (float) ($totals->total_credit ?? 0), '0', 4);
+            /** @var numeric-string $rawDebit */
+            $rawDebit = (string) ($totals->total_debit ?? '0');
+            /** @var numeric-string $rawCredit */
+            $rawCredit = (string) ($totals->total_credit ?? '0');
+            $debit = bcadd($rawDebit, '0', 4);
+            $credit = bcadd($rawCredit, '0', 4);
 
             if ($account->isDebitNormal()) {
                 $balance = bcsub($debit, $credit, 4);

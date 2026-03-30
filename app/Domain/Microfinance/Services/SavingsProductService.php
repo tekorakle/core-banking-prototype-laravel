@@ -88,6 +88,10 @@ class SavingsProductService
      *
      * Formula: A = P * (1 + r/n)^(n*t) — interest = A - P
      *
+     * Note: Uses float arithmetic for exponentiation (pow). This is suitable for simulation
+     * and typical account balances. Production deployment should replace with bcmath or a
+     * fixed-point library for amounts exceeding 15 significant digits.
+     *
      * @param string $balance    Principal amount as a decimal string.
      * @param float  $annualRate Annual interest rate as a decimal (e.g. 0.12 for 12 %).
      * @param int    $days       Number of days.

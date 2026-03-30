@@ -7,7 +7,11 @@ namespace App\Domain\Interledger\Services;
 use InvalidArgumentException;
 
 /**
- * Provides cross-currency rate quotes for ILP payments.
+ * Cross-currency quote service for ILP.
+ *
+ * Note: Uses float arithmetic for rate calculations in simulation mode.
+ * Production deployment should replace with bcmath or fixed-point library
+ * for amounts exceeding 15 significant digits.
  */
 class QuoteService
 {

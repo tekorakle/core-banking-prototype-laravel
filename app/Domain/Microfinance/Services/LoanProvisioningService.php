@@ -8,6 +8,7 @@ use App\Domain\Microfinance\Enums\ProvisionCategory;
 use App\Domain\Microfinance\Models\LoanProvision;
 use Carbon\Carbon;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\DB;
 use RuntimeException;
 
 class LoanProvisioningService
@@ -62,17 +63,18 @@ class LoanProvisioningService
      */
     public function reclassifyAll(): int
     {
-        $provisions = LoanProvision::all();
         $count = 0;
 
-        foreach ($provisions as $provision) {
-            $category = $this->determineCategoryFromDays($provision->days_overdue);
-            $provision->update([
-                'category'    => $category,
-                'review_date' => Carbon::today(),
-            ]);
-            $count++;
-        }
+        LoanProvision::chunkById(100, function (Collection $provisions) use (&$count): void {
+            foreach ($provisions as $provision) {
+                $category = $this->determineCategoryFromDays($provision->days_overdue);
+                $provision->update([
+                    'category'    => $category,
+                    'review_date' => Carbon::today(),
+                ]);
+                $count++;
+            }
+        });
 
         return $count;
     }
@@ -126,14 +128,21 @@ class LoanProvisioningService
             'total'       => '0.00',
         ];
 
-        $provisions = LoanProvision::all();
+        /** @var array<object{category: string, total: string}> $rows */
+        $rows = DB::table('mfi_loan_provisions')
+            ->selectRaw('category, SUM(provision_amount) as total')
+            ->groupBy('category')
+            ->get()
+            ->all();
 
-        foreach ($provisions as $provision) {
-            $cat = $provision->category->value;
+        foreach ($rows as $row) {
+            $cat = $row->category;
             if (isset($totals[$cat])) {
-                /** @var numeric-string $provAmt */
-                $provAmt = sprintf('%.10f', (float) $provision->provision_amount);
-                $totals[$cat] = bcadd($totals[$cat], $provAmt, 2);
+                /** @var numeric-string $rowTotal */
+                $rowTotal = (string) $row->total;
+                /** @var numeric-string $catTotal */
+                $catTotal = $totals[$cat];
+                $totals[$cat] = bcadd($catTotal, $rowTotal, 2);
             }
         }
 

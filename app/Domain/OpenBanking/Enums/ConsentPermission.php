@@ -13,6 +13,7 @@ enum ConsentPermission: string
     case READ_TRANSACTIONS_DETAIL = 'ReadTransactionsDetail';
     case READ_TRANSACTIONS_CREDITS = 'ReadTransactionsCredits';
     case READ_TRANSACTIONS_DEBITS = 'ReadTransactionsDebits';
+    case PAYMENT_INITIATION = 'PaymentInitiation';
 
     public function label(): string
     {
@@ -24,6 +25,7 @@ enum ConsentPermission: string
             self::READ_TRANSACTIONS_DETAIL  => 'Read Transactions (Detail)',
             self::READ_TRANSACTIONS_CREDITS => 'Read Transaction Credits',
             self::READ_TRANSACTIONS_DEBITS  => 'Read Transaction Debits',
+            self::PAYMENT_INITIATION        => 'Payment Initiation',
         };
     }
 }

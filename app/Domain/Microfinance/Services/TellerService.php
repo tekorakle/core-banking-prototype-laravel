@@ -6,6 +6,7 @@ namespace App\Domain\Microfinance\Services;
 
 use App\Domain\Microfinance\Models\TellerCashier;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\DB;
 use RuntimeException;
 
 class TellerService
@@ -34,18 +35,16 @@ class TellerService
      */
     public function recordCashIn(string $tellerId, string $amount): TellerCashier
     {
-        $teller = TellerCashier::find($tellerId);
+        return DB::transaction(function () use ($tellerId, $amount): TellerCashier {
+            $teller = TellerCashier::lockForUpdate()->findOrFail($tellerId);
 
-        if ($teller === null) {
-            throw new RuntimeException("Teller not found: {$tellerId}");
-        }
+            /** @var numeric-string $vaultBalance */
+            $vaultBalance = (string) $teller->vault_balance;
+            $newBalance = bcadd($vaultBalance, $amount, 2);
+            $teller->update(['vault_balance' => $newBalance]);
 
-        /** @var numeric-string $vaultBalance */
-        $vaultBalance = (string) $teller->vault_balance;
-        $newBalance = bcadd($vaultBalance, $amount, 2);
-        $teller->update(['vault_balance' => $newBalance]);
-
-        return $teller->fresh() ?? $teller;
+            return $teller->refresh();
+        });
     }
 
     /**
@@ -57,25 +56,23 @@ class TellerService
      */
     public function recordCashOut(string $tellerId, string $amount): TellerCashier
     {
-        $teller = TellerCashier::find($tellerId);
+        return DB::transaction(function () use ($tellerId, $amount): TellerCashier {
+            $teller = TellerCashier::lockForUpdate()->findOrFail($tellerId);
 
-        if ($teller === null) {
-            throw new RuntimeException("Teller not found: {$tellerId}");
-        }
+            /** @var numeric-string $vaultBalance */
+            $vaultBalance = (string) $teller->vault_balance;
+            if (bccomp($vaultBalance, $amount, 2) < 0) {
+                throw new RuntimeException(
+                    "Insufficient vault balance. Balance: {$teller->vault_balance}, " .
+                    "requested: {$amount}."
+                );
+            }
 
-        /** @var numeric-string $vaultBalance */
-        $vaultBalance = (string) $teller->vault_balance;
-        if (bccomp($vaultBalance, $amount, 2) < 0) {
-            throw new RuntimeException(
-                "Insufficient vault balance. Balance: {$teller->vault_balance}, " .
-                "requested: {$amount}."
-            );
-        }
+            $newBalance = bcsub($vaultBalance, $amount, 2);
+            $teller->update(['vault_balance' => $newBalance]);
 
-        $newBalance = bcsub($vaultBalance, $amount, 2);
-        $teller->update(['vault_balance' => $newBalance]);
-
-        return $teller->fresh() ?? $teller;
+            return $teller->refresh();
+        });
     }
 
     /**
