@@ -151,6 +151,10 @@
                     ['title' => 'Plugin Marketplace', 'desc' => 'Extensible plugin system with sandboxed execution, static security scanning, hook-based integration points, and a manager UI for discovering and installing plugins.'],
                     ['title' => 'Event Streaming', 'desc' => 'Redis Streams-powered event streaming with a live dashboard, consumer groups, backpressure handling, and dead-letter queues for reliable event processing.'],
                     ['title' => 'Compliance Certification', 'desc' => 'SOC 2 Type II and PCI DSS readiness tooling, GDPR enhanced privacy (ROPA, DPIA, breach notification, consent v2), and multi-region deployment support.'],
+                    ['title' => 'Payment Standards & Rails', 'desc' => 'ISO 20022 messaging, ISO 8583 card processing, ACH, Fedwire, RTP, FedNow, SEPA DD/CT, and intelligent multi-rail routing that selects the optimal payment network automatically.'],
+                    ['title' => 'Open Banking & PSD2', 'desc' => 'Complete PSD2 consent lifecycle with AISP/PISP services, Berlin Group NextGenPSD2 and UK Open Banking adapters, and TPP eIDAS certificate validation.'],
+                    ['title' => 'Double-Entry Ledger', 'desc' => 'Production-grade accounting with chart of accounts, journal entries, GL auto-posting, reconciliation, trial balance, and an optional TigerBeetle high-throughput driver.'],
+                    ['title' => 'Microfinance', 'desc' => 'Group lending with joint liability, IFRS loan provisioning, cooperative share accounts, teller operations, field officer tools, and savings products with dormancy tracking for inclusion banking.'],
                 ];
             @endphp
 

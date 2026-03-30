@@ -43,7 +43,7 @@
 
                 <!-- Subheading -->
                 <p class="text-lg sm:text-xl text-slate-400 max-w-2xl mx-auto mb-10 leading-relaxed animate-fade-in-up" style="animation-delay: 0.15s">
-                    Production-grade core banking built with Laravel. Event sourcing, CQRS, cross-chain DeFi, privacy-preserving identity, AI agent commerce, and HTTP-native micropayments.
+                    Production-grade core banking built with Laravel. Event sourcing, CQRS, ISO 20022 messaging, PSD2 Open Banking, multi-rail payments (ACH, SEPA, Fedwire, FedNow), Interledger cross-network transfers, IFRS-compliant microfinance, cross-chain DeFi, and HTTP-native micropayments.
                 </p>
 
                 <!-- CTA Buttons -->
@@ -60,7 +60,7 @@
 
                 <!-- Tech stack pills -->
                 <div class="flex flex-wrap justify-center gap-3 mt-12 animate-fade-in" style="animation-delay: 0.5s">
-                    @foreach(['Laravel', 'Event Sourcing', 'CQRS', 'GraphQL', 'DDD', 'ERC-4337'] as $tech)
+                    @foreach(['Laravel', 'Event Sourcing', 'CQRS', 'GraphQL', 'DDD', 'ERC-4337', 'ISO 20022', 'PSD2', 'ILP'] as $tech)
                         <span class="px-3 py-1 text-xs font-medium text-slate-500 bg-white/[0.03] border border-white/[0.06] rounded-full">{{ $tech }}</span>
                     @endforeach
                 </div>
@@ -325,8 +325,8 @@
             <div class="grid grid-cols-2 md:grid-cols-4 gap-8 animate-on-scroll">
                 @foreach([
                     ['value' => '56', 'label' => 'Domain Modules'],
-                    ['value' => '40', 'label' => 'GraphQL Schemas'],
-                    ['value' => '160+', 'label' => 'API Endpoints'],
+                    ['value' => '43', 'label' => 'GraphQL Schemas'],
+                    ['value' => '1,400+', 'label' => 'API Routes'],
                     ['value' => 'MIT', 'label' => 'Licensed'],
                 ] as $stat)
                     <div class="text-center">
