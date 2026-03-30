@@ -1,10 +1,10 @@
-# Security Audit Scope — FinAegis/Zelta v7.0.0
+# Security Audit Scope — FinAegis/Zelta v7.7.0
 
-**Prepared**: 2026-03-28
+**Prepared**: 2026-03-29
 **Platform**: PHP 8.4 / Laravel 12 / MySQL 8 / Redis
 **PHPStan Level**: 8 (strict)
-**Domain Modules**: 49 bounded contexts (DDD)
-**Route Count**: ~1,360 registered routes
+**Domain Modules**: 56 bounded contexts (DDD)
+**Route Count**: ~1,400 registered routes
 **GraphQL Schemas**: 40 schema files
 
 ---
@@ -55,6 +55,15 @@ Core banking platform with 49 domain modules, payment processing (x402/MPP/AP2),
 - **On/off ramp**: Onramper integration with webhook verification
 - **Batch processing** with event sourcing
 - **CGO operations** (Chief Growth Officer analytics)
+
+### New Domains (v7.2.0–v7.5.0) — Added in v7.7.0 Audit Scope
+- **ISO 20022** (`app/Domain/ISO20022/`): SEPA/SWIFT message generation and parsing (pain, pacs, camt families). XML schema validation, namespace handling, XSD conformance. Input: raw message XML; risk surface: XXE injection, schema validation bypass.
+- **Open Banking PSD2** (`app/Domain/OpenBanking/`): Berlin Group standard account/payment APIs. OAuth2 PKCE flow, consent management, session nonce (cache-based, single-use). Risk: OAuth state fixation, consent scope escalation, account enumeration.
+- **ISO 8583** (`app/Domain/ISO8583/`): ATM/POS message codec (encode/decode), authorization/reversal/settlement handlers. Risk: bitmap overflow, field-length manipulation, response code spoofing.
+- **US Payment Rails** (`app/Domain/PaymentRails/`): ACH (NACHA), Fedwire, RTP, FedNow file generation and routing. Risk: routing number validation bypass, NACHA file injection, duplicate payment via idempotency gaps.
+- **Interledger Protocol** (`app/Domain/Interledger/`): ILP packet routing and streaming payments. Risk: packet amount manipulation, connector trust misconfiguration.
+- **Double-Entry Ledger** (`app/Domain/Ledger/`): GL posting with double-entry invariant, TigerBeetle and Eloquent drivers, reconciliation. Risk: unbalanced entry bypass, reconciliation discrepancy suppression, driver fallback exploitation.
+- **Microfinance Suite** (`app/Domain/Microfinance/`): Group lending, loan provisioning (IFRS), share accounts, teller vault, field officer collections. Risk: group liability bypass, provisioning classification manipulation, vault imbalance.
 
 ### Cryptography
 - **Post-quantum encryption**: ML-KEM-768 (key encapsulation), ML-DSA-65 (digital signatures)
@@ -255,3 +264,19 @@ Models without $fillable or $guarded: 31 files
 16. **Mass assignment on banking models**: Verify all model creation paths use validated data only.
 17. **CSP bypass**: Test Content Security Policy effectiveness, especially `unsafe-inline` on script-src.
 18. **Demo mode security**: Verify demo environment cannot be activated in production.
+
+### P1 — High (New Domains)
+19. **ISO 20022 XXE**: Test XML parsing in ISO 20022 parser for XXE injection via crafted message payloads.
+20. **Open Banking consent scope**: Verify PSD2 consent scope cannot be widened post-issuance. Test PKCE state parameter handling.
+21. **ISO 8583 bitmap overflow**: Test oversized bitmap fields for buffer overflow or field confusion in MessageCodec.
+22. **ACH routing validation**: Verify NACHA routing numbers are validated before ACH file submission. Test duplicate prevention.
+
+### P2 — Medium (New Domains)
+23. **Ledger double-entry bypass**: Verify `LedgerService::post()` invariant cannot be bypassed via concurrent posts or driver swap.
+24. **MFI vault imbalance**: Verify teller vault cash-in/cash-out prevents negative balance via race conditions.
+25. **ILP packet relay trust**: Verify Interledger connector only routes to trusted next-hop connectors.
+26. **TigerBeetle fallback**: Verify graceful fallback to Eloquent driver on TigerBeetle unreachability doesn't lose entries.
+
+*Document Version: 7.7.0*
+*Created: January 11, 2026*
+*Updated: 2026-03-29 (v7.7.0 Production Deployment Readiness — 7 new domains added to audit scope)*

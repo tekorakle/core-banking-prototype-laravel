@@ -24,12 +24,12 @@ php artisan user:admins              # List all admin users
 
 - **Web3 Integration**: `app/Infrastructure/Web3/` (EthRpcClient, AbiEncoder) — also legacy `app/Domain/Relayer/Services/EthRpcClient.php`
 - **ZK Circuits**: `storage/app/circuits/` (Circom sources + Solidity verifiers)
-- **49 domains** in `app/Domain/` (DDD bounded contexts)
+- **56 domains** in `app/Domain/` (DDD bounded contexts)
 - **Payment Protocols**: x402 (Coinbase), MPP (Stripe/Tempo), AP2 (Google)
 - **Packages**: `packages/zelta-sdk/` (Payment SDK), `packages/zelta-cli/` (CLI binary)
 - **Event Sourcing**: Spatie v7.7+ with domain-specific tables
 - **CQRS**: Command/Query Bus in `app/Infrastructure/`
-- **GraphQL**: Lighthouse PHP, 39 domain schemas
+- **GraphQL**: Lighthouse PHP, 40 domain schemas
 - **Multi-Tenancy**: Team-based isolation (`UsesTenantConnection` trait)
 - **Event Streaming**: Redis Streams publisher/consumer with DLQ + backpressure
 - **Post-Quantum Crypto**: ML-KEM-768, ML-DSA-65, hybrid encryption

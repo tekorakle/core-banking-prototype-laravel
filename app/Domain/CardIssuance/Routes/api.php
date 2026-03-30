@@ -19,6 +19,7 @@ Route::prefix('v1/cards')->name('api.cards.')->group(function () {
             ->middleware('transaction.rate_limit:card_provision')
             ->name('provision');
         Route::get('/{cardId}', [CardController::class, 'show'])->name('show');
+        Route::patch('/{cardId}', [CardController::class, 'update'])->name('update');
         Route::get('/{cardId}/transactions', [CardController::class, 'transactions'])->name('transactions');
         Route::post('/{cardId}/freeze', [CardController::class, 'freeze'])->name('freeze');
         Route::delete('/{cardId}/freeze', [CardController::class, 'unfreeze'])->name('unfreeze');
