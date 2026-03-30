@@ -23,8 +23,10 @@ Route::prefix('v1/payment-rails')->name('api.payment-rails.')->middleware(['auth
         ]);
 
         $router = app(PaymentRailRouter::class);
+        /** @var App\Models\User $user */
+        $user = $request->user();
         $result = $router->route(
-            $request->user()->id,
+            $user->id,
             $validated['amount'],
             $validated['currency'],
             $validated['country'],
