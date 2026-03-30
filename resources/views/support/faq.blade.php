@@ -343,7 +343,7 @@
                             We have an exciting roadmap ahead:
                         </p>
                         <ul class="list-disc list-inside mt-2 text-slate-500 space-y-1">
-                            <li><strong>Delivered:</strong> 56 domain modules, 160+ API endpoints, GraphQL, event sourcing</li>
+                            <li><strong>Delivered:</strong> 56 domain modules, 1,400+ API routes, GraphQL (43 domains), event sourcing</li>
                             <li><strong>Delivered:</strong> Mobile app backend, passkey auth, card issuing, KYC/AML</li>
                             <li><strong>Delivered:</strong> Cross-chain bridges, DeFi connectors, X402 micropayments</li>
                             <li><strong>Upcoming:</strong> GCU voting system, production bank integrations</li>

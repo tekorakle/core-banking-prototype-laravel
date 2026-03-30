@@ -5,8 +5,8 @@
 @section('seo')
     @include('partials.seo', [
         'title' => 'Features - Modern Banking Platform',
-        'description' => config('brand.name', 'Zelta') . ' features - Global Currency Unit (GCU), x402 protocol, cross-chain bridges, DeFi protocols, privacy-preserving identity, mobile payments, RegTech compliance, BaaS, and AI analytics.',
-        'keywords' => config('brand.name', 'Zelta') . ' features, GCU, global currency unit, cross-chain, DeFi, privacy, mobile payments, RegTech, BaaS, AI, multi-tenancy',
+        'description' => config('brand.name', 'Zelta') . ' features - 56 domain modules: GCU, ISO 20022, PSD2 Open Banking, multi-rail payments (ACH, SEPA, FedNow), Interledger, Double-Entry Ledger, Microfinance, x402, DeFi, AI analytics, and more.',
+        'keywords' => config('brand.name', 'Zelta') . ' features, GCU, ISO 20022, PSD2, open banking, payment rails, ACH, SEPA, Interledger, ledger, microfinance, cross-chain, DeFi, privacy, x402, RegTech, BaaS',
     ])
 
     {{-- Schema.org Markup --}}

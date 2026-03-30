@@ -5,8 +5,8 @@
 @section('seo')
     @include('partials.seo', [
         'title' => config('brand.name', 'Zelta') . ' - Open Source Core Banking Infrastructure',
-        'description' => 'Open-source core banking infrastructure with 56 DDD domains, event sourcing, cross-chain DeFi, privacy-preserving identity, RegTech compliance, AI analytics, and HTTP-native micropayments. Built with Laravel.',
-        'keywords' => config('brand.name', 'Zelta') . ', open source banking, core banking infrastructure, GCU, event sourcing, DeFi, cross-chain, RegTech, banking API, Laravel fintech',
+        'description' => 'Open-source core banking infrastructure with 56 DDD domains. ISO 20022, PSD2 Open Banking, multi-rail payments (ACH, SEPA, Fedwire, FedNow), Interledger, Microfinance, cross-chain DeFi, and HTTP-native micropayments. Built with Laravel.',
+        'keywords' => config('brand.name', 'Zelta') . ', open source banking, core banking infrastructure, GCU, ISO 20022, PSD2, open banking, ACH, SEPA, Interledger, microfinance, event sourcing, DeFi, RegTech, banking API, Laravel fintech',
     ])
 
     {{-- Schema.org Markup --}}
