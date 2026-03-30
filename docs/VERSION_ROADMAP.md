@@ -2944,4 +2944,52 @@ Findings #1-2 fixed in v7.1.1, findings #3-15 fixed in this release:
 
 *Document Version: 7.6.0*
 *Created: January 11, 2026*
+
+---
+
+## Version 7.7.0 — Production Deployment Readiness (RELEASED)
+
+**Release Date**: 2026-03-29
+**Theme**: Helm chart alignment, card settings API, production environment review, benchmark tooling
+
+### Helm Chart Update
+- Bumped `appVersion` from `7.0.0` to `7.7.0`
+- Bumped chart `version` from `1.0.0` to `1.7.0`
+- Updated production image tag in `values-production.yaml` to `7.7.0`
+
+### Card Settings API (PATCH /v1/cards/{cardId})
+- New `update` method on `CardController` accepting `network_preference`, `nickname`, `notifications_enabled`
+- Route registered in `app/Domain/CardIssuance/Routes/api.php` under auth:sanctum middleware
+- OpenAPI/Swagger annotations included for API documentation generation
+
+### Production Environment Review
+- Added 7 missing env var groups to `.env.production.example` and `.env.zelta.example`:
+  - `ISO20022_ENABLED`, `ISO20022_FAMILIES` (v7.2.0)
+  - `OPEN_BANKING_ENABLED`, `OPEN_BANKING_STANDARD` (v7.2.0)
+  - `ISO8583_ENABLED` (v7.2.0)
+  - `ACH_ENABLED`, `FEDWIRE_ENABLED`, `RTP_ENABLED`, `FEDNOW_ENABLED` (v7.3.0)
+  - `ILP_ENABLED` (v7.3.0)
+  - `LEDGER_DRIVER` (v7.4.0)
+  - `MFI_ENABLED` (v7.5.0)
+
+### Benchmark Commands
+- **`benchmark:ledger`** — GL posting throughput; posts N journal entries, reports entries/second. Usage: `php artisan benchmark:ledger --count=1000`
+- **`benchmark:payment-rails`** — ISO 8583 codec round-trip throughput; encode+decode N messages, reports ops/second. Usage: `php artisan benchmark:payment-rails --count=5000`
+
+### Production Readiness Scan
+- Confirmed zero `env()` calls outside config files in all 7 new domains (ISO20022, OpenBanking, ISO8583, PaymentRails, Interledger, Ledger, Microfinance)
+- All new domain configs default to `enabled => false` — safe for zero-config production deployments
+
+### Security Audit Scope Update
+- Updated `docs/SECURITY_AUDIT_SCOPE.md` from v7.0.0 to v7.7.0
+- Added all 7 new domains (v7.2–v7.5) to in-scope section with attack surface notes
+- Added 8 new pentest items (P1: ISO 20022 XXE, Open Banking consent, ISO 8583 bitmap overflow, ACH routing; P2: ledger invariant bypass, MFI vault imbalance, ILP relay trust, TigerBeetle fallback)
+- Updated domain module count: 49 → 56 bounded contexts
+
+### Statistics
+- 2 new Artisan commands, 7 env var groups added, Helm chart updated, 1 new API route
+
+*Document Version: 7.7.0*
+*Created: January 11, 2026*
+*Updated: 2026-03-29 (v7.7.0 Production Deployment Readiness)*
 *Updated: March 30, 2026 (v7.6.0 Security Hardening)*
