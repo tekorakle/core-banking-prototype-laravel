@@ -42,6 +42,7 @@ return [
         'circom_binary'           => env('CIRCOM_BINARY', 'circom'),
         'circuit_directory'       => env('SNARKJS_CIRCUIT_DIR', storage_path('app/circuits')),
         'snarkjs_timeout_seconds' => (int) env('SNARKJS_TIMEOUT', 120),
+        'max_concurrent_proofs'   => (int) env('ZK_MAX_CONCURRENT_PROOFS', 3),
 
         // ProofType → circuit name mapping
         'circuit_mapping' => [
