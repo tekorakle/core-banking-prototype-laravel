@@ -2849,6 +2849,36 @@ Based on competitive analysis of 19 worldwide open-source core banking platforms
 ### Statistics
 - 2 new domains + 1 extended, ~80 new files, 174 tests, 432 assertions
 
-*Document Version: 7.3.0*
+---
+
+## Version 7.4.0 — Accounting & Infrastructure (RELEASED)
+
+**Release Date**: March 30, 2026
+**Theme**: Double-entry ledger engine with pluggable drivers for financial accounting
+
+### Double-Entry Ledger Engine (New Domain)
+- **LedgerService** — Post journal entries with double-entry invariant enforcement (bcmath precision), entry reversal
+- **ChartOfAccountsService** — Account hierarchy (21 default accounts across 5 types), CRUD, seed command
+- **EloquentDriver** — MySQL-backed default driver with balance, trial balance, and account history queries
+- **TigerBeetleDriver** — Optional high-throughput driver via TigerBeetle HTTP API, graceful fallback when unreachable
+- **PostingRuleEngine** — Auto-posting from domain events via configurable rules (event.amount expressions)
+- **ReconciliationService** — Compare GL vs domain balances, flag discrepancies, resolution workflow
+- **PostGlEntryListener** — Event listener for auto-posting GL entries from any domain event
+- Config-driven driver swap: `LEDGER_DRIVER=eloquent|tigerbeetle`
+
+### Models & Migrations
+- LedgerAccount (code, name, type, parent hierarchy)
+- JournalEntry + JournalLine (double-entry pairs with debit/credit amounts)
+- PostingRule (event-triggered auto-posting rules)
+- ReconciliationReport (GL vs domain balance comparison)
+
+### API
+- REST: 8 endpoints under `/v1/ledger/` (accounts, balances, entries, trial balance, reconciliation)
+- GraphQL: 3 queries + 3 mutations with LedgerAccount, JournalEntry, TrialBalanceEntry types
+
+### Statistics
+- 1 new domain, ~35 new files, 60 tests, 175 assertions
+
+*Document Version: 7.4.0*
 *Created: January 11, 2026*
-*Updated: March 30, 2026 (v7.3.0 Payment Rails)*
+*Updated: March 30, 2026 (v7.4.0 Accounting & Infrastructure)*
