@@ -10,6 +10,7 @@ use App\Domain\Privacy\Exceptions\CircuitNotFoundException;
 use App\Domain\Privacy\Exceptions\SnarkjsException;
 use App\Domain\Privacy\ValueObjects\ZkProof;
 use DateTimeImmutable;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Log;
 use RuntimeException;
 use Symfony\Component\Process\Process;
@@ -48,6 +49,29 @@ class SnarkjsProverService implements ZkProverInterface
         $circuitName = $this->resolveCircuitName($type);
         $this->validateCircuitFiles($circuitName);
 
+        if (! $this->verifyCircuitIntegrity($circuitName)) {
+            throw new RuntimeException(
+                "Circuit integrity check failed for: {$circuitName}. Files may be corrupted or tampered."
+            );
+        }
+
+        // Acquire a concurrency slot — prevents CPU/memory exhaustion from unbounded parallel proofs
+        $maxConcurrent = (int) config('privacy.zk.max_concurrent_proofs', 3);
+        $slot = null;
+
+        for ($i = 0; $i < $maxConcurrent; $i++) {
+            $lock = Cache::lock("zk_proof_slot:{$i}", 120);
+
+            if ($lock->get()) {
+                $slot = $lock;
+                break;
+            }
+        }
+
+        if ($slot === null) {
+            throw new RuntimeException('ZK proof generation at capacity — try again shortly');
+        }
+
         $constraintCount = $this->getConstraintCount($circuitName);
 
         Log::info('Starting snarkjs proof generation', [
@@ -58,12 +82,22 @@ class SnarkjsProverService implements ZkProverInterface
 
         $startTime = microtime(true);
 
-        // Write input JSON to temp file
-        $inputFile = tempnam(sys_get_temp_dir(), 'zk_input_');
-        $proofFile = tempnam(sys_get_temp_dir(), 'zk_proof_');
-        $publicFile = tempnam(sys_get_temp_dir(), 'zk_public_');
+        // Temp file handles initialised to false so the finally block is safe even if
+        // tempnam() fails partway through allocation.
+        $inputFile = false;
+        $proofFile = false;
+        $publicFile = false;
 
         try {
+            // Write input JSON to temp file — allocation inside try so finally always runs cleanup
+            $inputFile = tempnam(sys_get_temp_dir(), 'zk_input_');
+            $proofFile = tempnam(sys_get_temp_dir(), 'zk_proof_');
+            $publicFile = tempnam(sys_get_temp_dir(), 'zk_public_');
+
+            if ($inputFile === false || $proofFile === false || $publicFile === false) {
+                throw new RuntimeException('Failed to create temporary files for ZK proof generation');
+            }
+
             $allInputs = array_merge($privateInputs, $publicInputs);
             file_put_contents($inputFile, json_encode($allInputs, JSON_THROW_ON_ERROR));
 
@@ -125,10 +159,20 @@ class SnarkjsProverService implements ZkProverInterface
                 ],
             );
         } finally {
-            // Clean up temp files
-            @unlink($inputFile);
-            @unlink($proofFile);
-            @unlink($publicFile);
+            // Securely delete temp files containing private inputs — runs on both success and failure
+            if ($inputFile !== false) {
+                @unlink($inputFile);
+            }
+
+            if ($proofFile !== false) {
+                @unlink($proofFile);
+            }
+
+            if ($publicFile !== false) {
+                @unlink($publicFile);
+            }
+
+            $slot->release();
         }
     }
 
@@ -250,6 +294,63 @@ class SnarkjsProverService implements ZkProverInterface
     private function getCircuitPath(string $circuitName, string $extension): string
     {
         return $this->circuitDirectory . '/' . $circuitName . '.' . $extension;
+    }
+
+    /**
+     * Verify circuit file integrity against the SHA-256 manifest.
+     *
+     * Returns true when the manifest is absent (first-run / CI) or when all listed
+     * hashes match. Returns false when a hash mismatch is detected, indicating
+     * possible file corruption or tampering.
+     */
+    private function verifyCircuitIntegrity(string $circuitName): bool
+    {
+        $manifestPath = storage_path('app/circuits/circuit_manifest.json');
+
+        if (! file_exists($manifestPath)) {
+            Log::warning('Circuit manifest not found — skipping integrity check', [
+                'circuit'       => $circuitName,
+                'manifest_path' => $manifestPath,
+            ]);
+
+            return true; // Don't block if manifest doesn't exist yet
+        }
+
+        $manifest = json_decode((string) file_get_contents($manifestPath), true);
+
+        $circuitFiles = $manifest[$circuitName] ?? null;
+
+        if ($circuitFiles === null) {
+            return true; // Unknown circuit, skip
+        }
+
+        foreach ($circuitFiles as $filename => $expectedHash) {
+            $filePath = storage_path("app/circuits/{$filename}");
+
+            if (! file_exists($filePath)) {
+                Log::error('Circuit file missing during integrity check', [
+                    'circuit'  => $circuitName,
+                    'filename' => $filename,
+                ]);
+
+                return false;
+            }
+
+            $actualHash = hash_file('sha256', $filePath);
+
+            if ($actualHash !== $expectedHash) {
+                Log::error('Circuit file integrity check failed — hash mismatch', [
+                    'circuit'       => $circuitName,
+                    'filename'      => $filename,
+                    'expected_hash' => $expectedHash,
+                    'actual_hash'   => $actualHash,
+                ]);
+
+                return false;
+            }
+        }
+
+        return true;
     }
 
     /**

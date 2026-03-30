@@ -13,6 +13,7 @@ use App\Infrastructure\Monitoring\MetricsService;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\RateLimiter;
 use Throwable;
 
 /**
@@ -45,6 +46,18 @@ class JitFundingService
     public function authorize(AuthorizationRequest $request): array
     {
         $startTime = microtime(true);
+
+        // 0. Per-card rate limiting — prevent a compromised card flooding the authorization pipeline
+        $rateLimitKey = 'jit_auth:' . $request->cardToken;
+        $maxAttempts = (int) config('cardissuance.jit_funding.max_auth_per_minute', 10);
+
+        if (! RateLimiter::attempt($rateLimitKey, $maxAttempts, fn () => true, 60)) {
+            Log::warning('JIT auth rate limit exceeded', [
+                'card_token_suffix' => substr($request->cardToken, -4),
+            ]);
+
+            return $this->decline($request, AuthorizationDecision::DECLINED_CARD_CANCELLED);
+        }
 
         Log::info('JIT Funding: Processing authorization', [
             'authorization_id' => $request->authorizationId,
