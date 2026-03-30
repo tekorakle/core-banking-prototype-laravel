@@ -2911,6 +2911,37 @@ Based on competitive analysis of 19 worldwide open-source core banking platforms
 ### Statistics
 - 1 new domain + 2 extended, ~60 new files, 150+ tests
 
-*Document Version: 7.5.0*
+---
+
+## Version 7.6.0 — Security Hardening (RELEASED)
+
+**Release Date**: March 30, 2026
+**Theme**: Complete threat model remediation + CI compatibility
+
+### Threat Model — All 15 Findings Resolved
+Findings #1-2 fixed in v7.1.1, findings #3-15 fixed in this release:
+
+| # | Finding | Severity | Fix |
+|---|---------|----------|-----|
+| 3 | Bridge quote tampering | High | Server-side quote cache with 60s TTL, client sends quote_id only |
+| 4 | ZK temp files persist on crash | High | try/finally cleanup with @unlink() |
+| 5 | OB session-based state (fixation risk) | High | Cache-based nonce with 10-min TTL, single-use via Cache::pull() |
+| 6 | ZK proof CPU exhaustion | High | Counting semaphore (3 slots default) via Cache::lock() |
+| 7 | Tenant bypass via public static | Medium | Private property + controlled setter with audit logging |
+| 8 | Coinbase/Paysera webhook replay | Medium | Delivery ID dedup cache (24h window) |
+| 9 | No per-card JIT rate limiting | Medium | RateLimiter::attempt() per card token (10/min default) |
+| 10 | Bridge sender unverified | Medium | BlockchainAddress ownership check before bridge execution |
+| 11 | No HTTPS on outbound webhooks | Medium | HTTPS enforcement in production |
+| 12 | Webhook payload leak | Medium | PayloadSanitizer strips sensitive field patterns |
+| 13 | Circuit file integrity unchecked | Medium | SHA-256 manifest verification + zk:verify-circuits command |
+| 14 | No bridge value limits | Low | Configurable per-tx/daily limits with atomic counters |
+| 15 | Marqeta HMAC optional | Low | Production boot warning + health check integration |
+
+### CI Compatibility
+- Upgraded to PHPCS v4.0.1 (matches CI)
+- Fixed all auto-fixable errors
+- Zero PHPCS errors locally and in CI
+
+*Document Version: 7.6.0*
 *Created: January 11, 2026*
-*Updated: March 30, 2026 (v7.5.0 Market Expansion & Developer Experience)*
+*Updated: March 30, 2026 (v7.6.0 Security Hardening)*
