@@ -100,6 +100,7 @@ class RegisterController extends Controller
         }
 
         // Use the same CreateNewUser action as Fortify for consistency
+        // Pass isApiRegistration=true to bypass the Fortify web registration gate
         $creator = new CreateNewUser();
         $user = $creator->create(
             [
@@ -109,7 +110,8 @@ class RegisterController extends Controller
                 'password_confirmation' => $request->password_confirmation,
                 'is_business_customer'  => $validated['is_business_customer'] ?? false,
                 'terms'                 => true, // For API, we assume terms are accepted
-            ]
+            ],
+            isApiRegistration: true,
         );
 
         // Create access/refresh token pair

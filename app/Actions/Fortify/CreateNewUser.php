@@ -18,14 +18,15 @@ class CreateNewUser implements CreatesNewUsers
      * Create a newly registered user.
      *
      * @param  array<string, string>  $input
+     * @param  bool  $isApiRegistration  When true, skip the Fortify registration gate (API user signup is always allowed)
      *
      * @throws \Illuminate\Validation\ValidationException
      */
-    public function create(array $input): User
+    public function create(array $input, bool $isApiRegistration = false): User
     {
-        // Defense-in-depth: block registration even if Fortify feature flag is bypassed
-        if (! config('fortify.registration_enabled', false)) {
-            abort(403, 'Registration is currently disabled. Set REGISTRATION_ENABLED=true in .env to enable.');
+        // Block Fortify web registration when disabled — API registration is always allowed
+        if (! $isApiRegistration && ! config('fortify.registration_enabled', false)) {
+            abort(403, 'Admin registration is disabled. Users register via the API or CLI.');
         }
 
         Validator::make(
