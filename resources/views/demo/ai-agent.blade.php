@@ -1,6 +1,6 @@
 @extends('layouts.public')
 
-@section('title', 'AI Agent Demo - ' . config('brand.name', 'Zelta') . '')
+@section('title', 'AI Agent Demo - ' . config('brand.name', 'Zelta'))
 
 @section('content')
 <div class="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100">

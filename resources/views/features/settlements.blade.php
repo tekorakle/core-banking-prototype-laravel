@@ -1,12 +1,12 @@
 @extends('layouts.public')
 
-@section('title', 'Instant Settlements - ' . config('brand.name', 'Zelta') . '')
+@section('title', 'Instant Settlements - ' . config('brand.name', 'Zelta'))
 
 @section('seo')
     @include('partials.seo', [
         'title' => 'Instant Settlements',
         'description' => 'Experience sub-second transaction processing with our advanced settlement engine. No more waiting days for transfers.',
-        'keywords' => 'instant settlements, real-time transactions, fast transfers, payment processing, ' . config('brand.name', 'Zelta') . '',
+        'keywords' => 'instant settlements, real-time transactions, fast transfers, payment processing, ' . config('brand.name', 'Zelta'),
     ])
 
     {{-- Schema.org Markup --}}

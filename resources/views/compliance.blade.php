@@ -4,7 +4,7 @@
 
 @section('seo')
     @include('partials.seo', [
-        'title' => 'Compliance-Ready Architecture - ' . config('brand.name', 'Zelta') . '',
+        'title' => 'Compliance-Ready Architecture - ' . config('brand.name', 'Zelta'),
         'description' => config('brand.name', 'Zelta') . ' compliance-ready architecture. Built to meet EU regulatory standards with PSD2, EMD2, MiCA, KYC/AML, GDPR, and Travel Rule adapters.',
         'keywords' => config('brand.name', 'Zelta') . ', compliance, regulation, PSD2, EMD2, MiCA, KYC, AML, GDPR, security, Travel Rule, MiFID II',
     ])

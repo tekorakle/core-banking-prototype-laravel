@@ -1,6 +1,6 @@
 @extends('layouts.public')
 
-@section('title', 'Virtuals Protocol - AI Agent Commerce | ' . config('brand.name', 'Zelta') . '')
+@section('title', 'Virtuals Protocol - AI Agent Commerce | ' . config('brand.name', 'Zelta'))
 
 @section('seo')
     @include('partials.seo', [

@@ -1,10 +1,10 @@
 @extends('layouts.public')
 
-@section('title', 'Code Examples - ' . config('brand.name', 'Zelta') . '')
+@section('title', 'Code Examples - ' . config('brand.name', 'Zelta'))
 
 @section('seo')
     @include('partials.seo', [
-        'title' => 'Code Examples - ' . config('brand.name', 'Zelta') . '',
+        'title' => 'Code Examples - ' . config('brand.name', 'Zelta'),
         'description' => 'Working examples and integration patterns for common use cases with the ' . config('brand.name', 'Zelta') . ' API.',
         'keywords' => config('brand.name', 'Zelta') . ' API examples, code samples, integration patterns, developer examples',
     ])
@@ -2304,7 +2304,7 @@ async function checkTravelRuleCompliance(transferData) {
       originator: {
         name: 'Alice Johnson',
         account_number: transferData.fromAccount,
-        institution_name: config('brand.name', 'Zelta') . '',
+        institution_name: config('brand.name', 'Zelta'),
         institution_country: 'US'
       },
       beneficiary: {
@@ -2366,7 +2366,7 @@ def check_travel_rule_compliance(transfer_data):
             originator={
                 'name': 'Alice Johnson',
                 'account_number': transfer_data['from_account'],
-                'institution_name': config('brand.name', 'Zelta') . '',
+                'institution_name': config('brand.name', 'Zelta'),
                 'institution_country': 'US'
             },
             beneficiary={

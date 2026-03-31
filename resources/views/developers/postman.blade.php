@@ -1,10 +1,10 @@
 @extends('layouts.public')
 
-@section('title', 'Postman Collection - ' . config('brand.name', 'Zelta') . '')
+@section('title', 'Postman Collection - ' . config('brand.name', 'Zelta'))
 
 @section('seo')
     @include('partials.seo', [
-        'title' => 'Postman Collection - ' . config('brand.name', 'Zelta') . '',
+        'title' => 'Postman Collection - ' . config('brand.name', 'Zelta'),
         'description' => 'Ready-to-use Postman collection with all ' . config('brand.name', 'Zelta') . ' API endpoints pre-configured for testing.',
         'keywords' => config('brand.name', 'Zelta') . ' API, Postman collection, API testing, developer tools',
     ])

@@ -1,12 +1,12 @@
 @extends('layouts.public')
 
-@section('title', 'Multi-Tenancy - ' . config('brand.name', 'Zelta') . '')
+@section('title', 'Multi-Tenancy - ' . config('brand.name', 'Zelta'))
 
 @section('seo')
     @include('partials.seo', [
         'title' => 'Multi-Tenancy',
         'description' => 'Enterprise-grade multi-tenancy with team-based isolation, per-tenant configuration, data migration, and the UsesTenantConnection trait powered by stancl/tenancy v3.9.',
-        'keywords' => 'multi-tenancy, tenant isolation, database scoping, enterprise, data migration, tenant configuration, stancl tenancy, ' . config('brand.name', 'Zelta') . '',
+        'keywords' => 'multi-tenancy, tenant isolation, database scoping, enterprise, data migration, tenant configuration, stancl tenancy, ' . config('brand.name', 'Zelta'),
     ])
 
     {{-- Schema.org Markup --}}

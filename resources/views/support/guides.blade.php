@@ -1,10 +1,10 @@
 @extends('layouts.public')
 
-@section('title', 'Support Guides - ' . config('brand.name', 'Zelta') . '')
+@section('title', 'Support Guides - ' . config('brand.name', 'Zelta'))
 
 @section('seo')
     @include('partials.seo', [
-        'title' => 'Support Guides - ' . config('brand.name', 'Zelta') . '',
+        'title' => 'Support Guides - ' . config('brand.name', 'Zelta'),
         'description' => config('brand.name', 'Zelta') . ' platform guides and documentation. Learn how to use, deploy, and contribute to our open-source core banking platform with 56 domain modules.',
         'keywords' => config('brand.name', 'Zelta') . ' guides, documentation, tutorials, open source banking, core banking platform',
     ])

@@ -1,10 +1,10 @@
 @extends('layouts.public')
 
-@section('title', 'API Documentation - ' . config('brand.name', 'Zelta') . '')
+@section('title', 'API Documentation - ' . config('brand.name', 'Zelta'))
 
 @section('seo')
     @include('partials.seo', [
-        'title' => 'API Documentation - ' . config('brand.name', 'Zelta') . '',
+        'title' => 'API Documentation - ' . config('brand.name', 'Zelta'),
         'description' => 'Complete reference documentation for the ' . config('brand.name', 'Zelta') . ' REST API with interactive examples and code samples.',
         'keywords' => config('brand.name', 'Zelta') . ' API, REST API, API documentation, developer reference',
     ])

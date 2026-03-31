@@ -1,6 +1,6 @@
 @extends('layouts.public')
 
-@section('title', 'Features - Modern Banking Platform | ' . config('brand.name', 'Zelta') . '')
+@section('title', 'Features - Modern Banking Platform | ' . config('brand.name', 'Zelta'))
 
 @section('seo')
     @include('partials.seo', [

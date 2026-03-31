@@ -1,6 +1,6 @@
 @extends('layouts.public')
 
-@section('title', 'AI Framework Demo - ' . config('brand.name', 'Zelta') . '')
+@section('title', 'AI Framework Demo - ' . config('brand.name', 'Zelta'))
 
 @section('seo')
     @include('partials.seo', [

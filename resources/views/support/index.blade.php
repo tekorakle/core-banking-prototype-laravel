@@ -1,10 +1,10 @@
 @extends('layouts.public')
 
-@section('title', 'Support Center - ' . config('brand.name', 'Zelta') . '')
+@section('title', 'Support Center - ' . config('brand.name', 'Zelta'))
 
 @section('seo')
     @include('partials.seo', [
-        'title' => 'Support Center - ' . config('brand.name', 'Zelta') . '',
+        'title' => 'Support Center - ' . config('brand.name', 'Zelta'),
         'description' => config('brand.name', 'Zelta') . ' Support Center - Get help with our open source financial platform. Documentation, guides, and community support.',
         'keywords' => config('brand.name', 'Zelta') . ' support, help center, documentation, guides, FAQ',
     ])

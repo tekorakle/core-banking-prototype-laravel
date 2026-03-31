@@ -1,12 +1,12 @@
 @extends('layouts.public')
 
-@section('title', 'Multi-Asset Support - ' . config('brand.name', 'Zelta') . '')
+@section('title', 'Multi-Asset Support - ' . config('brand.name', 'Zelta'))
 
 @section('seo')
     @include('partials.seo', [
         'title' => 'Multi-Asset Support',
         'description' => 'Hold and transact in multiple currencies and assets from a single account. Support for fiat, crypto, and commodities with seamless conversion.',
-        'keywords' => 'multi-asset, multiple currencies, crypto, fiat, commodities, ' . config('brand.name', 'Zelta') . '',
+        'keywords' => 'multi-asset, multiple currencies, crypto, fiat, commodities, ' . config('brand.name', 'Zelta'),
     ])
 
     {{-- Schema.org Markup --}}

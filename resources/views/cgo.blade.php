@@ -1,10 +1,10 @@
 @extends('layouts.public')
 
-@section('title', 'CGO Concept - ' . config('brand.name', 'Zelta') . '')
+@section('title', 'CGO Concept - ' . config('brand.name', 'Zelta'))
 
 @section('seo')
     @include('partials.seo', [
-        'title' => 'Continuous Growth Offering (CGO) Concept - ' . config('brand.name', 'Zelta') . '',
+        'title' => 'Continuous Growth Offering (CGO) Concept - ' . config('brand.name', 'Zelta'),
         'description' => 'Explore the Continuous Growth Offering concept - a theoretical model for continuous community-driven funding in open-source financial platforms.',
         'keywords' => 'CGO concept, continuous growth offering, open source funding, community funding model',
     ])

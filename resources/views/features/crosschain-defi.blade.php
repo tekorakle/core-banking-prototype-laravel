@@ -1,6 +1,6 @@
 @extends('layouts.public')
 
-@section('title', 'Cross-Chain & DeFi - ' . config('brand.name', 'Zelta') . '')
+@section('title', 'Cross-Chain & DeFi - ' . config('brand.name', 'Zelta'))
 
 @section('seo')
     @include('partials.seo', [

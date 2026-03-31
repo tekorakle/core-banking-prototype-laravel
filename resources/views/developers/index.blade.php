@@ -1,10 +1,10 @@
 @extends('layouts.public')
 
-@section('title', 'Developer Documentation - ' . config('brand.name', 'Zelta') . '')
+@section('title', 'Developer Documentation - ' . config('brand.name', 'Zelta'))
 
 @section('seo')
     @include('partials.seo', [
-        'title' => 'Developer Documentation - ' . config('brand.name', 'Zelta') . '',
+        'title' => 'Developer Documentation - ' . config('brand.name', 'Zelta'),
         'description' => config('brand.name', 'Zelta') . ' Developer Documentation - Build on ' . config('brand.name', 'Zelta') . ' platform. Open source, API-first, and designed for developers.',
         'keywords' => config('brand.name', 'Zelta') . ', developer, API, documentation, SDK, integration',
     ])

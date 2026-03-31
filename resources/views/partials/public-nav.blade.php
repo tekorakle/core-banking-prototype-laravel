@@ -5,8 +5,7 @@
             <div class="flex items-center">
                 <!-- Logo -->
                 <a href="/" class="flex items-center gap-0.5 group">
-                    <span class="text-xl font-display font-bold text-white tracking-tight">Fin</span>
-                    <span class="text-xl font-display font-bold text-gradient tracking-tight">Aegis</span>
+                    <span class="text-xl font-display font-bold text-white tracking-tight">{{ config('brand.name', 'Zelta') }}</span>
                 </a>
 
                 <!-- Main Navigation -->

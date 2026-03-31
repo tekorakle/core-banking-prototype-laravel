@@ -1,6 +1,6 @@
 @extends('layouts.public')
 
-@section('title', 'Visa CLI - Programmatic Card Payments for AI Agents | ' . config('brand.name', 'Zelta') . '')
+@section('title', 'Visa CLI - Programmatic Card Payments for AI Agents | ' . config('brand.name', 'Zelta'))
 
 @section('seo')
     @include('partials.seo', [

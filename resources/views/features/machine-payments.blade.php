@@ -1,6 +1,6 @@
 @extends('layouts.public')
 
-@section('title', 'Machine Payments Protocol — Multi-Rail Agent Payments | ' . config('brand.name', 'Zelta') . '')
+@section('title', 'Machine Payments Protocol — Multi-Rail Agent Payments | ' . config('brand.name', 'Zelta'))
 
 @section('seo')
     @include('partials.seo', [

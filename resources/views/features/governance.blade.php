@@ -1,12 +1,12 @@
 @extends('layouts.public')
 
-@section('title', 'Democratic Governance - ' . config('brand.name', 'Zelta') . '')
+@section('title', 'Democratic Governance - ' . config('brand.name', 'Zelta'))
 
 @section('seo')
     @include('partials.seo', [
         'title' => 'Democratic Governance',
         'description' => 'Participate in platform decisions through weighted voting. Your voice matters in shaping the future of finance.',
-        'keywords' => 'democratic governance, voting, community decisions, decentralized finance, ' . config('brand.name', 'Zelta') . '',
+        'keywords' => 'democratic governance, voting, community decisions, decentralized finance, ' . config('brand.name', 'Zelta'),
     ])
 
     {{-- Schema.org Markup --}}

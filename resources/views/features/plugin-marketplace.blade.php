@@ -1,12 +1,12 @@
 @extends('layouts.public')
 
-@section('title', 'Plugin Marketplace - ' . config('brand.name', 'Zelta') . '')
+@section('title', 'Plugin Marketplace - ' . config('brand.name', 'Zelta'))
 
 @section('seo')
     @include('partials.seo', [
         'title' => 'Plugin Marketplace',
         'description' => 'Extend ' . config('brand.name', 'Zelta') . ' with a secure plugin ecosystem. Sandbox execution, static security scanning, hook-based integration, and a full management UI.',
-        'keywords' => 'plugin marketplace, extensibility, sandbox execution, security scanner, plugin hooks, ' . config('brand.name', 'Zelta') . '',
+        'keywords' => 'plugin marketplace, extensibility, sandbox execution, security scanner, plugin hooks, ' . config('brand.name', 'Zelta'),
     ])
 
     {{-- Schema.org Markup --}}

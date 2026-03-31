@@ -37,6 +37,10 @@ return [
 
     'twitter_handle' => env('BRAND_TWITTER_HANDLE', ''),
 
+    'twitter_url' => env('BRAND_TWITTER_URL', ''),
+
+    'linkedin_url' => env('BRAND_LINKEDIN_URL', ''),
+
     /*
     |--------------------------------------------------------------------------
     | Environment-driven visibility flags

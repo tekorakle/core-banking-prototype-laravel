@@ -1,12 +1,12 @@
 @extends('layouts.public')
 
-@section('title', 'Bank Integration - ' . config('brand.name', 'Zelta') . '')
+@section('title', 'Bank Integration - ' . config('brand.name', 'Zelta'))
 
 @section('seo')
     @include('partials.seo', [
         'title' => 'Bank Integration',
         'description' => 'Direct integration with major banks including Paysera, Deutsche Bank, and Santander for seamless operations.',
-        'keywords' => 'bank integration, partner banks, Paysera, Deutsche Bank, Santander, banking partners, ' . config('brand.name', 'Zelta') . '',
+        'keywords' => 'bank integration, partner banks, Paysera, Deutsche Bank, Santander, banking partners, ' . config('brand.name', 'Zelta'),
     ])
 
     {{-- Schema.org Markup --}}

@@ -1,6 +1,6 @@
 @extends('layouts.public')
 
-@section('title', 'Developer APIs - ' . config('brand.name', 'Zelta') . '')
+@section('title', 'Developer APIs - ' . config('brand.name', 'Zelta'))
 
 @section('seo')
     @include('partials.seo', [

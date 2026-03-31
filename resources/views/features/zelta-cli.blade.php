@@ -1,6 +1,6 @@
 @extends('layouts.public')
 
-@section('title', 'Zelta CLI - Multi-Rail Payments from Your Terminal | ' . config('brand.name', 'Zelta') . '')
+@section('title', 'Zelta CLI - Multi-Rail Payments from Your Terminal | ' . config('brand.name', 'Zelta'))
 
 @section('seo')
     @include('partials.seo', [

@@ -1,12 +1,12 @@
 @extends('layouts.public')
 
-@section('title', 'RegTech & Compliance - ' . config('brand.name', 'Zelta') . '')
+@section('title', 'RegTech & Compliance - ' . config('brand.name', 'Zelta'))
 
 @section('seo')
     @include('partials.seo', [
         'title' => 'RegTech & Compliance',
         'description' => 'Enterprise-grade regulatory technology with MiFID II reporting, MiCA compliance, Travel Rule enforcement, and multi-jurisdiction adapter support.',
-        'keywords' => 'RegTech, compliance, MiFID II, MiCA, Travel Rule, FATF, regulatory reporting, jurisdiction adapters, KYC, AML, ' . config('brand.name', 'Zelta') . '',
+        'keywords' => 'RegTech, compliance, MiFID II, MiCA, Travel Rule, FATF, regulatory reporting, jurisdiction adapters, KYC, AML, ' . config('brand.name', 'Zelta'),
     ])
 
     {{-- Schema.org Markup --}}

@@ -1,6 +1,6 @@
 @extends('layouts.public')
 
-@section('title', 'AI Agent Framework - Intelligent Financial Automation | ' . config('brand.name', 'Zelta') . '')
+@section('title', 'AI Agent Framework - Intelligent Financial Automation | ' . config('brand.name', 'Zelta'))
 
 @section('seo')
     @include('partials.seo', [

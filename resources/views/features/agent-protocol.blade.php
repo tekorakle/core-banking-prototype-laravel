@@ -1,12 +1,12 @@
 @extends('layouts.public')
 
-@section('title', 'Agent Protocol (AP2) — Autonomous Agent Commerce | ' . config('brand.name', 'Zelta') . '')
+@section('title', 'Agent Protocol (AP2) — Autonomous Agent Commerce | ' . config('brand.name', 'Zelta'))
 
 @section('seo')
     @include('partials.seo', [
         'title' => 'Agent Protocol (AP2) — Autonomous Agent Commerce',
         'description' => 'Google A2A agent-to-agent protocol with DID authentication, escrow, reputation scoring, AP2 mandates, and Verifiable Digital Credentials for autonomous financial operations.',
-        'keywords' => 'agent protocol, AP2, A2A, DID authentication, escrow, reputation, mandates, VDC, agent commerce, autonomous payments, ' . config('brand.name', 'Zelta') . '',
+        'keywords' => 'agent protocol, AP2, A2A, DID authentication, escrow, reputation, mandates, VDC, agent commerce, autonomous payments, ' . config('brand.name', 'Zelta'),
     ])
 
     {{-- Schema.org Markup --}}

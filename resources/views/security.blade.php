@@ -1,10 +1,10 @@
 @extends('layouts.public')
 
-@section('title', 'Security - Bank-Grade Protection | ' . config('brand.name', 'Zelta') . '')
+@section('title', 'Security - Bank-Grade Protection | ' . config('brand.name', 'Zelta'))
 
 @section('seo')
     @include('partials.seo', [
-        'title' => 'Security - Bank-Grade Protection | ' . config('brand.name', 'Zelta') . '',
+        'title' => 'Security - Bank-Grade Protection | ' . config('brand.name', 'Zelta'),
         'description' => config('brand.name', 'Zelta') . ' security overview - Bank-grade security meets blockchain immutability. Learn about our security measures and best practices.',
         'keywords' => config('brand.name', 'Zelta') . ' security, bank-grade security, blockchain security, secure banking, cybersecurity, data protection',
     ])

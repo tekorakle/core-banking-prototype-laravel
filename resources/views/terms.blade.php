@@ -1,10 +1,10 @@
 @extends('layouts.public')
 
-@section('title', 'Terms of Service - ' . config('brand.name', 'Zelta') . '')
+@section('title', 'Terms of Service - ' . config('brand.name', 'Zelta'))
 
 @section('seo')
     @include('partials.seo', [
-        'title' => 'Terms of Service - ' . config('brand.name', 'Zelta') . '',
+        'title' => 'Terms of Service - ' . config('brand.name', 'Zelta'),
         'description' => config('brand.name', 'Zelta') . ' terms of service. Review the terms governing your use of our platform.',
         'keywords' => config('brand.name', 'Zelta') . ' terms of service, terms and conditions, user agreement',
     ])

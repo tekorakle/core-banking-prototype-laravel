@@ -1,10 +1,10 @@
 @extends('layouts.public')
 
-@section('title', 'FAQ - Frequently Asked Questions | ' . config('brand.name', 'Zelta') . '')
+@section('title', 'FAQ - Frequently Asked Questions | ' . config('brand.name', 'Zelta'))
 
 @section('seo')
     @include('partials.seo', [
-        'title' => 'FAQ - Frequently Asked Questions | ' . config('brand.name', 'Zelta') . '',
+        'title' => 'FAQ - Frequently Asked Questions | ' . config('brand.name', 'Zelta'),
         'description' => 'Frequently asked questions about ' . config('brand.name', 'Zelta') . ' core banking platform, Global Currency Unit (GCU), architecture, and getting started.',
     ])
     

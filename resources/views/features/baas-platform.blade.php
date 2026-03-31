@@ -1,12 +1,12 @@
 @extends('layouts.public')
 
-@section('title', 'Banking-as-a-Service - ' . config('brand.name', 'Zelta') . '')
+@section('title', 'Banking-as-a-Service - ' . config('brand.name', 'Zelta'))
 
 @section('seo')
     @include('partials.seo', [
         'title' => 'Banking-as-a-Service',
         'description' => 'Launch your own financial products with ' . config('brand.name', 'Zelta') . ' BaaS. Partner APIs, multi-language SDK generation, embeddable widgets, and white-label branding.',
-        'keywords' => 'Banking-as-a-Service, BaaS, partner APIs, SDK generation, embeddable widgets, white-label, billing, marketplace, ' . config('brand.name', 'Zelta') . '',
+        'keywords' => 'Banking-as-a-Service, BaaS, partner APIs, SDK generation, embeddable widgets, white-label, billing, marketplace, ' . config('brand.name', 'Zelta'),
     ])
 
     {{-- Schema.org Markup --}}

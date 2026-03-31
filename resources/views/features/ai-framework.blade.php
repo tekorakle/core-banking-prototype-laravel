@@ -1,12 +1,12 @@
 @extends('layouts.public')
 
-@section('title', 'AI Framework — Multi-Agent Intelligence | ' . config('brand.name', 'Zelta') . '')
+@section('title', 'AI Framework — Multi-Agent Intelligence | ' . config('brand.name', 'Zelta'))
 
 @section('seo')
     @include('partials.seo', [
         'title' => 'AI Framework — Multi-Agent Intelligence for Banking',
         'description' => '6 specialized AI agents, 24 MCP tools, ML anomaly detection, natural language queries, and Temporal workflow orchestration. Intelligence woven into every layer of banking.',
-        'keywords' => 'AI framework, MCP tools, multi-agent, anomaly detection, NLP banking, agent orchestration, Temporal workflows, AI banking, ' . config('brand.name', 'Zelta') . '',
+        'keywords' => 'AI framework, MCP tools, multi-agent, anomaly detection, NLP banking, agent orchestration, Temporal workflows, AI banking, ' . config('brand.name', 'Zelta'),
     ])
 
     {{-- Schema.org Markup --}}

@@ -1,12 +1,12 @@
 @extends('layouts.public')
 
-@section('title', 'Global Currency Unit (GCU) - ' . config('brand.name', 'Zelta') . '')
+@section('title', 'Global Currency Unit (GCU) - ' . config('brand.name', 'Zelta'))
 
 @section('seo')
     @include('partials.seo', [
         'title' => 'Global Currency Unit (GCU)',
         'description' => 'Learn about the Global Currency Unit (GCU) - ' . config('brand.name', 'Zelta') . '\'s innovative basket currency with democratic governance and stable value.',
-        'keywords' => 'GCU, global currency unit, basket currency, democratic governance, stable value, ' . config('brand.name', 'Zelta') . '',
+        'keywords' => 'GCU, global currency unit, basket currency, democratic governance, stable value, ' . config('brand.name', 'Zelta'),
     ])
 
     {{-- Schema.org Markup --}}

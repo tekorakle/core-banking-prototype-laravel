@@ -1,10 +1,10 @@
 @extends('layouts.public')
 
-@section('title', 'System Status - ' . config('brand.name', 'Zelta') . '')
+@section('title', 'System Status - ' . config('brand.name', 'Zelta'))
 
 @section('seo')
     @include('partials.seo', [
-        'title' => 'System Status - ' . config('brand.name', 'Zelta') . '',
+        'title' => 'System Status - ' . config('brand.name', 'Zelta'),
         'description' => 'Real-time status of ' . config('brand.name', 'Zelta') . ' platform services and infrastructure.',
         'keywords' => config('brand.name', 'Zelta') . ' status, system status, platform uptime, service availability',
     ])

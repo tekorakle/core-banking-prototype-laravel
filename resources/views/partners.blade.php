@@ -1,10 +1,10 @@
 @extends('layouts.public')
 
-@section('title', 'Banking Partners - Multi-Bank Architecture | ' . config('brand.name', 'Zelta') . '')
+@section('title', 'Banking Partners - Multi-Bank Architecture | ' . config('brand.name', 'Zelta'))
 
 @section('seo')
     @include('partials.seo', [
-        'title' => 'Banking Partners - Multi-Bank Architecture | ' . config('brand.name', 'Zelta') . '',
+        'title' => 'Banking Partners - Multi-Bank Architecture | ' . config('brand.name', 'Zelta'),
         'description' => config('brand.name', 'Zelta') . ' multi-bank architecture with pluggable connectors for institutional partners. Distributed fund security across licensed European banks.',
         'keywords' => config('brand.name', 'Zelta') . ' partners, banking partners, multi-bank, deposit protection, EU banking, fund distribution',
     ])
