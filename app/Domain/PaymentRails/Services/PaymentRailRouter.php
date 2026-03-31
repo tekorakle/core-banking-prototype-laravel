@@ -49,7 +49,7 @@ final class PaymentRailRouter
     ): array {
         // Normalize to numeric-string for bcmath operations downstream
         if (! is_numeric($amount)) {
-            throw new \InvalidArgumentException('Amount must be numeric');
+            throw new InvalidArgumentException('Amount must be numeric');
         }
         /** @var numeric-string $amount */
         $normalizedAmount = $amount;
