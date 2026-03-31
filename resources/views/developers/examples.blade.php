@@ -326,7 +326,8 @@ create_account_and_check_balance()
                             <!-- PHP -->
                             <div id="create-php" class="tab-content animate-fade-in">
                                 <x-code-block language="php">
-<?php
+{{ '<?php' }}
+
 // Install: composer require zelta/payment-sdk --repository='{"type":"path","url":"packages/zelta-sdk"}'
 require_once 'vendor/autoload.php';
 
@@ -348,17 +349,17 @@ function createAccountAndCheckBalance($client) {
                 'purpose' => 'savings'
             ]
         ]);
-        
+
         echo "Account created: {$account->uuid}\n";
-        
+
         // Get account balances
         $balances = $client->accounts->getBalances($account->uuid);
-        
+
         echo "Current balances:\n";
         foreach ($balances->data->balances as $balance) {
             echo "{$balance->asset_code}: {$balance->available_balance}\n";
         }
-        
+
         return $account;
     } catch (Exception $e) {
         echo "Error: {$e->getMessage()}\n";
