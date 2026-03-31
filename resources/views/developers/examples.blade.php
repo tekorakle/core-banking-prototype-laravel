@@ -326,7 +326,7 @@ create_account_and_check_balance()
                             <!-- PHP -->
                             <div id="create-php" class="tab-content animate-fade-in">
                                 <x-code-block language="php">
-{{ '<?php' }}
+{!! '<?php' !!}
 
 // Install: composer require zelta/payment-sdk --repository='{"type":"path","url":"packages/zelta-sdk"}'
 require_once 'vendor/autoload.php';
