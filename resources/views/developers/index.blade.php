@@ -573,10 +573,10 @@
                                     </div>
                                     <div>
                                         <h4 class="text-lg font-semibold text-slate-900">GraphQL API</h4>
-                                        <span class="text-xs text-slate-400">43 domains</span>
+                                        <span class="text-xs text-slate-400">45 domains</span>
                                     </div>
                                 </div>
-                                <p class="text-slate-500 text-sm mb-3">Schema-first GraphQL via Lighthouse PHP with queries, mutations, subscriptions, and DataLoaders across 43 domain schemas.</p>
+                                <p class="text-slate-500 text-sm mb-3">Schema-first GraphQL via Lighthouse PHP with queries, mutations, subscriptions, and DataLoaders across 45 domain schemas.</p>
                                 <span class="text-sky-600 text-sm font-medium group-hover:text-sky-700">View endpoints &rarr;</span>
                             </div>
                         </a>
