@@ -44,6 +44,32 @@
             @php
                 $releases = [
                     [
+                        'version' => 'v7.8.2',
+                        'date' => 'April 1, 2026',
+                        'label' => 'Maintenance',
+                        'label_color' => 'slate',
+                        'badge_color' => 'bg-slate-100 text-slate-700 border-slate-200',
+                        'dot_color' => 'bg-slate-500',
+                        'items' => [
+                            'Registration — Mobile API signup no longer blocked by admin registration gate',
+                            'Developer Portal — Honest SDK install commands, OpenAPI spec link, consolidated rate limits',
+                            'Infrastructure — Daily log rotation, CRON expression fix, CORS header update',
+                        ],
+                    ],
+                    [
+                        'version' => 'v7.8.1',
+                        'date' => 'March 31, 2026',
+                        'label' => 'Website Polish',
+                        'label_color' => 'violet',
+                        'badge_color' => 'bg-violet-100 text-violet-700 border-violet-200',
+                        'dot_color' => 'bg-violet-500',
+                        'items' => [
+                            'GCU page redesigned — migrated to unified brand layout',
+                            'Platform page simplified — module cards replaced with features link',
+                            'Public changelog page added at /changelog',
+                        ],
+                    ],
+                    [
                         'version' => 'v7.8.0',
                         'date' => 'March 30, 2026',
                         'label' => 'Standards & Compliance',

@@ -137,7 +137,7 @@
                 <div class="text-center">
                     <div class="inline-flex items-center px-4 py-2 bg-white/10 backdrop-blur-sm rounded-full text-sm mb-6">
                         <span class="w-2 h-2 bg-green-400 rounded-full mr-2 animate-pulse"></span>
-                        <span>v7.7 Documentation — 56 Domains, 1,400+ Routes, GraphQL + REST + x402</span>
+                        <span>v7.8 Documentation — 56 Domains, 1,400+ Routes, GraphQL + REST + x402</span>
                     </div>
                     <h1 class="text-5xl md:text-7xl font-bold mb-6 bg-clip-text text-transparent bg-gradient-to-r from-white to-blue-200">
                         Developer Experience, Engineered In
@@ -177,8 +177,8 @@
                     <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
                     </svg>
-                    <span class="font-medium">v7.7 Released:</span>
-                    <span class="ml-2">Production Deployment Readiness — Helm chart v7.7, card settings API, 56 DDD domains, 1,400+ API routes, GraphQL (43 domains), ISO 20022, ISO 8583, US Payment Rails, Interledger, Ledger, Microfinance, x402 Protocol, and more.</span>
+                    <span class="font-medium">v7.8 Released:</span>
+                    <span class="ml-2">Standards &amp; Compliance — 56 DDD domains, 1,400+ API routes, GraphQL (45 domains), ISO 20022, ISO 8583, US Payment Rails, Interledger, Ledger, Microfinance, x402 Protocol. v7.8.2 includes developer portal improvements, log rotation, and CRON fixes.</span>
                 </div>
             </div>
         </section>

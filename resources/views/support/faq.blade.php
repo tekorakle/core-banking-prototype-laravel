@@ -13,7 +13,7 @@
     $faqData = [
         [
             'question' => 'What is the current status of ' . config('brand.name', 'Zelta') . '?',
-            'answer' => config('brand.name', 'Zelta') . ' v7.7.0 is a fully-featured open-source core banking platform with 56 domain modules. The public instance runs in sandbox mode with test data so you can explore every feature freely. No real money is processed in the sandbox environment.'
+            'answer' => config('brand.name', 'Zelta') . ' v7.8.0 is a fully-featured open-source core banking platform with 56 domain modules. The public instance runs in sandbox mode with test data so you can explore every feature freely. No real money is processed in the sandbox environment.'
         ],
         [
             'question' => 'Can I use real money on the platform?',
@@ -127,11 +127,11 @@
                     </button>
                     <div class="faq-answer px-6 py-4 bg-white rounded-b-lg">
                         <p class="text-slate-500">
-                            {{ config('brand.name', 'Zelta') }} is a fully-featured open-source core banking platform at v7.7.0. The sandbox environment lets you:
+                            {{ config('brand.name', 'Zelta') }} is a fully-featured open-source core banking platform at v7.8.0. The sandbox environment lets you:
                         </p>
                         <ul class="list-disc list-inside mt-2 text-slate-500 space-y-1">
                             <li>Explore 56 domain modules including DeFi, cross-chain, privacy, and rewards</li>
-                            <li>Test 160+ REST API endpoints and a 40-domain GraphQL API</li>
+                            <li>Test 160+ REST API endpoints and a 45-domain GraphQL API</li>
                             <li>Try KYC/AML compliance flows, card issuing, and mobile payments</li>
                             <li>All transactions use test data &mdash; no real funds are involved</li>
                             <li>Community feedback drives the roadmap forward</li>
@@ -340,7 +340,7 @@
                             We have an exciting roadmap ahead:
                         </p>
                         <ul class="list-disc list-inside mt-2 text-slate-500 space-y-1">
-                            <li><strong>Delivered:</strong> 56 domain modules, 1,400+ API routes, GraphQL (43 domains), event sourcing</li>
+                            <li><strong>Delivered:</strong> 56 domain modules, 1,400+ API routes, GraphQL (45 domains), event sourcing</li>
                             <li><strong>Delivered:</strong> Mobile app backend, passkey auth, card issuing, KYC/AML</li>
                             <li><strong>Delivered:</strong> Cross-chain bridges, DeFi connectors, X402 micropayments</li>
                             <li><strong>Delivered:</strong> GCU voting system, production bank integrations</li>

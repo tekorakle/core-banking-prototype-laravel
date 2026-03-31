@@ -1,11 +1,11 @@
-# Security Audit Scope — FinAegis/Zelta v7.7.0
+# Security Audit Scope — FinAegis/Zelta v7.8.2
 
 **Prepared**: 2026-03-29
 **Platform**: PHP 8.4 / Laravel 12 / MySQL 8 / Redis
 **PHPStan Level**: 8 (strict)
 **Domain Modules**: 56 bounded contexts (DDD)
 **Route Count**: ~1,400 registered routes
-**GraphQL Schemas**: 40 schema files
+**GraphQL Schemas**: 45 schema files
 
 ---
 
@@ -81,7 +81,7 @@ Core banking platform with 49 domain modules, payment processing (x402/MPP/AP2),
 - **REST API v1**: Primary API with Sanctum auth
 - **REST API v2**: Next-gen API with `ensure.json` enforcement
 - **BIAN-compliant API**: Banking Industry Architecture Network endpoints
-- **GraphQL** (Lighthouse PHP): 40 schema files with query cost analysis and rate limiting
+- **GraphQL** (Lighthouse PHP): 45 schema files with query cost analysis and rate limiting
 - **WebSocket**: Private broadcast channels with Sanctum auth
 - **.well-known discovery endpoints**: `x402-configuration`, `mpp-configuration`, `ap2-configuration`, `agent.json`, `apple-app-site-association`, `assetlinks.json`
 - **Swagger/OpenAPI**: L5-Swagger generated documentation at `/api/documentation`
@@ -277,6 +277,6 @@ Models without $fillable or $guarded: 31 files
 25. **ILP packet relay trust**: Verify Interledger connector only routes to trusted next-hop connectors.
 26. **TigerBeetle fallback**: Verify graceful fallback to Eloquent driver on TigerBeetle unreachability doesn't lose entries.
 
-*Document Version: 7.7.0*
+*Document Version: 7.8.2*
 *Created: January 11, 2026*
-*Updated: 2026-03-29 (v7.7.0 Production Deployment Readiness — 7 new domains added to audit scope)*
+*Updated: April 1, 2026 (v7.8.2 Backend Fixes & Developer Portal)*

@@ -2993,3 +2993,55 @@ Findings #1-2 fixed in v7.1.1, findings #3-15 fixed in this release:
 *Created: January 11, 2026*
 *Updated: 2026-03-29 (v7.7.0 Production Deployment Readiness)*
 *Updated: March 30, 2026 (v7.6.0 Security Hardening)*
+
+---
+
+## Version 7.8.0 — Standards & Compliance (RELEASED)
+
+**Release Date**: March 30, 2026
+**Theme**: Consolidated release of v7.2-v7.7 feature development + website content
+
+### Delivered Features
+- 7 new domains: ISO 20022, Open Banking PSD2, ISO 8583, PaymentRails, Interledger, Ledger, Microfinance
+- 3 extended domains: Banking (SEPA DD, intelligent routing), FinancialInstitution (sandbox), Webhook (payload sanitizer)
+- Website: 8 new feature cards, 7 feature inner pages, professional copywriting pass
+- Mobile: Device attestation wiring, recovery shard improvements
+- npm audit clean, Railgun bridge patched
+- PRs #863-#872
+
+### Statistics
+- 10 domains added/extended, 8 feature pages, 7 feature cards
+
+---
+
+## Version 7.8.1 — Website Polish (RELEASED)
+
+**Release Date**: March 31, 2026
+**Theme**: Public-facing website cleanup and consistency pass
+
+### Delivered Features
+- GCU page migrated to layouts.public with unified brand design
+- Platform page: removed duplicate module cards, linked to features
+- Public changelog page added at /changelog with v7.0-v7.8 timeline
+- /features/gcu 301 redirects to /gcu
+- Sitemap updated, footer updated
+
+---
+
+## Version 7.8.2 — Backend Fixes & Developer Portal (RELEASED)
+
+**Release Date**: April 1, 2026
+**Theme**: Infrastructure fixes and developer portal improvements
+
+### Delivered Features
+- API registration no longer blocked by Fortify admin gate (mobile users can always register)
+- CRON expression fix: fraud.batch.schedule 'hourly' → '0 * * * *'
+- Log rotation: stack channel defaults to daily (14-day retention)
+- Developer portal: honest SDK install commands, standardized naming, OpenAPI link
+- Rate limits consolidated, Hello World in quick start
+- Marqeta HMAC downgraded to debug (sandbox-only)
+- CORS: X-Tenant-ID header allowed
+- Migration FK fix: consents.tpp_id type mismatch
+
+*Document Version: 7.8.2*
+*Updated: April 1, 2026 (v7.8.2 Backend Fixes & Developer Portal)*
