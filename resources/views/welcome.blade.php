@@ -112,7 +112,7 @@
                 <!-- Right: Who it's for -->
                 <div class="animate-on-scroll stagger-2">
                     <div class="bg-slate-50 rounded-2xl p-8 lg:p-10 border border-slate-100">
-                        <h3 class="font-display text-2xl font-bold text-slate-900 mb-8">Who Is This For?</h3>
+                        <h3 class="font-display text-2xl font-bold text-slate-900 mb-8">Built for Builders</h3>
                         <div class="space-y-8">
                             @foreach([
                                 ['title' => 'Developers & Architects', 'desc' => 'See how event sourcing, CQRS, and DDD work in a real financial system — not just theory, but running code.', 'icon' => 'M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4', 'color' => 'blue'],
@@ -148,9 +148,9 @@
     <section id="features" class="py-24 bg-slate-50/50">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="text-center mb-16 animate-on-scroll">
-                <h2 class="font-display text-4xl lg:text-5xl font-bold text-slate-900 tracking-tight mb-4">Built-In Capabilities</h2>
+                <h2 class="font-display text-4xl lg:text-5xl font-bold text-slate-900 tracking-tight mb-4">56 Production-Ready Modules</h2>
                 <p class="text-lg text-slate-500 max-w-2xl mx-auto">
-                    56 domain modules spanning payments, lending, compliance, DeFi, privacy, mobile wallets, AI analytics, and more.
+                    Every capability you need — payments, lending, compliance, DeFi, privacy, mobile wallets, AI analytics — all in one codebase.
                 </p>
             </div>
 
@@ -345,9 +345,9 @@
          ═══════════════════════════════════════ -->
     <section class="py-24 bg-white">
         <div class="max-w-4xl mx-auto text-center px-4 sm:px-6 lg:px-8 animate-on-scroll">
-            <h2 class="font-display text-4xl lg:text-5xl font-bold text-slate-900 tracking-tight mb-6">Ready to explore?</h2>
+            <h2 class="font-display text-4xl lg:text-5xl font-bold text-slate-900 tracking-tight mb-6">Start Building Today</h2>
             <p class="text-lg text-slate-500 mb-10 max-w-xl mx-auto">
-                See these features in action. Try the demo or explore the source code on GitHub.
+                Create an account, explore the API, or dive straight into the source code. Ship your first integration in minutes.
             </p>
             <div class="flex flex-col sm:flex-row gap-4 justify-center">
                 <a href="{{ route('register') }}" class="btn-primary btn-lg group">

@@ -49,7 +49,7 @@
                                 <svg class="w-5 h-5 text-slate-700" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"/></svg>
                             </div>
                             <h3 class="font-display text-xl font-bold text-slate-900 mb-1">Community</h3>
-                            <p class="text-sm text-slate-500">For developers and small teams</p>
+                            <p class="text-sm text-slate-500">Free forever. Ship your first product.</p>
                         </div>
                         <div class="mb-8">
                             <span class="font-display text-5xl font-extrabold text-slate-900">Free</span>
@@ -83,15 +83,15 @@
                         </div>
                         <div class="mb-8">
                             <span class="font-display text-5xl font-extrabold text-slate-900">Custom</span>
-                            <p class="text-sm text-slate-500 mt-1">Based on usage and scale</p>
+                            <p class="text-sm text-slate-500 mt-1">Pay only for what you use</p>
                         </div>
                         <ul class="space-y-3 mb-8 text-sm text-slate-600">
                             <li class="list-check">Everything in Community</li>
-                            <li class="list-check">Managed hosting</li>
+                            <li class="list-check">Managed hosting &amp; auto-scaling</li>
                             <li class="list-check">99.9% uptime SLA</li>
-                            <li class="list-check">Priority support</li>
-                            <li class="list-check">Automatic updates</li>
-                            <li class="list-check">Daily backups</li>
+                            <li class="list-check">Priority support (< 4h response)</li>
+                            <li class="list-check">Automatic updates &amp; patches</li>
+                            <li class="list-check">Daily backups &amp; disaster recovery</li>
                         </ul>
                         <a href="{{ route('support.contact') }}" class="btn-primary w-full text-center">
                             Get a Quote
@@ -108,8 +108,8 @@
                             <p class="text-sm text-slate-500">Custom solutions for large organizations</p>
                         </div>
                         <div class="mb-8">
-                            <span class="font-display text-5xl font-extrabold text-slate-900">Custom</span>
-                            <p class="text-sm text-slate-500 mt-1">Tailored to your requirements</p>
+                            <span class="font-display text-5xl font-extrabold text-slate-900">Enterprise</span>
+                            <p class="text-sm text-slate-500 mt-1">Dedicated infrastructure &amp; support</p>
                         </div>
                         <ul class="space-y-3 mb-8 text-sm text-slate-600">
                             <li class="list-check">Everything in Cloud</li>
@@ -142,7 +142,7 @@
                         $faqs = [
                             ['q' => 'Is the community edition really free?', 'a' => 'Yes! Our community edition is completely free and open source under the MIT license. You can use it for any purpose, including commercial projects.'],
                             ['q' => "What's included in the Cloud Platform?", 'a' => 'The Cloud Platform includes managed hosting, automatic updates, daily backups, 99.9% uptime SLA, and priority support. We handle all the infrastructure so you can focus on your business.'],
-                            ['q' => 'Can I switch between plans?', 'a' => "Absolutely! You can start with the community edition and upgrade to Cloud or Enterprise plans at any time. We'll help you migrate your data seamlessly."],
+                            ['q' => 'Can I switch between plans?', 'a' => "Yes. You can start with the Community Edition and upgrade to Cloud or Enterprise at any time. We provide migration tooling and support to ensure a seamless transition."],
                             ['q' => 'Do you offer discounts for non-profits?', 'a' => 'Yes, we offer special pricing for non-profit organizations and educational institutions. Contact our sales team for more information.'],
                         ];
                     @endphp

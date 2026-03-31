@@ -140,10 +140,10 @@
                         <span>v7.8 Documentation — 56 Domains, 1,400+ Routes, GraphQL + REST + x402</span>
                     </div>
                     <h1 class="text-5xl md:text-7xl font-bold mb-6 bg-clip-text text-transparent bg-gradient-to-r from-white to-blue-200">
-                        Developer Experience, Engineered In
+                        Build with 1,400+ API Routes
                     </h1>
                     <p class="text-xl md:text-2xl text-gray-300 max-w-4xl mx-auto mb-12">
-                        Open source banking infrastructure with comprehensive APIs, SDKs, and documentation.
+                        REST, GraphQL, WebSocket, and CLI — integrate payments, lending, and compliance in minutes.
                     </p>
                     <div class="flex flex-col sm:flex-row gap-4 justify-center">
                         <a href="#quickstart" class="group bg-white text-slate-900 px-8 py-4 rounded-lg text-lg font-semibold hover:bg-gray-100 transition shadow-lg hover:shadow-xl inline-flex items-center justify-center">

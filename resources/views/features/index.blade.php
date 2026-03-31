@@ -40,7 +40,7 @@
                 @include('partials.breadcrumb', ['items' => [['name' => 'Features', 'url' => url('/features')]]])
                 <h1 class="font-display text-4xl md:text-5xl lg:text-6xl font-extrabold text-white tracking-tight mb-6">Every Banking Capability. <span class="text-gradient">One Codebase.</span></h1>
                 <p class="text-lg text-slate-400 max-w-2xl mx-auto">
-                    Every building block a modern fintech needs — from democratic currency governance to AI agent commerce, cross-chain DeFi, and privacy-preserving identity.
+                    56 production-ready modules spanning payments, lending, compliance, DeFi, AI, and developer tools — so you ship products, not infrastructure.
                 </p>
             </div>
         </div>
