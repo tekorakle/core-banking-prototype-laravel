@@ -9,11 +9,13 @@
 
     @include('partials.favicon')
 
-    @yield('seo', View::make('partials.seo', [
-        'title' => config('brand.name', config('brand.name', 'Zelta') . ''),
-        'description' => config('brand.name', 'Zelta') . ' — Agentic payments with stablecoin-powered virtual cards. Non-custodial security and privacy built in.',
-        'keywords' => config('brand.name', 'Zelta') . ', agentic payments, stablecoin card, virtual card, crypto payments, non-custodial wallet',
-    ]))
+    @section('seo')
+        @include('partials.seo', [
+            'title' => config('brand.name', config('brand.name', 'Zelta') . ''),
+            'description' => config('brand.name', 'Zelta') . ' — Agentic payments with stablecoin-powered virtual cards. Non-custodial security and privacy built in.',
+            'keywords' => config('brand.name', 'Zelta') . ', agentic payments, stablecoin card, virtual card, crypto payments, non-custodial wallet',
+        ])
+    @show
 
     <!-- DNS Prefetch & Preconnect -->
     <link rel="preconnect" href="https://fonts.bunny.net">
