@@ -263,7 +263,7 @@
                         <div class="text-center mb-6">
                             <div class="w-20 h-20 bg-gradient-to-br from-pink-500 to-orange-600 text-white rounded-full flex items-center justify-center text-2xl font-bold mx-auto shadow-lg">3</div>
                             <h3 class="text-xl font-semibold mt-4 mb-2">Start Building</h3>
-                            <p class="text-slate-500">Create your first API request</p>
+                            <p class="text-slate-500">Verify the API is running, then make your first request</p>
                         </div>
                         <div class="code-container flex-1">
                             <div class="code-header">
@@ -282,9 +282,12 @@
                             </div>
                             <div class="p-4 font-mono text-sm">
                                 <div id="code-step3">
-                                    <div><span class="text-gray-500">$</span> <span class="text-green-400">curl</span> <span class="text-blue-400">-X</span> <span class="text-purple-400">GET</span> <span class="text-yellow-400">"http://localhost:8000/api/v1/accounts"</span> <span class="text-gray-400">\</span></div>
-                                    <div>  <span class="text-blue-400">-H</span> <span class="text-yellow-400">"Authorization: Bearer YOUR_API_KEY"</span> <span class="text-gray-400">\</span></div>
-                                    <div>  <span class="text-blue-400">-H</span> <span class="text-yellow-400">"Accept: application/json"</span></div>
+                                    <div><span class="text-gray-500"># Verify the API is running (no auth needed)</span></div>
+                                    <div><span class="text-gray-500">$</span> <span class="text-green-400">curl</span> <span class="text-yellow-400">http://localhost:8000/api/health</span></div>
+                                    <div><span class="text-gray-500"># {"status":"ok","version":"7.8.0"}</span></div>
+                                    <div class="mt-2"><span class="text-gray-500"># Make an authenticated request</span></div>
+                                    <div><span class="text-gray-500">$</span> <span class="text-green-400">curl</span> <span class="text-blue-400">-H</span> <span class="text-yellow-400">"Authorization: Bearer YOUR_API_KEY"</span> <span class="text-gray-400">\</span></div>
+                                    <div>  <span class="text-yellow-400">http://localhost:8000/api/v2/accounts</span></div>
                                 </div>
                             </div>
                         </div>
@@ -1148,9 +1151,9 @@
 <span class="text-purple-400">const</span> <span class="text-white">app</span> = <span class="text-green-400">express</span>();
 <span class="text-white">app</span>.<span class="text-green-400">use</span>(<span class="text-white">express</span>.<span class="text-green-400">json</span>());
 
-<span class="text-white">app</span>.<span class="text-green-400">post</span>(<span class="text-amber-400">'/webhooks/finaegis'</span>, (<span class="text-white">req</span>, <span class="text-white">res</span>) <span class="text-blue-400">=></span> {
+<span class="text-white">app</span>.<span class="text-green-400">post</span>(<span class="text-amber-400">'/webhooks/zelta'</span>, (<span class="text-white">req</span>, <span class="text-white">res</span>) <span class="text-blue-400">=></span> {
     <span class="text-gray-400">// Verify webhook signature</span>
-    <span class="text-purple-400">const</span> <span class="text-white">signature</span> = <span class="text-white">req</span>.<span class="text-cyan-400">headers</span>[<span class="text-amber-400">'x-finaegis-signature'</span>];
+    <span class="text-purple-400">const</span> <span class="text-white">signature</span> = <span class="text-white">req</span>.<span class="text-cyan-400">headers</span>[<span class="text-amber-400">'x-zelta-signature'</span>];
     <span class="text-purple-400">const</span> <span class="text-white">payload</span> = <span class="text-white">JSON</span>.<span class="text-green-400">stringify</span>(<span class="text-white">req</span>.<span class="text-cyan-400">body</span>);
     <span class="text-purple-400">const</span> <span class="text-white">secret</span> = <span class="text-white">process</span>.<span class="text-cyan-400">env</span>.<span class="text-cyan-400">WEBHOOK_SECRET</span>;
     

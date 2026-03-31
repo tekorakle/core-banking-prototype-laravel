@@ -53,8 +53,23 @@
                     <a href="#ledger" class="text-slate-600 hover:text-slate-900">Ledger</a>
                     <a href="#microfinance" class="text-green-600 hover:text-green-800">Microfinance</a>
                     <a href="#webhooks" class="text-gray-600 hover:text-gray-900">Webhooks</a>
+                    <a href="#rate-limits" class="text-gray-600 hover:text-gray-900">Rate Limits</a>
                     <a href="#errors" class="text-gray-600 hover:text-gray-900">Errors</a>
                 </nav>
+            </div>
+        </div>
+
+        <!-- OpenAPI Spec Banner -->
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-8">
+            <div class="flex items-center gap-4 p-4 bg-blue-50 border border-blue-200 rounded-lg mb-8">
+                <svg class="w-6 h-6 text-blue-600 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
+                <div>
+                    <p class="font-semibold text-blue-900">OpenAPI 3.0 Specification</p>
+                    <p class="text-sm text-blue-700">Import into Postman, Insomnia, or any OpenAPI-compatible tool.</p>
+                </div>
+                <a href="/api/documentation" target="_blank" class="ml-auto px-4 py-2 bg-blue-600 text-white text-sm font-semibold rounded-lg hover:bg-blue-700 transition">
+                    View Swagger UI &rarr;
+                </a>
             </div>
         </div>
 
@@ -121,11 +136,11 @@ curl -H "Authorization: Bearer fak_your_api_key_here" \
                             </ul>
                             
                             <h3>Sandbox vs Production</h3>
-                            <p>Use these base URLs for testing and production:</p>
-                            <ul>
-                                <li><strong>Sandbox:</strong> {{ config('app.url') }}/api/v2</li>
-                                <li><strong>Production:</strong> {{ config('app.url') }}/api/v2</li>
-                            </ul>
+                            <div class="mb-2">
+                                <span class="font-semibold text-slate-700">Base URL:</span>
+                                <code class="bg-slate-100 px-2 py-1 rounded text-sm">{{ config('app.url') }}/api/v2</code>
+                            </div>
+                            <p class="text-sm text-slate-500">Sandbox and production use the same base URL. Your API key determines the environment. Sandbox keys start with <code>sk_sandbox_</code>, production keys start with <code>sk_live_</code>.</p>
                         </div>
                     </section>
 
@@ -349,7 +364,7 @@ curl -H "Authorization: Bearer your_api_key" \
                                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
                                     <div>
                                         <span class="inline-block bg-green-100 text-green-800 text-xs font-medium px-2.5 py-0.5 rounded">GET</span>
-                                        <span class="ml-2 font-mono text-sm">/v2/gcu</span>
+                                        <span class="ml-2 font-mono text-sm">/gcu</span>
                                     </div>
                                 </div>
                                 
@@ -366,7 +381,7 @@ curl -H "Authorization: Bearer your_api_key" \
                                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
                                     <div>
                                         <span class="inline-block bg-green-100 text-green-800 text-xs font-medium px-2.5 py-0.5 rounded">GET</span>
-                                        <span class="ml-2 font-mono text-sm">/v2/gcu/composition</span>
+                                        <span class="ml-2 font-mono text-sm">/gcu/composition</span>
                                     </div>
                                 </div>
                                 
@@ -432,7 +447,7 @@ curl -H "Authorization: Bearer your_api_key" \
                                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
                                     <div>
                                         <span class="inline-block bg-green-100 text-green-800 text-xs font-medium px-2.5 py-0.5 rounded">GET</span>
-                                        <span class="ml-2 font-mono text-sm">/v2/gcu/value-history</span>
+                                        <span class="ml-2 font-mono text-sm">/gcu/value-history</span>
                                     </div>
                                 </div>
                                 
@@ -461,7 +476,7 @@ curl -H "Authorization: Bearer your_api_key" \
                                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
                                     <div>
                                         <span class="inline-block bg-green-100 text-green-800 text-xs font-medium px-2.5 py-0.5 rounded">GET</span>
-                                        <span class="ml-2 font-mono text-sm">/v2/gcu/voting/proposals</span>
+                                        <span class="ml-2 font-mono text-sm">/gcu/voting/proposals</span>
                                     </div>
                                 </div>
                                 
@@ -483,7 +498,7 @@ curl -H "Authorization: Bearer your_api_key" \
                                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
                                     <div>
                                         <span class="inline-block bg-green-100 text-green-800 text-xs font-medium px-2.5 py-0.5 rounded">GET</span>
-                                        <span class="ml-2 font-mono text-sm">/v2/gcu/voting/proposals/{id}</span>
+                                        <span class="ml-2 font-mono text-sm">/gcu/voting/proposals/{id}</span>
                                     </div>
                                 </div>
                                 
@@ -500,7 +515,7 @@ curl -H "Authorization: Bearer your_api_key" \
                                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
                                     <div>
                                         <span class="inline-block bg-blue-100 text-blue-800 text-xs font-medium px-2.5 py-0.5 rounded">POST</span>
-                                        <span class="ml-2 font-mono text-sm">/v2/gcu/voting/proposals/{id}/vote</span>
+                                        <span class="ml-2 font-mono text-sm">/gcu/voting/proposals/{id}/vote</span>
                                     </div>
                                     <div class="text-right">
                                         <span class="inline-block bg-orange-100 text-orange-800 text-xs font-medium px-2.5 py-0.5 rounded">Requires Authentication</span>
@@ -530,7 +545,7 @@ curl -X POST \
                                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
                                     <div>
                                         <span class="inline-block bg-green-100 text-green-800 text-xs font-medium px-2.5 py-0.5 rounded">GET</span>
-                                        <span class="ml-2 font-mono text-sm">/v2/gcu/voting/my-votes</span>
+                                        <span class="ml-2 font-mono text-sm">/gcu/voting/my-votes</span>
                                     </div>
                                     <div class="text-right">
                                         <span class="inline-block bg-orange-100 text-orange-800 text-xs font-medium px-2.5 py-0.5 rounded">Requires Authentication</span>
@@ -737,7 +752,7 @@ curl -H "Authorization: Bearer your_api_key" \
                                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
                                     <div>
                                         <span class="inline-block bg-orange-100 text-orange-800 text-xs font-medium px-2.5 py-0.5 rounded">POST</span>
-                                        <span class="ml-2 font-mono text-sm">/v2/crosschain/bridge</span>
+                                        <span class="ml-2 font-mono text-sm">/crosschain/bridge</span>
                                     </div>
                                 </div>
                                 <p class="text-gray-600 mb-4">Initiate a cross-chain bridge transfer through Wormhole, LayerZero, or Axelar.</p>
@@ -761,7 +776,7 @@ curl -X POST \
                                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
                                     <div>
                                         <span class="inline-block bg-green-100 text-green-800 text-xs font-medium px-2.5 py-0.5 rounded">GET</span>
-                                        <span class="ml-2 font-mono text-sm">/v2/crosschain/bridge/fees</span>
+                                        <span class="ml-2 font-mono text-sm">/crosschain/bridge/fees</span>
                                     </div>
                                 </div>
                                 <p class="text-gray-600 mb-4">Compare fees and estimated times across all supported bridge protocols for a given route.</p>
@@ -776,7 +791,7 @@ curl -H "Authorization: Bearer your_api_key" \
                                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
                                     <div>
                                         <span class="inline-block bg-orange-100 text-orange-800 text-xs font-medium px-2.5 py-0.5 rounded">POST</span>
-                                        <span class="ml-2 font-mono text-sm">/v2/crosschain/swap</span>
+                                        <span class="ml-2 font-mono text-sm">/crosschain/swap</span>
                                     </div>
                                 </div>
                                 <p class="text-gray-600 mb-4">Execute a token swap that bridges and swaps in a single atomic operation.</p>
@@ -801,7 +816,7 @@ curl -X POST \
                                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
                                     <div>
                                         <span class="inline-block bg-green-100 text-green-800 text-xs font-medium px-2.5 py-0.5 rounded">GET</span>
-                                        <span class="ml-2 font-mono text-sm">/v2/crosschain/portfolio</span>
+                                        <span class="ml-2 font-mono text-sm">/crosschain/portfolio</span>
                                     </div>
                                 </div>
                                 <p class="text-gray-600 mb-4">Retrieve an aggregated portfolio view across all supported chains.</p>
@@ -828,7 +843,7 @@ curl -H "Authorization: Bearer your_api_key" \
                                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
                                     <div>
                                         <span class="inline-block bg-green-100 text-green-800 text-xs font-medium px-2.5 py-0.5 rounded">GET</span>
-                                        <span class="ml-2 font-mono text-sm">/v2/defi/swap/quote</span>
+                                        <span class="ml-2 font-mono text-sm">/defi/swap/quote</span>
                                     </div>
                                 </div>
                                 <p class="text-gray-600 mb-4">Get the best swap quote aggregated across Uniswap, Curve, and other supported DEXes.</p>
@@ -843,7 +858,7 @@ curl -H "Authorization: Bearer your_api_key" \
                                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
                                     <div>
                                         <span class="inline-block bg-orange-100 text-orange-800 text-xs font-medium px-2.5 py-0.5 rounded">POST</span>
-                                        <span class="ml-2 font-mono text-sm">/v2/defi/swap/execute</span>
+                                        <span class="ml-2 font-mono text-sm">/defi/swap/execute</span>
                                     </div>
                                 </div>
                                 <p class="text-gray-600 mb-4">Execute a token swap through the optimal DEX route.</p>
@@ -867,7 +882,7 @@ curl -X POST \
                                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
                                     <div>
                                         <span class="inline-block bg-green-100 text-green-800 text-xs font-medium px-2.5 py-0.5 rounded">GET</span>
-                                        <span class="ml-2 font-mono text-sm">/v2/defi/portfolio</span>
+                                        <span class="ml-2 font-mono text-sm">/defi/portfolio</span>
                                     </div>
                                 </div>
                                 <p class="text-gray-600 mb-4">Retrieve all DeFi positions including lending deposits, staking, liquidity pools, and yield farming.</p>
@@ -882,7 +897,7 @@ curl -H "Authorization: Bearer your_api_key" \
                                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
                                     <div>
                                         <span class="inline-block bg-orange-100 text-orange-800 text-xs font-medium px-2.5 py-0.5 rounded">POST</span>
-                                        <span class="ml-2 font-mono text-sm">/v2/defi/flash-loan</span>
+                                        <span class="ml-2 font-mono text-sm">/defi/flash-loan</span>
                                     </div>
                                 </div>
                                 <p class="text-gray-600 mb-4">Execute a flash loan with a sequence of operations that must complete atomically.</p>
@@ -919,7 +934,7 @@ curl -X POST \
                                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
                                     <div>
                                         <span class="inline-block bg-orange-100 text-orange-800 text-xs font-medium px-2.5 py-0.5 rounded">POST</span>
-                                        <span class="ml-2 font-mono text-sm">/v2/regtech/mifid/reports</span>
+                                        <span class="ml-2 font-mono text-sm">/regtech/mifid/reports</span>
                                     </div>
                                 </div>
                                 <p class="text-gray-600 mb-4">Submit a MiFID II transaction report to the configured National Competent Authority.</p>
@@ -941,7 +956,7 @@ curl -X POST \
                                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
                                     <div>
                                         <span class="inline-block bg-orange-100 text-orange-800 text-xs font-medium px-2.5 py-0.5 rounded">POST</span>
-                                        <span class="ml-2 font-mono text-sm">/v2/regtech/mica/check</span>
+                                        <span class="ml-2 font-mono text-sm">/regtech/mica/check</span>
                                     </div>
                                 </div>
                                 <p class="text-gray-600 mb-4">Run a MiCA compliance validation against a crypto-asset or token issuance.</p>
@@ -963,7 +978,7 @@ curl -X POST \
                                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
                                     <div>
                                         <span class="inline-block bg-orange-100 text-orange-800 text-xs font-medium px-2.5 py-0.5 rounded">POST</span>
-                                        <span class="ml-2 font-mono text-sm">/v2/regtech/travel-rule/transfers</span>
+                                        <span class="ml-2 font-mono text-sm">/regtech/travel-rule/transfers</span>
                                     </div>
                                 </div>
                                 <p class="text-gray-600 mb-4">Submit originator and beneficiary information for FATF Travel Rule compliance on cross-border transfers.</p>
@@ -987,7 +1002,7 @@ curl -X POST \
                                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
                                     <div>
                                         <span class="inline-block bg-green-100 text-green-800 text-xs font-medium px-2.5 py-0.5 rounded">GET</span>
-                                        <span class="ml-2 font-mono text-sm">/v2/regtech/status</span>
+                                        <span class="ml-2 font-mono text-sm">/regtech/status</span>
                                     </div>
                                 </div>
                                 <p class="text-gray-600 mb-4">Get overall compliance status across all active regulatory frameworks.</p>
@@ -1014,7 +1029,7 @@ curl -H "Authorization: Bearer your_api_key" \
                                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
                                     <div>
                                         <span class="inline-block bg-orange-100 text-orange-800 text-xs font-medium px-2.5 py-0.5 rounded">POST</span>
-                                        <span class="ml-2 font-mono text-sm">/v2/mobile/payments/intents</span>
+                                        <span class="ml-2 font-mono text-sm">/mobile/payments/intents</span>
                                     </div>
                                 </div>
                                 <p class="text-gray-600 mb-4">Create a new payment intent for mobile wallet transactions.</p>
@@ -1037,7 +1052,7 @@ curl -X POST \
                                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
                                     <div>
                                         <span class="inline-block bg-green-100 text-green-800 text-xs font-medium px-2.5 py-0.5 rounded">GET</span>
-                                        <span class="ml-2 font-mono text-sm">/v2/mobile/activity</span>
+                                        <span class="ml-2 font-mono text-sm">/mobile/activity</span>
                                     </div>
                                 </div>
                                 <p class="text-gray-600 mb-4">Retrieve the mobile wallet activity feed with payments, transfers, and notifications.</p>
@@ -1052,7 +1067,7 @@ curl -H "Authorization: Bearer your_api_key" \
                                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
                                     <div>
                                         <span class="inline-block bg-orange-100 text-orange-800 text-xs font-medium px-2.5 py-0.5 rounded">POST</span>
-                                        <span class="ml-2 font-mono text-sm">/v2/mobile/transfers/p2p</span>
+                                        <span class="ml-2 font-mono text-sm">/mobile/transfers/p2p</span>
                                     </div>
                                 </div>
                                 <p class="text-gray-600 mb-4">Send a peer-to-peer transfer to another mobile wallet user.</p>
@@ -1075,7 +1090,7 @@ curl -X POST \
                                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
                                     <div>
                                         <span class="inline-block bg-orange-100 text-orange-800 text-xs font-medium px-2.5 py-0.5 rounded">POST</span>
-                                        <span class="ml-2 font-mono text-sm">/v2/mobile/auth/passkey/verify</span>
+                                        <span class="ml-2 font-mono text-sm">/mobile/auth/passkey/verify</span>
                                     </div>
                                 </div>
                                 <p class="text-gray-600 mb-4">Verify a FIDO2/WebAuthn passkey for passwordless mobile authentication.</p>
@@ -1109,7 +1124,7 @@ curl -X POST \
                                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
                                     <div>
                                         <span class="inline-block bg-orange-100 text-orange-800 text-xs font-medium px-2.5 py-0.5 rounded">POST</span>
-                                        <span class="ml-2 font-mono text-sm">/v2/partner/tenants</span>
+                                        <span class="ml-2 font-mono text-sm">/partner/tenants</span>
                                     </div>
                                     <div class="text-right">
                                         <span class="inline-block bg-rose-100 text-rose-800 text-xs font-medium px-2.5 py-0.5 rounded">Partner Key Required</span>
@@ -1135,7 +1150,7 @@ curl -X POST \
                                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
                                     <div>
                                         <span class="inline-block bg-orange-100 text-orange-800 text-xs font-medium px-2.5 py-0.5 rounded">POST</span>
-                                        <span class="ml-2 font-mono text-sm">/v2/partner/sdk/generate</span>
+                                        <span class="ml-2 font-mono text-sm">/partner/sdk/generate</span>
                                     </div>
                                     <div class="text-right">
                                         <span class="inline-block bg-rose-100 text-rose-800 text-xs font-medium px-2.5 py-0.5 rounded">Partner Key Required</span>
@@ -1161,7 +1176,7 @@ curl -X POST \
                                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
                                     <div>
                                         <span class="inline-block bg-blue-100 text-blue-800 text-xs font-medium px-2.5 py-0.5 rounded">PUT</span>
-                                        <span class="ml-2 font-mono text-sm">/v2/partner/config/whitelabel</span>
+                                        <span class="ml-2 font-mono text-sm">/partner/config/whitelabel</span>
                                     </div>
                                     <div class="text-right">
                                         <span class="inline-block bg-rose-100 text-rose-800 text-xs font-medium px-2.5 py-0.5 rounded">Partner Key Required</span>
@@ -1187,7 +1202,7 @@ curl -X PUT \
                                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
                                     <div>
                                         <span class="inline-block bg-green-100 text-green-800 text-xs font-medium px-2.5 py-0.5 rounded">GET</span>
-                                        <span class="ml-2 font-mono text-sm">/v2/partner/tenants</span>
+                                        <span class="ml-2 font-mono text-sm">/partner/tenants</span>
                                     </div>
                                     <div class="text-right">
                                         <span class="inline-block bg-rose-100 text-rose-800 text-xs font-medium px-2.5 py-0.5 rounded">Partner Key Required</span>
@@ -1218,7 +1233,7 @@ curl -H "Authorization: Bearer your_api_key" \
                                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
                                     <div>
                                         <span class="inline-block bg-orange-100 text-orange-800 text-xs font-medium px-2.5 py-0.5 rounded">POST</span>
-                                        <span class="ml-2 font-mono text-sm">/v2/ai/query</span>
+                                        <span class="ml-2 font-mono text-sm">/ai/query</span>
                                     </div>
                                 </div>
                                 <p class="text-gray-600 mb-4">Submit a natural language question about your transactions, balances, or financial activity.</p>
@@ -1239,7 +1254,7 @@ curl -X POST \
                                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
                                     <div>
                                         <span class="inline-block bg-green-100 text-green-800 text-xs font-medium px-2.5 py-0.5 rounded">GET</span>
-                                        <span class="ml-2 font-mono text-sm">/v2/ai/queries</span>
+                                        <span class="ml-2 font-mono text-sm">/ai/queries</span>
                                     </div>
                                 </div>
                                 <p class="text-gray-600 mb-4">Retrieve your past AI query history with cached results.</p>
@@ -1675,7 +1690,7 @@ curl -X POST \
                                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
                                     <div>
                                         <span class="inline-block bg-green-100 text-green-800 text-xs font-medium px-2.5 py-0.5 rounded">GET</span>
-                                        <span class="ml-2 font-mono text-sm">/v2/x402/status</span>
+                                        <span class="ml-2 font-mono text-sm">/x402/status</span>
                                     </div>
                                 </div>
                                 <p class="text-gray-600 mb-4">Get the current x402 protocol status including supported networks, assets, and facilitator connectivity.</p>
@@ -1690,7 +1705,7 @@ curl -H "Authorization: Bearer your_api_key" \
                                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
                                     <div>
                                         <span class="inline-block bg-green-100 text-green-800 text-xs font-medium px-2.5 py-0.5 rounded">GET</span>
-                                        <span class="ml-2 font-mono text-sm">/v2/x402/supported</span>
+                                        <span class="ml-2 font-mono text-sm">/x402/supported</span>
                                     </div>
                                 </div>
                                 <p class="text-gray-600 mb-4">List all supported blockchain networks and payment assets for x402 settlement.</p>
@@ -1705,7 +1720,7 @@ curl -H "Authorization: Bearer your_api_key" \
                                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
                                     <div>
                                         <span class="inline-block bg-orange-100 text-orange-800 text-xs font-medium px-2.5 py-0.5 rounded">POST</span>
-                                        <span class="ml-2 font-mono text-sm">/v2/x402/endpoints</span>
+                                        <span class="ml-2 font-mono text-sm">/x402/endpoints</span>
                                     </div>
                                 </div>
                                 <p class="text-gray-600 mb-4">Register an API endpoint for x402 monetization with pricing configuration.</p>
@@ -1729,7 +1744,7 @@ curl -X POST \
                                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
                                     <div>
                                         <span class="inline-block bg-green-100 text-green-800 text-xs font-medium px-2.5 py-0.5 rounded">GET</span>
-                                        <span class="ml-2 font-mono text-sm">/v2/x402/payments</span>
+                                        <span class="ml-2 font-mono text-sm">/x402/payments</span>
                                     </div>
                                 </div>
                                 <p class="text-gray-600 mb-4">Retrieve payment history and settlement status for x402 transactions.</p>
@@ -1744,7 +1759,7 @@ curl -H "Authorization: Bearer your_api_key" \
                                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
                                     <div>
                                         <span class="inline-block bg-green-100 text-green-800 text-xs font-medium px-2.5 py-0.5 rounded">GET</span>
-                                        <span class="ml-2 font-mono text-sm">/v2/x402/spending-limits</span>
+                                        <span class="ml-2 font-mono text-sm">/x402/spending-limits</span>
                                     </div>
                                 </div>
                                 <p class="text-gray-600 mb-4">View and manage spending limits for automated x402 payments including AI agent budgets.</p>
@@ -1796,6 +1811,38 @@ if (response.status === 402) {
                             </div>
                         </div>
                     </section>
+
+                    <section id="rate-limits" class="mb-16">
+                        <h2 class="text-3xl font-bold text-gray-900 mb-8">Rate Limits</h2>
+                        <div class="prose prose-lg max-w-none mb-6">
+                            <p>All API requests are rate limited. Limits apply per API key and are enforced on a sliding window.</p>
+                        </div>
+                        <div class="border rounded-lg overflow-hidden mb-6">
+                            <table class="w-full text-sm">
+                                <thead class="bg-gray-50">
+                                    <tr>
+                                        <th class="px-4 py-3 text-left font-semibold text-gray-700">Endpoint Type</th>
+                                        <th class="px-4 py-3 text-left font-semibold text-gray-700">Limit</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="divide-y divide-gray-200">
+                                    <tr><td class="px-4 py-3 text-gray-700">REST API</td><td class="px-4 py-3"><code class="bg-gray-100 px-2 py-0.5 rounded">1,000 requests/hour per API key</code></td></tr>
+                                    <tr><td class="px-4 py-3 text-gray-700">GraphQL (authenticated)</td><td class="px-4 py-3"><code class="bg-gray-100 px-2 py-0.5 rounded">120 queries/minute</code></td></tr>
+                                    <tr><td class="px-4 py-3 text-gray-700">GraphQL (guest)</td><td class="px-4 py-3"><code class="bg-gray-100 px-2 py-0.5 rounded">30 queries/minute</code></td></tr>
+                                    <tr><td class="px-4 py-3 text-gray-700">Webhooks</td><td class="px-4 py-3"><code class="bg-gray-100 px-2 py-0.5 rounded">100 deliveries/minute per endpoint</code></td></tr>
+                                    <tr><td class="px-4 py-3 text-gray-700">Burst (sliding window)</td><td class="px-4 py-3"><code class="bg-gray-100 px-2 py-0.5 rounded">100 requests/minute</code></td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="bg-gray-50 rounded-lg p-4">
+                            <p class="text-sm font-semibold text-gray-700 mb-2">Rate limit headers included in every response:</p>
+                            <div class="space-y-1 font-mono text-sm text-gray-600">
+                                <div><code>X-RateLimit-Limit</code> — Maximum requests allowed in the window</div>
+                                <div><code>X-RateLimit-Remaining</code> — Requests remaining in the current window</div>
+                                <div><code>X-RateLimit-Reset</code> — Unix timestamp when the window resets</div>
+                            </div>
+                        </div>
+                    </section>
                 </div>
 
                 <!-- Sidebar -->
@@ -1836,7 +1883,7 @@ if (response.status === 402) {
                             <h3 class="text-lg font-semibold text-blue-900 mb-4">OpenAPI Specification</h3>
                             <p class="text-blue-800 mb-4">Download the OpenAPI specification file or view it in your preferred API client.</p>
                             <div class="flex gap-3">
-                                <a href="/docs/api-docs.json" download="finaegis-api-v2.json" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition duration-200">
+                                <a href="/docs/api-docs.json" download="zelta-api-v2.json" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition duration-200">
                                     Download OpenAPI JSON
                                 </a>
                                 <a href="/api/documentation" target="_blank" class="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700 transition duration-200">

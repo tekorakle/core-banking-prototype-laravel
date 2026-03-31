@@ -240,10 +240,11 @@
                             <!-- JavaScript -->
                             <div id="create-js" class="tab-content active animate-fade-in">
                                 <x-code-block language="javascript">
-import { {{ config('brand.name', 'Zelta') }} } from '@finaegis/sdk';
+// Install: npm install ./sdks/javascript (from monorepo)
+import { {{ config('brand.name', 'Zelta') }} } from '@zelta/sdk';
 
 const client = new {{ config('brand.name', 'Zelta') }}({
-  apiKey: process.env.FINAEGIS_API_KEY,
+  apiKey: process.env.ZELTA_API_KEY,
   baseURL: '{{ config('app.url') }}/api/v2'
 });
 
@@ -283,11 +284,12 @@ createAccountAndCheckBalance();
                             <!-- Python -->
                             <div id="create-py" class="tab-content animate-fade-in">
                                 <x-code-block language="python">
-from finaegis import {{ config('brand.name', 'Zelta') }}
+# Install: pip install ./sdks/python (from monorepo)
+from zelta import {{ config('brand.name', 'Zelta') }}
 import os
 
 client = {{ config('brand.name', 'Zelta') }}(
-    api_key=os.environ['FINAEGIS_API_KEY'],
+    api_key=os.environ['ZELTA_API_KEY'],
     base_url='{{ config('app.url') }}/api/v2'
 )
 
@@ -324,12 +326,14 @@ create_account_and_check_balance()
                             <!-- PHP -->
                             <div id="create-php" class="tab-content animate-fade-in">
                                 <x-code-block language="php">
+<?php
+// Install: composer require zelta/payment-sdk --repository='{"type":"path","url":"packages/zelta-sdk"}'
 require_once 'vendor/autoload.php';
 
-use {{ config('brand.name', 'Zelta') }}\Client;
+use Zelta\PaymentSDK\Client;
 
 $client = new Client([
-    'apiKey' => $_ENV['FINAEGIS_API_KEY'],
+    'apiKey' => $_ENV['ZELTA_API_KEY'],
     'baseURL' => '{{ config('app.url') }}/api/v2'
 ]);
 
@@ -777,7 +781,7 @@ const app = express();
 
 // Middleware to verify webhook signatures
 function verifyWebhookSignature(req, res, next) {
-  const signature = req.headers['x-finaegis-signature'];
+  const signature = req.headers['x-zelta-signature'];
   const payload = JSON.stringify(req.body);
   const secret = process.env.WEBHOOK_SECRET;
   
@@ -794,7 +798,7 @@ function verifyWebhookSignature(req, res, next) {
 }
 
 // Webhook endpoint
-app.post('/webhooks/finaegis', 
+app.post('/webhooks/zelta',
   express.json(),
   verifyWebhookSignature,
   (req, res) => {
@@ -856,7 +860,7 @@ async function handleWorkflowCompleted(workflow) {
 // Configure webhook endpoints
 async function setupWebhooks() {
   const webhook = await client.webhooks.create({
-    url: 'https://yourapp.com/webhooks/finaegis',
+    url: 'https://yourapp.com/webhooks/zelta',
     events: [
       'transfer.completed',
       'transfer.failed',
@@ -921,7 +925,8 @@ async function testWebhook(webhookId) {
                             <!-- JavaScript -->
                             <div id="ai-chat-js" class="tab-content active animate-fade-in">
                                 <x-code-block language="javascript">
-import { {{ config('brand.name', 'Zelta') }}AI } from '@finaegis/ai-sdk';
+// Install: npm install ./sdks/javascript (from monorepo)
+import { {{ config('brand.name', 'Zelta') }}AI } from '@zelta/sdk';
 
 const aiClient = new {{ config('brand.name', 'Zelta') }}AI({
   apiKey: process.env.FINAEGIS_API_KEY,
@@ -1007,7 +1012,8 @@ async function streamingChat() {
                             <!-- Python -->
                             <div id="ai-chat-py" class="tab-content animate-fade-in">
                                 <x-code-block language="python">
-from finaegis_ai import {{ config('brand.name', 'Zelta') }}AI
+# Install: pip install ./sdks/python (from monorepo)
+from zelta import {{ config('brand.name', 'Zelta') }}AI
 import asyncio
 import uuid
 
@@ -1131,7 +1137,7 @@ asyncio.run(banking_conversation())
   },
   "metadata": {
     "processing_time_ms": 342,
-    "model_version": "finaegis-ai-v2.5",
+    "model_version": "zelta-ai-v2",
     "mcp_tools_available": 12,
     "workflow_id": "wf_banking_assist_789"
   }
@@ -1306,7 +1312,8 @@ handleCustomerRequest('cust_123',
                             <div id="mcp-register-js" class="tab-content active animate-fade-in">
                                 <x-code-block language="javascript">
 // Register custom MCP tools for banking operations
-import { MCPServer } from '@finaegis/mcp-sdk';
+// Install: npm install ./sdks/javascript (from monorepo)
+import { MCPServer } from '@zelta/sdk';
 
 const mcpServer = new MCPServer({
   name: 'banking-tools',
@@ -1578,7 +1585,7 @@ aiClient.on('tool_executed', (event) => {
                             <div id="mcp-manifest" class="tab-content animate-fade-in">
                                 <x-code-block language="json">
 {
-  "name": "finaegis-banking-tools",
+  "name": "zelta-banking-tools",
   "version": "1.0.0",
   "description": "MCP tools for {{ config('brand.name', 'Zelta') }} banking operations",
   "author": "{{ config('brand.name', 'Zelta') }}",
@@ -1864,7 +1871,8 @@ curl -X POST {{ config('app.url') }}/api/api/v1/crosschain/bridge/initiate \
                             <!-- JavaScript -->
                             <div id="bridge-js" class="tab-content animate-fade-in">
                                 <x-code-block language="javascript">
-import { {{ config('brand.name', 'Zelta') }} } from '@finaegis/sdk';
+// Install: npm install ./sdks/javascript (from monorepo)
+import { {{ config('brand.name', 'Zelta') }} } from '@zelta/sdk';
 
 const client = new {{ config('brand.name', 'Zelta') }}({
   apiKey: process.env.FINAEGIS_API_KEY,
@@ -1915,7 +1923,8 @@ bridgeTokens('ethereum', 'polygon', 'USDC', '1000.00');
                             <!-- Python -->
                             <div id="bridge-py" class="tab-content animate-fade-in">
                                 <x-code-block language="python">
-from finaegis import {{ config('brand.name', 'Zelta') }}
+# Install: pip install ./sdks/python (from monorepo)
+from zelta import {{ config('brand.name', 'Zelta') }}
 import os
 
 client = {{ config('brand.name', 'Zelta') }}(
@@ -2236,7 +2245,7 @@ swap_tokens('ethereum', 'WETH', 'USDC', '2.5')
                                     <p class="text-gray-600 mt-1">Validate FATF Travel Rule compliance before executing cross-border or virtual asset transfers</p>
                                 </div>
                                 <div class="flex items-center gap-2">
-                                    <span class="px-3 py-1 bg-emerald-100 text-emerald-700 rounded-full text-xs font-medium">v2.8</span>
+                                    <span class="px-3 py-1 bg-emerald-100 text-emerald-700 rounded-full text-xs font-medium">v2</span>
                                     <span class="px-3 py-1 bg-blue-100 text-blue-700 rounded-full text-xs font-medium">POST</span>
                                 </div>
                             </div>
@@ -2461,7 +2470,7 @@ check_travel_rule_compliance({
                                     <p class="text-gray-600 mt-1">Onboard a new partner organization onto the Banking-as-a-Service platform with API keys and SDK access</p>
                                 </div>
                                 <div class="flex items-center gap-2">
-                                    <span class="px-3 py-1 bg-amber-100 text-amber-700 rounded-full text-xs font-medium">v2.9</span>
+                                    <span class="px-3 py-1 bg-amber-100 text-amber-700 rounded-full text-xs font-medium">v2</span>
                                     <span class="px-3 py-1 bg-blue-100 text-blue-700 rounded-full text-xs font-medium">POST</span>
                                 </div>
                             </div>
@@ -2489,7 +2498,7 @@ curl -X POST {{ config('app.url') }}/api/api/v1/partner/onboard \
     "tier": "growth",
     "modules": ["accounts", "transfers", "compliance", "crosschain"],
     "sdk_languages": ["typescript", "python"],
-    "webhook_url": "https://acmefintech.com/webhooks/finaegis",
+    "webhook_url": "https://acmefintech.com/webhooks/zelta",
     "ip_whitelist": ["203.0.113.0/24"],
     "rate_limit_override": 5000,
     "metadata": {
@@ -2541,7 +2550,7 @@ onboardPartner({
   tier: 'growth',
   modules: ['accounts', 'transfers', 'compliance', 'crosschain'],
   sdkLanguages: ['typescript', 'python'],
-  webhookUrl: 'https://acmefintech.com/webhooks/finaegis',
+  webhookUrl: 'https://acmefintech.com/webhooks/zelta',
   ipWhitelist: ['203.0.113.0/24'],
   rateLimit: 5000,
   metadata: {
@@ -2590,7 +2599,7 @@ onboard_partner({
     'tier': 'growth',
     'modules': ['accounts', 'transfers', 'compliance', 'crosschain'],
     'sdk_languages': ['typescript', 'python'],
-    'webhook_url': 'https://acmefintech.com/webhooks/finaegis',
+    'webhook_url': 'https://acmefintech.com/webhooks/zelta',
     'ip_whitelist': ['203.0.113.0/24'],
     'rate_limit': 5000,
     'metadata': {
@@ -2625,15 +2634,15 @@ onboard_partner({
       {
         "language": "typescript",
         "version": "3.0.0",
-        "package_name": "@finaegis/sdk",
-        "download_url": "{{ config('app.url') }}/developers/sdks/packages/typescript/finaegis-sdk-3.0.0.tgz",
+        "package_name": "@zelta/sdk",
+        "download_url": "{{ config('app.url') }}/developers/sdks/packages/typescript/zelta-sdk-2.0.0.tgz",
         "docs_url": "{{ config('app.url') }}/developers/sdk/typescript"
       },
       {
         "language": "python",
         "version": "3.0.0",
-        "package_name": "finaegis-sdk",
-        "download_url": "{{ config('app.url') }}/developers/sdks/packages/python/finaegis-sdk-3.0.0.tar.gz",
+        "package_name": "zelta-sdk",
+        "download_url": "{{ config('app.url') }}/developers/sdks/packages/python/zelta-sdk-2.0.0.tar.gz",
         "docs_url": "{{ config('app.url') }}/developers/sdk/python"
       }
     ],
@@ -2674,7 +2683,7 @@ onboard_partner({
                                     <p class="text-gray-600 mt-1">Query transactions using natural language -- the AI engine translates to structured filters</p>
                                 </div>
                                 <div class="flex items-center gap-2">
-                                    <span class="px-3 py-1 bg-violet-100 text-violet-700 rounded-full text-xs font-medium">v2.8</span>
+                                    <span class="px-3 py-1 bg-violet-100 text-violet-700 rounded-full text-xs font-medium">v2</span>
                                     <span class="px-3 py-1 bg-blue-100 text-blue-700 rounded-full text-xs font-medium">POST</span>
                                     <span class="px-3 py-1 bg-indigo-100 text-indigo-700 rounded-full text-xs font-medium">AI</span>
                                 </div>

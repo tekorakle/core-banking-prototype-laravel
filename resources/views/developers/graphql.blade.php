@@ -268,6 +268,7 @@
                     <div class="flex justify-between"><span class="text-slate-600">Guest requests</span><code class="code-font bg-slate-100 px-2 py-0.5 rounded">30 / min</code></div>
                     <div class="flex justify-between"><span class="text-slate-600">Authenticated requests</span><code class="code-font bg-slate-100 px-2 py-0.5 rounded">120 / min</code></div>
                 </div>
+                <p class="text-xs text-slate-500 mt-3">See <a href="{{ route('developers.show', 'api-docs') }}#rate-limits" class="text-pink-600 hover:text-pink-800">API Docs &rarr; Rate Limits</a> for full details including REST and webhook limits.</p>
             </div>
             <div class="bg-white rounded-xl border border-slate-200 p-6">
                 <h3 class="font-semibold text-lg mb-4">Query Limits</h3>

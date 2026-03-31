@@ -183,7 +183,7 @@
                     <div class="flex flex-wrap items-center justify-center gap-3 mb-6">
                         <span class="inline-flex items-center px-4 py-2 bg-green-500/20 backdrop-blur-sm rounded-full text-sm">
                             <span class="w-2 h-2 bg-green-400 rounded-full mr-2"></span>
-                            <span>REST API v5.12</span>
+                            <span>REST API v2</span>
                         </span>
                         <span class="inline-flex items-center px-4 py-2 bg-green-500/20 backdrop-blur-sm rounded-full text-sm">
                             <span class="w-2 h-2 bg-green-400 rounded-full mr-2"></span>
@@ -219,6 +219,16 @@
                 </div>
             </div>
         </section>
+
+        <!-- SDK Source Notice -->
+        <div class="bg-amber-50 border-b border-amber-200 py-4">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="flex items-start gap-3">
+                    <svg class="w-5 h-5 text-amber-600 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                    <p class="text-sm text-amber-800"><strong>SDKs are included in the FinAegis monorepo.</strong> They are not published to npm, Packagist, or PyPI. Install from the repository source after cloning the project.</p>
+                </div>
+            </div>
+        </div>
 
         <!-- Integration Methods -->
         <section id="integration-methods" class="py-20 bg-white">
@@ -348,16 +358,16 @@
 
                         <div class="space-y-2">
                             <div class="bg-gray-900 rounded-lg px-4 py-2 font-mono text-green-400 text-sm">
-                                <code>npm install @zelta/payment-sdk@1.0.0</code>
+                                <code>npm install ./sdks/javascript</code>
                             </div>
                             <div class="bg-gray-900 rounded-lg px-4 py-2 font-mono text-green-400 text-sm">
-                                <code>pip install zelta-payment-sdk==1.0.0</code>
+                                <code>pip install ./sdks/python</code>
                             </div>
                             <div class="bg-gray-900 rounded-lg px-4 py-2 font-mono text-green-400 text-sm">
-                                <code>composer require zelta/payment-sdk:^1.0</code>
+                                <code>composer require zelta/payment-sdk --repository='{"type":"path","url":"packages/zelta-sdk"}'</code>
                             </div>
                         </div>
-                        <p class="text-xs text-slate-400 mt-3">Packages are available from the project repository. See the installation guide for details — not published to public registries.</p>
+                        <p class="text-xs text-slate-400 mt-3">SDKs are in the monorepo — not published to public registries. Clone the repository first, then install via path dependency.</p>
                     </div>
 
 
@@ -405,7 +415,8 @@ console.<span style="color: #89ddff;">log</span>(<span style="color: #82aaff;">r
                                 <span>Python Example</span>
                                 <button class="copy-button" onclick="copyCode(this)">Copy</button>
                             </div>
-                            <pre class="code-block p-4"><code class="language-python"><span style="color: #c792ea;">from</span> <span style="color: #ffcb6b;">finaegis</span> <span style="color: #c792ea;">import</span> <span style="color: #82aaff;">MCPClient</span>
+                            <pre class="code-block p-4"><code class="language-python"><span style="color: #546e7a;"># Install: pip install ./sdks/python (from monorepo)</span>
+<span style="color: #c792ea;">from</span> <span style="color: #ffcb6b;">zelta</span> <span style="color: #c792ea;">import</span> <span style="color: #82aaff;">MCPClient</span>
 
 <span style="color: #546e7a;"># Initialize MCP client</span>
 <span style="color: #82aaff;">mcp</span> = <span style="color: #ffcb6b;">MCPClient</span>(<span style="color: #f07178;">api_key</span>=<span style="color: #c3e88d;">'your-api-key'</span>)
@@ -477,7 +488,7 @@ console.<span style="color: #89ddff;">log</span>(<span style="color: #82aaff;">r
                             <button class="copy-button" onclick="copyCode(this)">Copy</button>
                         </div>
                         <pre class="code-block p-4"><code class="language-json">{
-  <span style="color: #f07178;">"name"</span>: <span style="color: #c3e88d;">"finaegis-mcp-server"</span>,
+  <span style="color: #f07178;">"name"</span>: <span style="color: #c3e88d;">"zelta-mcp-server"</span>,
   <span style="color: #f07178;">"version"</span>: <span style="color: #c3e88d;">"1.0.0"</span>,
   <span style="color: #f07178;">"tools"</span>: [
     <span style="color: #c3e88d;">"GetAccountBalance"</span>,
@@ -523,7 +534,7 @@ console.<span style="color: #89ddff;">log</span>(<span style="color: #82aaff;">r
                 <div class="text-center mb-12">
                     <span class="inline-flex items-center px-4 py-2 bg-green-100 rounded-full text-sm font-medium text-green-700 mb-4">
                         <span class="w-2 h-2 bg-green-500 rounded-full mr-2"></span>
-                        Available Now via Partner API (v2.9+)
+                        Available Now via Partner API
                     </span>
                     <h2 class="font-display text-3xl md:text-4xl font-bold text-slate-900 mb-4">BaaS SDK Generation</h2>
                     <p class="text-xl text-slate-500 max-w-3xl mx-auto">
@@ -560,7 +571,7 @@ console.<span style="color: #89ddff;">log</span>(<span style="color: #82aaff;">r
                             </svg>
                         </div>
                         <h4 class="font-semibold text-slate-900 mb-1">Java</h4>
-                        <p class="text-xs text-gray-500">com.finaegis:sdk</p>
+                        <p class="text-xs text-gray-500">zelta:sdk</p>
                         <span class="inline-block mt-2 px-2 py-0.5 bg-amber-100 text-amber-700 rounded text-xs font-medium">Planned</span>
                     </div>
                     <div class="sdk-card bg-white rounded-xl shadow-lg p-6 text-center">
@@ -570,7 +581,7 @@ console.<span style="color: #89ddff;">log</span>(<span style="color: #82aaff;">r
                             </svg>
                         </div>
                         <h4 class="font-semibold text-slate-900 mb-1">Go</h4>
-                        <p class="text-xs text-gray-500">finaegis-go</p>
+                        <p class="text-xs text-gray-500">zelta-go</p>
                         <span class="inline-block mt-2 px-2 py-0.5 bg-amber-100 text-amber-700 rounded text-xs font-medium">Planned</span>
                     </div>
                     <div class="sdk-card bg-white rounded-xl shadow-lg p-6 text-center">
@@ -595,12 +606,12 @@ console.<span style="color: #89ddff;">log</span>(<span style="color: #82aaff;">r
 
                     <div class="bg-gray-900 rounded-lg p-6 font-mono text-green-400 text-sm overflow-x-auto mb-8">
 <pre><span class="text-gray-500"># Request SDK generation for your partner account</span>
-curl -X POST {{ config('app.url') }}/api/v1/partner/sdk/generate \
+curl -X POST {{ config('app.url') }}/api/v2/partner/sdk/generate \
   -H "Authorization: Bearer YOUR_PARTNER_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "languages": ["typescript", "python", "java", "go", "php"],
-    "api_version": "v5",
+    "api_version": "v2",
     "include_modules": ["accounts", "transfers", "crosschain", "defi", "compliance"],
     "options": {
       "include_types": true,
@@ -620,21 +631,21 @@ curl -X POST {{ config('app.url') }}/api/v1/partner/sdk/generate \
         "version": "1.0.0",
         "package_name": "@zelta/payment-sdk",
         "download_url": "{{ config('app.url') }}/developers/sdks/packages/typescript/zelta-payment-sdk-1.0.0.tgz",
-        "install_command": "npm install @zelta/payment-sdk@1.0.0"
+        "install_command": "npm install ./zelta-payment-sdk-1.0.0.tgz"
       },
       {
         "language": "python",
         "version": "1.0.0",
         "package_name": "zelta-payment-sdk",
         "download_url": "{{ config('app.url') }}/developers/sdks/packages/python/zelta-payment-sdk-1.0.0.tar.gz",
-        "install_command": "pip install zelta-payment-sdk==1.0.0"
+        "install_command": "pip install ./zelta-payment-sdk-1.0.0.tar.gz"
       },
       {
         "language": "php",
         "version": "1.0.0",
         "package_name": "zelta/payment-sdk",
         "download_url": "{{ config('app.url') }}/developers/sdks/packages/php/zelta-payment-sdk-1.0.0.zip",
-        "install_command": "composer require zelta/payment-sdk:^1.0"
+        "install_command": "composer require zelta/payment-sdk:^1.0 --repository='{\"type\":\"artifact\",\"url\":\"./\"}'"
       }
     ]
   }
@@ -643,24 +654,24 @@ curl -X POST {{ config('app.url') }}/api/v1/partner/sdk/generate \
 
                     <!-- Install Commands Grid -->
                     <h4 class="text-lg font-semibold text-slate-900 mb-4">Quick Install</h4>
-                    <p class="text-sm text-slate-500 mb-4">Included in the monorepo — install via path dependency or GitHub Packages. Not published to public registries.</p>
+                    <p class="text-sm text-slate-500 mb-4">SDKs are in the monorepo — not published to public registries. Clone the repository first, then install via path dependency.</p>
                     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-8">
                         <div>
-                            <p class="text-sm font-medium text-slate-600 mb-2">TypeScript / JavaScript</p>
-                            <div class="bg-gray-900 rounded-lg p-4 font-mono text-green-400 text-sm">
-                                <code>npm install @zelta/payment-sdk@1.0.0</code>
+                            <p class="text-sm font-medium text-slate-600 mb-2">PHP (Composer — from monorepo)</p>
+                            <div class="bg-gray-900 rounded-lg p-4 font-mono text-green-400 text-sm overflow-x-auto">
+                                <code>composer require zelta/payment-sdk --repository='{"type":"path","url":"packages/zelta-sdk"}'</code>
                             </div>
                         </div>
                         <div>
-                            <p class="text-sm font-medium text-slate-600 mb-2">Python</p>
+                            <p class="text-sm font-medium text-slate-600 mb-2">JavaScript (from monorepo)</p>
                             <div class="bg-gray-900 rounded-lg p-4 font-mono text-green-400 text-sm">
-                                <code>pip install zelta-payment-sdk==1.0.0</code>
+                                <code>npm install ./sdks/javascript</code>
                             </div>
                         </div>
                         <div>
-                            <p class="text-sm font-medium text-slate-600 mb-2">PHP (Composer)</p>
+                            <p class="text-sm font-medium text-slate-600 mb-2">Python (from monorepo)</p>
                             <div class="bg-gray-900 rounded-lg p-4 font-mono text-green-400 text-sm">
-                                <code>composer require zelta/payment-sdk:^1.0</code>
+                                <code>pip install ./sdks/python</code>
                             </div>
                         </div>
                     </div>
@@ -696,10 +707,11 @@ curl -X POST {{ config('app.url') }}/api/v1/partner/sdk/generate \
                                 <div>
                                     <p class="text-sm font-medium text-slate-600 mb-2">TypeScript</p>
                                     <div class="bg-gray-900 rounded-lg p-6 font-mono text-green-400 text-sm overflow-x-auto">
-<pre>import { {{ config('brand.name', 'Zelta') }} } from '@zelta/payment-sdk';
+<pre>// Install: npm install ./sdks/javascript (from monorepo)
+import { {{ config('brand.name', 'Zelta') }} } from '@zelta/sdk';
 
 const client = new {{ config('brand.name', 'Zelta') }}({
-  apiKey: process.env.FINAEGIS_PARTNER_KEY,
+  apiKey: process.env.ZELTA_PARTNER_KEY,
   partnerId: 'partner_acme_abc123',
   environment: 'production', // or 'sandbox'
   modules: ['accounts', 'transfers',
@@ -710,10 +722,11 @@ const client = new {{ config('brand.name', 'Zelta') }}({
                                 <div>
                                     <p class="text-sm font-medium text-slate-600 mb-2">Python</p>
                                     <div class="bg-gray-900 rounded-lg p-6 font-mono text-green-400 text-sm overflow-x-auto">
-<pre>from finaegis import {{ config('brand.name', 'Zelta') }}
+<pre># Install: pip install ./sdks/python (from monorepo)
+from zelta import {{ config('brand.name', 'Zelta') }}
 
 client = {{ config('brand.name', 'Zelta') }}(
-    api_key=os.environ['FINAEGIS_PARTNER_KEY'],
+    api_key=os.environ['ZELTA_PARTNER_KEY'],
     partner_id='partner_acme_abc123',
     environment='production',
     modules=['accounts', 'transfers',
@@ -730,7 +743,7 @@ client = {{ config('brand.name', 'Zelta') }}(
                         <div class="bg-gradient-to-r from-cyan-600 to-teal-600 px-6 py-4">
                             <div class="flex items-center">
                                 <span class="w-8 h-8 bg-white text-cyan-600 rounded-full flex items-center justify-center font-bold text-sm mr-3">2</span>
-                                <h3 class="text-lg font-semibold text-white">Access Cross-Chain and DeFi Modules (v5.2)</h3>
+                                <h3 class="text-lg font-semibold text-white">Access Cross-Chain and DeFi Modules</h3>
                             </div>
                         </div>
                         <div class="p-6">
@@ -787,7 +800,7 @@ async function crossChainSwapWorkflow() {
                         <div class="bg-gradient-to-r from-emerald-600 to-green-600 px-6 py-4">
                             <div class="flex items-center">
                                 <span class="w-8 h-8 bg-white text-emerald-600 rounded-full flex items-center justify-center font-bold text-sm mr-3">3</span>
-                                <h3 class="text-lg font-semibold text-white">Integrate RegTech Compliance (v2.8)</h3>
+                                <h3 class="text-lg font-semibold text-white">Integrate RegTech Compliance</h3>
                             </div>
                         </div>
                         <div class="p-6">
@@ -835,7 +848,7 @@ async function compliantTransfer(transferParams) {
                         <div class="bg-gradient-to-r from-violet-600 to-purple-600 px-6 py-4">
                             <div class="flex items-center">
                                 <span class="w-8 h-8 bg-white text-violet-600 rounded-full flex items-center justify-center font-bold text-sm mr-3">4</span>
-                                <h3 class="text-lg font-semibold text-white">Use AI Transaction Queries (v2.8)</h3>
+                                <h3 class="text-lg font-semibold text-white">Use AI Transaction Queries</h3>
                             </div>
                         </div>
                         <div class="p-6">
@@ -890,7 +903,7 @@ console.log('Total volume:', insights.data.analytics.total_volume);</pre>
                             <div class="border border-gray-200 rounded-lg p-4">
                                 <h4 class="font-semibold text-slate-900 mb-1">client.regtech</h4>
                                 <p class="text-sm text-slate-500">MiFID II, MiCA, Travel Rule compliance</p>
-                                <span class="text-xs text-gray-400">v2.8+</span>
+                                <span class="text-xs text-gray-400">v2+</span>
                             </div>
                             <div class="border border-gray-200 rounded-lg p-4">
                                 <h4 class="font-semibold text-slate-900 mb-1">client.crosschain</h4>
@@ -905,12 +918,12 @@ console.log('Total volume:', insights.data.analytics.total_volume);</pre>
                             <div class="border border-gray-200 rounded-lg p-4">
                                 <h4 class="font-semibold text-slate-900 mb-1">client.ai</h4>
                                 <p class="text-sm text-slate-500">Transaction queries, spending insights</p>
-                                <span class="text-xs text-gray-400">v2.8+</span>
+                                <span class="text-xs text-gray-400">v2+</span>
                             </div>
                             <div class="border border-gray-200 rounded-lg p-4">
                                 <h4 class="font-semibold text-slate-900 mb-1">client.partner</h4>
                                 <p class="text-sm text-slate-500">SDK generation, tenant management, config</p>
-                                <span class="text-xs text-gray-400">v2.9+</span>
+                                <span class="text-xs text-gray-400">v2+</span>
                             </div>
                         </div>
                     </div>
