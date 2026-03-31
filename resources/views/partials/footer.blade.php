@@ -33,6 +33,7 @@
                     <li><a href="{{ route('pricing') }}" class="text-sm text-slate-500 hover:text-white transition-colors">Pricing</a></li>
                     <li><a href="{{ route('security') }}" class="text-sm text-slate-500 hover:text-white transition-colors">Security</a></li>
                     <li><a href="{{ route('compliance') }}" class="text-sm text-slate-500 hover:text-white transition-colors">Compliance</a></li>
+                    <li><a href="{{ route('changelog') }}" class="text-sm text-slate-500 hover:text-white transition-colors">Changelog</a></li>
                     <li><a href="{{ route('status') }}" class="text-sm text-slate-500 hover:text-white transition-colors">Status</a></li>
                 </ul>
             </div>
