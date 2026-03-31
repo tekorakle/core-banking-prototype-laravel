@@ -155,7 +155,7 @@ class SitemapController extends Controller
                 'priority'   => '0.8',
             ],
             [
-                'url'        => $baseUrl . '/features/gcu',
+                'url'        => $baseUrl . '/changelog',
                 'lastmod'    => $now,
                 'changefreq' => 'weekly',
                 'priority'   => '0.8',
