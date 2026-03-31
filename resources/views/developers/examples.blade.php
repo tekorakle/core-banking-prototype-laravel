@@ -930,7 +930,7 @@ async function testWebhook(webhookId) {
 import { {{ config('brand.name', 'Zelta') }}AI } from '@zelta/sdk';
 
 const aiClient = new {{ config('brand.name', 'Zelta') }}AI({
-  apiKey: process.env.FINAEGIS_API_KEY,
+  apiKey: process.env.ZELTA_API_KEY,
   conversationId: 'conv_' + Math.random().toString(36).substr(2, 9)
 });
 
@@ -1016,10 +1016,11 @@ async function streamingChat() {
 # Install: pip install ./sdks/python (from monorepo)
 from zelta import {{ config('brand.name', 'Zelta') }}AI
 import asyncio
+import os
 import uuid
 
 ai_client = {{ config('brand.name', 'Zelta') }}AI(
-    api_key=os.environ['FINAEGIS_API_KEY'],
+    api_key=os.environ['ZELTA_API_KEY'],
     conversation_id=f'conv_{uuid.uuid4().hex[:9]}'
 )
 
@@ -1478,7 +1479,7 @@ console.log('MCP Banking Tools Server started on port 3001');
                                 <x-code-block language="javascript">
 // Using MCP tools in AI conversations
 const aiClient = new {{ config('brand.name', 'Zelta') }}AI({
-  apiKey: process.env.FINAEGIS_API_KEY,
+  apiKey: process.env.ZELTA_API_KEY,
   mcp_servers: [
     {
       url: 'http://localhost:3001',
@@ -1844,7 +1845,7 @@ processLoanApplication('cust_456', {
                             <div id="bridge-curl" class="tab-content active animate-fade-in">
                                 <x-code-block language="bash">
 # Step 1: Get a bridge quote
-curl -X POST {{ config('app.url') }}/api/api/v1/crosschain/bridge/quote \
+curl -X POST {{ config('app.url') }}/api/v1/crosschain/bridge/quote \
   -H "Authorization: Bearer YOUR_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
@@ -1856,7 +1857,7 @@ curl -X POST {{ config('app.url') }}/api/api/v1/crosschain/bridge/quote \
   }'
 
 # Step 2: Initiate the bridge transfer using the quote_id
-curl -X POST {{ config('app.url') }}/api/api/v1/crosschain/bridge/initiate \
+curl -X POST {{ config('app.url') }}/api/v1/crosschain/bridge/initiate \
   -H "Authorization: Bearer YOUR_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
@@ -1876,7 +1877,7 @@ curl -X POST {{ config('app.url') }}/api/api/v1/crosschain/bridge/initiate \
 import { {{ config('brand.name', 'Zelta') }} } from '@zelta/sdk';
 
 const client = new {{ config('brand.name', 'Zelta') }}({
-  apiKey: process.env.FINAEGIS_API_KEY,
+  apiKey: process.env.ZELTA_API_KEY,
   baseURL: '{{ config('app.url') }}/api'
 });
 
@@ -1929,7 +1930,7 @@ from zelta import {{ config('brand.name', 'Zelta') }}
 import os
 
 client = {{ config('brand.name', 'Zelta') }}(
-    api_key=os.environ['FINAEGIS_API_KEY'],
+    api_key=os.environ['ZELTA_API_KEY'],
     base_url='{{ config('app.url') }}/api'
 )
 
@@ -2059,7 +2060,7 @@ bridge_tokens('ethereum', 'polygon', 'USDC', '1000.00')
                             <div id="swap-curl" class="tab-content active animate-fade-in">
                                 <x-code-block language="bash">
 # Step 1: Get a swap quote with DEX aggregation
-curl -X POST {{ config('app.url') }}/api/api/v1/defi/swap/quote \
+curl -X POST {{ config('app.url') }}/api/v1/defi/swap/quote \
   -H "Authorization: Bearer YOUR_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
@@ -2072,7 +2073,7 @@ curl -X POST {{ config('app.url') }}/api/api/v1/defi/swap/quote \
   }'
 
 # Step 2: Execute the swap with the best route
-curl -X POST {{ config('app.url') }}/api/api/v1/defi/swap/execute \
+curl -X POST {{ config('app.url') }}/api/v1/defi/swap/execute \
   -H "Authorization: Bearer YOUR_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
@@ -2265,7 +2266,7 @@ swap_tokens('ethereum', 'WETH', 'USDC', '2.5')
                             <div id="travel-curl" class="tab-content active animate-fade-in">
                                 <x-code-block language="bash">
 # Run a Travel Rule compliance check before a transfer
-curl -X POST {{ config('app.url') }}/api/api/v1/regtech/travel-rule/check \
+curl -X POST {{ config('app.url') }}/api/v1/regtech/travel-rule/check \
   -H "Authorization: Bearer YOUR_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
@@ -2490,7 +2491,7 @@ check_travel_rule_compliance({
                             <div id="partner-curl" class="tab-content active animate-fade-in">
                                 <x-code-block language="bash">
 # Onboard a new BaaS partner
-curl -X POST {{ config('app.url') }}/api/api/v1/partner/onboard \
+curl -X POST {{ config('app.url') }}/api/v1/partner/onboard \
   -H "Authorization: Bearer YOUR_ADMIN_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
@@ -2704,7 +2705,7 @@ onboard_partner({
                             <div id="aitx-curl" class="tab-content active animate-fade-in">
                                 <x-code-block language="bash">
 # Query transactions with natural language
-curl -X POST {{ config('app.url') }}/api/api/v1/ai/transactions \
+curl -X POST {{ config('app.url') }}/api/v1/ai/transactions \
   -H "Authorization: Bearer YOUR_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
@@ -2984,7 +2985,7 @@ class {{ config('brand.name', 'Zelta') }}Wrapper {
 }
 
 // Usage example
-const finAegis = new {{ config('brand.name', 'Zelta') }}Wrapper(process.env.FINAEGIS_API_KEY, {
+const finAegis = new {{ config('brand.name', 'Zelta') }}Wrapper(process.env.ZELTA_API_KEY, {
   environment: 'production',
   maxRetries: 3,
   backoffMultiplier: 2,
