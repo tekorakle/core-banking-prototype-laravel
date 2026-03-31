@@ -8,6 +8,9 @@
         'description' => config('brand.name', 'Zelta') . ' Lending - P2P lending marketplace connecting capital with opportunity. Automated credit scoring and smart contract collateral.',
         'keywords' => config('brand.name', 'Zelta') . ' Lending, P2P lending, business loans, investment platform',
     ])
+
+    <x-schema type="service" :data="['name' => 'Lending', 'description' => 'P2P lending platform', 'category' => 'Financial Services']" />
+    <x-schema type="breadcrumb" :data="[['name' => 'Home', 'url' => url('/')], ['name' => 'Lending', 'url' => url('/subproducts/lending')]]" />
 @endsection
 
 

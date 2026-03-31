@@ -8,6 +8,9 @@
         'description' => config('brand.name', 'Zelta') . ' Stablecoins - Issue and manage stable digital currencies with transparent reserves and regulatory compliance.',
         'keywords' => config('brand.name', 'Zelta') . ' Stablecoins, EUR stablecoin, digital currency, asset-backed tokens',
     ])
+
+    <x-schema type="service" :data="['name' => 'Stablecoins', 'description' => 'EUR-pegged digital currency issuance', 'category' => 'Financial Services']" />
+    <x-schema type="breadcrumb" :data="[['name' => 'Home', 'url' => url('/')], ['name' => 'Stablecoins', 'url' => url('/subproducts/stablecoins')]]" />
 @endsection
 
 

@@ -8,6 +8,9 @@
         'description' => config('brand.name', 'Zelta') . ' Treasury - Multi-bank cash management, FX optimization, and yield strategies for enterprises. Maximize returns while minimizing risk.',
         'keywords' => config('brand.name', 'Zelta') . ' Treasury, cash management, FX optimization, corporate treasury, yield optimization',
     ])
+
+    <x-schema type="service" :data="['name' => 'Treasury', 'description' => 'Enterprise cash management', 'category' => 'Financial Services']" />
+    <x-schema type="breadcrumb" :data="[['name' => 'Home', 'url' => url('/')], ['name' => 'Treasury', 'url' => url('/subproducts/treasury')]]" />
 @endsection
 
 

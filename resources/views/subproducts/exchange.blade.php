@@ -8,6 +8,9 @@
         'description' => config('brand.name', 'Zelta') . ' Exchange - Professional trading platform for digital and traditional assets with institutional-grade infrastructure.',
         'keywords' => config('brand.name', 'Zelta') . ' Exchange, crypto trading, forex, asset exchange, trading platform',
     ])
+
+    <x-schema type="service" :data="['name' => 'Exchange', 'description' => 'Multi-asset trading platform', 'category' => 'Financial Services']" />
+    <x-schema type="breadcrumb" :data="[['name' => 'Home', 'url' => url('/')], ['name' => 'Exchange', 'url' => url('/subproducts/exchange')]]" />
 @endsection
 
 
