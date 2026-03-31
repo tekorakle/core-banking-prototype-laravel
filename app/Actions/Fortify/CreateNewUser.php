@@ -25,7 +25,7 @@ class CreateNewUser implements CreatesNewUsers
     {
         // Defense-in-depth: block registration even if Fortify feature flag is bypassed
         if (! config('fortify.registration_enabled', false)) {
-            abort(403, 'Registration is disabled. Contact an administrator.');
+            abort(403, 'Registration is currently disabled. Set REGISTRATION_ENABLED=true in .env to enable.');
         }
 
         Validator::make(

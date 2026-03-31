@@ -48,7 +48,7 @@ class CardIssuanceServiceProvider extends ServiceProvider
             && config('cardissuance.default_issuer') === 'marqeta'
             && empty(config('cardissuance.issuers.marqeta.hmac_secret'))
         ) {
-            Log::warning('Marqeta HMAC secret not configured — webhook signature validation degraded');
+            Log::debug('Marqeta HMAC secret not configured — sandbox mode, webhook signature validation relaxed');
         }
     }
 }
