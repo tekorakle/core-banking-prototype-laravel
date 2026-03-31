@@ -578,7 +578,7 @@
                     <p class="text-slate-500 mb-4">
                         Standards-compliant financial messaging with 8 message types (pacs, pain, camt). Parse, generate, and validate ISO 20022 XML with REST + GraphQL APIs.
                     </p>
-                    <a href="{{ route('features') }}" class="text-blue-600 font-medium hover:text-blue-700">
+                    <a href="{{ route('features.show', 'iso20022') }}" class="text-blue-600 font-medium hover:text-blue-700">
                         Learn more &rarr;
                     </a>
                 </div>
@@ -594,7 +594,7 @@
                     <p class="text-slate-500 mb-4">
                         Full PSD2 consent lifecycle with AISP and PISP services. Berlin Group NextGenPSD2 and UK Open Banking adapters. TPP registration with eIDAS certificate validation.
                     </p>
-                    <a href="{{ route('features') }}" class="text-teal-600 font-medium hover:text-teal-700">
+                    <a href="{{ route('features.show', 'open-banking') }}" class="text-teal-600 font-medium hover:text-teal-700">
                         Learn more &rarr;
                     </a>
                 </div>
@@ -610,7 +610,7 @@
                     <p class="text-slate-500 mb-4">
                         Multi-rail payment processing: ACH (NACHA file generation), Fedwire, RTP, FedNow (ISO 20022 native), SEPA Direct Debit, and SCT Inst. Intelligent routing selects the optimal rail automatically.
                     </p>
-                    <a href="{{ route('features') }}" class="text-orange-600 font-medium hover:text-orange-700">
+                    <a href="{{ route('features.show', 'payment-rails') }}" class="text-orange-600 font-medium hover:text-orange-700">
                         Learn more &rarr;
                     </a>
                 </div>
@@ -642,7 +642,7 @@
                     <p class="text-slate-500 mb-4">
                         Cross-network value transfer with ILP connector, Open Payments (GNAP authorization), and cross-currency quotes. Bridge fiat and crypto payment networks.
                     </p>
-                    <a href="{{ route('features') }}" class="text-purple-600 font-medium hover:text-purple-700">
+                    <a href="{{ route('features.show', 'interledger') }}" class="text-purple-600 font-medium hover:text-purple-700">
                         Learn more &rarr;
                     </a>
                 </div>
@@ -658,7 +658,7 @@
                     <p class="text-slate-500 mb-4">
                         Production-grade accounting engine with chart of accounts, journal entries, trial balance, and GL auto-posting. PHP-native default with optional TigerBeetle driver for extreme throughput.
                     </p>
-                    <a href="{{ route('features') }}" class="text-gray-600 font-medium hover:text-gray-700">
+                    <a href="{{ route('features.show', 'ledger') }}" class="text-gray-600 font-medium hover:text-gray-700">
                         Learn more &rarr;
                     </a>
                 </div>
@@ -674,7 +674,7 @@
                     <p class="text-slate-500 mb-4">
                         Complete inclusion banking: group lending with joint liability, IFRS loan provisioning, cooperative share accounts, teller operations, field officer tools, and savings products with dormancy tracking.
                     </p>
-                    <a href="{{ route('features') }}" class="text-green-600 font-medium hover:text-green-700">
+                    <a href="{{ route('features.show', 'microfinance') }}" class="text-green-600 font-medium hover:text-green-700">
                         Learn more &rarr;
                     </a>
                 </div>
@@ -690,8 +690,8 @@
                     <p class="text-slate-500 mb-4">
                         Partner sandbox provisioning with 3 seed profiles, webhook testing and replay, API key management CLI. Everything developers need to integrate quickly.
                     </p>
-                    <a href="{{ route('developers') }}" class="text-indigo-600 font-medium hover:text-indigo-700">
-                        View docs &rarr;
+                    <a href="{{ route('features.show', 'developer-experience') }}" class="text-indigo-600 font-medium hover:text-indigo-700">
+                        Learn more &rarr;
                     </a>
                 </div>
             </div>
