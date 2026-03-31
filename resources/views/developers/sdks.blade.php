@@ -348,15 +348,16 @@
 
                         <div class="space-y-2">
                             <div class="bg-gray-900 rounded-lg px-4 py-2 font-mono text-green-400 text-sm">
-                                <code>npm install @finaegis/sdk@1.0.0</code>
+                                <code>npm install @zelta/payment-sdk@1.0.0</code>
                             </div>
                             <div class="bg-gray-900 rounded-lg px-4 py-2 font-mono text-green-400 text-sm">
-                                <code>pip install finaegis-sdk==1.0.0</code>
+                                <code>pip install zelta-payment-sdk==1.0.0</code>
                             </div>
                             <div class="bg-gray-900 rounded-lg px-4 py-2 font-mono text-green-400 text-sm">
-                                <code>composer require finaegis/sdk:^1.0</code>
+                                <code>composer require zelta/payment-sdk:^1.0</code>
                             </div>
                         </div>
+                        <p class="text-xs text-slate-400 mt-3">Packages are available from the project repository. See the installation guide for details — not published to public registries.</p>
                     </div>
 
 
@@ -539,7 +540,7 @@ console.<span style="color: #89ddff;">log</span>(<span style="color: #82aaff;">r
                             </svg>
                         </div>
                         <h4 class="font-semibold text-slate-900 mb-1">TypeScript</h4>
-                        <p class="text-xs text-gray-500">@finaegis/sdk</p>
+                        <p class="text-xs text-gray-500">@zelta/payment-sdk</p>
                         <span class="inline-block mt-2 px-2 py-0.5 bg-green-100 text-green-700 rounded text-xs font-medium">Available</span>
                     </div>
                     <div class="sdk-card bg-white rounded-xl shadow-lg p-6 text-center">
@@ -549,7 +550,7 @@ console.<span style="color: #89ddff;">log</span>(<span style="color: #82aaff;">r
                             </svg>
                         </div>
                         <h4 class="font-semibold text-slate-900 mb-1">Python</h4>
-                        <p class="text-xs text-gray-500">finaegis-sdk</p>
+                        <p class="text-xs text-gray-500">zelta-payment-sdk</p>
                         <span class="inline-block mt-2 px-2 py-0.5 bg-green-100 text-green-700 rounded text-xs font-medium">Available</span>
                     </div>
                     <div class="sdk-card bg-white rounded-xl shadow-lg p-6 text-center">
@@ -579,7 +580,7 @@ console.<span style="color: #89ddff;">log</span>(<span style="color: #82aaff;">r
                             </svg>
                         </div>
                         <h4 class="font-semibold text-slate-900 mb-1">PHP</h4>
-                        <p class="text-xs text-gray-500">finaegis/sdk</p>
+                        <p class="text-xs text-gray-500">zelta/payment-sdk</p>
                         <span class="inline-block mt-2 px-2 py-0.5 bg-green-100 text-green-700 rounded text-xs font-medium">Available</span>
                     </div>
                 </div>
@@ -617,23 +618,23 @@ curl -X POST {{ config('app.url') }}/api/v1/partner/sdk/generate \
       {
         "language": "typescript",
         "version": "1.0.0",
-        "package_name": "@finaegis/sdk",
-        "download_url": "{{ config('app.url') }}/developers/sdks/packages/typescript/finaegis-sdk-1.0.0.tgz",
-        "install_command": "npm install @finaegis/sdk@1.0.0"
+        "package_name": "@zelta/payment-sdk",
+        "download_url": "{{ config('app.url') }}/developers/sdks/packages/typescript/zelta-payment-sdk-1.0.0.tgz",
+        "install_command": "npm install @zelta/payment-sdk@1.0.0"
       },
       {
         "language": "python",
         "version": "1.0.0",
-        "package_name": "finaegis-sdk",
-        "download_url": "{{ config('app.url') }}/developers/sdks/packages/python/finaegis-sdk-1.0.0.tar.gz",
-        "install_command": "pip install finaegis-sdk==1.0.0"
+        "package_name": "zelta-payment-sdk",
+        "download_url": "{{ config('app.url') }}/developers/sdks/packages/python/zelta-payment-sdk-1.0.0.tar.gz",
+        "install_command": "pip install zelta-payment-sdk==1.0.0"
       },
       {
         "language": "php",
         "version": "1.0.0",
-        "package_name": "finaegis/sdk",
-        "download_url": "{{ config('app.url') }}/developers/sdks/packages/php/finaegis-sdk-1.0.0.zip",
-        "install_command": "composer require finaegis/sdk:^1.0"
+        "package_name": "zelta/payment-sdk",
+        "download_url": "{{ config('app.url') }}/developers/sdks/packages/php/zelta-payment-sdk-1.0.0.zip",
+        "install_command": "composer require zelta/payment-sdk:^1.0"
       }
     ]
   }
@@ -642,23 +643,24 @@ curl -X POST {{ config('app.url') }}/api/v1/partner/sdk/generate \
 
                     <!-- Install Commands Grid -->
                     <h4 class="text-lg font-semibold text-slate-900 mb-4">Quick Install</h4>
+                    <p class="text-sm text-slate-500 mb-4">Included in the monorepo — install via path dependency or GitHub Packages. Not published to public registries.</p>
                     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-8">
                         <div>
                             <p class="text-sm font-medium text-slate-600 mb-2">TypeScript / JavaScript</p>
                             <div class="bg-gray-900 rounded-lg p-4 font-mono text-green-400 text-sm">
-                                <code>npm install @finaegis/sdk@1.0.0</code>
+                                <code>npm install @zelta/payment-sdk@1.0.0</code>
                             </div>
                         </div>
                         <div>
                             <p class="text-sm font-medium text-slate-600 mb-2">Python</p>
                             <div class="bg-gray-900 rounded-lg p-4 font-mono text-green-400 text-sm">
-                                <code>pip install finaegis-sdk==1.0.0</code>
+                                <code>pip install zelta-payment-sdk==1.0.0</code>
                             </div>
                         </div>
                         <div>
                             <p class="text-sm font-medium text-slate-600 mb-2">PHP (Composer)</p>
                             <div class="bg-gray-900 rounded-lg p-4 font-mono text-green-400 text-sm">
-                                <code>composer require finaegis/sdk:^1.0</code>
+                                <code>composer require zelta/payment-sdk:^1.0</code>
                             </div>
                         </div>
                     </div>
@@ -694,7 +696,7 @@ curl -X POST {{ config('app.url') }}/api/v1/partner/sdk/generate \
                                 <div>
                                     <p class="text-sm font-medium text-slate-600 mb-2">TypeScript</p>
                                     <div class="bg-gray-900 rounded-lg p-6 font-mono text-green-400 text-sm overflow-x-auto">
-<pre>import { {{ config('brand.name', 'Zelta') }} } from '@finaegis/sdk';
+<pre>import { {{ config('brand.name', 'Zelta') }} } from '@zelta/payment-sdk';
 
 const client = new {{ config('brand.name', 'Zelta') }}({
   apiKey: process.env.FINAEGIS_PARTNER_KEY,

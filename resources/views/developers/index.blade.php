@@ -425,9 +425,16 @@
                             </svg>
                         </div>
                         <h4 class="text-lg font-semibold text-slate-900 mb-2">Official SDKs</h4>
-                        <p class="text-slate-500 text-sm">
-                            Native SDKs for JavaScript, Python, PHP, and more are in development.
+                        <p class="text-slate-500 text-sm mb-3">
+                            Native SDKs for JavaScript, Python, and PHP. Go and Ruby coming soon.
                         </p>
+                        <div class="flex flex-wrap gap-2">
+                            <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-green-100 text-green-700">JavaScript</span>
+                            <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-green-100 text-green-700">Python</span>
+                            <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-green-100 text-green-700">PHP</span>
+                            <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-slate-100 text-slate-500">Go (soon)</span>
+                            <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-slate-100 text-slate-500">Ruby (soon)</span>
+                        </div>
                     </div>
                 </div>
 
