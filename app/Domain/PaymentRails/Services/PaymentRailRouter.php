@@ -47,11 +47,17 @@ final class PaymentRailRouter
         string $urgency,
         array $beneficiary,
     ): array {
-        $decision = $this->routing->selectOptimalRail($amount, $currency, $country, $urgency);
+        // Normalize to numeric-string for bcmath operations downstream
+        if (! is_numeric($amount)) {
+            throw new \InvalidArgumentException('Amount must be numeric');
+        }
+        /** @var numeric-string $amount */
+        $normalizedAmount = $amount;
+        $decision = $this->routing->selectOptimalRail($normalizedAmount, $currency, $country, $urgency);
 
         $recommendedRail = $decision['recommended_rail'];
 
-        $result = $this->dispatch($userId, $recommendedRail, $amount, $currency, $beneficiary);
+        $result = $this->dispatch($userId, $recommendedRail, $normalizedAmount, $currency, $beneficiary);
 
         $this->routing->logDecision(
             rail: $recommendedRail,
@@ -154,6 +160,7 @@ final class PaymentRailRouter
     /**
      * Dispatch to the concrete rail service that matches $rail.
      *
+     * @param  numeric-string $amount
      * @param  array{
      *     name: string,
      *     account_number?: string,
@@ -194,11 +201,13 @@ final class PaymentRailRouter
             throw new InvalidArgumentException('ACH requires account_number and routing_number.');
         }
 
+        /** @var numeric-string $achAmount */
+        $achAmount = $amount;
         $batch = $this->ach->originateCredit(
             userId: $userId,
             routingNumber: $routingNumber,
             accountNumber: $accountNumber,
-            amount: $amount,
+            amount: $achAmount,
             name: $beneficiary['name'],
         );
 
