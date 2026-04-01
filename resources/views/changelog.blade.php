@@ -44,6 +44,21 @@
             @php
                 $releases = [
                     [
+                        'version' => 'v7.8.4',
+                        'date' => 'April 1, 2026',
+                        'label' => 'Compliance & Polish',
+                        'label_color' => 'emerald',
+                        'badge_color' => 'bg-emerald-100 text-emerald-700 border-emerald-200',
+                        'dot_color' => 'bg-emerald-500',
+                        'items' => [
+                            'Address Screening — Multi-layer OFAC SDN + GoPlus Security API + Chainalysis sanctions checking',
+                            'Website — Professional copywriting pass, fixed broken social links, consistent branding across all pages',
+                            'Developer Portal — Fixed Blade compile error on code examples, corrected API URLs and env vars',
+                            'SEO — Schema.org markup and breadcrumbs added to subproduct pages',
+                            'Mobile Jobs — Fixed tenant context verification in global scheduled jobs',
+                        ],
+                    ],
+                    [
                         'version' => 'v7.8.2',
                         'date' => 'April 1, 2026',
                         'label' => 'Maintenance',
