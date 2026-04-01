@@ -207,6 +207,24 @@ return [
     |
     */
 
+    /*
+    |--------------------------------------------------------------------------
+    | GoPlus Security API Configuration
+    |--------------------------------------------------------------------------
+    |
+    | GoPlus provides free blockchain address screening for sanctions, scams,
+    | phishing, and malicious contracts. Works without credentials (lower
+    | rate limits) or with app_key/app_secret for authenticated access.
+    |
+    | Get credentials at: https://console.gopluslabs.io
+    |
+    */
+
+    'goplus' => [
+        'app_key'    => env('GOPLUS_APP_KEY'),
+        'app_secret' => env('GOPLUS_APP_SECRET'),
+    ],
+
     'chainalysis' => [
         'api_key'        => env('CHAINALYSIS_API_KEY'),
         'base_url'       => env('CHAINALYSIS_BASE_URL', 'https://api.chainalysis.com/api/sanctions/v2'),

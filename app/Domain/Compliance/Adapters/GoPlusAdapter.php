@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Domain\Compliance\Adapters;
 
 use App\Domain\Compliance\Contracts\SanctionsScreeningInterface;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 use Throwable;
@@ -12,15 +13,23 @@ use Throwable;
 /**
  * GoPlus Security API adapter for blockchain address screening.
  *
- * Uses the GoPlus free tier (100K calls/month) to screen addresses for
- * sanctions, phishing, scams, and malicious contracts across EVM chains
- * and Solana.
+ * Supports both authenticated (app_key + app_secret) and unauthenticated
+ * modes. Authenticated mode provides higher rate limits.
  *
- * @see https://docs.gopluslabs.io/reference/address-security-api
+ * Authentication flow:
+ * 1. SHA1(app_key + timestamp + app_secret) → sign
+ * 2. POST /api/v1/token { app_key, time, sign } → access_token
+ * 3. Pass access_token as Authorization header on subsequent requests
+ *
+ * @see https://docs.gopluslabs.io/reference/api-overview
  */
 class GoPlusAdapter implements SanctionsScreeningInterface
 {
     private const BASE_URL = 'https://api.gopluslabs.io/api/v1';
+
+    private const TOKEN_CACHE_KEY = 'compliance:goplus_access_token';
+
+    private const TOKEN_CACHE_TTL = 3300; // 55 minutes (tokens typically valid for 1 hour)
 
     /**
      * GoPlus chain ID mapping.
@@ -37,6 +46,12 @@ class GoPlusAdapter implements SanctionsScreeningInterface
         'base'      => '8453',
         'solana'    => 'solana',
     ];
+
+    public function __construct(
+        private readonly string $appKey = '',
+        private readonly string $appSecret = '',
+    ) {
+    }
 
     /**
      * {@inheritDoc}
@@ -61,10 +76,17 @@ class GoPlusAdapter implements SanctionsScreeningInterface
         $flags = [];
 
         try {
-            $response = Http::timeout(10)
-                ->get(self::BASE_URL . '/address_security/' . $address, [
-                    'chain_id' => $chainId,
-                ]);
+            $request = Http::timeout(10);
+
+            // Attach authorization if credentials are configured
+            $token = $this->getAccessToken();
+            if ($token !== null) {
+                $request = $request->withHeaders(['Authorization' => $token]);
+            }
+
+            $response = $request->get(self::BASE_URL . '/address_security/' . $address, [
+                'chain_id' => $chainId,
+            ]);
 
             if (! $response->successful()) {
                 Log::warning('GoPlus API returned non-200', [
@@ -112,10 +134,67 @@ class GoPlusAdapter implements SanctionsScreeningInterface
     }
 
     /**
+     * Get a cached access token, or request a new one.
+     *
+     * Returns null if credentials are not configured (unauthenticated mode).
+     */
+    private function getAccessToken(): ?string
+    {
+        if ($this->appKey === '' || $this->appSecret === '') {
+            return null;
+        }
+
+        /** @var string|null $cached */
+        $cached = Cache::get(self::TOKEN_CACHE_KEY);
+
+        if ($cached !== null) {
+            return $cached;
+        }
+
+        try {
+            $timestamp = (string) time();
+            $sign = sha1($this->appKey . $timestamp . $this->appSecret);
+
+            $response = Http::timeout(10)
+                ->post(self::BASE_URL . '/token', [
+                    'app_key' => $this->appKey,
+                    'time'    => $timestamp,
+                    'sign'    => $sign,
+                ]);
+
+            if (! $response->successful()) {
+                Log::warning('GoPlus token request failed', [
+                    'status' => $response->status(),
+                ]);
+
+                return null;
+            }
+
+            $token = $response->json('result.access_token');
+
+            if (! is_string($token) || $token === '') {
+                Log::warning('GoPlus token response missing access_token');
+
+                return null;
+            }
+
+            Cache::put(self::TOKEN_CACHE_KEY, $token, self::TOKEN_CACHE_TTL);
+
+            return $token;
+        } catch (Throwable $e) {
+            Log::warning('GoPlus token acquisition failed', [
+                'error' => $e->getMessage(),
+            ]);
+
+            return null;
+        }
+    }
+
+    /**
      * Analyze GoPlus response flags and convert to match records.
      *
      * @param  array<string, mixed>  $data
-     * @return list<array{flag: string, description: string, severity: string}>
+     * @return list<array{flag: string, description: string, severity: string, address: string}>
      */
     private function analyzeFlags(array $data, string $address): array
     {

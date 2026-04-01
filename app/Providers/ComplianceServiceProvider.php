@@ -25,8 +25,11 @@ class ComplianceServiceProvider extends ServiceProvider
         $this->app->singleton(SanctionsScreeningInterface::class, function ($app) {
             $adapters = [];
 
-            // Always include GoPlus (free tier, 100K calls/month)
-            $adapters[] = new GoPlusAdapter();
+            // Always include GoPlus (free tier, works with or without credentials)
+            $adapters[] = new GoPlusAdapter(
+                appKey: (string) config('services.goplus.app_key', ''),
+                appSecret: (string) config('services.goplus.app_secret', ''),
+            );
 
             // Include Chainalysis if configured (paid API)
             if (config('services.chainalysis.enabled') && ! empty(config('services.chainalysis.api_key'))) {
