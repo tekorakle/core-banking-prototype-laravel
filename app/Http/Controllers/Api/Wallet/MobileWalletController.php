@@ -13,6 +13,7 @@ use App\Domain\MobilePayment\Services\TransactionDetailService;
 use App\Domain\Relayer\Contracts\WalletBalanceProviderInterface;
 use App\Domain\Relayer\Enums\SupportedNetwork;
 use App\Domain\Relayer\Services\SmartAccountService;
+use App\Domain\Wallet\Helpers\SolanaAddressHelper;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -353,6 +354,16 @@ class MobileWalletController extends Controller
                 ];
             }
         }
+
+        // Always append Solana address (non-EVM, separate from ERC-4337 smart accounts)
+        $solanaSeed = hash('sha256', "wallet:{$user->id}:" . config('app.key'));
+        $addresses[] = [
+            'address'    => SolanaAddressHelper::deriveAddress($solanaSeed),
+            'network'    => 'solana',
+            'type'       => 'keypair',
+            'deployed'   => true,
+            'created_at' => null,
+        ];
 
         return response()->json([
             'success' => true,
