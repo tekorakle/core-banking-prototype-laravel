@@ -15,20 +15,35 @@ class SolanaAddressHelper
     private const BASE58_ALPHABET = '123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz';
 
     /**
+     * Derive a deterministic Solana address for a user.
+     *
+     * Canonical seed: "solana:{userId}:{appKey}" — all call sites MUST use this
+     * format so the same user always resolves to the same address regardless of
+     * which endpoint is queried.
+     */
+    public static function deriveForUser(int $userId, string $appKey): string
+    {
+        return self::deriveAddress("solana:{$userId}:{$appKey}");
+    }
+
+    /**
      * Derive a real Solana address (ed25519 public key, Base58-encoded) from a seed string.
      *
      * The seed is hashed to 32 bytes via SHA-256 (incorporating the Solana BIP44 path)
      * to ensure correct length for sodium_crypto_sign_seed_keypair().
+     *
+     * Note: sodium_memzero() is best-effort on PHP strings (copy-on-write semantics
+     * may leave copies in memory). The keypair variable is still zeroed as defence-in-depth.
      */
     public static function deriveAddress(string $seed): string
     {
-        $seed32 = hash('sha256', $seed . ":m/44'/501'/0'/0'", binary: true);
-
-        $keypair = sodium_crypto_sign_seed_keypair($seed32);
+        // Inline the seed hash directly into keypair generation to minimise
+        // the window where raw seed bytes exist in a named variable.
+        $keypair = sodium_crypto_sign_seed_keypair(
+            hash('sha256', $seed . ":m/44'/501'/0'/0'", binary: true)
+        );
         $publicKey = sodium_crypto_sign_publickey($keypair);
-
         sodium_memzero($keypair);
-        sodium_memzero($seed32);
 
         return self::base58Encode($publicKey);
     }
@@ -36,11 +51,16 @@ class SolanaAddressHelper
     /**
      * Base58 encode using GMP big-integer math (Bitcoin/Solana alphabet).
      *
-     * Same algorithm as X402SolanaHsmSignerService::base58Encode() — centralised
-     * here to eliminate duplication across 4 call sites.
+     * Single canonical implementation — replaces duplicate copies that previously
+     * existed in X402SolanaHsmSignerService, DIDService, ReceiveAddressService,
+     * and DemoBlockchainService.
      */
     public static function base58Encode(string $bytes): string
     {
+        if ($bytes === '') {
+            return '';
+        }
+
         $alphabet = self::BASE58_ALPHABET;
 
         // Count leading zero bytes (each maps to a '1' prefix)

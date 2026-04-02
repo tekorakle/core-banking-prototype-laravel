@@ -2,79 +2,80 @@
 
 declare(strict_types=1);
 
-namespace Tests\Unit\Domain\Wallet\Helpers;
-
 use App\Domain\Wallet\Helpers\SolanaAddressHelper;
-use PHPUnit\Framework\Attributes\Test;
 
-class SolanaAddressHelperTest extends \PHPUnit\Framework\TestCase
-{
-    #[Test]
-    public function derives_valid_solana_address(): void
-    {
-        $address = SolanaAddressHelper::deriveAddress('test-seed');
+uses(Tests\TestCase::class);
 
-        $this->assertMatchesRegularExpression(
-            '/^[1-9A-HJ-NP-Za-km-z]{32,44}$/',
-            $address,
-        );
-    }
+test('deriveAddress produces valid Base58 Solana address', function () {
+    $address = SolanaAddressHelper::deriveAddress('test-seed');
 
-    #[Test]
-    public function deterministic_same_seed_same_address(): void
-    {
-        $a = SolanaAddressHelper::deriveAddress('user:42');
-        $b = SolanaAddressHelper::deriveAddress('user:42');
+    expect($address)->toMatch('/^[1-9A-HJ-NP-Za-km-z]{32,44}$/');
+});
 
-        $this->assertSame($a, $b);
-    }
+test('deriveAddress is deterministic', function () {
+    $a = SolanaAddressHelper::deriveAddress('user:42');
+    $b = SolanaAddressHelper::deriveAddress('user:42');
 
-    #[Test]
-    public function different_seeds_different_addresses(): void
-    {
-        $a = SolanaAddressHelper::deriveAddress('user:1');
-        $b = SolanaAddressHelper::deriveAddress('user:2');
+    expect($a)->toBe($b);
+});
 
-        $this->assertNotSame($a, $b);
-    }
+test('deriveAddress produces different addresses for different seeds', function () {
+    $a = SolanaAddressHelper::deriveAddress('user:1');
+    $b = SolanaAddressHelper::deriveAddress('user:2');
 
-    #[Test]
-    public function base58_encode_handles_leading_zero_bytes(): void
-    {
-        // Two leading zero bytes → two '1' prefixes
-        $bytes = "\x00\x00" . random_bytes(30);
-        $encoded = SolanaAddressHelper::base58Encode($bytes);
+    expect($a)->not->toBe($b);
+});
 
-        $this->assertStringStartsWith('11', $encoded);
-    }
+test('deriveForUser produces same address as manual seed construction', function () {
+    $fromHelper = SolanaAddressHelper::deriveForUser(42, 'test-app-key');
+    $fromManual = SolanaAddressHelper::deriveAddress('solana:42:test-app-key');
 
-    #[Test]
-    public function is_valid_accepts_real_derived_address(): void
-    {
-        $address = SolanaAddressHelper::deriveAddress('validation-test');
+    expect($fromHelper)->toBe($fromManual);
+});
 
-        $this->assertTrue(SolanaAddressHelper::isValid($address));
-    }
+test('deriveForUser is deterministic across calls', function () {
+    $a = SolanaAddressHelper::deriveForUser(1, 'key');
+    $b = SolanaAddressHelper::deriveForUser(1, 'key');
 
-    #[Test]
-    public function is_valid_rejects_ethereum_address(): void
-    {
-        $this->assertFalse(SolanaAddressHelper::isValid('0x1234567890abcdef1234567890abcdef12345678'));
-    }
+    expect($a)->toBe($b);
+});
 
-    #[Test]
-    public function is_valid_rejects_empty_string(): void
-    {
-        $this->assertFalse(SolanaAddressHelper::isValid(''));
-    }
+test('deriveForUser produces different addresses for different users', function () {
+    $a = SolanaAddressHelper::deriveForUser(1, 'key');
+    $b = SolanaAddressHelper::deriveForUser(2, 'key');
 
-    #[Test]
-    public function derived_address_is_correct_length(): void
-    {
-        // ed25519 public key is 32 bytes → Base58 encoded should be 43-44 chars
-        $address = SolanaAddressHelper::deriveAddress('length-test');
+    expect($a)->not->toBe($b);
+});
 
-        $this->assertGreaterThanOrEqual(32, strlen($address));
-        $this->assertLessThanOrEqual(44, strlen($address));
-    }
-}
+test('base58Encode handles leading zero bytes', function () {
+    $bytes = "\x00\x00" . random_bytes(30);
+    $encoded = SolanaAddressHelper::base58Encode($bytes);
+
+    expect($encoded)->toStartWith('11');
+});
+
+test('base58Encode returns empty string for empty input', function () {
+    expect(SolanaAddressHelper::base58Encode(''))->toBe('');
+});
+
+test('isValid accepts real derived address', function () {
+    $address = SolanaAddressHelper::deriveAddress('validation-test');
+
+    expect(SolanaAddressHelper::isValid($address))->toBeTrue();
+});
+
+test('isValid rejects Ethereum address', function () {
+    expect(SolanaAddressHelper::isValid('0x1234567890abcdef1234567890abcdef12345678'))->toBeFalse();
+});
+
+test('isValid rejects empty string', function () {
+    expect(SolanaAddressHelper::isValid(''))->toBeFalse();
+});
+
+test('derived address is correct length for ed25519 public key', function () {
+    $address = SolanaAddressHelper::deriveAddress('length-test');
+
+    // ed25519 public key is 32 bytes → Base58 encoded is 43-44 chars
+    expect(strlen($address))->toBeGreaterThanOrEqual(32)
+        ->toBeLessThanOrEqual(44);
+});

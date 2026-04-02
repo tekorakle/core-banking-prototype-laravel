@@ -47,10 +47,10 @@ class ReceiveAddressService
      */
     private function derivePublicKey(int $userId, PaymentNetwork $network): string
     {
+        // Solana uses real ed25519 derivation regardless of demo mode.
+        // deriveForUser() ensures the same address across all endpoints.
         if ($network === PaymentNetwork::SOLANA) {
-            $seed = hash('sha256', "finaegis:{$userId}:{$network->value}");
-
-            return SolanaAddressHelper::deriveAddress($seed);
+            return SolanaAddressHelper::deriveForUser($userId, (string) config('app.key'));
         }
 
         if (config('mobile_payment.demo_mode', false)) {
@@ -68,9 +68,9 @@ class ReceiveAddressService
         $hash = hash('sha256', "demo:{$userId}:{$network->value}");
 
         return match ($network) {
-            PaymentNetwork::SOLANA => SolanaAddressHelper::deriveAddress("demo:{$userId}"),
-            PaymentNetwork::TRON   => 'T' . substr(strtoupper($hash), 0, 33),
+            PaymentNetwork::TRON => 'T' . substr(strtoupper($hash), 0, 33),
             PaymentNetwork::POLYGON, PaymentNetwork::BASE, PaymentNetwork::ARBITRUM, PaymentNetwork::ETHEREUM => '0x' . substr($hash, 0, 40),
+            default => '0x' . substr($hash, 0, 40),
         };
     }
 
