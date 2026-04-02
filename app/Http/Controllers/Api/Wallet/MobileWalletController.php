@@ -356,9 +356,8 @@ class MobileWalletController extends Controller
         }
 
         // Always append Solana address (non-EVM, separate from ERC-4337 smart accounts)
-        $solanaSeed = hash('sha256', "wallet:{$user->id}:" . config('app.key'));
         $addresses[] = [
-            'address'    => SolanaAddressHelper::deriveAddress($solanaSeed),
+            'address'    => SolanaAddressHelper::deriveForUser($user->id, (string) config('app.key')),
             'network'    => 'solana',
             'type'       => 'keypair',
             'deployed'   => true,
