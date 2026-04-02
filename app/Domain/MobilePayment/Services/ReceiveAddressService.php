@@ -7,6 +7,7 @@ namespace App\Domain\MobilePayment\Services;
 use App\Domain\MobilePayment\Enums\PaymentAsset;
 use App\Domain\MobilePayment\Enums\PaymentNetwork;
 use App\Domain\Wallet\Factories\BlockchainConnectorFactory;
+use App\Domain\Wallet\Helpers\SolanaAddressHelper;
 
 /**
  * Provides receive addresses for mobile wallet users.
@@ -46,6 +47,12 @@ class ReceiveAddressService
      */
     private function derivePublicKey(int $userId, PaymentNetwork $network): string
     {
+        if ($network === PaymentNetwork::SOLANA) {
+            $seed = hash('sha256', "finaegis:{$userId}:{$network->value}");
+
+            return SolanaAddressHelper::deriveAddress($seed);
+        }
+
         if (config('mobile_payment.demo_mode', false)) {
             return $this->generateDemoAddress($userId, $network);
         }
@@ -61,7 +68,7 @@ class ReceiveAddressService
         $hash = hash('sha256', "demo:{$userId}:{$network->value}");
 
         return match ($network) {
-            PaymentNetwork::SOLANA => $this->toBase58Like($hash),
+            PaymentNetwork::SOLANA => SolanaAddressHelper::deriveAddress("demo:{$userId}"),
             PaymentNetwork::TRON   => 'T' . substr(strtoupper($hash), 0, 33),
             PaymentNetwork::POLYGON, PaymentNetwork::BASE, PaymentNetwork::ARBITRUM, PaymentNetwork::ETHEREUM => '0x' . substr($hash, 0, 40),
         };
@@ -77,21 +84,5 @@ class ReceiveAddressService
             PaymentNetwork::TRON   => $address,
             PaymentNetwork::POLYGON, PaymentNetwork::BASE, PaymentNetwork::ARBITRUM, PaymentNetwork::ETHEREUM => "ethereum:{$address}",
         };
-    }
-
-    /**
-     * Generate a base58-like string from hex hash for demo Solana addresses.
-     */
-    private function toBase58Like(string $hex): string
-    {
-        $alphabet = '123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz';
-        $result = '';
-
-        for ($i = 0; $i < 44 && $i < strlen($hex); $i++) {
-            $charCode = ord($hex[$i]);
-            $result .= $alphabet[$charCode % strlen($alphabet)];
-        }
-
-        return $result;
     }
 }
