@@ -8,6 +8,7 @@ use App\Domain\Account\Models\BlockchainAddress;
 use App\Domain\Account\Models\BlockchainTransaction;
 use App\Domain\MobilePayment\Enums\ActivityItemType;
 use App\Domain\MobilePayment\Models\ActivityFeedItem;
+use App\Http\Controllers\Api\Webhook\HeliusWebhookController;
 use App\Models\User;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Http;
@@ -116,8 +117,9 @@ class SolanaTransactionBackfillCommand extends Command
                     ]
                 );
 
+                $refId = HeliusWebhookController::signatureToUuid($signature);
                 $feedItem = ActivityFeedItem::firstOrCreate(
-                    ['reference_type' => 'solana_tx', 'reference_id' => $signature],
+                    ['reference_type' => 'solana_tx', 'reference_id' => $refId],
                     [
                         'user_id'       => $user->id,
                         'activity_type' => $isIncoming ? ActivityItemType::TRANSFER_IN : ActivityItemType::TRANSFER_OUT,

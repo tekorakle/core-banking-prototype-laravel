@@ -179,8 +179,10 @@ class HeliusWebhookController extends Controller
             );
 
             // Store activity feed item (so it shows in mobile activity tab)
+            // reference_id is UUID column — hash signature into deterministic UUID for dedup
+            $refId = self::signatureToUuid($signature);
             ActivityFeedItem::firstOrCreate(
-                ['reference_type' => 'solana_tx', 'reference_id' => $signature],
+                ['reference_type' => 'solana_tx', 'reference_id' => $refId],
                 [
                     'user_id'       => $user->id,
                     'activity_type' => $isIncoming ? ActivityItemType::TRANSFER_IN : ActivityItemType::TRANSFER_OUT,
@@ -330,6 +332,26 @@ class HeliusWebhookController extends Controller
         $transfers = $tx['tokenTransfers'] ?? $tx['nativeTransfers'] ?? [];
 
         return $transfers[0]['toUserAccount'] ?? null;
+    }
+
+    /**
+     * Convert a Solana transaction signature to a deterministic UUID.
+     *
+     * The activity_feed_items.reference_id column is UUID type, but Solana
+     * signatures are ~88 char base58 strings. Hash into UUID v5-like format.
+     */
+    public static function signatureToUuid(string $signature): string
+    {
+        $hash = md5("solana_tx:{$signature}");
+
+        return sprintf(
+            '%s-%s-%s-%s-%s',
+            substr($hash, 0, 8),
+            substr($hash, 8, 4),
+            substr($hash, 12, 4),
+            substr($hash, 16, 4),
+            substr($hash, 20, 12)
+        );
     }
 
     /**

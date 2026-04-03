@@ -150,7 +150,7 @@ it('stores incoming token transaction in both tables', function (): void {
     expect($btx->to_address)->toBe('ReceiverAddr123');
 
     // Verify activity feed item stored
-    $feedItem = ActivityFeedItem::where('reference_id', 'sig_incoming_001')->first();
+    $feedItem = ActivityFeedItem::where('reference_id', HeliusWebhookController::signatureToUuid('sig_incoming_001'))->first();
     expect($feedItem)->not->toBeNull();
     assert($feedItem instanceof ActivityFeedItem);
     expect($feedItem->activity_type->value)->toBe('transfer_in');
@@ -182,7 +182,7 @@ it('stores outgoing token transaction correctly', function (): void {
     assert($btx instanceof BlockchainTransaction);
     expect($btx->type)->toBe('send');
 
-    $feedItem = ActivityFeedItem::where('reference_id', 'sig_outgoing_001')->first();
+    $feedItem = ActivityFeedItem::where('reference_id', HeliusWebhookController::signatureToUuid('sig_outgoing_001'))->first();
     assert($feedItem instanceof ActivityFeedItem);
     expect($feedItem->activity_type->value)->toBe('transfer_out');
     expect((float) $feedItem->amount)->toBeLessThan(0); // Negative for outgoing
@@ -206,7 +206,7 @@ it('stores native SOL transfer with correct amount', function (): void {
 
     $controller->handle($request);
 
-    $feedItem = ActivityFeedItem::where('reference_id', 'sig_sol_001')->first();
+    $feedItem = ActivityFeedItem::where('reference_id', HeliusWebhookController::signatureToUuid('sig_sol_001'))->first();
     assert($feedItem instanceof ActivityFeedItem);
     expect($feedItem->asset)->toBe('SOL');
     expect((float) $feedItem->amount)->toBeGreaterThan(1.9); // ~2.0 SOL
@@ -234,7 +234,7 @@ it('deduplicates transactions on retry', function (): void {
     $controller->handle($request2);
 
     expect(BlockchainTransaction::where('tx_hash', 'sig_dedupe_001')->count())->toBe(1);
-    expect(ActivityFeedItem::where('reference_id', 'sig_dedupe_001')->count())->toBe(1);
+    expect(ActivityFeedItem::where('reference_id', HeliusWebhookController::signatureToUuid('sig_dedupe_001'))->count())->toBe(1);
 });
 
 it('rejects requests with wrong webhook secret', function (): void {
@@ -267,7 +267,7 @@ it('resolves USDT token correctly', function (): void {
 
     $controller->handle($request);
 
-    $feedItem = ActivityFeedItem::where('reference_id', 'sig_usdt_001')->first();
+    $feedItem = ActivityFeedItem::where('reference_id', HeliusWebhookController::signatureToUuid('sig_usdt_001'))->first();
     assert($feedItem instanceof ActivityFeedItem);
     expect($feedItem->asset)->toBe('USDT');
 });
