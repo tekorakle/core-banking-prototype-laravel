@@ -74,6 +74,7 @@ class HeliusWebhookController extends Controller
     private function processTransaction(array $tx): int
     {
         $matched = 0;
+        $processedAddresses = [];
 
         // Skip transactions with no token or native transfers
         if (empty($tx['tokenTransfers']) && empty($tx['nativeTransfers'])) {
@@ -93,8 +94,13 @@ class HeliusWebhookController extends Controller
                     continue;
                 }
 
+                if (in_array($address, $processedAddresses, true)) {
+                    continue;
+                }
+
                 if ($this->isKnownAddress($address)) {
                     $this->broadcastBalanceUpdate($address, $tx);
+                    $processedAddresses[] = $address;
                     $matched++;
                 }
             }
@@ -113,8 +119,13 @@ class HeliusWebhookController extends Controller
                     continue;
                 }
 
+                if (in_array($address, $processedAddresses, true)) {
+                    continue;
+                }
+
                 if ($this->isKnownAddress($address)) {
                     $this->broadcastBalanceUpdate($address, $tx);
+                    $processedAddresses[] = $address;
                     $matched++;
                 }
             }
