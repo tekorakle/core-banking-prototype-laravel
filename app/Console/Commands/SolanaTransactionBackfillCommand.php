@@ -125,9 +125,13 @@ class SolanaTransactionBackfillCommand extends Command
         $url = "https://api.helius.xyz/v0/addresses/{$address}/transactions";
 
         try {
+            // Helius API requires api-key as query param (no header auth support)
             $response = Http::timeout(30)
-                ->withHeaders(['Authorization' => "Bearer {$apiKey}"])
-                ->get($url, ['limit' => min($limit, 100)]);
+                ->withoutRedirecting()
+                ->get($url, [
+                    'api-key' => $apiKey,
+                    'limit'   => min($limit, 100),
+                ]);
 
             if (! $response->successful()) {
                 Log::warning('Helius: Failed to fetch transaction history', [
