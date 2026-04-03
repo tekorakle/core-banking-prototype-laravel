@@ -5,7 +5,6 @@ declare(strict_types=1);
 use App\Domain\ISO20022\ValueObjects\Pacs002;
 use App\Domain\ISO20022\ValueObjects\Pacs008;
 use App\Domain\PaymentRails\Services\FedNowService;
-use DateTimeImmutable;
 use Tests\TestCase;
 
 uses(TestCase::class);
@@ -16,7 +15,7 @@ describe('FedNowService structural tests', function (): void {
     });
 
     it('has a sendInstantPayment method', function (): void {
-        expect(method_exists(FedNowService::class, 'sendInstantPayment'))->toBeTrue();
+        expect((new ReflectionClass(FedNowService::class))->hasMethod('sendInstantPayment'))->toBeTrue();
     });
 
     it('sendInstantPayment has 7 parameters with last one nullable', function (): void {
@@ -32,7 +31,7 @@ describe('FedNowService structural tests', function (): void {
     });
 
     it('has a processStatusReport method', function (): void {
-        expect(method_exists(FedNowService::class, 'processStatusReport'))->toBeTrue();
+        expect((new ReflectionClass(FedNowService::class))->hasMethod('processStatusReport'))->toBeTrue();
     });
 
     it('processStatusReport has 1 parameter', function (): void {
@@ -41,7 +40,7 @@ describe('FedNowService structural tests', function (): void {
     });
 
     it('has a getPaymentStatus method', function (): void {
-        expect(method_exists(FedNowService::class, 'getPaymentStatus'))->toBeTrue();
+        expect((new ReflectionClass(FedNowService::class))->hasMethod('getPaymentStatus'))->toBeTrue();
     });
 
     it('constructor accepts Pacs008 and Pacs002 dependencies', function (): void {
@@ -49,12 +48,18 @@ describe('FedNowService structural tests', function (): void {
         $constructor = $reflection->getConstructor();
 
         expect($constructor)->not->toBeNull();
+        assert($constructor instanceof ReflectionMethod);
 
         $params = $constructor->getParameters();
         expect($params)->toHaveCount(2);
 
-        expect($params[0]->getType()?->getName())->toBe(Pacs008::class);
-        expect($params[1]->getType()?->getName())->toBe(Pacs002::class);
+        $type0 = $params[0]->getType();
+        assert($type0 instanceof ReflectionNamedType);
+        expect($type0->getName())->toBe(Pacs008::class);
+
+        $type1 = $params[1]->getType();
+        assert($type1 instanceof ReflectionNamedType);
+        expect($type1->getName())->toBe(Pacs002::class);
     });
 
     it('can be instantiated with concrete Pacs008 and Pacs002 instances', function (): void {

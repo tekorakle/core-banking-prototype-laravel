@@ -19,7 +19,7 @@ it('SepaDirectDebitService can be instantiated with SepaMandateService', functio
 });
 
 it('SepaDirectDebitService has createCollection method', function (): void {
-    expect(method_exists(SepaDirectDebitService::class, 'createCollection'))->toBeTrue();
+    expect((new ReflectionClass(SepaDirectDebitService::class))->hasMethod('createCollection'))->toBeTrue();
 });
 
 it('SepaDirectDebitService createCollection has correct parameter count', function (): void {
@@ -35,7 +35,7 @@ it('SepaDirectDebitService createCollection has correct parameter count', functi
 });
 
 it('SepaDirectDebitService has submitCollection method', function (): void {
-    expect(method_exists(SepaDirectDebitService::class, 'submitCollection'))->toBeTrue();
+    expect((new ReflectionClass(SepaDirectDebitService::class))->hasMethod('submitCollection'))->toBeTrue();
 });
 
 it('SepaDirectDebitService submitCollection accepts single string parameter', function (): void {
@@ -44,11 +44,13 @@ it('SepaDirectDebitService submitCollection accepts single string parameter', fu
 
     expect($params)->toHaveCount(1);
     expect($params[0]->getName())->toBe('collectionId');
-    expect($params[0]->getType()?->getName())->toBe('string');
+    $collectionIdType = $params[0]->getType();
+    assert($collectionIdType instanceof ReflectionNamedType);
+    expect($collectionIdType->getName())->toBe('string');
 });
 
 it('SepaDirectDebitService has processReturn method', function (): void {
-    expect(method_exists(SepaDirectDebitService::class, 'processReturn'))->toBeTrue();
+    expect((new ReflectionClass(SepaDirectDebitService::class))->hasMethod('processReturn'))->toBeTrue();
 });
 
 it('SepaDirectDebitService processReturn has correct parameter count', function (): void {
@@ -62,12 +64,14 @@ it('SepaDirectDebitService processReturn has correct parameter count', function 
 });
 
 it('SepaDirectDebitService has getCollectionsByMandate method', function (): void {
-    expect(method_exists(SepaDirectDebitService::class, 'getCollectionsByMandate'))->toBeTrue();
+    expect((new ReflectionClass(SepaDirectDebitService::class))->hasMethod('getCollectionsByMandate'))->toBeTrue();
 });
 
 it('SepaDirectDebitService getCollectionsByMandate returns array', function (): void {
     $ref = new ReflectionMethod(SepaDirectDebitService::class, 'getCollectionsByMandate');
-    expect($ref->getReturnType()?->getName())->toBe('array');
+    $returnType = $ref->getReturnType();
+    assert($returnType instanceof ReflectionNamedType);
+    expect($returnType->getName())->toBe('array');
 });
 
 it('SepaDirectDebitService submitCollection returns structured array', function (): void {

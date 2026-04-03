@@ -116,7 +116,8 @@ it('rate limiter logs warning when limit exceeded', function (): void {
         ]);
     }
 
-    Log::shouldHaveReceived('warning')
+    $spy = Log::getFacadeRoot();
+    $spy->shouldHaveReceived('warning')
         ->once()
         ->with('JIT auth rate limit exceeded', Mockery::type('array'));
 });

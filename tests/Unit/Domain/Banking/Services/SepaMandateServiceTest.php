@@ -13,7 +13,7 @@ it('SepaMandateService class exists', function (): void {
 });
 
 it('SepaMandateService has createMandate method', function (): void {
-    expect(method_exists(SepaMandateService::class, 'createMandate'))->toBeTrue();
+    expect((new ReflectionClass(SepaMandateService::class))->hasMethod('createMandate'))->toBeTrue();
 });
 
 it('SepaMandateService createMandate accepts (int, array) and returns SepaMandate', function (): void {
@@ -22,13 +22,17 @@ it('SepaMandateService createMandate accepts (int, array) and returns SepaMandat
 
     expect($params)->toHaveCount(2);
     expect($params[0]->getName())->toBe('userId');
-    expect($params[0]->getType()?->getName())->toBe('int');
+    $userIdType = $params[0]->getType();
+    assert($userIdType instanceof ReflectionNamedType);
+    expect($userIdType->getName())->toBe('int');
     expect($params[1]->getName())->toBe('data');
-    expect($ref->getReturnType()?->getName())->toBe(SepaMandate::class);
+    $returnType = $ref->getReturnType();
+    assert($returnType instanceof ReflectionNamedType);
+    expect($returnType->getName())->toBe(SepaMandate::class);
 });
 
 it('SepaMandateService has suspendMandate method', function (): void {
-    expect(method_exists(SepaMandateService::class, 'suspendMandate'))->toBeTrue();
+    expect((new ReflectionClass(SepaMandateService::class))->hasMethod('suspendMandate'))->toBeTrue();
 });
 
 it('SepaMandateService suspendMandate accepts (string) and returns SepaMandate', function (): void {
@@ -37,20 +41,24 @@ it('SepaMandateService suspendMandate accepts (string) and returns SepaMandate',
 
     expect($params)->toHaveCount(1);
     expect($params[0]->getName())->toBe('mandateId');
-    expect($params[0]->getType()?->getName())->toBe('string');
-    expect($ref->getReturnType()?->getName())->toBe(SepaMandate::class);
+    $mandateIdType = $params[0]->getType();
+    assert($mandateIdType instanceof ReflectionNamedType);
+    expect($mandateIdType->getName())->toBe('string');
+    $suspendReturnType = $ref->getReturnType();
+    assert($suspendReturnType instanceof ReflectionNamedType);
+    expect($suspendReturnType->getName())->toBe(SepaMandate::class);
 });
 
 it('SepaMandateService has cancelMandate method', function (): void {
-    expect(method_exists(SepaMandateService::class, 'cancelMandate'))->toBeTrue();
+    expect((new ReflectionClass(SepaMandateService::class))->hasMethod('cancelMandate'))->toBeTrue();
 });
 
 it('SepaMandateService has reactivateMandate method', function (): void {
-    expect(method_exists(SepaMandateService::class, 'reactivateMandate'))->toBeTrue();
+    expect((new ReflectionClass(SepaMandateService::class))->hasMethod('reactivateMandate'))->toBeTrue();
 });
 
 it('SepaMandateService has getMandatesForUser method', function (): void {
-    expect(method_exists(SepaMandateService::class, 'getMandatesForUser'))->toBeTrue();
+    expect((new ReflectionClass(SepaMandateService::class))->hasMethod('getMandatesForUser'))->toBeTrue();
 });
 
 it('SepaMandateService getMandatesForUser accepts int and returns Collection', function (): void {
@@ -59,12 +67,16 @@ it('SepaMandateService getMandatesForUser accepts int and returns Collection', f
 
     expect($params)->toHaveCount(1);
     expect($params[0]->getName())->toBe('userId');
-    expect($params[0]->getType()?->getName())->toBe('int');
-    expect($ref->getReturnType()?->getName())->toBe(Collection::class);
+    $getMandatesUserIdType = $params[0]->getType();
+    assert($getMandatesUserIdType instanceof ReflectionNamedType);
+    expect($getMandatesUserIdType->getName())->toBe('int');
+    $getMandatesReturnType = $ref->getReturnType();
+    assert($getMandatesReturnType instanceof ReflectionNamedType);
+    expect($getMandatesReturnType->getName())->toBe(Collection::class);
 });
 
 it('SepaMandateService has findByMandateId method', function (): void {
-    expect(method_exists(SepaMandateService::class, 'findByMandateId'))->toBeTrue();
+    expect((new ReflectionClass(SepaMandateService::class))->hasMethod('findByMandateId'))->toBeTrue();
 });
 
 it('SepaMandateService findByMandateId returns nullable SepaMandate', function (): void {
@@ -76,12 +88,14 @@ it('SepaMandateService findByMandateId returns nullable SepaMandate', function (
 });
 
 it('SepaMandateService has expireStaleMandate method', function (): void {
-    expect(method_exists(SepaMandateService::class, 'expireStaleMandate'))->toBeTrue();
+    expect((new ReflectionClass(SepaMandateService::class))->hasMethod('expireStaleMandate'))->toBeTrue();
 });
 
 it('SepaMandateService expireStaleMandate returns int', function (): void {
     $ref = new ReflectionMethod(SepaMandateService::class, 'expireStaleMandate');
-    expect($ref->getReturnType()?->getName())->toBe('int');
+    $expireReturnType = $ref->getReturnType();
+    assert($expireReturnType instanceof ReflectionNamedType);
+    expect($expireReturnType->getName())->toBe('int');
 });
 
 it('SepaMandateService can be instantiated', function (): void {

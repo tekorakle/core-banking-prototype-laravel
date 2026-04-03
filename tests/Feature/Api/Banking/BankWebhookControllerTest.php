@@ -46,12 +46,13 @@ it('accepts transfer-update with valid HMAC signature', function (): void {
 
     $signature = hash_hmac('sha256', (string) json_encode($payload), $secret);
 
-    $this->mock(BankTransferService::class, function (MockInterface $mock): void {
-        $mock->shouldReceive('advanceStatus')
-            ->once()
-            ->with('bt_hmac_ok', 'completed', 'Payment received')
-            ->andReturn(true);
-    });
+    /** @var BankTransferService&MockInterface $mock */
+    $mock = Mockery::mock(BankTransferService::class);
+    $mock->shouldReceive('advanceStatus')
+        ->once()
+        ->with('bt_hmac_ok', 'completed', 'Payment received')
+        ->andReturn(true);
+    app()->instance(BankTransferService::class, $mock);
 
     $this->postJson(
         '/api/webhooks/bank/stripe/transfer-update',
@@ -73,12 +74,13 @@ it('falls back to global webhook secret when provider secret is empty', function
 
     $signature = hash_hmac('sha256', (string) json_encode($payload), 'global-secret-xyz');
 
-    $this->mock(BankTransferService::class, function (MockInterface $mock): void {
-        $mock->shouldReceive('advanceStatus')
-            ->once()
-            ->with('bt_global_secret', 'processing', 'Webhook update from newbank')
-            ->andReturn(true);
-    });
+    /** @var BankTransferService&MockInterface $mock */
+    $mock = Mockery::mock(BankTransferService::class);
+    $mock->shouldReceive('advanceStatus')
+        ->once()
+        ->with('bt_global_secret', 'processing', 'Webhook update from newbank')
+        ->andReturn(true);
+    app()->instance(BankTransferService::class, $mock);
 
     $this->postJson(
         '/api/webhooks/bank/newbank/transfer-update',
@@ -143,12 +145,13 @@ it('maps provider status "succeeded" to "completed"', function (): void {
     $payload = ['transfer_id' => 'bt_map1', 'status' => 'succeeded'];
     $signature = hash_hmac('sha256', (string) json_encode($payload), $secret);
 
-    $this->mock(BankTransferService::class, function (MockInterface $mock): void {
-        $mock->shouldReceive('advanceStatus')
-            ->once()
-            ->with('bt_map1', 'completed', 'Webhook update from test')
-            ->andReturn(true);
-    });
+    /** @var BankTransferService&MockInterface $mock */
+    $mock = Mockery::mock(BankTransferService::class);
+    $mock->shouldReceive('advanceStatus')
+        ->once()
+        ->with('bt_map1', 'completed', 'Webhook update from test')
+        ->andReturn(true);
+    app()->instance(BankTransferService::class, $mock);
 
     $this->postJson(
         '/api/webhooks/bank/test/transfer-update',
@@ -164,12 +167,13 @@ it('maps provider status "error" to "failed"', function (): void {
     $payload = ['transfer_id' => 'bt_map2', 'status' => 'error'];
     $signature = hash_hmac('sha256', (string) json_encode($payload), $secret);
 
-    $this->mock(BankTransferService::class, function (MockInterface $mock): void {
-        $mock->shouldReceive('advanceStatus')
-            ->once()
-            ->with('bt_map2', 'failed', 'Webhook update from test')
-            ->andReturn(true);
-    });
+    /** @var BankTransferService&MockInterface $mock */
+    $mock = Mockery::mock(BankTransferService::class);
+    $mock->shouldReceive('advanceStatus')
+        ->once()
+        ->with('bt_map2', 'failed', 'Webhook update from test')
+        ->andReturn(true);
+    app()->instance(BankTransferService::class, $mock);
 
     $this->postJson(
         '/api/webhooks/bank/test/transfer-update',
@@ -185,12 +189,13 @@ it('maps provider status "canceled" to "cancelled"', function (): void {
     $payload = ['transfer_id' => 'bt_map3', 'status' => 'canceled'];
     $signature = hash_hmac('sha256', (string) json_encode($payload), $secret);
 
-    $this->mock(BankTransferService::class, function (MockInterface $mock): void {
-        $mock->shouldReceive('advanceStatus')
-            ->once()
-            ->with('bt_map3', 'cancelled', 'Webhook update from test')
-            ->andReturn(true);
-    });
+    /** @var BankTransferService&MockInterface $mock */
+    $mock = Mockery::mock(BankTransferService::class);
+    $mock->shouldReceive('advanceStatus')
+        ->once()
+        ->with('bt_map3', 'cancelled', 'Webhook update from test')
+        ->andReturn(true);
+    app()->instance(BankTransferService::class, $mock);
 
     $this->postJson(
         '/api/webhooks/bank/test/transfer-update',
@@ -206,12 +211,13 @@ it('passes through unknown statuses unmapped', function (): void {
     $payload = ['transfer_id' => 'bt_map4', 'status' => 'custom_state'];
     $signature = hash_hmac('sha256', (string) json_encode($payload), $secret);
 
-    $this->mock(BankTransferService::class, function (MockInterface $mock): void {
-        $mock->shouldReceive('advanceStatus')
-            ->once()
-            ->with('bt_map4', 'custom_state', 'Webhook update from test')
-            ->andReturn(false);
-    });
+    /** @var BankTransferService&MockInterface $mock */
+    $mock = Mockery::mock(BankTransferService::class);
+    $mock->shouldReceive('advanceStatus')
+        ->once()
+        ->with('bt_map4', 'custom_state', 'Webhook update from test')
+        ->andReturn(false);
+    app()->instance(BankTransferService::class, $mock);
 
     $this->postJson(
         '/api/webhooks/bank/test/transfer-update',
@@ -232,12 +238,13 @@ it('reads alternative field names: id, state, reason', function (): void {
     ];
     $signature = hash_hmac('sha256', (string) json_encode($payload), $secret);
 
-    $this->mock(BankTransferService::class, function (MockInterface $mock): void {
-        $mock->shouldReceive('advanceStatus')
-            ->once()
-            ->with('bt_alt_fields', 'completed', 'Alt-field webhook')
-            ->andReturn(true);
-    });
+    /** @var BankTransferService&MockInterface $mock */
+    $mock = Mockery::mock(BankTransferService::class);
+    $mock->shouldReceive('advanceStatus')
+        ->once()
+        ->with('bt_alt_fields', 'completed', 'Alt-field webhook')
+        ->andReturn(true);
+    app()->instance(BankTransferService::class, $mock);
 
     $this->postJson(
         '/api/webhooks/bank/alt/transfer-update',

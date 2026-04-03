@@ -45,6 +45,7 @@ describe('ReconciliationService', function (): void {
         $constructor = $reflection->getConstructor();
 
         expect($constructor)->not->toBeNull();
+        assert($constructor instanceof ReflectionMethod);
 
         $params = $constructor->getParameters();
         expect($params)->toHaveCount(1);

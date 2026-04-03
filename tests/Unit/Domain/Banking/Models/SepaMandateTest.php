@@ -28,23 +28,23 @@ it('SepaMandate has correct table name', function (): void {
 });
 
 it('SepaMandate has isActive method', function (): void {
-    expect(method_exists(SepaMandate::class, 'isActive'))->toBeTrue();
+    expect((new ReflectionClass(SepaMandate::class))->hasMethod('isActive'))->toBeTrue();
 });
 
 it('SepaMandate has isExpired method', function (): void {
-    expect(method_exists(SepaMandate::class, 'isExpired'))->toBeTrue();
+    expect((new ReflectionClass(SepaMandate::class))->hasMethod('isExpired'))->toBeTrue();
 });
 
 it('SepaMandate has scopeActive method', function (): void {
-    expect(method_exists(SepaMandate::class, 'scopeActive'))->toBeTrue();
+    expect((new ReflectionClass(SepaMandate::class))->hasMethod('scopeActive'))->toBeTrue();
 });
 
 it('SepaMandate has scopeForUser method', function (): void {
-    expect(method_exists(SepaMandate::class, 'scopeForUser'))->toBeTrue();
+    expect((new ReflectionClass(SepaMandate::class))->hasMethod('scopeForUser'))->toBeTrue();
 });
 
 it('SepaMandate has scopeByScheme method', function (): void {
-    expect(method_exists(SepaMandate::class, 'scopeByScheme'))->toBeTrue();
+    expect((new ReflectionClass(SepaMandate::class))->hasMethod('scopeByScheme'))->toBeTrue();
 });
 
 it('SepaMandate scopeForUser accepts int userId', function (): void {
@@ -53,7 +53,9 @@ it('SepaMandate scopeForUser accepts int userId', function (): void {
 
     expect($params)->toHaveCount(2);
     expect($params[1]->getName())->toBe('userId');
-    expect($params[1]->getType()?->getName())->toBe('int');
+    $userIdType = $params[1]->getType();
+    assert($userIdType instanceof ReflectionNamedType);
+    expect($userIdType->getName())->toBe('int');
 });
 
 it('SepaMandate scopeByScheme accepts string scheme', function (): void {
@@ -62,7 +64,9 @@ it('SepaMandate scopeByScheme accepts string scheme', function (): void {
 
     expect($params)->toHaveCount(2);
     expect($params[1]->getName())->toBe('scheme');
-    expect($params[1]->getType()?->getName())->toBe('string');
+    $schemeType = $params[1]->getType();
+    assert($schemeType instanceof ReflectionNamedType);
+    expect($schemeType->getName())->toBe('string');
 });
 
 it('SepaMandate isActive returns bool for active status', function (): void {

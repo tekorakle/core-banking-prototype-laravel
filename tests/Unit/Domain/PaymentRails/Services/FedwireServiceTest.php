@@ -13,7 +13,7 @@ describe('FedwireService structural tests', function (): void {
     });
 
     it('has a sendTransfer method', function (): void {
-        expect(method_exists(FedwireService::class, 'sendTransfer'))->toBeTrue();
+        expect((new ReflectionClass(FedwireService::class))->hasMethod('sendTransfer'))->toBeTrue();
     });
 
     it('sendTransfer has 7 parameters with last one nullable', function (): void {
@@ -29,7 +29,7 @@ describe('FedwireService structural tests', function (): void {
     });
 
     it('has a getTransferStatus method', function (): void {
-        expect(method_exists(FedwireService::class, 'getTransferStatus'))->toBeTrue();
+        expect((new ReflectionClass(FedwireService::class))->hasMethod('getTransferStatus'))->toBeTrue();
     });
 
     it('getTransferStatus has 1 parameter', function (): void {
@@ -38,7 +38,7 @@ describe('FedwireService structural tests', function (): void {
     });
 
     it('has a processCallback method', function (): void {
-        expect(method_exists(FedwireService::class, 'processCallback'))->toBeTrue();
+        expect((new ReflectionClass(FedwireService::class))->hasMethod('processCallback'))->toBeTrue();
     });
 
     it('processCallback has 3 parameters', function (): void {

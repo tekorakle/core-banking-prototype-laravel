@@ -34,9 +34,12 @@ describe('ValidateTppCertificate', function () {
         $constructor = $reflection->getConstructor();
 
         expect($constructor)->not->toBeNull();
+        assert($constructor instanceof ReflectionMethod);
         $params = $constructor->getParameters();
         expect($params)->toHaveCount(1);
-        expect($params[0]->getType()?->getName())->toBe(TppRegistrationService::class);
+        $paramType = $params[0]->getType();
+        assert($paramType instanceof ReflectionNamedType);
+        expect($paramType->getName())->toBe(TppRegistrationService::class);
     });
 
     it('bypasses validation when tpp_certificate_validation is disabled', function () {
@@ -63,7 +66,7 @@ describe('ValidateTppCertificate', function () {
         $response = $middleware->handle($request, fn () => new Response('ok'));
 
         expect($response->getStatusCode())->toBe(403);
-        $body = json_decode($response->getContent(), true);
+        $body = json_decode((string) $response->getContent(), true);
         expect($body['error']['code'])->toBe('TPP_NOT_IDENTIFIED');
     });
 });

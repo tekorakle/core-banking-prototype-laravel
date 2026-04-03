@@ -18,27 +18,27 @@ uses(TestCase::class);
 
 it('FieldOfficerService has assignOfficer method', function (): void {
     $service = new FieldOfficerService();
-    expect(method_exists($service, 'assignOfficer'))->toBeTrue();
+    expect((new ReflectionClass($service))->hasMethod('assignOfficer'))->toBeTrue();
 });
 
 it('FieldOfficerService has generateCollectionSheet method', function (): void {
     $service = new FieldOfficerService();
-    expect(method_exists($service, 'generateCollectionSheet'))->toBeTrue();
+    expect((new ReflectionClass($service))->hasMethod('generateCollectionSheet'))->toBeTrue();
 });
 
 it('FieldOfficerService has recordCollection method', function (): void {
     $service = new FieldOfficerService();
-    expect(method_exists($service, 'recordCollection'))->toBeTrue();
+    expect((new ReflectionClass($service))->hasMethod('recordCollection'))->toBeTrue();
 });
 
 it('FieldOfficerService has getCollectionSheets method', function (): void {
     $service = new FieldOfficerService();
-    expect(method_exists($service, 'getCollectionSheets'))->toBeTrue();
+    expect((new ReflectionClass($service))->hasMethod('getCollectionSheets'))->toBeTrue();
 });
 
 it('FieldOfficerService has syncOfficer method', function (): void {
     $service = new FieldOfficerService();
-    expect(method_exists($service, 'syncOfficer'))->toBeTrue();
+    expect((new ReflectionClass($service))->hasMethod('syncOfficer'))->toBeTrue();
 });
 
 // ---------------------------------------------------------------------------
