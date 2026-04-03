@@ -9,11 +9,13 @@ use App\Domain\Account\Models\BlockchainTransaction;
 use App\Domain\MobilePayment\Enums\ActivityItemType;
 use App\Domain\MobilePayment\Models\ActivityFeedItem;
 use App\Domain\Wallet\Events\Broadcast\WalletBalanceUpdated;
+use App\Domain\Wallet\Factories\BlockchainConnectorFactory;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Log;
+use Throwable;
 
 /**
  * Handle Helius Solana webhooks for address activity monitoring.
@@ -197,9 +199,17 @@ class HeliusWebhookController extends Controller
 
         WalletBalanceUpdated::dispatch($user->id, 'solana');
 
-        // Invalidate balance cache
+        // Invalidate and pre-warm balance cache so next mobile request hits warm cache
         Cache::forget("solana_balance:{$address}");
         Cache::forget("solana_known_addr:{$address}");
+
+        try {
+            $connector = BlockchainConnectorFactory::create('solana');
+            $balanceData = $connector->getBalance($address);
+            Cache::put("solana_balance:{$address}", $balanceData->balance, 300);
+        } catch (Throwable) {
+            // Pre-warm is best-effort — next request will query fresh
+        }
 
         Log::info('Helius: Solana transaction stored and balance update broadcast', [
             'address'   => $address,
