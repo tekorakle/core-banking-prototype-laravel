@@ -344,6 +344,11 @@ class HeliusWebhookController extends Controller
     {
         $hash = md5("solana_tx:{$signature}");
 
+        // Set version 4 (byte 7, high nibble) and variant 10xx (byte 9, high bits)
+        // to produce a valid RFC 4122 UUID that MariaDB accepts.
+        $hash[12] = '4';
+        $hash[16] = dechex(0x8 | (hexdec($hash[16]) & 0x3));
+
         return sprintf(
             '%s-%s-%s-%s-%s',
             substr($hash, 0, 8),
