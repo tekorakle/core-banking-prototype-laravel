@@ -36,7 +36,15 @@ class HeliusSyncCommand extends Command
         $count = $service->syncAllAddresses();
 
         if ($count === 0) {
-            $this->warn('No addresses synced. Check HELIUS_API_KEY and HELIUS_WEBHOOK_ID are set.');
+            $dbCount = \App\Domain\Account\Models\BlockchainAddress::where('chain', 'solana')
+                ->where('is_active', true)
+                ->count();
+
+            if ($dbCount === 0) {
+                $this->warn('No Solana addresses found in blockchain_addresses table. Call /api/v1/wallet/addresses to auto-register user addresses first.');
+            } else {
+                $this->warn('No addresses synced. Check HELIUS_API_KEY and HELIUS_WEBHOOK_ID are set.');
+            }
 
             return self::FAILURE;
         }

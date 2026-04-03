@@ -12,6 +12,7 @@ use App\Http\Controllers\Api\Wallet\MobileWalletController;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Schema;
 use Tests\UnitTestCase;
 
 uses(UnitTestCase::class);
@@ -44,6 +45,7 @@ function walletUserRequest(string $uri = '/api/v1/wallet/tokens', string $method
     }
     $user = Mockery::mock(User::class)->makePartial();
     $user->id = 1;
+    $user->uuid = 'test-uuid-' . uniqid();
     $request->setUserResolver(fn () => $user);
 
     return $request;
@@ -168,6 +170,29 @@ describe('MobileWalletController state', function (): void {
 });
 
 describe('MobileWalletController addresses', function (): void {
+    beforeEach(function (): void {
+        if (! Schema::hasTable('blockchain_addresses')) {
+            Schema::create('blockchain_addresses', function ($table): void {
+                $table->id();
+                $table->uuid('uuid')->unique();
+                $table->string('user_uuid')->index();
+                $table->string('chain');
+                $table->string('address');
+                $table->text('public_key');
+                $table->string('derivation_path')->nullable();
+                $table->string('label')->nullable();
+                $table->boolean('is_active')->default(true);
+                $table->json('metadata')->nullable();
+                $table->timestamps();
+                $table->unique(['chain', 'address']);
+            });
+        }
+    });
+
+    afterEach(function (): void {
+        Schema::dropIfExists('blockchain_addresses');
+    });
+
     it('lists user addresses per network', function (): void {
         $account = (object) [
             'account_address' => '0xdef456',

@@ -325,6 +325,7 @@ class MobileWalletController extends Controller
     public function addresses(Request $request): JsonResponse
     {
         $user = $request->user();
+        assert($user instanceof \App\Models\User);
         $accounts = $this->smartAccountService->getUserAccounts($user);
 
         $addresses = [];
@@ -356,12 +357,26 @@ class MobileWalletController extends Controller
         }
 
         // Always append Solana address (non-EVM, separate from ERC-4337 smart accounts)
+        $solanaAddress = SolanaAddressHelper::deriveForUser($user->id, (string) config('app.key'));
+
+        // Auto-register so BlockchainAddressObserver fires Helius webhook sync
+        $record = BlockchainAddress::firstOrCreate(
+            ['address' => $solanaAddress, 'chain' => 'solana'],
+            [
+                'user_uuid'       => $user->uuid,
+                'public_key'      => $solanaAddress,
+                'is_active'       => true,
+                'label'           => 'Primary Solana',
+                'derivation_path' => "m/44'/501'/0'/0'",
+            ]
+        );
+
         $addresses[] = [
-            'address'    => SolanaAddressHelper::deriveForUser($user->id, (string) config('app.key')),
+            'address'    => $solanaAddress,
             'network'    => 'solana',
             'type'       => 'keypair',
             'deployed'   => true,
-            'created_at' => null,
+            'created_at' => $record->created_at?->toIso8601String(),
         ];
 
         return response()->json([
