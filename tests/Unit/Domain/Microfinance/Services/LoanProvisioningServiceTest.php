@@ -16,27 +16,27 @@ uses(TestCase::class);
 
 it('LoanProvisioningService has classifyLoan method', function (): void {
     $service = new LoanProvisioningService();
-    expect(method_exists($service, 'classifyLoan'))->toBeTrue();
+    expect((new ReflectionClass($service))->hasMethod('classifyLoan'))->toBeTrue();
 });
 
 it('LoanProvisioningService has reclassifyAll method', function (): void {
     $service = new LoanProvisioningService();
-    expect(method_exists($service, 'reclassifyAll'))->toBeTrue();
+    expect((new ReflectionClass($service))->hasMethod('reclassifyAll'))->toBeTrue();
 });
 
 it('LoanProvisioningService has writeOff method', function (): void {
     $service = new LoanProvisioningService();
-    expect(method_exists($service, 'writeOff'))->toBeTrue();
+    expect((new ReflectionClass($service))->hasMethod('writeOff'))->toBeTrue();
 });
 
 it('LoanProvisioningService has getProvisionsByCategory method', function (): void {
     $service = new LoanProvisioningService();
-    expect(method_exists($service, 'getProvisionsByCategory'))->toBeTrue();
+    expect((new ReflectionClass($service))->hasMethod('getProvisionsByCategory'))->toBeTrue();
 });
 
 it('LoanProvisioningService has getTotalProvisions method', function (): void {
     $service = new LoanProvisioningService();
-    expect(method_exists($service, 'getTotalProvisions'))->toBeTrue();
+    expect((new ReflectionClass($service))->hasMethod('getTotalProvisions'))->toBeTrue();
 });
 
 // ---------------------------------------------------------------------------

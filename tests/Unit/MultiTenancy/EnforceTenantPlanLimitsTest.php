@@ -30,8 +30,13 @@ class EnforceTenantPlanLimitsTest extends TestCase
     {
         parent::setUp();
 
-        $this->metering = Mockery::mock(TenantUsageMeteringService::class);
-        $this->provisioning = Mockery::mock(TenantProvisioningService::class);
+        /** @var TenantUsageMeteringService&MockInterface $metering */
+        $metering = Mockery::mock(TenantUsageMeteringService::class);
+        $this->metering = $metering;
+
+        /** @var TenantProvisioningService&MockInterface $provisioning */
+        $provisioning = Mockery::mock(TenantProvisioningService::class);
+        $this->provisioning = $provisioning;
         $this->middleware = new EnforceTenantPlanLimits($this->metering, $this->provisioning);
     }
 
@@ -39,7 +44,7 @@ class EnforceTenantPlanLimitsTest extends TestCase
     public function it_passes_through_when_no_tenant(): void
     {
         // Ensure no tenant is bound
-        $this->app?->forgetInstance(TenantContract::class);
+        $this->app->forgetInstance(TenantContract::class);
 
         $request = Request::create('/api/test', 'GET');
 
@@ -56,7 +61,7 @@ class EnforceTenantPlanLimitsTest extends TestCase
         $tenant->shouldReceive('getTenantKey')->andReturn('tenant-123');
 
         // Bind tenant to the contract so tenant() helper returns it
-        $this->app?->instance(TenantContract::class, $tenant);
+        $this->app->instance(TenantContract::class, $tenant);
 
         $this->provisioning->shouldReceive('getTenantConfig')
             ->with($tenant)
@@ -91,7 +96,7 @@ class EnforceTenantPlanLimitsTest extends TestCase
         $tenant->shouldReceive('getTenantKey')->andReturn('tenant-456');
 
         // Bind tenant to the contract so tenant() helper returns it
-        $this->app?->instance(TenantContract::class, $tenant);
+        $this->app->instance(TenantContract::class, $tenant);
 
         $this->provisioning->shouldReceive('getTenantConfig')
             ->with($tenant)

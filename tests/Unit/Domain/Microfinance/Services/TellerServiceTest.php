@@ -14,32 +14,32 @@ uses(TestCase::class);
 
 it('TellerService has registerTeller method', function (): void {
     $service = new TellerService();
-    expect(method_exists($service, 'registerTeller'))->toBeTrue();
+    expect((new ReflectionClass($service))->hasMethod('registerTeller'))->toBeTrue();
 });
 
 it('TellerService has recordCashIn method', function (): void {
     $service = new TellerService();
-    expect(method_exists($service, 'recordCashIn'))->toBeTrue();
+    expect((new ReflectionClass($service))->hasMethod('recordCashIn'))->toBeTrue();
 });
 
 it('TellerService has recordCashOut method', function (): void {
     $service = new TellerService();
-    expect(method_exists($service, 'recordCashOut'))->toBeTrue();
+    expect((new ReflectionClass($service))->hasMethod('recordCashOut'))->toBeTrue();
 });
 
 it('TellerService has reconcile method', function (): void {
     $service = new TellerService();
-    expect(method_exists($service, 'reconcile'))->toBeTrue();
+    expect((new ReflectionClass($service))->hasMethod('reconcile'))->toBeTrue();
 });
 
 it('TellerService has getVaultBalance method', function (): void {
     $service = new TellerService();
-    expect(method_exists($service, 'getVaultBalance'))->toBeTrue();
+    expect((new ReflectionClass($service))->hasMethod('getVaultBalance'))->toBeTrue();
 });
 
 it('TellerService has deactivateTeller method', function (): void {
     $service = new TellerService();
-    expect(method_exists($service, 'deactivateTeller'))->toBeTrue();
+    expect((new ReflectionClass($service))->hasMethod('deactivateTeller'))->toBeTrue();
 });
 
 // ---------------------------------------------------------------------------

@@ -16,7 +16,7 @@ it('SepaCreditTransferService can be instantiated', function (): void {
 });
 
 it('SepaCreditTransferService has initiateTransfer method', function (): void {
-    expect(method_exists(SepaCreditTransferService::class, 'initiateTransfer'))->toBeTrue();
+    expect((new ReflectionClass(SepaCreditTransferService::class))->hasMethod('initiateTransfer'))->toBeTrue();
 });
 
 it('SepaCreditTransferService initiateTransfer has correct parameters', function (): void {
@@ -25,7 +25,9 @@ it('SepaCreditTransferService initiateTransfer has correct parameters', function
 
     expect($params)->toHaveCount(7);
     expect($params[0]->getName())->toBe('userId');
-    expect($params[0]->getType()?->getName())->toBe('int');
+    $userIdType = $params[0]->getType();
+    assert($userIdType instanceof ReflectionNamedType);
+    expect($userIdType->getName())->toBe('int');
     expect($params[1]->getName())->toBe('creditorIban');
     expect($params[2]->getName())->toBe('creditorName');
     expect($params[3]->getName())->toBe('amount');
@@ -37,7 +39,7 @@ it('SepaCreditTransferService initiateTransfer has correct parameters', function
 });
 
 it('SepaCreditTransferService has getTransferStatus method', function (): void {
-    expect(method_exists(SepaCreditTransferService::class, 'getTransferStatus'))->toBeTrue();
+    expect((new ReflectionClass(SepaCreditTransferService::class))->hasMethod('getTransferStatus'))->toBeTrue();
 });
 
 it('SepaCreditTransferService getTransferStatus accepts single string parameter', function (): void {
@@ -46,11 +48,13 @@ it('SepaCreditTransferService getTransferStatus accepts single string parameter'
 
     expect($params)->toHaveCount(1);
     expect($params[0]->getName())->toBe('transferId');
-    expect($params[0]->getType()?->getName())->toBe('string');
+    $transferIdType = $params[0]->getType();
+    assert($transferIdType instanceof ReflectionNamedType);
+    expect($transferIdType->getName())->toBe('string');
 });
 
 it('SepaCreditTransferService has cancelTransfer method', function (): void {
-    expect(method_exists(SepaCreditTransferService::class, 'cancelTransfer'))->toBeTrue();
+    expect((new ReflectionClass(SepaCreditTransferService::class))->hasMethod('cancelTransfer'))->toBeTrue();
 });
 
 it('SepaCreditTransferService cancelTransfer accepts single string parameter', function (): void {
@@ -59,7 +63,9 @@ it('SepaCreditTransferService cancelTransfer accepts single string parameter', f
 
     expect($params)->toHaveCount(1);
     expect($params[0]->getName())->toBe('transferId');
-    expect($params[0]->getType()?->getName())->toBe('string');
+    $cancelTransferIdType = $params[0]->getType();
+    assert($cancelTransferIdType instanceof ReflectionNamedType);
+    expect($cancelTransferIdType->getName())->toBe('string');
 });
 
 it('SepaCreditTransferService initiateTransfer returns structured array for standard SCT', function (): void {

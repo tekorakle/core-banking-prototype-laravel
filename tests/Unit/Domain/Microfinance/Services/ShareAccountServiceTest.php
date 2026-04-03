@@ -15,32 +15,32 @@ uses(TestCase::class);
 
 it('ShareAccountService has openAccount method', function (): void {
     $service = new ShareAccountService();
-    expect(method_exists($service, 'openAccount'))->toBeTrue();
+    expect((new ReflectionClass($service))->hasMethod('openAccount'))->toBeTrue();
 });
 
 it('ShareAccountService has purchaseShares method', function (): void {
     $service = new ShareAccountService();
-    expect(method_exists($service, 'purchaseShares'))->toBeTrue();
+    expect((new ReflectionClass($service))->hasMethod('purchaseShares'))->toBeTrue();
 });
 
 it('ShareAccountService has redeemShares method', function (): void {
     $service = new ShareAccountService();
-    expect(method_exists($service, 'redeemShares'))->toBeTrue();
+    expect((new ReflectionClass($service))->hasMethod('redeemShares'))->toBeTrue();
 });
 
 it('ShareAccountService has calculateDividend method', function (): void {
     $service = new ShareAccountService();
-    expect(method_exists($service, 'calculateDividend'))->toBeTrue();
+    expect((new ReflectionClass($service))->hasMethod('calculateDividend'))->toBeTrue();
 });
 
 it('ShareAccountService has distributeDividend method', function (): void {
     $service = new ShareAccountService();
-    expect(method_exists($service, 'distributeDividend'))->toBeTrue();
+    expect((new ReflectionClass($service))->hasMethod('distributeDividend'))->toBeTrue();
 });
 
 it('ShareAccountService has closeAccount method', function (): void {
     $service = new ShareAccountService();
-    expect(method_exists($service, 'closeAccount'))->toBeTrue();
+    expect((new ReflectionClass($service))->hasMethod('closeAccount'))->toBeTrue();
 });
 
 // ---------------------------------------------------------------------------

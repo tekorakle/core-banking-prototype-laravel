@@ -59,7 +59,8 @@ it('returns correct MemberRole labels', function (): void {
 
 it('provides labels for all MemberRole cases', function (): void {
     foreach (MemberRole::cases() as $role) {
-        expect($role->label())->toBeString()->not->toBeEmpty();
+        expect($role->label())->toBeString();
+        expect($role->label())->not->toBeEmpty();
     }
 });
 
@@ -83,7 +84,8 @@ it('returns correct MeetingFrequency labels', function (): void {
 
 it('provides labels for all MeetingFrequency cases', function (): void {
     foreach (MeetingFrequency::cases() as $freq) {
-        expect($freq->label())->toBeString()->not->toBeEmpty();
+        expect($freq->label())->toBeString();
+        expect($freq->label())->not->toBeEmpty();
     }
 });
 
@@ -165,6 +167,7 @@ it('minimum days overdue are ordered ascending', function (): void {
 
 it('provides labels for all ProvisionCategory cases', function (): void {
     foreach (ProvisionCategory::cases() as $category) {
-        expect($category->label())->toBeString()->not->toBeEmpty();
+        expect($category->label())->toBeString();
+        expect($category->label())->not->toBeEmpty();
     }
 });

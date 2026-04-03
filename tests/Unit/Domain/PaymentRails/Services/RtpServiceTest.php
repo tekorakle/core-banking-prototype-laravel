@@ -13,7 +13,7 @@ describe('RtpService structural tests', function (): void {
     });
 
     it('has a sendPayment method', function (): void {
-        expect(method_exists(RtpService::class, 'sendPayment'))->toBeTrue();
+        expect((new ReflectionClass(RtpService::class))->hasMethod('sendPayment'))->toBeTrue();
     });
 
     it('sendPayment has 7 parameters with last one nullable', function (): void {
@@ -29,7 +29,7 @@ describe('RtpService structural tests', function (): void {
     });
 
     it('has a requestPayment method', function (): void {
-        expect(method_exists(RtpService::class, 'requestPayment'))->toBeTrue();
+        expect((new ReflectionClass(RtpService::class))->hasMethod('requestPayment'))->toBeTrue();
     });
 
     it('requestPayment has 6 parameters with last one nullable', function (): void {
@@ -45,7 +45,7 @@ describe('RtpService structural tests', function (): void {
     });
 
     it('has a getPaymentStatus method', function (): void {
-        expect(method_exists(RtpService::class, 'getPaymentStatus'))->toBeTrue();
+        expect((new ReflectionClass(RtpService::class))->hasMethod('getPaymentStatus'))->toBeTrue();
     });
 
     it('getPaymentStatus has 1 parameter', function (): void {

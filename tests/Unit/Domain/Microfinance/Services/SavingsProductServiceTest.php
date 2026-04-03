@@ -13,22 +13,22 @@ uses(TestCase::class);
 
 it('SavingsProductService has checkDormancy method', function (): void {
     $service = new SavingsProductService();
-    expect(method_exists($service, 'checkDormancy'))->toBeTrue();
+    expect((new ReflectionClass($service))->hasMethod('checkDormancy'))->toBeTrue();
 });
 
 it('SavingsProductService has applyDormancyStatus method', function (): void {
     $service = new SavingsProductService();
-    expect(method_exists($service, 'applyDormancyStatus'))->toBeTrue();
+    expect((new ReflectionClass($service))->hasMethod('applyDormancyStatus'))->toBeTrue();
 });
 
 it('SavingsProductService has calculateInterest method', function (): void {
     $service = new SavingsProductService();
-    expect(method_exists($service, 'calculateInterest'))->toBeTrue();
+    expect((new ReflectionClass($service))->hasMethod('calculateInterest'))->toBeTrue();
 });
 
 it('SavingsProductService has compoundInterest method', function (): void {
     $service = new SavingsProductService();
-    expect(method_exists($service, 'compoundInterest'))->toBeTrue();
+    expect((new ReflectionClass($service))->hasMethod('compoundInterest'))->toBeTrue();
 });
 
 // ---------------------------------------------------------------------------

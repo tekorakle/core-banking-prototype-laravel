@@ -11,6 +11,7 @@ use App\Domain\ISO20022\ValueObjects\Pain001;
 
 // ── Helpers ────────────────────────────────────────────────────────────────
 
+/** @return array<string, mixed> */
 function makePain001Data(): array
 {
     return [
@@ -35,6 +36,7 @@ function makePain001Data(): array
     ];
 }
 
+/** @return array<string, mixed> */
 function makePacs008Data(): array
 {
     return [
@@ -69,8 +71,8 @@ it('round-trips Pain001: generate XML then parse back with matching fields', fun
     $xml = $dto->toXml();
 
     $parser = makeParser();
-    /** @var Pain001 $parsed */
     $parsed = $parser->parseXml($xml);
+    assert($parsed instanceof Pain001);
 
     expect($parsed)->toBeInstanceOf(Pain001::class)
         ->and($parsed->messageId)->toBe('MSG-PARSER-001')
@@ -97,8 +99,8 @@ it('round-trips Pacs008: generate XML then parse back with matching fields', fun
     $xml = $dto->toXml();
 
     $parser = makeParser();
-    /** @var Pacs008 $parsed */
     $parsed = $parser->parseXml($xml);
+    assert($parsed instanceof Pacs008);
 
     expect($parsed)->toBeInstanceOf(Pacs008::class)
         ->and($parsed->messageId)->toBe('PACS-PARSER-001')
@@ -139,7 +141,7 @@ it('parseArray constructs correct DTO type from message type and data', function
     $dto = $parser->parseArray('pain.001', $data);
 
     expect($dto)->toBeInstanceOf(Pain001::class);
-    /** @var Pain001 $dto */
+    assert($dto instanceof Pain001);
     expect($dto->messageId)->toBe('MSG-PARSER-001')
         ->and($dto->initiatingPartyName)->toBe('Test Corp');
 });

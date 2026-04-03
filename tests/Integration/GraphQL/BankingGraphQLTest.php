@@ -231,6 +231,7 @@ describe('GraphQL Banking API', function () {
 
         // Verify DB was updated
         $record = DB::table('bank_transfers')->where('id', $transferId)->first();
+        assert($record !== null);
         expect($record->status)->toBe('cancelled');
     });
 

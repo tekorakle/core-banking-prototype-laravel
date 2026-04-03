@@ -31,6 +31,13 @@ beforeEach(function (): void {
 // ---------------------------------------------------------------------------
 
 describe('Finding #4 — temp file cleanup', function (): void {
+    afterEach(function (): void {
+        $dir = sys_get_temp_dir() . '/zk_security_test_circuits';
+        @unlink($dir . '/age_check.zkey');
+        @unlink($dir . '/age_check.wasm');
+        @rmdir($dir);
+    });
+
     it('cleans up temp files even when the snarkjs process fails', function (): void {
         $dir = sys_get_temp_dir() . '/zk_security_test_circuits';
         @mkdir($dir, 0755, true);
@@ -58,11 +65,6 @@ describe('Finding #4 — temp file cleanup', function (): void {
         $newFiles = array_diff($after, $before);
 
         expect($newFiles)->toBeEmpty('Private input temp files must be deleted after failure');
-    })->afterEach(function (): void {
-        $dir = sys_get_temp_dir() . '/zk_security_test_circuits';
-        @unlink($dir . '/age_check.zkey');
-        @unlink($dir . '/age_check.wasm');
-        @rmdir($dir);
     });
 
     it('cleans up proof and public output temp files after failure', function (): void {
@@ -92,11 +94,6 @@ describe('Finding #4 — temp file cleanup', function (): void {
 
         expect(array_diff($afterProof, $beforeProof))->toBeEmpty('Proof temp files must be deleted after failure');
         expect(array_diff($afterPublic, $beforePublic))->toBeEmpty('Public temp files must be deleted after failure');
-    })->afterEach(function (): void {
-        $dir = sys_get_temp_dir() . '/zk_security_test_circuits';
-        @unlink($dir . '/age_check.zkey');
-        @unlink($dir . '/age_check.wasm');
-        @rmdir($dir);
     });
 });
 
@@ -105,6 +102,13 @@ describe('Finding #4 — temp file cleanup', function (): void {
 // ---------------------------------------------------------------------------
 
 describe('Finding #6 — concurrency semaphore', function (): void {
+    afterEach(function (): void {
+        $dir = sys_get_temp_dir() . '/zk_security_test_circuits';
+        @unlink($dir . '/age_check.zkey');
+        @unlink($dir . '/age_check.wasm');
+        @rmdir($dir);
+    });
+
     it('rejects proof requests when all slots are occupied', function (): void {
         $dir = sys_get_temp_dir() . '/zk_security_test_circuits';
         @mkdir($dir, 0755, true);
@@ -127,11 +131,6 @@ describe('Finding #6 — concurrency semaphore', function (): void {
 
         $slot0->release();
         $slot1->release();
-    })->afterEach(function (): void {
-        $dir = sys_get_temp_dir() . '/zk_security_test_circuits';
-        @unlink($dir . '/age_check.zkey');
-        @unlink($dir . '/age_check.wasm');
-        @rmdir($dir);
     });
 
     it('acquires a free slot when one is available', function (): void {
@@ -162,11 +161,6 @@ describe('Finding #6 — concurrency semaphore', function (): void {
         }
 
         $slot0->release();
-    })->afterEach(function (): void {
-        $dir = sys_get_temp_dir() . '/zk_security_test_circuits';
-        @unlink($dir . '/age_check.zkey');
-        @unlink($dir . '/age_check.wasm');
-        @rmdir($dir);
     });
 
     it('releases the semaphore slot after a failed proof attempt', function (): void {
@@ -198,11 +192,6 @@ describe('Finding #6 — concurrency semaphore', function (): void {
         }
 
         expect($threwCapacity)->toBeFalse('Slot must be released after a failed proof attempt');
-    })->afterEach(function (): void {
-        $dir = sys_get_temp_dir() . '/zk_security_test_circuits';
-        @unlink($dir . '/age_check.zkey');
-        @unlink($dir . '/age_check.wasm');
-        @rmdir($dir);
     });
 });
 
@@ -211,6 +200,17 @@ describe('Finding #6 — concurrency semaphore', function (): void {
 // ---------------------------------------------------------------------------
 
 describe('Finding #13 — circuit integrity verification', function (): void {
+    afterEach(function (): void {
+        $circuitDir = storage_path('app/circuits');
+        @unlink($circuitDir . '/circuit_manifest.json');
+        @unlink($circuitDir . '/age_check.zkey');
+        @unlink($circuitDir . '/age_check.wasm');
+        $dir = sys_get_temp_dir() . '/zk_security_test_circuits';
+        @unlink($dir . '/age_check.zkey');
+        @unlink($dir . '/age_check.wasm');
+        @rmdir($dir);
+    });
+
     it('allows proof generation when no manifest exists', function (): void {
         $dir = sys_get_temp_dir() . '/zk_security_test_circuits';
         @mkdir($dir, 0755, true);
@@ -247,11 +247,6 @@ describe('Finding #13 — circuit integrity verification', function (): void {
         if ($backupPath !== null) {
             rename($backupPath, $manifestPath);
         }
-    })->afterEach(function (): void {
-        $dir = sys_get_temp_dir() . '/zk_security_test_circuits';
-        @unlink($dir . '/age_check.zkey');
-        @unlink($dir . '/age_check.wasm');
-        @rmdir($dir);
     });
 
     it('blocks proof generation when circuit hash does not match manifest', function (): void {
@@ -285,15 +280,6 @@ describe('Finding #13 — circuit integrity verification', function (): void {
             ['date_of_birth' => '1990-01-01'],
             ['minimum_age'   => 18],
         ))->toThrow(RuntimeException::class, 'integrity');
-    })->afterEach(function (): void {
-        $circuitDir = storage_path('app/circuits');
-        @unlink($circuitDir . '/circuit_manifest.json');
-        @unlink($circuitDir . '/age_check.zkey');
-        @unlink($circuitDir . '/age_check.wasm');
-        $dir = sys_get_temp_dir() . '/zk_security_test_circuits';
-        @unlink($dir . '/age_check.zkey');
-        @unlink($dir . '/age_check.wasm');
-        @rmdir($dir);
     });
 
     it('passes integrity check when all circuit hashes match the manifest', function (): void {
@@ -329,10 +315,5 @@ describe('Finding #13 — circuit integrity verification', function (): void {
         } catch (RuntimeException $e) {
             expect($e->getMessage())->not->toContain('integrity');
         }
-    })->afterEach(function (): void {
-        $circuitDir = storage_path('app/circuits');
-        @unlink($circuitDir . '/circuit_manifest.json');
-        @unlink($circuitDir . '/age_check.zkey');
-        @unlink($circuitDir . '/age_check.wasm');
     });
 });

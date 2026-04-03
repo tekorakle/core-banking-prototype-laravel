@@ -93,8 +93,12 @@ class TenantAuditServiceTest extends ServiceTestCase
 
         $this->assertCount(3, $trail);
         // Most recent first
-        $this->assertEquals('suspended', $trail->first()->action);
-        $this->assertEquals('created', $trail->last()->action);
+        $first = $trail->first();
+        $last = $trail->last();
+        assert($first instanceof TenantAuditLog);
+        assert($last instanceof TenantAuditLog);
+        $this->assertEquals('suspended', $first->action);
+        $this->assertEquals('created', $last->action);
     }
 
     #[Test]
