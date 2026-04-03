@@ -105,6 +105,30 @@ describe('MobileWalletController tokens', function (): void {
 });
 
 describe('MobileWalletController balances', function (): void {
+    beforeEach(function (): void {
+        config(['cache.default' => 'array']);
+        if (! Schema::hasTable('blockchain_addresses')) {
+            Schema::create('blockchain_addresses', function ($table): void {
+                $table->id();
+                $table->uuid('uuid')->unique();
+                $table->string('user_uuid')->index();
+                $table->string('chain');
+                $table->string('address');
+                $table->text('public_key');
+                $table->string('derivation_path')->nullable();
+                $table->string('label')->nullable();
+                $table->boolean('is_active')->default(true);
+                $table->json('metadata')->nullable();
+                $table->timestamps();
+                $table->unique(['chain', 'address']);
+            });
+        }
+    });
+
+    afterEach(function (): void {
+        Schema::dropIfExists('blockchain_addresses');
+    });
+
     it('queries balances across smart accounts', function (): void {
         $account = (object) [
             'account_address' => '0xabc123',

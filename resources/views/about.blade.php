@@ -1,11 +1,11 @@
 @extends('layouts.public')
 
-@section('title', 'About ' . config('brand.name', 'Zelta') . ' - Open Source Core Banking')
+@section('title', 'About ' . config('brand.name', 'Zelta') . ' — Open Source Core Banking Infrastructure')
 
 @section('seo')
     @include('partials.seo', [
-        'title' => 'About ' . config('brand.name', 'Zelta') . ' - Open Source Core Banking Infrastructure',
-        'description' => 'Learn about ' . config('brand.name', 'Zelta') . ' — open-source core banking with 56 modules for payments, lending, and compliance. MIT licensed.',
+        'title' => 'About ' . config('brand.name', 'Zelta') . ' — Open Source Core Banking Infrastructure',
+        'description' => 'Learn about ' . config('brand.name', 'Zelta') . ', the open-source core banking platform with 56 domain modules for payments, lending, compliance, and DeFi. MIT licensed, built with Laravel and event sourcing.',
         'keywords' => config('brand.name', 'Zelta') . ' about, open source banking, core banking platform, GCU, ISO 20022, PSD2, open banking, Interledger, microfinance, event sourcing, CQRS, Laravel banking, DDD, fintech infrastructure',
     ])
 
@@ -145,7 +145,7 @@
                     ['title' => 'Event-Sourced Ledger', 'desc' => "Every transaction is stored as an immutable event. Complete audit trails, point-in-time reconstruction, and replay capability\x{2014}built with Spatie Event Sourcing."],
                     ['title' => 'AI Agent Protocol', 'desc' => "Implementation of Google's A2A protocol for AI agent commerce. Agents can register, negotiate, and execute transactions with escrow services and reputation tracking."],
                     ['title' => 'Banking API Patterns', 'desc' => 'Open Banking-compliant API adapters including Ondato KYC, Chainalysis sanctions screening, and Marqeta card issuing for real-world integration patterns.'],
-                    ['title' => 'Cross-Chain & DeFi', 'desc' => 'Bridge protocols (Wormhole, LayerZero, Axelar), DEX aggregation via Uniswap/Aave/Curve/Lido, cross-chain swaps, and multi-chain portfolio management.'],
+                    ['title' => 'Cross-Chain & DeFi', 'desc' => 'Bridge protocols (Wormhole, LayerZero, Axelar), DEX aggregation via Uniswap/Aave/Curve/Lido, cross-chain swaps across EVM and Solana, and multi-chain portfolio management.'],
                     ['title' => 'Privacy & Identity', 'desc' => 'ZK-KYC proofs, Merkle tree commitments, soulbound tokens, W3C verifiable credentials, Shamir secret sharing, and delegated proof verification.'],
                     ['title' => 'GraphQL API', 'desc' => 'Lighthouse-powered GraphQL covering 45 domains with real-time subscriptions, N+1 safe DataLoaders, and cursor-based pagination alongside REST/OpenAPI.'],
                     ['title' => 'Plugin Marketplace', 'desc' => 'Extensible plugin system with sandboxed execution, static security scanning, hook-based integration points, and a manager UI for discovering and installing plugins.'],

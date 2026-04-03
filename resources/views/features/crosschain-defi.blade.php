@@ -165,7 +165,7 @@
                             <svg class="w-4 h-4 text-green-500 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
                             </svg>
-                            EVM and Cosmos support
+                            EVM, Solana, and Cosmos support
                         </li>
                     </ul>
                 </div>
@@ -356,7 +356,7 @@ console.log('ETA:', quotes[0].estimated_time);</code></pre>
                             <svg class="w-5 h-5 text-green-500 mr-2 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
                             </svg>
-                            Aggregate balances from Ethereum, Polygon, Arbitrum, BSC, and more
+                            Aggregate balances from Ethereum, Polygon, Arbitrum, Solana, BSC, and more
                         </li>
                         <li class="flex items-start">
                             <svg class="w-5 h-5 text-green-500 mr-2 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">

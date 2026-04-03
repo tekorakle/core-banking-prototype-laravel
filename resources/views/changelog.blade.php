@@ -44,7 +44,7 @@
             @php
                 $releases = [
                     [
-                        'version' => 'v7.8.4',
+                        'version' => 'v7.9.0',
                         'date' => 'April 1, 2026',
                         'label' => 'Compliance & Polish',
                         'label_color' => 'emerald',
@@ -85,7 +85,7 @@
                         ],
                     ],
                     [
-                        'version' => 'v7.8.0',
+                        'version' => 'v7.9.0',
                         'date' => 'March 30, 2026',
                         'label' => 'Standards & Compliance',
                         'label_color' => 'indigo',

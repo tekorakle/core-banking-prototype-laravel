@@ -675,7 +675,7 @@
         <div class="mx-auto max-w-6xl">
             <div class="grid grid-cols-2 md:grid-cols-4 gap-6 md:gap-8">
                 @foreach([
-                    ['value' => '3', 'label' => 'Networks', 'sub' => 'Polygon · Base · Arbitrum'],
+                    ['value' => '5', 'label' => 'Networks', 'sub' => 'Polygon · Base · Arbitrum · Ethereum · Solana'],
                     ['value' => 'ZK', 'label' => 'Privacy', 'sub' => 'Zero-Knowledge Proofs'],
                     ['value' => '$0', 'label' => 'Gas Fees', 'sub' => 'ERC-4337 Abstraction'],
                     ['value' => '3', 'label' => 'Pay Protocols', 'sub' => 'x402 · MPP · AP2'],

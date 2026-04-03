@@ -203,6 +203,7 @@ class HeliusWebhookController extends Controller
 
         // Invalidate and pre-warm balance cache so next mobile request hits warm cache
         Cache::forget("solana_balance:{$address}");
+        Cache::forget("solana_balances:{$address}");
         Cache::forget("solana_known_addr:{$address}");
 
         try {

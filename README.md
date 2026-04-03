@@ -32,7 +32,7 @@ FinAegis provides the foundation for building digital banking applications. The 
 | Cross-chain & DeFi | Bridge protocols, DEX aggregation, yield optimization (v3.0.0) |
 | Modular plugin architecture | 56 domains with manifests, enable/disable, dependency resolution (v3.2.0) |
 | Compliance certification | SOC 2 Type II, PCI DSS readiness, multi-region deployment (v3.5.0) |
-| GraphQL API | Schema-first Lighthouse PHP, 43 domains, subscriptions (v4.0.0+) |
+| GraphQL API | Schema-first Lighthouse PHP, 45 domains, subscriptions (v4.0.0+) |
 | Event Store v2 | Domain routing (56 domains), upcasting, migration tooling (v4.0.0) |
 | Plugin Marketplace | Manager, loader, sandbox, security scanner (v4.0.0) |
 | Event streaming | Redis Streams publisher/consumer, live dashboard (v5.0.0) |
@@ -88,7 +88,7 @@ curl -X POST http://localhost:8000/graphql \
   -d '{"query": "{ accounts { id name balance currency } }"}'
 ```
 
-- **43 domain schemas** — Account, AgentProtocol, AI, Asset, Banking, Basket, Batch, CardIssuance, Cgo, Commerce, Compliance, CrossChain, Custodian, DeFi, Exchange, FinancialInstitution, Fraud, Governance, Interledger, ISO20022, KeyManagement, Ledger, Lending, MachinePay, Microfinance, Mobile, MobilePayment, OpenBanking, Payment, PaymentRails, Privacy, Product, RegTech, Regulatory, Relayer, SMS, Stablecoin, Treasury, TrustCert, User, Wallet, X402
+- **45 domain schemas** — Account, AgentProtocol, AI, Asset, Banking, Basket, Batch, CardIssuance, Cgo, Commerce, Compliance, CrossChain, Custodian, DeFi, Exchange, FinancialInstitution, Fraud, Governance, Interledger, ISO20022, KeyManagement, Ledger, Lending, MachinePay, Microfinance, Mobile, MobilePayment, OpenBanking, Payment, PaymentRails, Plugin, Privacy, Product, RegTech, Regulatory, Relayer, Rewards, SMS, Stablecoin, Treasury, TrustCert, User, Wallet, X402
 - **Subscriptions** — Real-time updates via WebSocket (account updates, wallet changes, compliance alerts, order matching)
 - **DataLoaders** — N+1 query prevention with batched loading
 - **Security** — `@guard(with: ["sanctum"])`, query cost analysis, introspection control
@@ -305,7 +305,7 @@ See [Domain Management Guide](docs/06-DEVELOPMENT/DOMAIN_MANAGEMENT.md) for deta
 - **Saga Pattern** - Distributed transactions with automatic rollback
 - **DDD** - 56 bounded contexts with clear boundaries
 - **Multi-Tenancy** - Team-based data isolation with stancl/tenancy v3.9
-- **GraphQL** - Schema-first Lighthouse PHP across 43 domains with subscriptions (v4.0.0+)
+- **GraphQL** - Schema-first Lighthouse PHP across 45 domains with subscriptions (v4.0.0+)
 - **Event Streaming** - Redis Streams publisher/consumer with live dashboard (v5.0.0)
 
 See [Architecture Decision Records](docs/ADR/) for detailed design rationale.

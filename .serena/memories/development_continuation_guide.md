@@ -16,7 +16,7 @@ gh pr list --state open
 - CI Pipeline historically never passed — PR #735 fixes PHPCS, PHPStan, 4 test failures
 
 ## Architecture
-- 43 domains in `app/Domain/`, 35 GraphQL schemas
+- 56 domains in `app/Domain/`, 45 GraphQL schemas
 - Stack: PHP 8.4 / Laravel 12 / MySQL 8 / Redis / Pest / PHPStan Level 8
 - Patterns: Event Sourcing (Spatie), CQRS, DDD, GraphQL (Lighthouse), Redis Streams
 

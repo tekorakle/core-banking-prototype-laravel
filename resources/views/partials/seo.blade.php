@@ -16,7 +16,7 @@
 <meta property="og:type" content="{{ $ogType ?? 'website' }}">
 <meta property="og:url" content="{{ $canonical ?? url()->current() }}">
 <meta property="og:title" content="{{ $title ?? $brandName . ' — Agentic Payments' }}">
-<meta property="og:description" content="{{ $description ?? 'Get your personal card to spend anywhere. Get your agent a card to spend anywhere. Stablecoin-powered virtual cards with non-custodial security.' }}">
+<meta property="og:description" content="{{ $description ?? $brandName . ' — Agentic payments with stablecoin-powered virtual cards. Get your personal card or your AI agent a card to spend anywhere.' }}">
 <meta property="og:image" content="{{ $ogImage ?? asset('images/og-default.png') }}">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
@@ -27,7 +27,7 @@
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:url" content="{{ $canonical ?? url()->current() }}">
 <meta name="twitter:title" content="{{ $title ?? $brandName . ' — Agentic Payments' }}">
-<meta name="twitter:description" content="{{ $description ?? 'Get your personal card to spend anywhere. Get your agent a card to spend anywhere. Stablecoin-powered virtual cards with non-custodial security.' }}">
+<meta name="twitter:description" content="{{ $description ?? $brandName . ' — Agentic payments with stablecoin-powered virtual cards. Get your personal card or your AI agent a card to spend anywhere.' }}">
 <meta name="twitter:image" content="{{ $twitterImage ?? asset('images/og-twitter.png') }}">
 <meta name="twitter:domain" content="{{ parse_url(config('app.url'), PHP_URL_HOST) }}">
 @if(config('brand.twitter_handle'))

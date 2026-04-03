@@ -1,12 +1,12 @@
 @extends('layouts.public')
 
-@section('title', 'Developer Documentation - ' . config('brand.name', 'Zelta'))
+@section('title', 'Developer Docs — REST, GraphQL & CLI Reference | ' . config('brand.name', 'Zelta'))
 
 @section('seo')
     @include('partials.seo', [
-        'title' => 'Developer Documentation - ' . config('brand.name', 'Zelta'),
-        'description' => config('brand.name', 'Zelta') . ' Developer Documentation - Build on ' . config('brand.name', 'Zelta') . ' platform. Open source, API-first, and designed for developers.',
-        'keywords' => config('brand.name', 'Zelta') . ', developer, API, documentation, SDK, integration',
+        'title' => 'Developer Docs — REST, GraphQL & CLI Reference | ' . config('brand.name', 'Zelta'),
+        'description' => config('brand.name', 'Zelta') . ' developer docs: 1,400+ REST and GraphQL API routes, SDKs, CLI tools, and WebSocket integrations across 56 banking modules. Get started in minutes.',
+        'keywords' => config('brand.name', 'Zelta') . ', developer, API, documentation, SDK, CLI, REST API, GraphQL, WebSocket, Laravel, banking API, open source, integration',
     ])
 @endsection
 
@@ -137,7 +137,7 @@
                 <div class="text-center">
                     <div class="inline-flex items-center px-4 py-2 bg-white/10 backdrop-blur-sm rounded-full text-sm mb-6">
                         <span class="w-2 h-2 bg-green-400 rounded-full mr-2 animate-pulse"></span>
-                        <span>v7.8.4 Documentation — 56 Domains, 1,400+ Routes, GraphQL + REST + x402</span>
+                        <span>v7.9.0 Documentation — 56 Domains, 1,400+ Routes, GraphQL + REST + x402</span>
                     </div>
                     <h1 class="text-5xl md:text-7xl font-bold mb-6 bg-clip-text text-transparent bg-gradient-to-r from-white to-blue-200">
                         Build with 1,400+ API Routes
@@ -177,7 +177,7 @@
                     <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
                     </svg>
-                    <span class="font-medium">v7.8.4 Released:</span>
+                    <span class="font-medium">v7.9.0 Released:</span>
                     <span class="ml-2">Standards &amp; Compliance — 56 DDD domains, 1,400+ API routes, GraphQL (45 domains), ISO 20022, ISO 8583, US Payment Rails, Interledger, Ledger, Microfinance, x402 Protocol. Multi-layer address screening (OFAC + GoPlus), professional copywriting pass, Blade fixes.</span>
                 </div>
             </div>
@@ -284,7 +284,7 @@
                                 <div id="code-step3">
                                     <div><span class="text-gray-500"># Verify the API is running (no auth needed)</span></div>
                                     <div><span class="text-gray-500">$</span> <span class="text-green-400">curl</span> <span class="text-yellow-400">http://localhost:8000/api/health</span></div>
-                                    <div><span class="text-gray-500"># {"status":"ok","version":"7.8.0"}</span></div>
+                                    <div><span class="text-gray-500"># {"status":"ok","version":"7.9.0"}</span></div>
                                     <div class="mt-2"><span class="text-gray-500"># Make an authenticated request</span></div>
                                     <div><span class="text-gray-500">$</span> <span class="text-green-400">curl</span> <span class="text-blue-400">-H</span> <span class="text-yellow-400">"Authorization: Bearer YOUR_API_KEY"</span> <span class="text-gray-400">\</span></div>
                                     <div>  <span class="text-yellow-400">http://localhost:8000/api/v2/accounts</span></div>

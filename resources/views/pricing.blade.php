@@ -4,7 +4,7 @@
 
 @section('seo')
     @include('partials.seo', [
-        'title' => 'Pricing - Flexible Plans for Every Scale',
+        'title' => 'Pricing - Flexible Plans for Every Scale | ' . config('brand.name', 'Zelta'),
         'description' => config('brand.name', 'Zelta') . ' Pricing - Start with our free open-source community edition. Scale with enterprise support, custom features, and dedicated infrastructure when ready.',
         'keywords' => config('brand.name', 'Zelta') . ' pricing, open source banking, enterprise support, core banking pricing, fintech platform cost, free banking software',
     ])

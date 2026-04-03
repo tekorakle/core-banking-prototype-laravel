@@ -28,7 +28,7 @@
             <div class="text-center">
                 <h1 class="font-display text-5xl lg:text-6xl font-extrabold text-white tracking-tight mb-6">Mobile Payments</h1>
                 <p class="text-lg text-slate-400 max-w-3xl mx-auto">
-                    A complete mobile payment infrastructure built for the next generation of finance. From Payment Intents to gasless ERC-4337 transactions, everything your users need in the palm of their hand.
+                    A complete mobile payment infrastructure built for the next generation of finance. From Payment Intents to gasless ERC-4337 transactions and native Solana wallet support, everything your users need in the palm of their hand.
                 </p>
             </div>
         </div>
@@ -204,7 +204,7 @@
                             </svg>
                             <div>
                                 <h4 class="font-semibold mb-1">Multi-Chain Support</h4>
-                                <p class="text-slate-600">QR addresses supporting multiple blockchain networks and tokens</p>
+                                <p class="text-slate-600">QR addresses supporting EVM chains and Solana with multi-token support</p>
                             </div>
                         </li>
                     </ul>
@@ -262,7 +262,7 @@
                 </div>
 
                 <div class="card-feature !p-8">
-                    <h3 class="text-2xl font-bold mb-6">ERC-4337 and Gas Abstraction</h3>
+                    <h3 class="text-2xl font-bold mb-6">ERC-4337, Gas Abstraction & Solana</h3>
                     <ul class="space-y-3">
                         <li class="flex items-start">
                             <svg class="w-6 h-6 text-green-500 mr-3 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -292,13 +292,25 @@
                             <svg class="w-6 h-6 text-green-500 mr-3 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
                             </svg>
-                            <span>Wallet balance aggregation across chains</span>
+                            <span>Wallet balance aggregation across EVM chains and Solana</span>
                         </li>
                         <li class="flex items-start">
                             <svg class="w-6 h-6 text-green-500 mr-3 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
                             </svg>
-                            <span>Activity feed with real-time push notifications</span>
+                            <span>Activity feed with real-time push notifications and Solana transaction history</span>
+                        </li>
+                        <li class="flex items-start">
+                            <svg class="w-6 h-6 text-green-500 mr-3 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                            </svg>
+                            <span>Real ed25519 Solana address generation</span>
+                        </li>
+                        <li class="flex items-start">
+                            <svg class="w-6 h-6 text-green-500 mr-3 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                            </svg>
+                            <span>Helius webhook monitoring for real-time Solana balance updates</span>
                         </li>
                     </ul>
                 </div>

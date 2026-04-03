@@ -4,8 +4,8 @@
 
 @section('seo')
     @include('partials.seo', [
-        'title' => 'Features - Modern Banking Platform',
-        'description' => config('brand.name', 'Zelta') . ' features - 56 domain modules: GCU, ISO 20022, PSD2 Open Banking, multi-rail payments (ACH, SEPA, FedNow), Interledger, Double-Entry Ledger, Microfinance, x402, DeFi, AI analytics, and more.',
+        'title' => 'Features - Modern Banking Platform | ' . config('brand.name', 'Zelta'),
+        'description' => 'Explore ' . config('brand.name', 'Zelta') . '\'s 56 banking modules: GCU governance, ISO 20022, PSD2 Open Banking, multi-rail payments, DeFi, ledger, microfinance, and developer tools.',
         'keywords' => config('brand.name', 'Zelta') . ' features, GCU, ISO 20022, PSD2, open banking, payment rails, ACH, SEPA, Interledger, ledger, microfinance, cross-chain, DeFi, privacy, x402, RegTech, BaaS',
     ])
 
@@ -267,7 +267,7 @@
                     </div>
                     <h3 class="text-xl font-semibold mb-3">Cross-Chain & DeFi</h3>
                     <p class="text-slate-500 mb-4">
-                        Bridge assets across blockchains and access DeFi protocols. Production-ready adapters with ABI encoding and RPC integration for Wormhole, Circle CCTP, Uniswap V3, and Aave V3.
+                        Bridge assets across EVM chains and Solana. Production-ready adapters with ABI encoding and RPC integration for Wormhole, Circle CCTP, Uniswap V3, and Aave V3.
                     </p>
                     <a href="{{ route('features.show', 'crosschain-defi') }}" class="text-cyan-600 font-medium hover:text-cyan-700">
                         Explore DeFi →
@@ -315,7 +315,7 @@
                     </div>
                     <h3 class="text-xl font-semibold mb-3">Mobile Payments</h3>
                     <p class="text-slate-500 mb-4">
-                        Payment intents, passkey authentication, P2P transfers, activity feed, and ERC-4337 smart account abstraction.
+                        Payment intents, passkey authentication, P2P transfers, activity feed, ERC-4337 smart account abstraction, and Solana wallet integration with real-time balance monitoring.
                     </p>
                     <a href="{{ route('features.show', 'mobile-payments') }}" class="text-pink-600 font-medium hover:text-pink-700">
                         View mobile →
@@ -468,7 +468,7 @@
                         <span class="inline-flex items-center px-2 py-0.5 bg-green-100 text-green-700 text-xs rounded-full font-medium">Available</span>
                     </div>
                     <p class="text-slate-500 mb-4">
-                        HTTP-native micropayments with USDC on Base. Instant settlement, AI agent autonomous payments, spending limits, and multi-network support.
+                        HTTP-native micropayments with USDC on Base, Ethereum, and Solana. Instant settlement, AI agent autonomous payments, spending limits, and multi-network support.
                     </p>
                     <a href="{{ route('features.show', 'x402-protocol') }}" class="text-emerald-600 font-medium hover:text-emerald-700">
                         Learn more &rarr;
