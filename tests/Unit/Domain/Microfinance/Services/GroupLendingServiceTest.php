@@ -16,37 +16,37 @@ uses(TestCase::class);
 
 it('GroupLendingService has createGroup method', function (): void {
     $service = new GroupLendingService();
-    expect((new ReflectionClass($service))->hasMethod( 'createGroup'))->toBeTrue();
+    expect((new ReflectionClass($service))->hasMethod('createGroup'))->toBeTrue();
 });
 
 it('GroupLendingService has activateGroup method', function (): void {
     $service = new GroupLendingService();
-    expect((new ReflectionClass($service))->hasMethod( 'activateGroup'))->toBeTrue();
+    expect((new ReflectionClass($service))->hasMethod('activateGroup'))->toBeTrue();
 });
 
 it('GroupLendingService has closeGroup method', function (): void {
     $service = new GroupLendingService();
-    expect((new ReflectionClass($service))->hasMethod( 'closeGroup'))->toBeTrue();
+    expect((new ReflectionClass($service))->hasMethod('closeGroup'))->toBeTrue();
 });
 
 it('GroupLendingService has addMember method', function (): void {
     $service = new GroupLendingService();
-    expect((new ReflectionClass($service))->hasMethod( 'addMember'))->toBeTrue();
+    expect((new ReflectionClass($service))->hasMethod('addMember'))->toBeTrue();
 });
 
 it('GroupLendingService has removeMember method', function (): void {
     $service = new GroupLendingService();
-    expect((new ReflectionClass($service))->hasMethod( 'removeMember'))->toBeTrue();
+    expect((new ReflectionClass($service))->hasMethod('removeMember'))->toBeTrue();
 });
 
 it('GroupLendingService has getGroupMembers method', function (): void {
     $service = new GroupLendingService();
-    expect((new ReflectionClass($service))->hasMethod( 'getGroupMembers'))->toBeTrue();
+    expect((new ReflectionClass($service))->hasMethod('getGroupMembers'))->toBeTrue();
 });
 
 it('GroupLendingService has recordMeeting method', function (): void {
     $service = new GroupLendingService();
-    expect((new ReflectionClass($service))->hasMethod( 'recordMeeting'))->toBeTrue();
+    expect((new ReflectionClass($service))->hasMethod('recordMeeting'))->toBeTrue();
 });
 
 // ---------------------------------------------------------------------------

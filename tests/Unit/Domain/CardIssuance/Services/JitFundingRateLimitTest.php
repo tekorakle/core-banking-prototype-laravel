@@ -50,7 +50,7 @@ it('uses correct rate-limit key format per card token', function (): void {
 
     RateLimiter::attempt($expectedKey, 5, fn () => true, 60);
 
-    expect(RateLimiter::attempts($expectedKey))->toBe(1);
+    expect((int) RateLimiter::attempts($expectedKey))->toBe(1);
 });
 
 it('rate-limit keys are isolated between different card tokens', function (): void {
