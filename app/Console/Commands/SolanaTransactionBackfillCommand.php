@@ -5,10 +5,7 @@ declare(strict_types=1);
 namespace App\Console\Commands;
 
 use App\Domain\Account\Models\BlockchainAddress;
-use App\Domain\Account\Models\BlockchainTransaction;
-use App\Domain\MobilePayment\Enums\ActivityItemType;
-use App\Domain\MobilePayment\Models\ActivityFeedItem;
-use App\Http\Controllers\Api\Webhook\HeliusWebhookController;
+use App\Domain\Wallet\Services\HeliusTransactionProcessor;
 use App\Models\User;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Http;
@@ -63,6 +60,8 @@ class SolanaTransactionBackfillCommand extends Command
         $totalCreated = 0;
         $totalSkipped = 0;
 
+        $processor = app(HeliusTransactionProcessor::class);
+
         foreach ($addresses as $blockchainAddress) {
             $user = User::where('uuid', $blockchainAddress->user_uuid)->first();
 
@@ -90,52 +89,16 @@ class SolanaTransactionBackfillCommand extends Command
             }
 
             foreach ($transactions as $tx) {
-                $signature = $tx['signature'] ?? '';
-
-                if ($signature === '') {
-                    continue;
-                }
-
-                $isIncoming = $this->isIncoming($blockchainAddress->address, $tx);
-                $amount = $this->resolveAmount($tx);
-                $token = $this->resolveToken($tx);
-                $fromAddr = $this->resolveFromAddress($tx);
-                $toAddr = $this->resolveToAddress($tx);
-                $timestamp = isset($tx['timestamp']) ? date('Y-m-d H:i:s', (int) $tx['timestamp']) : now()->toDateTimeString();
-
-                $btx = BlockchainTransaction::firstOrCreate(
-                    ['tx_hash' => $signature, 'chain' => 'solana'],
-                    [
-                        'address_uuid' => $blockchainAddress->uuid,
-                        'type'         => $isIncoming ? 'receive' : 'send',
-                        'amount'       => $amount,
-                        'fee'          => bcadd(is_numeric($feeRaw = (string) ($tx['fee'] ?? 0)) ? $feeRaw : '0', '0', 18),
-                        'from_address' => $fromAddr ?? '',
-                        'to_address'   => $toAddr ?? '',
-                        'status'       => 'confirmed',
-                        'metadata'     => $tx,
-                    ]
+                $timestamp = isset($tx['timestamp']) ? date('Y-m-d H:i:s', (int) $tx['timestamp']) : null;
+                $wasCreated = $processor->processTransaction(
+                    $blockchainAddress->address,
+                    $blockchainAddress,
+                    $user->id,
+                    $tx,
+                    $timestamp,
                 );
 
-                $refId = HeliusWebhookController::signatureToUuid($signature);
-                $feedItem = ActivityFeedItem::firstOrCreate(
-                    ['reference_type' => 'solana_tx', 'reference_id' => $refId],
-                    [
-                        'user_id'       => $user->id,
-                        'activity_type' => $isIncoming ? ActivityItemType::TRANSFER_IN : ActivityItemType::TRANSFER_OUT,
-                        'amount'        => $isIncoming ? $amount : '-' . $amount,
-                        'asset'         => $token,
-                        'network'       => 'solana',
-                        'status'        => 'confirmed',
-                        'protected'     => false,
-                        'from_address'  => $fromAddr,
-                        'to_address'    => $toAddr,
-                        'occurred_at'   => $timestamp,
-                        'metadata'      => ['signature' => $signature],
-                    ]
-                );
-
-                if ($btx->wasRecentlyCreated) {
+                if ($wasCreated) {
                     $totalCreated++;
                 } else {
                     $totalSkipped++;
@@ -162,10 +125,9 @@ class SolanaTransactionBackfillCommand extends Command
         $url = "https://api.helius.xyz/v0/addresses/{$address}/transactions";
 
         try {
-            $response = Http::timeout(30)->get($url, [
-                'api-key' => $apiKey,
-                'limit'   => min($limit, 100),
-            ]);
+            $response = Http::timeout(30)
+                ->withHeaders(['Authorization' => "Bearer {$apiKey}"])
+                ->get($url, ['limit' => min($limit, 100)]);
 
             if (! $response->successful()) {
                 Log::warning('Helius: Failed to fetch transaction history', [
@@ -185,104 +147,5 @@ class SolanaTransactionBackfillCommand extends Command
 
             return null;
         }
-    }
-
-    /**
-     * @param array<string, mixed> $tx
-     */
-    private function isIncoming(string $address, array $tx): bool
-    {
-        /** @var array<int, array<string, mixed>> $tokenTransfers */
-        $tokenTransfers = $tx['tokenTransfers'] ?? [];
-
-        foreach ($tokenTransfers as $transfer) {
-            if (($transfer['toUserAccount'] ?? '') === $address) {
-                return true;
-            }
-            if (($transfer['fromUserAccount'] ?? '') === $address) {
-                return false;
-            }
-        }
-
-        /** @var array<int, array<string, mixed>> $nativeTransfers */
-        $nativeTransfers = $tx['nativeTransfers'] ?? [];
-
-        foreach ($nativeTransfers as $transfer) {
-            if (($transfer['toUserAccount'] ?? '') === $address) {
-                return true;
-            }
-            if (($transfer['fromUserAccount'] ?? '') === $address) {
-                return false;
-            }
-        }
-
-        return true;
-    }
-
-    /**
-     * @param array<string, mixed> $tx
-     */
-    private function resolveAmount(array $tx): string
-    {
-        /** @var array<int, array<string, mixed>> $tokenTransfers */
-        $tokenTransfers = $tx['tokenTransfers'] ?? [];
-
-        if (! empty($tokenTransfers)) {
-            $raw = (string) ($tokenTransfers[0]['tokenAmount'] ?? '0');
-
-            return bcadd(is_numeric($raw) ? $raw : '0', '0', 8);
-        }
-
-        /** @var array<int, array<string, mixed>> $nativeTransfers */
-        $nativeTransfers = $tx['nativeTransfers'] ?? [];
-
-        if (! empty($nativeTransfers)) {
-            $lamports = (string) ($nativeTransfers[0]['amount'] ?? '0');
-
-            return bcdiv(is_numeric($lamports) ? $lamports : '0', '1000000000', 9);
-        }
-
-        return '0';
-    }
-
-    /**
-     * @param array<string, mixed> $tx
-     */
-    private function resolveToken(array $tx): string
-    {
-        /** @var array<int, array<string, mixed>> $tokenTransfers */
-        $tokenTransfers = $tx['tokenTransfers'] ?? [];
-
-        if (! empty($tokenTransfers)) {
-            $mint = $tokenTransfers[0]['mint'] ?? '';
-
-            return match ($mint) {
-                'EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v' => 'USDC',
-                'Es9vMFrzaCERmJfrF4H2FYD4KCoNkY11McCe8BenwNYB' => 'USDT',
-                default                                        => 'SPL',
-            };
-        }
-
-        return 'SOL';
-    }
-
-    /**
-     * @param array<string, mixed> $tx
-     */
-    private function resolveFromAddress(array $tx): ?string
-    {
-        $transfers = $tx['tokenTransfers'] ?? $tx['nativeTransfers'] ?? [];
-
-        return $transfers[0]['fromUserAccount'] ?? null;
-    }
-
-    /**
-     * @param array<string, mixed> $tx
-     */
-    private function resolveToAddress(array $tx): ?string
-    {
-        $transfers = $tx['tokenTransfers'] ?? $tx['nativeTransfers'] ?? [];
-
-        return $transfers[0]['toUserAccount'] ?? null;
     }
 }

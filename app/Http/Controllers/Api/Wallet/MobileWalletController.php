@@ -132,7 +132,9 @@ class MobileWalletController extends Controller
     public function balances(Request $request): JsonResponse
     {
         $user = $request->user();
-        assert($user instanceof \App\Models\User);
+        if (! $user instanceof \App\Models\User) {
+            return response()->json(['error' => 'Unauthorized'], 401);
+        }
         $accounts = $this->smartAccountService->getUserAccounts($user);
 
         $balances = [];
@@ -308,6 +310,9 @@ class MobileWalletController extends Controller
     public function state(Request $request): JsonResponse
     {
         $user = $request->user();
+        if (! $user instanceof \App\Models\User) {
+            return response()->json(['error' => 'Unauthorized'], 401);
+        }
         $accounts = $this->smartAccountService->getUserAccounts($user);
 
         $addresses = [];
@@ -405,7 +410,9 @@ class MobileWalletController extends Controller
     public function addresses(Request $request): JsonResponse
     {
         $user = $request->user();
-        assert($user instanceof \App\Models\User);
+        if (! $user instanceof \App\Models\User) {
+            return response()->json(['error' => 'Unauthorized'], 401);
+        }
         $accounts = $this->smartAccountService->getUserAccounts($user);
 
         $addresses = [];
@@ -450,6 +457,9 @@ class MobileWalletController extends Controller
                 'derivation_path' => "m/44'/501'/0'/0'",
             ]
         );
+
+        // Warm known-address cache so send-path lookups don't miss newly registered addresses
+        Cache::put("solana_known_addr:{$solanaAddress}", true, 300);
 
         $addresses[] = [
             'address'    => $solanaAddress,
@@ -609,9 +619,9 @@ class MobileWalletController extends Controller
     public function send(Request $request): JsonResponse
     {
         $request->validate([
-            'to'      => ['required', 'string'],
+            'to'      => ['required', 'string', 'min:26', 'max:128'],
             'token'   => ['required', 'string', 'in:USDC,USDT,WETH,WBTC'],
-            'amount'  => ['required', 'string'],
+            'amount'  => ['required', 'numeric', 'gt:0', 'max:1000000'],
             'network' => ['required', 'string'],
         ]);
 

@@ -312,7 +312,7 @@ describe('MobileWalletController send', function (): void {
         $controller = makeWalletController($this);
 
         $request = walletUserRequest('/api/v1/wallet/transactions/send', 'POST', [
-            'to'      => '0xrecipient',
+            'to'      => '0x1234567890abcdef1234567890abcdef12345678',
             'token'   => 'USDC',
             'amount'  => '25.00',
             'network' => 'polygon',
@@ -333,7 +333,7 @@ describe('MobileWalletController send', function (): void {
         $controller = makeWalletController($this);
 
         $request = walletUserRequest('/api/v1/wallet/transactions/send', 'POST', [
-            'to'      => '0xrecipient',
+            'to'      => '0x1234567890abcdef1234567890abcdef12345678',
             'token'   => 'USDC',
             'amount'  => '25.00',
             'network' => 'polygon',

@@ -5,11 +5,9 @@ declare(strict_types=1);
 namespace App\Http\Controllers\Api\Webhook;
 
 use App\Domain\Account\Models\BlockchainAddress;
-use App\Domain\Account\Models\BlockchainTransaction;
-use App\Domain\MobilePayment\Enums\ActivityItemType;
-use App\Domain\MobilePayment\Models\ActivityFeedItem;
 use App\Domain\Wallet\Events\Broadcast\WalletBalanceUpdated;
 use App\Domain\Wallet\Factories\BlockchainConnectorFactory;
+use App\Domain\Wallet\Services\HeliusTransactionProcessor;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -25,13 +23,18 @@ use Throwable;
  * a balance update via WebSocket.
  *
  * Setup in Helius Dashboard (https://dev.helius.xyz/dashboard):
- *   1. Create webhook → Enhanced Transactions
+ *   1. Create webhook -> Enhanced Transactions
  *   2. Webhook URL: https://zelta.app/api/webhooks/helius/solana
  *   3. Add authorization header with your HELIUS_WEBHOOK_SECRET
  *   4. Select token accounts to monitor (USDC: EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v)
  */
 class HeliusWebhookController extends Controller
 {
+    public function __construct(
+        private readonly HeliusTransactionProcessor $processor,
+    ) {
+    }
+
     public function handle(Request $request): JsonResponse
     {
         if (! $this->verifySecret($request)) {
@@ -156,47 +159,10 @@ class HeliusWebhookController extends Controller
         }
 
         $signature = $tx['signature'] ?? '';
-        $isIncoming = $this->isIncoming($address, $tx);
-        $amount = $this->resolveAmount($tx);
-        $token = $this->resolveToken($tx);
-        $fromAddr = $this->resolveFromAddress($tx);
-        $toAddr = $this->resolveToAddress($tx);
 
-        // Store blockchain transaction record (deduped by tx_hash)
+        // Store blockchain transaction + activity feed item via shared processor
         if ($signature !== '') {
-            BlockchainTransaction::firstOrCreate(
-                ['tx_hash' => $signature, 'chain' => 'solana'],
-                [
-                    'address_uuid' => $blockchainAddress->uuid,
-                    'type'         => $isIncoming ? 'receive' : 'send',
-                    'amount'       => $amount,
-                    'fee'          => bcadd(is_numeric($feeRaw = (string) ($tx['fee'] ?? 0)) ? $feeRaw : '0', '0', 18),
-                    'from_address' => $fromAddr ?? '',
-                    'to_address'   => $toAddr ?? '',
-                    'status'       => 'confirmed',
-                    'metadata'     => $tx,
-                ]
-            );
-
-            // Store activity feed item (so it shows in mobile activity tab)
-            // reference_id is UUID column — hash signature into deterministic UUID for dedup
-            $refId = self::signatureToUuid($signature);
-            ActivityFeedItem::firstOrCreate(
-                ['reference_type' => 'solana_tx', 'reference_id' => $refId],
-                [
-                    'user_id'       => $user->id,
-                    'activity_type' => $isIncoming ? ActivityItemType::TRANSFER_IN : ActivityItemType::TRANSFER_OUT,
-                    'amount'        => $isIncoming ? $amount : '-' . $amount,
-                    'asset'         => $token,
-                    'network'       => 'solana',
-                    'status'        => 'confirmed',
-                    'protected'     => false,
-                    'from_address'  => $fromAddr,
-                    'to_address'    => $toAddr,
-                    'occurred_at'   => now(),
-                    'metadata'      => ['signature' => $signature],
-                ]
-            );
+            $this->processor->processTransaction($address, $blockchainAddress, $user->id, $tx);
         }
 
         WalletBalanceUpdated::dispatch($user->id, 'solana');
@@ -211,8 +177,12 @@ class HeliusWebhookController extends Controller
             $balanceData = $connector->getBalance($address);
             Cache::put("solana_balance:{$address}", $balanceData->balance, 300);
         } catch (Throwable) {
-            // Pre-warm is best-effort — next request will query fresh
+            // Pre-warm is best-effort -- next request will query fresh
         }
+
+        $isIncoming = $this->processor->isIncoming($address, $tx);
+        $token = $this->processor->resolveToken($tx);
+        $amount = $this->processor->resolveAmount($tx);
 
         Log::info('Helius: Solana transaction stored and balance update broadcast', [
             'address'   => $address,
@@ -222,142 +192,6 @@ class HeliusWebhookController extends Controller
             'amount'    => $amount,
             'signature' => $signature,
         ]);
-    }
-
-    /**
-     * Determine if the transaction is incoming relative to the matched address.
-     *
-     * @param array<string, mixed> $tx
-     */
-    private function isIncoming(string $address, array $tx): bool
-    {
-        // Check token transfers first
-        /** @var array<int, array<string, mixed>> $tokenTransfers */
-        $tokenTransfers = $tx['tokenTransfers'] ?? [];
-
-        foreach ($tokenTransfers as $transfer) {
-            if (($transfer['toUserAccount'] ?? '') === $address) {
-                return true;
-            }
-            if (($transfer['fromUserAccount'] ?? '') === $address) {
-                return false;
-            }
-        }
-
-        // Check native transfers
-        /** @var array<int, array<string, mixed>> $nativeTransfers */
-        $nativeTransfers = $tx['nativeTransfers'] ?? [];
-
-        foreach ($nativeTransfers as $transfer) {
-            if (($transfer['toUserAccount'] ?? '') === $address) {
-                return true;
-            }
-            if (($transfer['fromUserAccount'] ?? '') === $address) {
-                return false;
-            }
-        }
-
-        return true; // Default to incoming if direction unclear
-    }
-
-    /**
-     * Resolve the human-readable amount from a Helius transaction.
-     *
-     * @param array<string, mixed> $tx
-     */
-    private function resolveAmount(array $tx): string
-    {
-        /** @var array<int, array<string, mixed>> $tokenTransfers */
-        $tokenTransfers = $tx['tokenTransfers'] ?? [];
-
-        if (! empty($tokenTransfers)) {
-            $raw = (string) ($tokenTransfers[0]['tokenAmount'] ?? '0');
-
-            // Helius provides tokenAmount already in decimal form
-            // Normalize to numeric-string for bcmath
-            return bcadd(is_numeric($raw) ? $raw : '0', '0', 8);
-        }
-
-        /** @var array<int, array<string, mixed>> $nativeTransfers */
-        $nativeTransfers = $tx['nativeTransfers'] ?? [];
-
-        if (! empty($nativeTransfers)) {
-            // Native SOL: amount is in lamports (1 SOL = 1e9 lamports)
-            $lamports = (string) ($nativeTransfers[0]['amount'] ?? '0');
-
-            return bcdiv($lamports, '1000000000', 9);
-        }
-
-        return '0';
-    }
-
-    /**
-     * Resolve the token symbol from a Helius transaction.
-     *
-     * @param array<string, mixed> $tx
-     */
-    private function resolveToken(array $tx): string
-    {
-        /** @var array<int, array<string, mixed>> $tokenTransfers */
-        $tokenTransfers = $tx['tokenTransfers'] ?? [];
-
-        if (! empty($tokenTransfers)) {
-            $mint = $tokenTransfers[0]['mint'] ?? '';
-
-            // Known Solana token mints
-            return match ($mint) {
-                'EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v' => 'USDC',
-                'Es9vMFrzaCERmJfrF4H2FYD4KCoNkY11McCe8BenwNYB' => 'USDT',
-                default                                        => 'SPL',
-            };
-        }
-
-        return 'SOL';
-    }
-
-    /**
-     * @param array<string, mixed> $tx
-     */
-    private function resolveFromAddress(array $tx): ?string
-    {
-        $transfers = $tx['tokenTransfers'] ?? $tx['nativeTransfers'] ?? [];
-
-        return $transfers[0]['fromUserAccount'] ?? null;
-    }
-
-    /**
-     * @param array<string, mixed> $tx
-     */
-    private function resolveToAddress(array $tx): ?string
-    {
-        $transfers = $tx['tokenTransfers'] ?? $tx['nativeTransfers'] ?? [];
-
-        return $transfers[0]['toUserAccount'] ?? null;
-    }
-
-    /**
-     * Convert a Solana transaction signature to a deterministic UUID.
-     *
-     * The activity_feed_items.reference_id column is UUID type, but Solana
-     * signatures are ~88 char base58 strings. Hash into UUID v5-like format.
-     */
-    public static function signatureToUuid(string $signature): string
-    {
-        $hash = md5("solana_tx:{$signature}");
-
-        // Set version 4 (byte 7, high nibble) and variant 10xx (byte 9, high bits)
-        // to produce a valid RFC 4122 UUID that MariaDB accepts.
-        $hash[12] = '4';
-        $hash[16] = dechex(0x8 | (hexdec($hash[16]) & 0x3));
-
-        return sprintf(
-            '%s-%s-%s-%s-%s',
-            substr($hash, 0, 8),
-            substr($hash, 8, 4),
-            substr($hash, 12, 4),
-            substr($hash, 16, 4),
-            substr($hash, 20, 12)
-        );
     }
 
     /**
@@ -376,7 +210,7 @@ class HeliusWebhookController extends Controller
                 return false;
             }
 
-            return true;
+            return app()->environment('local', 'testing');
         }
 
         // Helius sends the authHeader value exactly as configured in the dashboard
