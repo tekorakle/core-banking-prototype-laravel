@@ -5,6 +5,9 @@ declare(strict_types=1);
 namespace App\Http\Controllers\Api\Webhook;
 
 use App\Domain\Account\Models\BlockchainAddress;
+use App\Domain\Account\Models\BlockchainTransaction;
+use App\Domain\MobilePayment\Enums\ActivityItemType;
+use App\Domain\MobilePayment\Models\ActivityFeedItem;
 use App\Domain\Wallet\Events\Broadcast\WalletBalanceUpdated;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\JsonResponse;
@@ -130,7 +133,7 @@ class HeliusWebhookController extends Controller
     }
 
     /**
-     * Broadcast a balance update for a matched address.
+     * Broadcast a balance update and store transaction for a matched address.
      *
      * @param array<string, mixed> $tx
      */
@@ -144,11 +147,52 @@ class HeliusWebhookController extends Controller
             return;
         }
 
-        // Look up user ID from blockchain address
         $user = \App\Models\User::where('uuid', $blockchainAddress->user_uuid)->first();
 
         if ($user === null) {
             return;
+        }
+
+        $signature = $tx['signature'] ?? '';
+        $isIncoming = $this->isIncoming($address, $tx);
+        $amount = $this->resolveAmount($tx);
+        $token = $this->resolveToken($tx);
+        $fromAddr = $this->resolveFromAddress($tx);
+        $toAddr = $this->resolveToAddress($tx);
+
+        // Store blockchain transaction record (deduped by tx_hash)
+        if ($signature !== '') {
+            BlockchainTransaction::firstOrCreate(
+                ['tx_hash' => $signature, 'chain' => 'solana'],
+                [
+                    'address_uuid' => $blockchainAddress->uuid,
+                    'type'         => $isIncoming ? 'receive' : 'send',
+                    'amount'       => $amount,
+                    'fee'          => bcadd(is_numeric($feeRaw = (string) ($tx['fee'] ?? 0)) ? $feeRaw : '0', '0', 18),
+                    'from_address' => $fromAddr ?? '',
+                    'to_address'   => $toAddr ?? '',
+                    'status'       => 'confirmed',
+                    'metadata'     => $tx,
+                ]
+            );
+
+            // Store activity feed item (so it shows in mobile activity tab)
+            ActivityFeedItem::firstOrCreate(
+                ['reference_type' => 'solana_tx', 'reference_id' => $signature],
+                [
+                    'user_id'       => $user->id,
+                    'activity_type' => $isIncoming ? ActivityItemType::TRANSFER_IN : ActivityItemType::TRANSFER_OUT,
+                    'amount'        => $isIncoming ? $amount : '-' . $amount,
+                    'asset'         => $token,
+                    'network'       => 'solana',
+                    'status'        => 'confirmed',
+                    'protected'     => false,
+                    'from_address'  => $fromAddr,
+                    'to_address'    => $toAddr,
+                    'occurred_at'   => now(),
+                    'metadata'      => ['signature' => $signature],
+                ]
+            );
         }
 
         WalletBalanceUpdated::dispatch($user->id, 'solana');
@@ -157,12 +201,125 @@ class HeliusWebhookController extends Controller
         Cache::forget("solana_balance:{$address}");
         Cache::forget("solana_known_addr:{$address}");
 
-        Log::info('Helius: Solana balance update broadcast', [
+        Log::info('Helius: Solana transaction stored and balance update broadcast', [
             'address'   => $address,
             'user_id'   => $user->id,
-            'tx_type'   => $tx['type'] ?? 'unknown',
-            'signature' => $tx['signature'] ?? null,
+            'tx_type'   => $isIncoming ? 'receive' : 'send',
+            'token'     => $token,
+            'amount'    => $amount,
+            'signature' => $signature,
         ]);
+    }
+
+    /**
+     * Determine if the transaction is incoming relative to the matched address.
+     *
+     * @param array<string, mixed> $tx
+     */
+    private function isIncoming(string $address, array $tx): bool
+    {
+        // Check token transfers first
+        /** @var array<int, array<string, mixed>> $tokenTransfers */
+        $tokenTransfers = $tx['tokenTransfers'] ?? [];
+
+        foreach ($tokenTransfers as $transfer) {
+            if (($transfer['toUserAccount'] ?? '') === $address) {
+                return true;
+            }
+            if (($transfer['fromUserAccount'] ?? '') === $address) {
+                return false;
+            }
+        }
+
+        // Check native transfers
+        /** @var array<int, array<string, mixed>> $nativeTransfers */
+        $nativeTransfers = $tx['nativeTransfers'] ?? [];
+
+        foreach ($nativeTransfers as $transfer) {
+            if (($transfer['toUserAccount'] ?? '') === $address) {
+                return true;
+            }
+            if (($transfer['fromUserAccount'] ?? '') === $address) {
+                return false;
+            }
+        }
+
+        return true; // Default to incoming if direction unclear
+    }
+
+    /**
+     * Resolve the human-readable amount from a Helius transaction.
+     *
+     * @param array<string, mixed> $tx
+     */
+    private function resolveAmount(array $tx): string
+    {
+        /** @var array<int, array<string, mixed>> $tokenTransfers */
+        $tokenTransfers = $tx['tokenTransfers'] ?? [];
+
+        if (! empty($tokenTransfers)) {
+            $raw = (string) ($tokenTransfers[0]['tokenAmount'] ?? '0');
+
+            // Helius provides tokenAmount already in decimal form
+            // Normalize to numeric-string for bcmath
+            return bcadd(is_numeric($raw) ? $raw : '0', '0', 8);
+        }
+
+        /** @var array<int, array<string, mixed>> $nativeTransfers */
+        $nativeTransfers = $tx['nativeTransfers'] ?? [];
+
+        if (! empty($nativeTransfers)) {
+            // Native SOL: amount is in lamports (1 SOL = 1e9 lamports)
+            $lamports = (string) ($nativeTransfers[0]['amount'] ?? '0');
+
+            return bcdiv($lamports, '1000000000', 9);
+        }
+
+        return '0';
+    }
+
+    /**
+     * Resolve the token symbol from a Helius transaction.
+     *
+     * @param array<string, mixed> $tx
+     */
+    private function resolveToken(array $tx): string
+    {
+        /** @var array<int, array<string, mixed>> $tokenTransfers */
+        $tokenTransfers = $tx['tokenTransfers'] ?? [];
+
+        if (! empty($tokenTransfers)) {
+            $mint = $tokenTransfers[0]['mint'] ?? '';
+
+            // Known Solana token mints
+            return match ($mint) {
+                'EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v' => 'USDC',
+                'Es9vMFrzaCERmJfrF4H2FYD4KCoNkY11McCe8BenwNYB' => 'USDT',
+                default                                        => 'SPL',
+            };
+        }
+
+        return 'SOL';
+    }
+
+    /**
+     * @param array<string, mixed> $tx
+     */
+    private function resolveFromAddress(array $tx): ?string
+    {
+        $transfers = $tx['tokenTransfers'] ?? $tx['nativeTransfers'] ?? [];
+
+        return $transfers[0]['fromUserAccount'] ?? null;
+    }
+
+    /**
+     * @param array<string, mixed> $tx
+     */
+    private function resolveToAddress(array $tx): ?string
+    {
+        $transfers = $tx['tokenTransfers'] ?? $tx['nativeTransfers'] ?? [];
+
+        return $transfers[0]['toUserAccount'] ?? null;
     }
 
     /**
