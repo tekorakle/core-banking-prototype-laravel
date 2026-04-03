@@ -123,6 +123,9 @@ Route::prefix('v1/wallet')->name('mobile.wallet.')
         Route::get('/state', [MobileWalletController::class, 'state'])
             ->middleware('api.rate_limit:query')
             ->name('state');
+        Route::get('/home', [MobileWalletController::class, 'state'])
+            ->middleware('api.rate_limit:query')
+            ->name('home');
         Route::get('/addresses', [MobileWalletController::class, 'addresses'])
             ->middleware('api.rate_limit:query')
             ->name('addresses');
