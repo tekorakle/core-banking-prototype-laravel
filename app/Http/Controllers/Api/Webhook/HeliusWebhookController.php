@@ -182,13 +182,13 @@ class HeliusWebhookController extends Controller
         WalletBalanceUpdated::dispatch($user->id, 'solana');
 
         // Invalidate and pre-warm balance cache so next mobile request hits warm cache
-        Cache::forget("solana_balance:{$address}");
-        Cache::forget("solana_balances:{$address}");
+        Cache::forget(SolanaCacheKeys::balance($address));
+        Cache::forget(SolanaCacheKeys::balances($address));
 
         try {
             $connector = BlockchainConnectorFactory::create('solana');
             $balanceData = $connector->getBalance($address);
-            Cache::put("solana_balance:{$address}", $balanceData->balance, 300);
+            Cache::put(SolanaCacheKeys::balance($address), $balanceData->balance, 300);
         } catch (Throwable) {
             // Pre-warm is best-effort -- next request will query fresh
         }
