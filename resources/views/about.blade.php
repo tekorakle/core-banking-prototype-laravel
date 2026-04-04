@@ -5,7 +5,7 @@
 @section('seo')
     @include('partials.seo', [
         'title' => 'About ' . config('brand.name', 'Zelta') . ' — Open Source Core Banking Infrastructure',
-        'description' => 'Learn about ' . config('brand.name', 'Zelta') . ', the open-source core banking platform with 56 domain modules for payments, lending, compliance, and DeFi. MIT licensed, built with Laravel and event sourcing.',
+        'description' => 'Learn about Zelta, the open-source core banking platform with 56 modules for payments, lending, compliance, and DeFi. MIT licensed, built with Laravel.',
         'keywords' => config('brand.name', 'Zelta') . ' about, open source banking, core banking platform, GCU, ISO 20022, PSD2, open banking, Interledger, microfinance, event sourcing, CQRS, Laravel banking, DDD, fintech infrastructure',
     ])
 

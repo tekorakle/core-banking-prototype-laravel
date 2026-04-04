@@ -131,7 +131,7 @@
                         </p>
                         <ul class="list-disc list-inside mt-2 text-slate-500 space-y-1">
                             <li>Explore 56 domain modules including DeFi, cross-chain, privacy, and rewards</li>
-                            <li>Test 160+ REST API endpoints and a 45-domain GraphQL API</li>
+                            <li>Test 1,400+ API routes and a 45-domain GraphQL API</li>
                             <li>Try KYC/AML compliance flows, card issuing, and mobile payments</li>
                             <li>All transactions use test data &mdash; no real funds are involved</li>
                             <li>Community feedback drives the roadmap forward</li>
