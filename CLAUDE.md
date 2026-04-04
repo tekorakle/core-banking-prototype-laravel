@@ -13,6 +13,11 @@ php artisan serve                    # Start server
 npm run dev                          # Vite dev server
 php artisan l5-swagger:generate      # API docs
 
+# Solana operations
+php artisan solana:backfill                    # Register addresses for existing users
+php artisan solana:sync --provider=alchemy     # Push addresses to webhook provider
+php artisan solana:backfill-transactions       # Fetch historical tx from Helius API
+
 # User & Admin management
 php artisan user:create --admin      # Create user (--admin for admin role)
 php artisan user:promote user@email  # Promote existing user to admin
@@ -68,6 +73,12 @@ namespace App\Domain\Exchange\Services;
 | XML parsing | Always pass `LIBXML_NONET` to `SimpleXMLElement` when parsing external input (XXE prevention) |
 | PHPCS version | CI uses PHPCS v4.0.1 — run `./vendor/bin/phpcs` locally to match before pushing |
 | PHPStan `numeric-string` | bcmath requires `numeric-string` type — use `bcadd($val, '0', 4)` to normalize, not `(float)` cast |
+| `assert()` as auth guard | Use `if (!$user instanceof User) return 401` — `assert()` compiled out with `zend.assertions=-1` |
+| MariaDB UUID columns | Must be RFC 4122 (version=4 nibble, variant=10xx bits) — raw hashes rejected |
+| Webhook auth bypass | Use `app()->environment('local', 'testing')` — never `return true` for non-prod |
+| Solana addresses | Case-sensitive — never `strtolower()` (unlike EVM which lowercases) |
+| Helius API key | Must be query param `?api-key=` — does NOT support Authorization header |
+| Webhook metadata | Whitelist fields via `array_intersect_key()` — never store raw `$tx` payload |
 
 ```bash
 gh pr checks <PR_NUMBER>              # Check PR status
@@ -91,3 +102,9 @@ gh run view <RUN_ID> --log-failed     # View failed logs
 - New domains: update domain count in public views (welcome, about, pricing, developers) and CLAUDE.md
 - New domains: add env vars to `.env.production.example` and `.env.zelta.example`
 - Use Serena memories for deep architectural context when needed
+- Solana constants: `SolanaTokens::KNOWN_MINTS` and `SolanaCacheKeys::balance()` in `app/Domain/Wallet/Constants/`
+- Solana webhook provider: `SOLANA_WEBHOOK_PROVIDER=alchemy|helius` (default: helius) — controls observer + sync command
+- Solana tx processor: `HeliusTransactionProcessor` is shared by both Helius and Alchemy webhook handlers
+- Webhook controllers: both Helius and Alchemy handlers send FCM push via `PushNotificationService`
+- Test tables: use `Tests\Traits\CreatesSolanaTestTables` trait for in-memory SQLite schema in webhook/wallet tests
+- Parallel agent merges: always check for duplicate `use` imports after merging agent branches
