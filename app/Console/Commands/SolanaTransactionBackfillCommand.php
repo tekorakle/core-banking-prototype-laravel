@@ -6,7 +6,6 @@ namespace App\Console\Commands;
 
 use App\Domain\Account\Models\BlockchainAddress;
 use App\Domain\Wallet\Services\HeliusTransactionProcessor;
-use App\Models\User;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
@@ -41,7 +40,7 @@ class SolanaTransactionBackfillCommand extends Command
         $specificAddress = $this->option('address');
         $limit = (int) $this->option('limit');
 
-        $query = BlockchainAddress::where('chain', 'solana')->where('is_active', true);
+        $query = BlockchainAddress::where('chain', 'solana')->where('is_active', true)->with('user');
 
         if ($specificAddress) {
             $query->where('address', $specificAddress);
@@ -63,7 +62,7 @@ class SolanaTransactionBackfillCommand extends Command
         $processor = app(HeliusTransactionProcessor::class);
 
         foreach ($addresses as $blockchainAddress) {
-            $user = User::where('uuid', $blockchainAddress->user_uuid)->first();
+            $user = $blockchainAddress->user;
 
             if ($user === null) {
                 $this->warn("  Skipping {$blockchainAddress->address} — no user found");

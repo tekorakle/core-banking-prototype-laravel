@@ -8,6 +8,7 @@ use App\Domain\Account\Models\BlockchainAddress;
 use App\Domain\Account\Models\BlockchainTransaction;
 use App\Domain\MobilePayment\Enums\ActivityItemType;
 use App\Domain\MobilePayment\Models\ActivityFeedItem;
+use App\Domain\Wallet\Constants\SolanaTokens;
 use Illuminate\Support\Facades\DB;
 
 /**
@@ -203,12 +204,7 @@ class HeliusTransactionProcessor
         if (! empty($tokenTransfers)) {
             $mint = $tokenTransfers[0]['mint'] ?? '';
 
-            // Known Solana token mints
-            return match ($mint) {
-                'EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v' => 'USDC',
-                'Es9vMFrzaCERmJfrF4H2FYD4KCoNkY11McCe8BenwNYB' => 'USDT',
-                default                                        => 'SPL',
-            };
+            return SolanaTokens::resolveSymbol($mint);
         }
 
         return 'SOL';
@@ -219,7 +215,7 @@ class HeliusTransactionProcessor
      */
     public function resolveFromAddress(array $tx): ?string
     {
-        $transfers = $tx['tokenTransfers'] ?? $tx['nativeTransfers'] ?? [];
+        $transfers = ! empty($tx['tokenTransfers']) ? $tx['tokenTransfers'] : ($tx['nativeTransfers'] ?? []);
 
         return $transfers[0]['fromUserAccount'] ?? null;
     }
@@ -229,7 +225,7 @@ class HeliusTransactionProcessor
      */
     public function resolveToAddress(array $tx): ?string
     {
-        $transfers = $tx['tokenTransfers'] ?? $tx['nativeTransfers'] ?? [];
+        $transfers = ! empty($tx['tokenTransfers']) ? $tx['tokenTransfers'] : ($tx['nativeTransfers'] ?? []);
 
         return $transfers[0]['toUserAccount'] ?? null;
     }

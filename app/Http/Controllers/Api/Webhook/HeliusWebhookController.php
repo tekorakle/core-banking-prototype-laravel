@@ -6,6 +6,7 @@ namespace App\Http\Controllers\Api\Webhook;
 
 use App\Domain\Account\Models\BlockchainAddress;
 use App\Domain\Mobile\Services\PushNotificationService;
+use App\Domain\Wallet\Constants\SolanaCacheKeys;
 use App\Domain\Wallet\Events\Broadcast\WalletBalanceUpdated;
 use App\Domain\Wallet\Factories\BlockchainConnectorFactory;
 use App\Domain\Wallet\Services\HeliusTransactionProcessor;
@@ -141,7 +142,7 @@ class HeliusWebhookController extends Controller
      */
     private function isKnownAddress(string $address): bool
     {
-        $cacheKey = "solana_known_addr:{$address}";
+        $cacheKey = SolanaCacheKeys::knownAddr($address);
 
         return Cache::remember($cacheKey, 300, function () use ($address): bool {
             return BlockchainAddress::where('address', $address)
@@ -181,14 +182,13 @@ class HeliusWebhookController extends Controller
         WalletBalanceUpdated::dispatch($user->id, 'solana');
 
         // Invalidate and pre-warm balance cache so next mobile request hits warm cache
-        Cache::forget("solana_balance:{$address}");
-        Cache::forget("solana_balances:{$address}");
-        Cache::forget("solana_known_addr:{$address}");
+        Cache::forget(SolanaCacheKeys::balance($address));
+        Cache::forget(SolanaCacheKeys::balances($address));
 
         try {
             $connector = BlockchainConnectorFactory::create('solana');
             $balanceData = $connector->getBalance($address);
-            Cache::put("solana_balance:{$address}", $balanceData->balance, 300);
+            Cache::put(SolanaCacheKeys::balance($address), $balanceData->balance, 300);
         } catch (Throwable) {
             // Pre-warm is best-effort -- next request will query fresh
         }
@@ -201,7 +201,8 @@ class HeliusWebhookController extends Controller
 
         // Send FCM push notification
         try {
-            $truncatedAddr = substr($isIncoming ? ($fromAddr ?? 'unknown') : ($toAddr ?? 'unknown'), 0, 4) . '...' . substr($isIncoming ? ($fromAddr ?? 'unknown') : ($toAddr ?? 'unknown'), -4);
+            $counterpartyAddr = $isIncoming ? ($fromAddr ?? 'unknown') : ($toAddr ?? 'unknown');
+            $truncatedAddr = substr($counterpartyAddr, 0, 4) . '...' . substr($counterpartyAddr, -4);
 
             if ($isIncoming) {
                 $this->pushService->sendTransactionReceived($user, $amount, $token, $truncatedAddr);
