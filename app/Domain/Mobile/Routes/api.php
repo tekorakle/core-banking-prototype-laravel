@@ -108,6 +108,14 @@ Route::prefix('v1/devices')->name('api.v1.devices.')
         Route::post('/bulk-remove', [MobileController::class, 'bulkRemoveDevices'])->name('bulk-remove');
     });
 
+// Push notification device registration — mobile app expects /api/v1/notifications/* (v7.9.0)
+Route::prefix('v1/notifications')->name('api.v1.notifications.device.')
+    ->middleware(['auth:sanctum'])
+    ->group(function () {
+        Route::post('/register-device', [MobileController::class, 'registerDevice'])->name('register');
+        Route::delete('/unregister-device', [MobileController::class, 'unregisterDevice'])->name('unregister');
+    });
+
 // User preferences (v3.3.4) + data export alias (v5.6.0)
 Route::prefix('v1/user')->name('api.user.')
     ->middleware(['auth:sanctum'])

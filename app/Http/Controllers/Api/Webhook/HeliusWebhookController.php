@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Http\Controllers\Api\Webhook;
 
 use App\Domain\Account\Models\BlockchainAddress;
+use App\Domain\Mobile\Services\PushNotificationService;
 use App\Domain\Wallet\Events\Broadcast\WalletBalanceUpdated;
 use App\Domain\Wallet\Factories\BlockchainConnectorFactory;
 use App\Domain\Wallet\Services\HeliusTransactionProcessor;
@@ -32,6 +33,7 @@ class HeliusWebhookController extends Controller
 {
     public function __construct(
         private readonly HeliusTransactionProcessor $processor,
+        private readonly PushNotificationService $pushService,
     ) {
     }
 
@@ -194,6 +196,21 @@ class HeliusWebhookController extends Controller
         $isIncoming = $this->processor->isIncoming($address, $tx);
         $token = $this->processor->resolveToken($tx);
         $amount = $this->processor->resolveAmount($tx);
+        $fromAddr = $this->processor->resolveFromAddress($tx);
+        $toAddr = $this->processor->resolveToAddress($tx);
+
+        // Send FCM push notification
+        try {
+            $truncatedAddr = substr($isIncoming ? ($fromAddr ?? 'unknown') : ($toAddr ?? 'unknown'), 0, 4) . '...' . substr($isIncoming ? ($fromAddr ?? 'unknown') : ($toAddr ?? 'unknown'), -4);
+
+            if ($isIncoming) {
+                $this->pushService->sendTransactionReceived($user, $amount, $token, $truncatedAddr);
+            } else {
+                $this->pushService->sendTransactionSent($user, $amount, $token, $truncatedAddr);
+            }
+        } catch (Throwable $e) {
+            Log::warning('Helius: Push notification failed', ['user_id' => $user->id, 'error' => $e->getMessage()]);
+        }
 
         Log::info('Helius: Solana transaction stored and balance update broadcast', [
             'address'   => $address,
