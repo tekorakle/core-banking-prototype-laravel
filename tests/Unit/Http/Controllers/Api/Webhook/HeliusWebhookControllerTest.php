@@ -9,78 +9,19 @@ use App\Domain\Wallet\Services\HeliusTransactionProcessor;
 use App\Http\Controllers\Api\Webhook\HeliusWebhookController;
 use App\Models\User;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Schema;
 use Tests\TestCase;
+use Tests\Traits\CreatesSolanaTestTables;
 
-uses(TestCase::class);
+uses(TestCase::class, CreatesSolanaTestTables::class);
 
 beforeEach(function (): void {
     config(['services.helius.webhook_secret' => '']);
     config(['cache.default' => 'array']);
-
-    // Create blockchain_addresses table if not exists (in-memory SQLite)
-    if (! Schema::hasTable('blockchain_addresses')) {
-        Schema::create('blockchain_addresses', function ($table): void {
-            $table->id();
-            $table->uuid('uuid')->unique();
-            $table->string('user_uuid')->index();
-            $table->string('chain');
-            $table->string('address');
-            $table->text('public_key');
-            $table->string('derivation_path')->nullable();
-            $table->string('label')->nullable();
-            $table->boolean('is_active')->default(true);
-            $table->json('metadata')->nullable();
-            $table->timestamps();
-            $table->unique(['chain', 'address']);
-        });
-    }
-
-    if (! Schema::hasTable('blockchain_address_transactions')) {
-        Schema::create('blockchain_address_transactions', function ($table): void {
-            $table->id();
-            $table->uuid('uuid')->unique();
-            $table->string('address_uuid')->index();
-            $table->string('tx_hash')->index();
-            $table->string('type');
-            $table->decimal('amount', 36, 18);
-            $table->decimal('fee', 36, 18)->default(0);
-            $table->string('from_address');
-            $table->string('to_address');
-            $table->string('chain');
-            $table->string('status')->default('pending');
-            $table->json('metadata')->nullable();
-            $table->timestamps();
-        });
-    }
-
-    if (! Schema::hasTable('activity_feed_items')) {
-        Schema::create('activity_feed_items', function ($table): void {
-            $table->uuid('id')->primary();
-            $table->unsignedBigInteger('user_id')->index();
-            $table->string('activity_type', 30);
-            $table->string('merchant_name')->nullable();
-            $table->string('merchant_icon_url')->nullable();
-            $table->decimal('amount', 20, 8);
-            $table->string('asset', 10);
-            $table->string('network', 20)->nullable();
-            $table->string('status', 20)->default('pending');
-            $table->boolean('protected')->default(false);
-            $table->string('reference_type')->nullable();
-            $table->uuid('reference_id')->nullable();
-            $table->string('from_address', 64)->nullable();
-            $table->string('to_address', 64)->nullable();
-            $table->dateTime('occurred_at');
-            $table->json('metadata')->nullable();
-            $table->timestamps();
-        });
-    }
+    $this->createSolanaTestTables();
 });
 
 afterEach(function (): void {
-    Schema::dropIfExists('activity_feed_items');
-    Schema::dropIfExists('blockchain_address_transactions');
-    Schema::dropIfExists('blockchain_addresses');
+    $this->dropSolanaTestTables();
 });
 
 /** @return array<string, mixed> */
