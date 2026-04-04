@@ -1,4 +1,4 @@
-# Threat Model — FinAegis/Zelta v7.0.0
+# Threat Model — FinAegis/Zelta v7.9.0
 
 **Methodology**: STRIDE (Spoofing, Tampering, Repudiation, Information Disclosure, Denial of Service, Elevation of Privilege)
 **Prepared**: 2026-03-28
@@ -68,7 +68,7 @@
 ### Information Disclosure
 - **Risk**: Data from one tenant leaking into another tenant's queries due to missing tenant scope.
 - **Mitigation**: Stancl/Tenancy provides database-level isolation (separate databases or scoped queries). `UsesTenantConnection` trait forces models to use tenant-scoped database connections.
-- **Gap**: All 49 domain modules must correctly use tenant-scoped connections. Any model that accidentally uses the central database connection could leak cross-tenant data. This should be verified systematically during the audit — query all domain models for `UsesTenantConnection` trait usage versus direct `Model` extension.
+- **Gap**: All 56 domain modules must correctly use tenant-scoped connections. Any model that accidentally uses the central database connection could leak cross-tenant data. This should be verified systematically during the audit — query all domain models for `UsesTenantConnection` trait usage versus direct `Model` extension.
 
 ### Denial of Service
 - **Risk**: Excessive tenant lookup requests causing database pressure or cache exhaustion.

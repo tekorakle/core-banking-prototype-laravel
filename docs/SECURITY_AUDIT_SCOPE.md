@@ -1,4 +1,4 @@
-# Security Audit Scope — FinAegis/Zelta v7.8.2
+# Security Audit Scope — FinAegis/Zelta v7.9.0
 
 **Prepared**: 2026-03-29
 **Platform**: PHP 8.4 / Laravel 12 / MySQL 8 / Redis
@@ -11,7 +11,7 @@
 
 ## Target Overview
 
-Core banking platform with 49 domain modules, payment processing (x402/MPP/AP2), card issuance, cross-chain DeFi bridging, zero-knowledge proofs, post-quantum cryptography, and multi-tenant team isolation. Handles stablecoin reserves, inter-bank transfers, lending, compliance/AML screening, and fraud detection.
+Core banking platform with 56 domain modules, payment processing (x402/MPP/AP2), card issuance, cross-chain DeFi bridging, zero-knowledge proofs, post-quantum cryptography, and multi-tenant team isolation. Handles stablecoin reserves, inter-bank transfers, lending, compliance/AML screening, and fraud detection.
 
 ---
 
@@ -240,7 +240,7 @@ Models without $fillable or $guarded: 31 files
 ## Priority Areas for Penetration Testing
 
 ### P0 — Critical
-1. **Cross-tenant data leakage**: Verify `InitializeTenancyByTeam` membership checks cannot be bypassed. Test switching teams via API manipulation. Verify tenant-scoped queries in all 49 domain modules.
+1. **Cross-tenant data leakage**: Verify `InitializeTenancyByTeam` membership checks cannot be bypassed. Test switching teams via API manipulation. Verify tenant-scoped queries in all 56 domain modules.
 2. **Payment amount manipulation**: Test x402/MPP payment flows for amount tampering between quote and settlement. Verify JIT funding balance check + hold creation atomicity.
 3. **JIT funding race conditions**: Test concurrent authorization requests for the same card/balance. Verify balance check and hold creation are atomic (currently no `lockForUpdate()` in `JitFundingService`).
 4. **Webhook replay attacks**: Verify timestamp tolerance enforcement across all 6 webhook providers. Test replay with valid signatures but expired timestamps.
@@ -277,6 +277,6 @@ Models without $fillable or $guarded: 31 files
 25. **ILP packet relay trust**: Verify Interledger connector only routes to trusted next-hop connectors.
 26. **TigerBeetle fallback**: Verify graceful fallback to Eloquent driver on TigerBeetle unreachability doesn't lose entries.
 
-*Document Version: 7.8.2*
+*Document Version: 7.9.0*
 *Created: January 11, 2026*
-*Updated: April 1, 2026 (v7.8.2 Backend Fixes & Developer Portal)*
+*Updated: April 4, 2026 (v7.9.0 Solana Balances, Helius Webhooks & SEO Overhaul)*

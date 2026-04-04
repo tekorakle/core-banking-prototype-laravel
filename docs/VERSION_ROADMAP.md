@@ -3043,5 +3043,46 @@ Findings #1-2 fixed in v7.1.1, findings #3-15 fixed in this release:
 - CORS: X-Tenant-ID header allowed
 - Migration FK fix: consents.tpp_id type mismatch
 
-*Document Version: 7.8.2*
-*Updated: April 1, 2026 (v7.8.2 Backend Fixes & Developer Portal)*
+---
+
+## Version 7.8.3 — GoPlus/OFAC Address Screening (RELEASED)
+
+**Release Date**: April 2, 2026
+**Theme**: Compliance address screening
+
+### Delivered Features
+- GoPlus Security API integration for on-chain address risk scoring
+- OFAC SDN list screening for Solana and EVM addresses
+- Address screening middleware for wallet operations
+
+---
+
+## Version 7.8.4 — Solana Address Generation & Pre-Release Cleanup (RELEASED)
+
+**Release Date**: April 3, 2026
+**Theme**: Solana ed25519 address generation and pre-release cleanup
+
+### Delivered Features
+- Solana ed25519 address generation for wallet domain
+- Pre-release cleanup and stabilization
+
+---
+
+## Version 7.9.0 — Solana Balances, Helius Webhooks & SEO Overhaul (RELEASED)
+
+**Release Date**: April 4, 2026
+**Theme**: Solana wallet integration, push notifications, and platform polish
+
+### Delivered Features
+- Solana wallet balances wired to `/wallet/balances` endpoint
+- Helius webhook integration for real-time Solana transaction processing
+- Alchemy Solana RPC migration
+- FCM push notifications for transaction events
+- 181 PHPStan fixes across the codebase
+- SEO overhaul across all public-facing pages
+- HeliusTransactionProcessor extraction for cleaner webhook handling
+- Duplicate processing prevention per address in Helius webhook
+- Helius API key restored as query param (their API requires it)
+
+*Document Version: 7.9.0*
+*Updated: April 4, 2026 (v7.9.0 Solana Balances, Helius Webhooks & SEO Overhaul)*
