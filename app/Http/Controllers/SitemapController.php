@@ -227,6 +227,24 @@ class SitemapController extends Controller
                 'priority'   => '0.7',
             ],
             [
+                'url'        => $baseUrl . '/ai-framework',
+                'lastmod'    => $now,
+                'changefreq' => 'weekly',
+                'priority'   => '0.8',
+            ],
+            [
+                'url'        => $baseUrl . '/ai-framework/demo',
+                'lastmod'    => $now,
+                'changefreq' => 'monthly',
+                'priority'   => '0.7',
+            ],
+            [
+                'url'        => $baseUrl . '/ai-framework/docs',
+                'lastmod'    => $now,
+                'changefreq' => 'monthly',
+                'priority'   => '0.7',
+            ],
+            [
                 'url'        => $baseUrl . '/features/multi-tenancy',
                 'lastmod'    => $now,
                 'changefreq' => 'monthly',
@@ -255,6 +273,12 @@ class SitemapController extends Controller
                 'lastmod'    => $now,
                 'changefreq' => 'monthly',
                 'priority'   => '0.6',
+            ],
+            [
+                'url'        => $baseUrl . '/marketplace',
+                'lastmod'    => $now,
+                'changefreq' => 'monthly',
+                'priority'   => '0.7',
             ],
             [
                 'url'        => $baseUrl . '/features/machine-payments',
@@ -382,6 +406,48 @@ class SitemapController extends Controller
             ],
             [
                 'url'        => $baseUrl . '/developers/graphql',
+                'lastmod'    => $now,
+                'changefreq' => 'monthly',
+                'priority'   => '0.6',
+            ],
+            [
+                'url'        => $baseUrl . '/developers/webhooks',
+                'lastmod'    => $now,
+                'changefreq' => 'monthly',
+                'priority'   => '0.6',
+            ],
+            [
+                'url'        => $baseUrl . '/developers/event-streaming',
+                'lastmod'    => $now,
+                'changefreq' => 'monthly',
+                'priority'   => '0.6',
+            ],
+            [
+                'url'        => $baseUrl . '/developers/mcp-tools',
+                'lastmod'    => $now,
+                'changefreq' => 'monthly',
+                'priority'   => '0.6',
+            ],
+            [
+                'url'        => $baseUrl . '/developers/postman',
+                'lastmod'    => $now,
+                'changefreq' => 'monthly',
+                'priority'   => '0.6',
+            ],
+            [
+                'url'        => $baseUrl . '/developers/sandbox',
+                'lastmod'    => $now,
+                'changefreq' => 'monthly',
+                'priority'   => '0.6',
+            ],
+            [
+                'url'        => $baseUrl . '/developers/examples',
+                'lastmod'    => $now,
+                'changefreq' => 'monthly',
+                'priority'   => '0.6',
+            ],
+            [
+                'url'        => $baseUrl . '/developers/plugins',
                 'lastmod'    => $now,
                 'changefreq' => 'monthly',
                 'priority'   => '0.6',
