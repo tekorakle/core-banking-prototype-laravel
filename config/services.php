@@ -261,4 +261,11 @@ return [
         'rpc_url'        => env('SOLANA_RPC_URL', 'https://api.mainnet-beta.solana.com'),
     ],
 
+    'alchemy' => [
+        'notify_token'      => env('ALCHEMY_NOTIFY_TOKEN'),
+        'solana_webhook_id' => env('ALCHEMY_SOLANA_WEBHOOK_ID'),
+    ],
+
+    'solana_webhook_provider' => env('SOLANA_WEBHOOK_PROVIDER', 'helius'),
+
 ];

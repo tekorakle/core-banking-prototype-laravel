@@ -241,6 +241,7 @@ return [
         env('ALCHEMY_WEBHOOK_SIGNING_KEY_POLYGON'),
         env('ALCHEMY_WEBHOOK_SIGNING_KEY_ARBITRUM'),
         env('ALCHEMY_WEBHOOK_SIGNING_KEY_ETHEREUM'),
+        env('ALCHEMY_WEBHOOK_SIGNING_KEY_SOLANA'),
         env('ALCHEMY_WEBHOOK_SIGNING_KEY'),  // Legacy single-key fallback
     ]),
 
