@@ -5,13 +5,14 @@ declare(strict_types=1);
 namespace App\Domain\Wallet\Observers;
 
 use App\Domain\Account\Models\BlockchainAddress;
+use App\Domain\Wallet\Services\AlchemyWebhookSyncService;
 use App\Domain\Wallet\Services\HeliusWebhookSyncService;
 use Illuminate\Support\Facades\Log;
 use Throwable;
 
 /**
  * Observes BlockchainAddress model events to sync Solana
- * addresses with external webhook providers (Helius).
+ * addresses with external webhook providers (Helius or Alchemy).
  *
  * Queued via afterCommit to avoid blocking user registration
  * and to ensure the address is persisted before sync.
@@ -20,6 +21,7 @@ class BlockchainAddressObserver
 {
     public function __construct(
         private readonly HeliusWebhookSyncService $heliusSync,
+        private readonly AlchemyWebhookSyncService $alchemySync,
     ) {
     }
 
@@ -29,14 +31,15 @@ class BlockchainAddressObserver
             return;
         }
 
-        // Dispatch async to avoid blocking registration with Helius HTTP call
+        // Dispatch async to avoid blocking registration with webhook HTTP call
         dispatch(function () use ($address): void {
             try {
-                $this->heliusSync->addAddress($address->address);
+                $this->getSyncService()->addAddress($address->address);
             } catch (Throwable $e) {
-                Log::error('Helius: Failed to sync new Solana address', [
-                    'address' => $address->address,
-                    'error'   => $e->getMessage(),
+                Log::error('Solana webhook: Failed to sync new Solana address', [
+                    'address'  => $address->address,
+                    'provider' => config('services.solana_webhook_provider', 'helius'),
+                    'error'    => $e->getMessage(),
                 ]);
             }
         })->afterCommit();
@@ -50,13 +53,22 @@ class BlockchainAddressObserver
 
         dispatch(function () use ($address): void {
             try {
-                $this->heliusSync->removeAddress($address->address);
+                $this->getSyncService()->removeAddress($address->address);
             } catch (Throwable $e) {
-                Log::error('Helius: Failed to remove Solana address', [
-                    'address' => $address->address,
-                    'error'   => $e->getMessage(),
+                Log::error('Solana webhook: Failed to remove Solana address', [
+                    'address'  => $address->address,
+                    'provider' => config('services.solana_webhook_provider', 'helius'),
+                    'error'    => $e->getMessage(),
                 ]);
             }
         })->afterCommit();
+    }
+
+    private function getSyncService(): AlchemyWebhookSyncService|HeliusWebhookSyncService
+    {
+        return match (config('services.solana_webhook_provider', 'helius')) {
+            'alchemy' => $this->alchemySync,
+            default   => $this->heliusSync,
+        };
     }
 }
