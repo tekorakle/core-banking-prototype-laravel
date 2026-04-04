@@ -15,7 +15,7 @@ use Illuminate\Console\Command;
  * Run periodically or after bulk imports to ensure all user
  * Solana addresses are registered with the active webhook provider.
  */
-class HeliusSyncCommand extends Command
+class SolanaWebhookSyncCommand extends Command
 {
     protected $signature = 'solana:sync
         {--provider= : Webhook provider (helius or alchemy)}

@@ -192,7 +192,6 @@ class AlchemyWebhookController extends Controller
                 // Invalidate Solana balance caches
                 Cache::forget("solana_balance:{$address}");
                 Cache::forget("solana_balances:{$address}");
-                Cache::forget("solana_known_addr:{$address}");
 
                 // Pre-warm balance cache (best-effort)
                 try {
