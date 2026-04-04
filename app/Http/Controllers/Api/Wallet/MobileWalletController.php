@@ -365,6 +365,85 @@ class MobileWalletController extends Controller
             }
         }
 
+        // Query Solana address and balances (mirrors balances() logic)
+        $solanaAddress = BlockchainAddress::where('user_uuid', $user->uuid)
+            ->where('chain', 'solana')
+            ->where('is_active', true)
+            ->first();
+
+        if ($solanaAddress) {
+            $addresses[] = [
+                'address'  => $solanaAddress->address,
+                'network'  => 'solana',
+                'deployed' => true,
+            ];
+
+            $cacheKey = "solana_balances:{$solanaAddress->address}";
+            $solanaTokens = Cache::remember($cacheKey, (int) config('relayer.balance_checking.cache_ttl_seconds', 120), function () use ($solanaAddress): array {
+                try {
+                    $connector = BlockchainConnectorFactory::create('solana');
+
+                    return $connector->getTokenBalances($solanaAddress->address);
+                } catch (Throwable) {
+                    return [];
+                }
+            });
+
+            $knownMints = [
+                'EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v' => ['symbol' => 'USDC', 'decimals' => 6],
+                'Es9vMFrzaCERmJfrF4H2FYD4KCoNkY11McCe8BenwNYB' => ['symbol' => 'USDT', 'decimals' => 6],
+            ];
+
+            foreach ($solanaTokens as $token) {
+                $mint = $token['contract'] ?? '';
+                $info = $knownMints[$mint] ?? null;
+                if ($info === null) {
+                    continue;
+                }
+
+                $rawBalance = $token['balance'] ?? '0';
+                $decimals = $info['decimals'];
+                $formatted = bcdiv(
+                    is_numeric($rawBalance) ? (string) $rawBalance : '0',
+                    bcpow('10', (string) $decimals),
+                    $decimals,
+                );
+
+                $usdValue = (float) $formatted; // Stablecoins pegged 1:1
+                $totalUsdValue += $usdValue;
+                $balances[] = [
+                    'token'     => $info['symbol'],
+                    'network'   => 'solana',
+                    'balance'   => $formatted,
+                    'usd_value' => $usdValue,
+                ];
+            }
+
+            // Also get native SOL balance
+            try {
+                $connector = BlockchainConnectorFactory::create('solana');
+                $solBalance = Cache::remember("solana_balance:{$solanaAddress->address}", (int) config('relayer.balance_checking.cache_ttl_seconds', 120), function () use ($connector, $solanaAddress): string {
+                    return $connector->getBalance($solanaAddress->address)->balance;
+                });
+
+                $solFormatted = bcdiv(
+                    is_numeric($solBalance) ? (string) $solBalance : '0',
+                    '1000000000',
+                    9,
+                );
+                if (bccomp($solFormatted, '0', 9) > 0) {
+                    $balances[] = [
+                        'token'     => 'SOL',
+                        'network'   => 'solana',
+                        'balance'   => $solFormatted,
+                        'usd_value' => 0.0, // SOL price not tracked
+                    ];
+                }
+            } catch (Throwable) {
+                // SOL balance is best-effort
+            }
+        }
+
         return response()->json([
             'success' => true,
             'data'    => [
@@ -505,6 +584,9 @@ class MobileWalletController extends Controller
     public function transactions(Request $request): JsonResponse
     {
         $user = $request->user();
+        if (! $user instanceof \App\Models\User) {
+            return response()->json(['error' => 'Unauthorized'], 401);
+        }
 
         $feed = $this->activityFeedService->getFeed(
             userId: $user->id,
@@ -558,6 +640,9 @@ class MobileWalletController extends Controller
     public function transactionDetail(string $id, Request $request): JsonResponse
     {
         $user = $request->user();
+        if (! $user instanceof \App\Models\User) {
+            return response()->json(['error' => 'Unauthorized'], 401);
+        }
         $detail = $this->transactionDetailService->getDetails($id, $user->id);
 
         if (! $detail) {
