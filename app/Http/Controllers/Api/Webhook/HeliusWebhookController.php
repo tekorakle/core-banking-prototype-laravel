@@ -8,7 +8,6 @@ use App\Domain\Account\Models\BlockchainAddress;
 use App\Domain\Mobile\Services\PushNotificationService;
 use App\Domain\Wallet\Constants\SolanaCacheKeys;
 use App\Domain\Wallet\Events\Broadcast\WalletBalanceUpdated;
-use App\Domain\Wallet\Constants\SolanaCacheKeys;
 use App\Domain\Wallet\Factories\BlockchainConnectorFactory;
 use App\Domain\Wallet\Services\HeliusTransactionProcessor;
 use App\Http\Controllers\Controller;
