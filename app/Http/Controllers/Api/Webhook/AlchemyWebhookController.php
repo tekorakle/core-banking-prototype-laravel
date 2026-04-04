@@ -111,6 +111,9 @@ class AlchemyWebhookController extends Controller
 
                 broadcast(new WalletBalanceUpdated($userId, $network));
 
+                // Send FCM push notification (best-effort)
+                $this->sendEvmPushNotification($userId, $activity, $address);
+
                 Log::info('Alchemy webhook: balance update broadcast', [
                     'user_id' => $userId,
                     'address' => $address,
@@ -153,23 +156,18 @@ class AlchemyWebhookController extends Controller
 
             foreach ($addresses as $address) {
                 // Solana addresses are case-sensitive — do NOT lowercase
-                $userId = $this->resolveUserId($address);
-                if ($userId === null) {
-                    continue;
-                }
-
+                // Single query with eager-loaded user (avoids 2 redundant queries from resolveUserId)
                 $blockchainAddress = BlockchainAddress::where('address', $address)
                     ->where('chain', 'solana')
+                    ->with('user')
                     ->first();
 
-                if ($blockchainAddress === null) {
+                if ($blockchainAddress === null || $blockchainAddress->user === null) {
                     continue;
                 }
 
-                $user = User::where('uuid', $blockchainAddress->user_uuid)->first();
-                if ($user === null) {
-                    continue;
-                }
+                $user = $blockchainAddress->user;
+                $userId = $user->id;
 
                 // Convert to Helius-compatible format and persist via shared processor
                 $heliusTx = $this->convertToHeliusFormat($activity);
@@ -298,6 +296,42 @@ class AlchemyWebhookController extends Controller
         } catch (Throwable $e) {
             Log::warning('Alchemy Solana: Push notification failed', [
                 'user_id' => $user->id,
+                'error'   => $e->getMessage(),
+            ]);
+        }
+    }
+
+    /**
+     * Send FCM push notification for an EVM token transfer (best-effort).
+     *
+     * @param array<string, mixed> $activity
+     */
+    private function sendEvmPushNotification(int $userId, array $activity, string $matchedAddress): void
+    {
+        try {
+            $user = User::find($userId);
+            if ($user === null) {
+                return;
+            }
+
+            $fromAddress = strtolower((string) ($activity['fromAddress'] ?? ''));
+            $toAddress = strtolower((string) ($activity['toAddress'] ?? ''));
+            $isIncoming = strtolower($matchedAddress) === $toAddress;
+
+            $asset = (string) ($activity['asset'] ?? 'unknown');
+            $amount = (string) ($activity['value'] ?? '0');
+
+            $counterpartyAddr = $isIncoming ? ($fromAddress ?: 'unknown') : ($toAddress ?: 'unknown');
+            $truncatedAddr = substr($counterpartyAddr, 0, 6) . '...' . substr($counterpartyAddr, -4);
+
+            if ($isIncoming) {
+                $this->pushService->sendTransactionReceived($user, $amount, $asset, $truncatedAddr);
+            } else {
+                $this->pushService->sendTransactionSent($user, $amount, $asset, $truncatedAddr);
+            }
+        } catch (Throwable $e) {
+            Log::warning('Alchemy EVM: Push notification failed', [
+                'user_id' => $userId,
                 'error'   => $e->getMessage(),
             ]);
         }
