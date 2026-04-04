@@ -178,7 +178,7 @@
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
                     </svg>
                     <span class="font-medium">v7.9.0 Released:</span>
-                    <span class="ml-2">Standards &amp; Compliance — 56 DDD domains, 1,400+ API routes, GraphQL (45 domains), ISO 20022, ISO 8583, US Payment Rails, Interledger, Ledger, Microfinance, x402 Protocol. Multi-layer address screening (OFAC + GoPlus), professional copywriting pass, Blade fixes.</span>
+                    <span class="ml-2">Solana wallet integration, Helius transaction monitoring, Alchemy webhook support, FCM push notifications. 56 DDD domains, 1,400+ API routes, GraphQL (45 domains), ISO 20022, ISO 8583, multi-rail payments, x402 Protocol.</span>
                 </div>
             </div>
         </section>

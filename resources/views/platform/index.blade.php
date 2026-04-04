@@ -5,7 +5,7 @@
 @section('seo')
     @include('partials.seo', [
         'title' => config('brand.name', 'Zelta') . ' Platform - Open Banking for Developers',
-        'description' => config('brand.name', 'Zelta') . ' Platform - Open-source core banking with 56 DDD domains, ISO 20022, PSD2, multi-rail payments, Interledger, Double-Entry Ledger, Microfinance, REST + GraphQL APIs, and cross-chain DeFi. MIT licensed.',
+        'description' => 'Zelta Platform: open-source core banking with 56 DDD domains, ISO 20022, PSD2, multi-rail payments, and cross-chain DeFi. MIT licensed, built for developers.',
         'keywords' => config('brand.name', 'Zelta') . ' platform, banking infrastructure, open source banking, developer API, ISO 20022, PSD2, payment rails, Interledger, microfinance, ledger, MIT license, core banking API, fintech development, DDD, event sourcing',
     ])
 
@@ -82,13 +82,13 @@
                     const bank = new {{ config('brand.name', 'Zelta') }}();
                 </div>
                 <div class="code-font text-blue-400 text-sm opacity-20 absolute top-40 right-20 transform -rotate-12 hidden lg:block">
-                    $ npm install @finaegis/sdk
+                    $ npm install @zelta/sdk
                 </div>
                 <div class="code-font text-purple-400 text-sm opacity-20 absolute bottom-40 left-1/4 hidden lg:block">
-                    pip install finaegis==latest
+                    pip install zelta==latest
                 </div>
                 <div class="code-font text-yellow-400 text-sm opacity-20 absolute bottom-20 right-1/3 transform rotate-6 hidden lg:block">
-                    composer require finaegis/sdk
+                    composer require zelta/sdk
                 </div>
             </div>
             
@@ -104,11 +104,11 @@
                                     <div class="w-3 h-3 bg-yellow-500 rounded-full"></div>
                                     <div class="w-3 h-3 bg-green-500 rounded-full"></div>
                                 </div>
-                                <div class="ml-4 text-gray-400 text-sm code-font">finaegis@terminal</div>
+                                <div class="ml-4 text-gray-400 text-sm code-font">zelta@terminal</div>
                             </div>
                             <div class="p-6 code-font text-sm">
                                 <div class="text-gray-400 mb-2">$ whoami</div>
-                                <div class="text-green-400 mb-4">developer@finaegis</div>
+                                <div class="text-green-400 mb-4">developer@zelta</div>
                                 
                                 <div class="text-gray-400 mb-2">$ git clone {{ config('brand.github_url') }}</div>
                                 <div class="text-white mb-2">Cloning into 'core-banking-prototype-laravel'...</div>

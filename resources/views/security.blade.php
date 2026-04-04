@@ -5,7 +5,7 @@
 @section('seo')
     @include('partials.seo', [
         'title' => 'Security - Bank-Grade Protection | ' . config('brand.name', 'Zelta'),
-        'description' => config('brand.name', 'Zelta') . ' security overview - Bank-grade security meets blockchain immutability. Learn about our security measures and best practices.',
+        'description' => 'Zelta security architecture: HMAC integrity, HSM key management, post-quantum encryption (ML-KEM-768), ZK-KYC proofs, and WebAuthn. SOC 2 and PCI DSS ready.',
         'keywords' => config('brand.name', 'Zelta') . ' security, bank-grade security, blockchain security, secure banking, cybersecurity, data protection',
     ])
 

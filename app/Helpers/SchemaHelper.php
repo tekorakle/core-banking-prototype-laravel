@@ -16,9 +16,11 @@ class SchemaHelper
             'name'     => $brand,
             'url'      => config('app.url'),
             'logo'     => config('app.url') . '/images/og-default.png',
-            'sameAs'   => [
+            'sameAs'   => array_values(array_filter([
                 config('brand.github_url', 'https://github.com/FinAegis'),
-            ],
+                config('brand.twitter_url'),
+                config('brand.linkedin_url'),
+            ])),
             'contactPoint' => [
                 '@type'       => 'ContactPoint',
                 'contactType' => 'customer support',
@@ -108,12 +110,7 @@ class SchemaHelper
                 'availability'    => 'https://schema.org/InStock',
                 'price'           => '1.00',
                 'priceCurrency'   => 'USD',
-                'priceValidUntil' => 'Dynamic',
-            ],
-            'aggregateRating' => [
-                '@type'       => 'AggregateRating',
-                'ratingValue' => '4.8',
-                'reviewCount' => '150',
+                'priceValidUntil' => date('Y-12-31'),
             ],
         ];
 

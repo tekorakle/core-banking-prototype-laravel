@@ -1,6 +1,6 @@
 # FinAegis Documentation
 
-Welcome to the FinAegis documentation. This guide covers the platform's 49 domain modules, APIs, and operational patterns.
+Welcome to the FinAegis documentation. This guide covers the platform's 56 domain modules, APIs, and operational patterns.
 
 ## Start Here
 
@@ -34,8 +34,8 @@ Welcome to the FinAegis documentation. This guide covers the platform's 49 domai
 - [Demo Mode](03-FEATURES/DEMO-MODE.md) - Demo environment features
 
 ### API Reference
-- [REST API](04-API/REST_API_REFERENCE.md) - Complete API documentation (1,250+ routes)
-- [GraphQL API](04-API/REST_API_REFERENCE.md#graphql) - 39 domain schemas
+- [REST API](04-API/REST_API_REFERENCE.md) - Complete API documentation (1,400+ routes)
+- [GraphQL API](04-API/REST_API_REFERENCE.md#graphql) - 45 domain schemas
 - [WebSocket Streaming](04-API/REST_API_REFERENCE.md#websocket) - Real-time events
 - [BIAN API](04-API/BIAN_API_DOCUMENTATION.md) - Banking industry standard
 - [Webhook Integration](04-API/WEBHOOK_INTEGRATION.md) - Event notifications
@@ -87,16 +87,18 @@ Welcome to the FinAegis documentation. This guide covers the platform's 49 domai
 
 ## Platform Status
 
-- **Version**: 6.1.1
+- **Version**: 7.9.0
 - **Status**: Production-Grade Platform
-- **Last Updated**: March 20, 2026
+- **Last Updated**: April 4, 2026
 
-### Current Release (v6.1.x)
-- **v6.1.1**: Card transaction sync webhooks, card management REST + GraphQL API, bank transfer state machine
-- **v6.1.0**: Post-quantum cryptography (ML-KEM, ML-DSA), Rain card issuing, Open Banking PSD2, tenant provisioning, event streaming DLQ, cross-chain/DeFi production adapters, ZK on-chain verifier
-- **v6.0.0**: Developer ecosystem — plugin marketplace, developer portal, 3 official SDKs
+### Current Release (v7.9.x)
+- **v7.9.0**: Solana wallet balances, Helius webhook integration, Alchemy Solana migration, FCM push notifications, 181 PHPStan fixes, SEO overhaul, HeliusTransactionProcessor extraction
+- **v7.8.4**: Solana ed25519 address generation, pre-release cleanup
+- **v7.8.3**: GoPlus/OFAC address screening
 
 ### Previous Releases
+- v7.x: ISO 20022, Open Banking, payment rails, ledger, microfinance, production hardening, Helm chart, Solana x402
+- v6.x: Post-quantum crypto, Rain card issuing, developer ecosystem, plugin marketplace, SDKs
 - v5.x: x402 micropayments, RAILGUN privacy, event streaming, rewards, fiat ramp, design system v2
 - v4.x: GraphQL API (36 domains), Event Store v2, Plugin Marketplace, real-time subscriptions
 - v3.x: Cross-chain & DeFi, compliance certification (SOC 2, PCI DSS, GDPR), production readiness

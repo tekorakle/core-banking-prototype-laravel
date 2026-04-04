@@ -60,7 +60,7 @@
 
                 <!-- Tech stack pills -->
                 <div class="flex flex-wrap justify-center gap-3 mt-12 animate-fade-in" style="animation-delay: 0.5s">
-                    @foreach(['Laravel', 'Event Sourcing', 'CQRS', 'GraphQL', 'DDD', 'ERC-4337', 'ISO 20022', 'PSD2', 'ILP'] as $tech)
+                    @foreach(['Laravel', 'Event Sourcing', 'CQRS', 'GraphQL', 'DDD', 'ERC-4337', 'ISO 20022', 'PSD2', 'Solana', 'ILP'] as $tech)
                         <span class="px-3 py-1 text-xs font-medium text-slate-500 bg-white/[0.03] border border-white/[0.06] rounded-full">{{ $tech }}</span>
                     @endforeach
                 </div>
