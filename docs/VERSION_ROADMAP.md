@@ -3084,5 +3084,26 @@ Findings #1-2 fixed in v7.1.1, findings #3-15 fixed in this release:
 - Duplicate processing prevention per address in Helius webhook
 - Helius API key restored as query param (their API requires it)
 
-*Document Version: 7.9.0*
-*Updated: April 4, 2026 (v7.9.0 Solana Balances, Helius Webhooks & SEO Overhaul)*
+---
+
+## Version 7.10.0 — Webhook Architecture Refactor + Mobile Backend Handover ✅ COMPLETED
+
+**Release Date**: April 7, 2026
+**PR**: #902
+**Theme**: Webhook infrastructure hardening, paid KYC, Stripe Bridge ramp, and mobile backend handover
+
+### Delivered Features
+- Webhook Infrastructure: Per-user DB-stored webhooks (AlchemyWebhookManager), encrypted signing keys, 100K address sharding, SmartAccountObserver auto-registration
+- Webhook Hardening: Async queue processing (ProcessAlchemyWebhookJob, ProcessHeliusWebhookJob), unique (tx_hash, chain) constraint, Cache-based dedup, spam filter, reorg detection
+- Card Waitlist: POST join (race-safe with lockForUpdate) + GET status endpoints
+- Paid KYC Verification: 3 payment methods (wallet deduction, Stripe card, IAP), VerificationPayment audit table, StripeKycWebhookController
+- RequireKycVerification Middleware: Blocks Level 0 users from financial endpoints
+- Stripe Bridge Ramp: Replaces Onramper — StripeBridgeService, StripeBridgeWebhookController, async webhook processing
+- Security: bcmath for all fiat amounts, encrypted stripe_client_secret, webhook replay protection, IAP production gate
+- Pre-existing fixes: LedgerDriverInterface binding, CrossChain test auth, PimlicoBundler enum count
+
+### Stats
+- 66 files changed, +4,739/-1,441 lines, 5 migrations, 2 queue jobs, 4 controllers, 1 middleware
+
+*Document Version: 7.10.0*
+*Updated: April 7, 2026 (v7.10.0 Webhook Architecture Refactor + Mobile Backend Handover)*

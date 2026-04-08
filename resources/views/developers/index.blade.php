@@ -137,7 +137,7 @@
                 <div class="text-center">
                     <div class="inline-flex items-center px-4 py-2 bg-white/10 backdrop-blur-sm rounded-full text-sm mb-6">
                         <span class="w-2 h-2 bg-green-400 rounded-full mr-2 animate-pulse"></span>
-                        <span>v7.9.0 Documentation — 56 Domains, 1,400+ Routes, GraphQL + REST + x402</span>
+                        <span>v7.10.0 Documentation — 56 Domains, 1,400+ Routes, GraphQL + REST + x402</span>
                     </div>
                     <h1 class="text-5xl md:text-7xl font-bold mb-6 bg-clip-text text-transparent bg-gradient-to-r from-white to-blue-200">
                         Build with 1,400+ API Routes
@@ -177,7 +177,7 @@
                     <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
                     </svg>
-                    <span class="font-medium">v7.9.0 Released:</span>
+                    <span class="font-medium">v7.10.0 Released:</span>
                     <span class="ml-2">Solana wallet integration, Helius transaction monitoring, Alchemy webhook support, FCM push notifications. 56 DDD domains, 1,400+ API routes, GraphQL (45 domains), ISO 20022, ISO 8583, multi-rail payments, x402 Protocol.</span>
                 </div>
             </div>

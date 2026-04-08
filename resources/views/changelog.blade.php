@@ -5,7 +5,7 @@
 @section('seo')
     @include('partials.seo', [
         'title' => 'Changelog | ' . config('brand.name', 'Zelta'),
-        'description' => 'Release history for the Zelta core banking platform. Track every feature shipped, bug fixed, and improvement made — v7.0 through v7.8.',
+        'description' => 'Release history for the Zelta core banking platform. Track every feature shipped, bug fixed, and improvement made — v7.0 through v7.10.',
         'keywords' => 'changelog, release notes, updates, ' . config('brand.name', 'Zelta') . ', version history, core banking',
     ])
 
@@ -43,6 +43,22 @@
 
             @php
                 $releases = [
+                    [
+                        'version' => 'v7.10.0',
+                        'date' => 'April 7, 2026',
+                        'label' => 'Webhook Architecture Refactor',
+                        'label_color' => 'blue',
+                        'badge_color' => 'bg-blue-100 text-blue-700 border-blue-200',
+                        'dot_color' => 'bg-blue-500',
+                        'items' => [
+                            'Webhook Infrastructure — webhook_endpoints table with per-user address monitoring, AlchemyWebhookManager, SmartAccountObserver, evm:sync-webhooks command, and config cleanup',
+                            'Webhook Hardening — Unique (tx_hash, chain) constraint, ProcessAlchemyWebhookJob and ProcessHeliusWebhookJob for async queue-based processing, Cache-based deduplication, spam filter, and reorg detection',
+                            'Per-User Sharding — Per-user webhook endpoints with encrypted signing keys and 100K address sharding for scalable on-chain monitoring',
+                            'Mobile Backend — CardWaitlistController, TrustCertPaymentController with 3 payment methods (wallet, card, IAP), and RequireKycVerification middleware for Level 0 user restrictions',
+                            'Ramp Migration — StripeBridgeService and StripeBridgeWebhookController replacing Onramper with Stripe Bridge for fiat on/off-ramp',
+                            'Security — bcmath for all financial amounts, encrypted stripe_client_secret, webhook timestamp tolerance, IAP production gate, 15 security findings identified and fixed via post-phase review',
+                        ],
+                    ],
                     [
                         'version' => 'v7.9.0',
                         'date' => 'April 1, 2026',
