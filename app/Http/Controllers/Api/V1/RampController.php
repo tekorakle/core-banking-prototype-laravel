@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Http\Controllers\Api\V1;
 
 use App\Domain\Ramp\Services\RampService;
+use App\Domain\Ramp\Services\StripeBridgeService;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\V1\RampSessionResource;
 use App\Models\RampSession;
@@ -17,6 +18,7 @@ class RampController extends Controller
 {
     public function __construct(
         private readonly RampService $rampService,
+        private readonly StripeBridgeService $stripeBridgeService,
     ) {
     }
 
@@ -50,7 +52,7 @@ class RampController extends Controller
                         new OA\Property(property: 'fee_currency', type: 'string', example: 'USD'),
                         new OA\Property(property: 'payment_methods', type: 'array', items: new OA\Items(type: 'string')),
                     ])),
-                    new OA\Property(property: 'provider', type: 'string', example: 'onramper'),
+                    new OA\Property(property: 'provider', type: 'string', example: 'stripe_bridge'),
                     new OA\Property(property: 'valid_until', type: 'string', format: 'date-time'),
                 ]),
             ]
@@ -70,7 +72,7 @@ class RampController extends Controller
             $result = $this->rampService->getQuotes(
                 $request->input('type'),
                 strtoupper($request->input('fiat')),
-                (float) $request->input('amount'),
+                (string) $request->input('amount'),
                 strtoupper($request->input('crypto'))
             );
 
@@ -123,7 +125,7 @@ class RampController extends Controller
                 $user,
                 $request->input('type'),
                 strtoupper($request->input('fiat_currency')),
-                (float) $request->input('fiat_amount'),
+                (string) $request->input('fiat_amount'),
                 strtoupper($request->input('crypto_currency')),
                 $request->input('wallet_address'),
                 $request->input('quote_id')
@@ -204,7 +206,7 @@ class RampController extends Controller
         content: new OA\JsonContent(
             properties: [
                 new OA\Property(property: 'data', type: 'object', properties: [
-                    new OA\Property(property: 'provider', type: 'string', example: 'onramper'),
+                    new OA\Property(property: 'provider', type: 'string', example: 'stripe_bridge'),
                     new OA\Property(property: 'fiat_currencies', type: 'array', items: new OA\Items(type: 'string'), example: '["USD","EUR","GBP"]'),
                     new OA\Property(property: 'crypto_currencies', type: 'array', items: new OA\Items(type: 'string'), example: '["USDC","USDT","ETH","BTC"]'),
                     new OA\Property(property: 'modes', type: 'array', items: new OA\Items(type: 'object', properties: [
@@ -217,9 +219,32 @@ class RampController extends Controller
     )]
     public function supported(): JsonResponse
     {
+        $provider = (string) config('ramp.default_provider');
+
+        if ($provider === 'stripe_bridge') {
+            $supported = $this->stripeBridgeService->getSupportedCurrencies();
+
+            return response()->json([
+                'data' => [
+                    'provider'          => 'stripe_bridge',
+                    'fiat_currencies'   => $supported['fiatCurrencies'],
+                    'crypto_currencies' => $supported['cryptoCurrencies'],
+                    'modes'             => [
+                        ['type' => 'on', 'label' => 'Buy Crypto'],
+                        ['type' => 'off', 'label' => 'Sell Crypto'],
+                    ],
+                    'limits' => [
+                        'min_amount'  => $supported['limits']['minAmount'],
+                        'max_amount'  => $supported['limits']['maxAmount'],
+                        'daily_limit' => $supported['limits']['dailyLimit'],
+                    ],
+                ],
+            ]);
+        }
+
         return response()->json([
             'data' => [
-                'provider'          => config('ramp.default_provider'),
+                'provider'          => $provider,
                 'fiat_currencies'   => config('ramp.supported_fiat'),
                 'crypto_currencies' => config('ramp.supported_crypto'),
                 'modes'             => [

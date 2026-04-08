@@ -22,7 +22,7 @@ class RampService
      *
      * @return array{quotes: array<int, array<string, mixed>>, provider: string, valid_until: string}
      */
-    public function getQuotes(string $type, string $fiatCurrency, float $fiatAmount, string $cryptoCurrency): array
+    public function getQuotes(string $type, string $fiatCurrency, string $fiatAmount, string $cryptoCurrency): array
     {
         $this->validateRampParams($type, $fiatCurrency, $fiatAmount, $cryptoCurrency);
 
@@ -42,7 +42,7 @@ class RampService
         User $user,
         string $type,
         string $fiatCurrency,
-        float $fiatAmount,
+        string $fiatAmount,
         string $cryptoCurrency,
         string $walletAddress,
         ?string $quoteId = null,
@@ -58,7 +58,7 @@ class RampService
             'quote_id'        => $quoteId,
         ]);
 
-        $session = RampSession::create([
+        $sessionData = [
             'user_id'             => $user->id,
             'provider'            => $this->provider->getName(),
             'type'                => $type,
@@ -72,7 +72,18 @@ class RampService
                 'checkout_url' => $providerResult['checkout_url'],
                 'provider'     => $providerResult['metadata'] ?? [],
             ],
-        ]);
+        ];
+
+        // Store Stripe Bridge specific fields
+        $metadata = $providerResult['metadata'] ?? [];
+        if (isset($metadata['stripe_session_id'])) {
+            $sessionData['stripe_session_id'] = $metadata['stripe_session_id'];
+        }
+        if (isset($metadata['client_secret'])) {
+            $sessionData['stripe_client_secret'] = $metadata['client_secret'];
+        }
+
+        $session = RampSession::create($sessionData);
 
         Log::info('Ramp session created', [
             'session_id' => $session->id,
@@ -147,7 +158,7 @@ class RampService
         }
 
         // Idempotency: don't overwrite terminal states
-        if (in_array($session->status, [RampSession::STATUS_COMPLETED, RampSession::STATUS_FAILED], true)) {
+        if (in_array($session->status, [RampSession::STATUS_COMPLETED, RampSession::STATUS_FAILED, RampSession::STATUS_EXPIRED], true)) {
             Log::info('Ramp webhook skipped — session already terminal', [
                 'session_id' => $session->id,
                 'status'     => $session->status,
@@ -183,7 +194,7 @@ class RampService
             ->get();
     }
 
-    private function validateRampParams(string $type, string $fiatCurrency, float $fiatAmount, string $cryptoCurrency): void
+    private function validateRampParams(string $type, string $fiatCurrency, string $fiatAmount, string $cryptoCurrency): void
     {
         if (! in_array($type, ['on', 'off'], true)) {
             throw new RuntimeException('Invalid transaction type. Use "on" for buying crypto or "off" for selling.');
@@ -199,9 +210,15 @@ class RampService
             throw new RuntimeException("{$cryptoCurrency} is not available for trading at this time.");
         }
 
-        $min = (float) config('ramp.limits.min_fiat_amount', 10);
-        $max = (float) config('ramp.limits.max_fiat_amount', 10000);
-        if ($fiatAmount < $min || $fiatAmount > $max) {
+        /** @var numeric-string $minStr */
+        $minStr = (string) config('ramp.limits.min_fiat_amount', 10);
+        /** @var numeric-string $maxStr */
+        $maxStr = (string) config('ramp.limits.max_fiat_amount', 10000);
+        $min = bcadd($minStr, '0', 2);
+        $max = bcadd($maxStr, '0', 2);
+        /** @var numeric-string $fiatAmount */
+        $amount = bcadd($fiatAmount, '0', 2);
+        if (bccomp($amount, $min, 2) < 0 || bccomp($amount, $max, 2) > 0) {
             throw new RuntimeException("Amount must be between \${$min} and \${$max}.");
         }
     }
@@ -212,9 +229,11 @@ class RampService
     private function normalizeWebhookStatus(string $status): string
     {
         return match (strtolower($status)) {
-            'completed', 'success', 'done' => RampSession::STATUS_COMPLETED,
-            'failed', 'error', 'cancelled', 'expired' => RampSession::STATUS_FAILED,
-            'pending', 'new', 'created' => RampSession::STATUS_PENDING,
+            'completed', 'success', 'done', 'fulfilled' => RampSession::STATUS_COMPLETED,
+            'failed', 'error', 'cancelled', 'payment_failed' => RampSession::STATUS_FAILED,
+            'expired' => RampSession::STATUS_EXPIRED,
+            'pending', 'new', 'created', 'initialized' => RampSession::STATUS_PENDING,
+            'payment_pending', 'payment_complete' => RampSession::STATUS_PROCESSING,
             default => RampSession::STATUS_PROCESSING,
         };
     }
