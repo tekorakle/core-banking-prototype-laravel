@@ -86,6 +86,45 @@ class StripeBridgeService
     }
 
     /**
+     * Fetch a Stripe crypto onramp session by ID.
+     *
+     * @return array{status: string, destination_amount: string|null, raw: array<string, mixed>}
+     */
+    public function getSession(string $sessionId): array
+    {
+        $this->ensureConfigured();
+
+        $response = Http::withToken($this->apiKey)
+            ->timeout(30)
+            ->get("{$this->baseUrl}/crypto/onramp_sessions/{$sessionId}");
+
+        if (! $response->successful()) {
+            Log::error('Stripe Bridge: Session fetch failed', [
+                'status'     => $response->status(),
+                'body'       => $response->body(),
+                'session_id' => $sessionId,
+            ]);
+            throw new RuntimeException(
+                'Failed to fetch Stripe Bridge session: ' . ($response->json('error.message') ?? $response->body())
+            );
+        }
+
+        /** @var array<string, mixed> $data */
+        $data = $response->json() ?? [];
+
+        $destinationAmount = null;
+        if (isset($data['destination_amount']) && is_numeric($data['destination_amount'])) {
+            $destinationAmount = bcadd((string) $data['destination_amount'], '0', 8);
+        }
+
+        return [
+            'status'             => (string) ($data['status'] ?? 'initialized'),
+            'destination_amount' => $destinationAmount,
+            'raw'                => $data,
+        ];
+    }
+
+    /**
      * Get a quote for a fiat-crypto conversion.
      *
      * @param  numeric-string  $amount
@@ -155,7 +194,7 @@ class StripeBridgeService
     /**
      * Get supported currencies for Stripe Bridge.
      *
-     * @return array{fiatCurrencies: array<string>, cryptoCurrencies: array<string>, modes: array<string>, limits: array{minAmount: int, maxAmount: int, dailyLimit: int}}
+     * @return array{fiatCurrencies: list<string>, cryptoCurrencies: list<string>, modes: list<string>, limits: array{minAmount: int, maxAmount: int, dailyLimit: int}}
      */
     public function getSupportedCurrencies(): array
     {
