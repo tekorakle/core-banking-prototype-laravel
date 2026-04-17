@@ -1591,7 +1591,7 @@ aiClient.on('tool_executed', (event) => {
   "version": "1.0.0",
   "description": "MCP tools for {{ config('brand.name', 'Zelta') }} banking operations",
   "author": "{{ config('brand.name', 'Zelta') }}",
-  "license": "MIT",
+  "license": "Apache-2.0",
   "server": {
     "command": "node",
     "args": ["./mcp-server.js"],

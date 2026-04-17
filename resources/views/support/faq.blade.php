@@ -205,7 +205,7 @@
                     </button>
                     <div class="faq-answer px-6 py-4 bg-white rounded-b-lg">
                         <p class="text-slate-500">
-                            Yes! {{ config('brand.name', 'Zelta') }} is fully open source under the MIT license. This means:
+                            Yes! {{ config('brand.name', 'Zelta') }} is fully open source under the Apache 2.0 license. This means:
                         </p>
                         <ul class="list-disc list-inside mt-2 text-slate-500 space-y-1">
                             <li>You can view all source code on GitHub</li>

@@ -49,7 +49,7 @@ FinAegis provides the foundation for building digital banking applications. The 
 | Machine payments | MPP multi-rail (Stripe, USDC, Lightning), AP2 mandates, x402 Solana (v6.4.0) |
 | Payment orchestration | HyperSwitch 150+ connectors, smart routing, failover (v6.4.2) |
 | Mobile launch readiness | Quest auto-triggers, device attestation, JIT funding, rewards (v6.5.0) |
-| SMS multi-rail payments | VertexSMS integration, MPP-gated SMS, MCP tool for AI agents (v6.5.0) |
+| SMS multi-rail payments | VertexSMS integration, MPP-gated SMS, MCP tool for AI agents (v7.10.7) |
 | Learning modern architecture | Complete DDD + CQRS + Event Sourcing example |
 
 ---
@@ -75,7 +75,7 @@ php artisan performance:report       # Generate performance baseline
 
 ## GraphQL API (v4.0.0-v4.3.0)
 
-FinAegis provides a schema-first GraphQL API via [Lighthouse PHP](https://lighthouse-php.com/) covering 36 domains:
+FinAegis provides a schema-first GraphQL API via [Lighthouse PHP](https://lighthouse-php.com/) covering 45 domains:
 
 ```bash
 # Available at /graphql
@@ -383,7 +383,7 @@ See [Kubernetes Deployment Guide](docs/06-DEVELOPMENT/KUBERNETES.md) for details
 |-------|------------|
 | **Backend** | Laravel 12, PHP 8.4+ |
 | **Event Sourcing** | Spatie Event Sourcing with Event Store v2 (domain routing, upcasting) |
-| **GraphQL** | Lighthouse PHP (schema-first, 36 domains, subscriptions) |
+| **GraphQL** | Lighthouse PHP (schema-first, 45 domains, subscriptions) |
 | **Workflows** | Laravel Workflow (Waterline) |
 | **Multi-Tenancy** | stancl/tenancy v3.9 |
 | **Database** | MySQL 8.0+ / MariaDB 10.3+ / PostgreSQL 13+ |
