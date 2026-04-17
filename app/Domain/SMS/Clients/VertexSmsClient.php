@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Domain\SMS\Clients;
 
 use Illuminate\Http\Client\PendingRequest;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\URL;
@@ -96,6 +97,27 @@ class VertexSmsClient
     {
         $this->requireApiToken();
 
+        $intervalMs = (int) config('sms.defaults.send_interval_ms', 1000);
+        if ($intervalMs > 0) {
+            $lockSeconds = (int) ceil($intervalMs / 1000);
+            $lock = Cache::lock('sms:vertexsms:send-throttle', $lockSeconds);
+            $lock->block($lockSeconds + 5);
+        }
+
+        try {
+            return $this->doSendSms($to, $from, $message, $testMode);
+        } finally {
+            if (isset($lock)) {
+                $lock->release();
+            }
+        }
+    }
+
+    /**
+     * @return array{message_id: string}
+     */
+    private function doSendSms(string $to, string $from, string $message, bool $testMode): array
+    {
         $payload = [
             'to'      => $to,
             'from'    => $from,
@@ -173,23 +195,68 @@ class VertexSmsClient
     }
 
     /**
+     * Query delivery status for a single message via GET /sms/status/{id}.
+     *
+     * VertexSMS confirmed no rate limit on this endpoint (Q11). Use as
+     * reconciliation fallback for missed DLRs after the SMS expiration
+     * window (default 3 days).
+     *
+     * @return array{id: string, status: int, error: int}|null
+     */
+    public function getMessageStatus(string $messageId): ?array
+    {
+        $this->requireApiToken();
+
+        if ($messageId === '' || preg_match('/[^a-zA-Z0-9._-]/', $messageId)) {
+            Log::warning('VertexSMS: Invalid message ID for status query', ['message_id' => $messageId]);
+
+            return null;
+        }
+
+        $response = $this->request()->get("{$this->baseUrl}/sms/status/{$messageId}");
+
+        if (! $response->successful()) {
+            Log::warning('VertexSMS: /sms/status failed', [
+                'message_id' => $messageId,
+                'status'     => $response->status(),
+            ]);
+
+            return null;
+        }
+
+        /** @var array<string, mixed>|null $data */
+        $data = $response->json();
+
+        if (! is_array($data) || $data === []) {
+            return null;
+        }
+
+        return [
+            'id'     => (string) ($data['id'] ?? $messageId),
+            'status' => is_numeric($data['status'] ?? null) ? (int) $data['status'] : -1,
+            'error'  => is_numeric($data['error'] ?? null) ? (int) $data['error'] : 0,
+        ];
+    }
+
+    /**
      * Verify a DLR webhook HMAC-SHA256 signature over the raw request body.
      *
-     * Returns true in non-production when the secret is unset so local/test
-     * webhooks can be exercised without signing.
+     * Returns true only in local/testing when the secret is unset so dev
+     * webhooks can be exercised without signing. All other environments
+     * (staging, uat, production) reject unsigned webhooks.
      */
     public function verifyWebhookSignature(string $payload, string $signature): bool
     {
         $secret = (string) config('sms.webhook.secret', '');
 
         if ($secret === '') {
-            if (app()->environment('production')) {
-                Log::error('VertexSMS: VERTEXSMS_WEBHOOK_SECRET not set in production');
-
-                return false;
+            if (app()->environment('local', 'testing')) {
+                return true;
             }
 
-            return true;
+            Log::error('VertexSMS: VERTEXSMS_WEBHOOK_SECRET not set — rejecting webhook');
+
+            return false;
         }
 
         return hash_equals(hash_hmac('sha256', $payload, $secret), $signature);

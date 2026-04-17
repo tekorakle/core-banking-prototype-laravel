@@ -81,8 +81,10 @@ return [
     */
 
     'defaults' => [
-        'sender_id'       => env('VERTEXSMS_SENDER_ID', 'Zelta'),
-        'max_message_len' => 1600,
-        'test_mode'       => (bool) env('SMS_TEST_MODE', false),
+        'sender_id'        => env('VERTEXSMS_SENDER_ID', 'Zelta'),
+        'max_message_len'  => 1600,
+        'test_mode'        => (bool) env('SMS_TEST_MODE', false),
+        'send_interval_ms' => (int) env('SMS_SEND_INTERVAL_MS', 1000),
+        'expire_seconds'   => (int) env('SMS_EXPIRE_SECONDS', 259200),
     ],
 ];

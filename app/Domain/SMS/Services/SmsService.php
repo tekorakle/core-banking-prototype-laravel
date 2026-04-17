@@ -9,8 +9,10 @@ use App\Domain\SMS\Events\SmsDelivered;
 use App\Domain\SMS\Events\SmsFailed;
 use App\Domain\SMS\Events\SmsSent;
 use App\Domain\SMS\Models\SmsMessage;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
+use RuntimeException;
 
 /**
  * Core SMS business logic. Sends messages via VertexSMS,
@@ -36,6 +38,13 @@ class SmsService
         string $message,
         array $paymentMeta = [],
     ): array {
+        $callerId = (string) (auth()->id() ?? 'system');
+        $dedupKey = 'sms:dedup:' . hash('sha256', $callerId . '|' . $to . '|' . $from . '|' . $message);
+        if (! Cache::add($dedupKey, true, 60)) {
+            Log::warning('SMS: Duplicate send blocked', ['to' => $to, 'from' => $from]);
+            throw new RuntimeException('Duplicate SMS detected within 60-second window');
+        }
+
         $testMode = (bool) config('sms.defaults.test_mode', false);
         $priced = $this->pricing->priceFor($to, $from, $message);
 
@@ -125,17 +134,27 @@ class SmsService
                 'delivered_at' => $dlr['delivered_at'] ?? ($newStatus === SmsMessage::STATUS_DELIVERED ? now() : null),
             ];
 
-            foreach (['error_code', 'mcc', 'mnc'] as $optional) {
+            // error_code handled separately: 0 is a valid value (= success)
+            if (array_key_exists('error_code', $dlr) && $dlr['error_code'] !== null) {
+                $updates['error_code'] = $dlr['error_code'];
+            }
+
+            foreach (['mcc', 'mnc'] as $optional) {
                 if (! empty($dlr[$optional])) {
                     $updates[$optional] = $dlr[$optional];
                 }
             }
-            // Capture explicit zero error_code (= success) — `! empty(0)` would skip it.
-            if (array_key_exists('error_code', $dlr) && $dlr['error_code'] === 0) {
-                $updates['error_code'] = 0;
-            }
 
             $sms->update($updates);
+
+            // Alert on VertexSMS error code 24 = Account balance limit reached
+            if (($dlr['error_code'] ?? null) === 24) {
+                Log::critical('SMS: VertexSMS account balance exhausted — all further SMS will fail until topped up', [
+                    'provider_id' => $dlr['message_id'],
+                    'error_code'  => 24,
+                    'sms_id'      => $sms->id,
+                ]);
+            }
 
             if ($newStatus === SmsMessage::STATUS_DELIVERED) {
                 SmsDelivered::dispatch((string) $sms->id, $dlr['message_id']);
