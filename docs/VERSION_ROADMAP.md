@@ -3199,5 +3199,27 @@ Findings #1-2 fixed in v7.1.1, findings #3-15 fixed in this release:
 - Fixed pre-existing OpenAPI annotation misattachment in `X402StatusController` (surfaced by swagger-php v5 strictness)
 - Zero security advisories, zero runtime behaviour changes
 
+---
+
+## Future / Unscheduled
+
+Items below are designed but not yet scheduled. They await demand signals (typically a second partner asking for the same capability) before engineering commits.
+
+### MPP Wholesale / Aggregator Model
+
+**Spec:** [`docs/superpowers/specs/2026-04-18-mpp-wholesale-aggregator-model.md`](superpowers/specs/2026-04-18-mpp-wholesale-aggregator-model.md)
+**Trigger:** Second commercial partner asks for wholesale API access
+
+Lets partners consume Zelta APIs wholesale and resell under their own billing relationship. Partner gets one API key + negotiated per-unit pricing; their customers never see Zelta branding or create Zelta accounts. ~80% of infrastructure already exists in `FinancialInstitutionPartner`; estimated 1-2 weeks engineering when prioritized.
+
+### MPP White-Label Embed Model
+
+**Spec:** [`docs/superpowers/specs/2026-04-18-mpp-whitelabel-embed-model.md`](superpowers/specs/2026-04-18-mpp-whitelabel-embed-model.md)
+**Trigger:** Multiple partners ask for branded end-user checkouts, OR a strategic platform partnership requires white-label
+
+Embeddable JS widget that renders Zelta's 402 payment flow inside the partner's own UI with their branding. Partner's end users get multi-rail payments (USDC/Stripe/Lightning) without leaving the partner's site. Requires publishable keys, widget engineering, CDN infrastructure. Estimated 4-6 weeks engineering.
+
+---
+
 *Document Version: 7.10.7*
-*Updated: April 17, 2026 (v7.10.7 Safe-Major Composer Trio)*
+*Updated: April 18, 2026 (added Future / Unscheduled section with MPP partner models)*
